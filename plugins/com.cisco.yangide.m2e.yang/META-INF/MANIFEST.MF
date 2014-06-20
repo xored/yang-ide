@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: m2e connector for yang
+Bundle-SymbolicName: com.cisco.yangide.m2e.yang;singleton:=true
+Bundle-Version: 0.1.0.qualifier
+Bundle-Vendor: Cisco Systems, Inc.
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: org.eclipse.core.resources;bundle-version="3.4.0",
+ org.eclipse.core.runtime;bundle-version="3.4.0",
+ org.eclipse.m2e.jdt;bundle-version="[1.0.0,2.0.0)",
+ org.eclipse.m2e.core;bundle-version="[1.0.0,2.0.0)",
+ org.eclipse.m2e.maven.runtime;bundle-version="[1.0.0,2.0.0)"
