@@ -28,15 +28,8 @@ public class YangGenerationTest extends AbstractMavenProjectTestCase {
 		IJavaProject javaProject1 = JavaCore.create(project1);
 		IClasspathEntry[] cp1 = javaProject1.getRawClasspath();
 
-		ClasspathHelpers
-				.assertClasspath(
-						new String[] {
-								"/yang-p001/src/main/java", //
-								"/yang-p001/target/generated-sources/sal", //
-								"/yang-p001/src/test/java", //
-								"org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.7", //
-								"org.eclipse.m2e.MAVEN2_CLASSPATH_CONTAINER" //
-						}, cp1);
+		assertNotNull(ClasspathHelpers.getClasspathEntry(cp1,
+				"/yang-p001/target/generated-sources/sal"));
 
 		IFile file = project1
 				.getFile("target/generated-sources/sal/org/opendaylight/yang/gen/v1/urn/simple/string/demo/rev130618/TypedefString.java");

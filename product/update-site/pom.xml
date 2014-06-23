@@ -9,7 +9,7 @@
     <relativePath>../..</relativePath>
   </parent>
   
-  <artifactId>com.cisco.yangide.m2e.yang.feature</artifactId>
-  <packaging>eclipse-feature</packaging>
+  <artifactId>com.cisco.yangide.update-site</artifactId>
+  <packaging>eclipse-repository</packaging>
 
 </project>
