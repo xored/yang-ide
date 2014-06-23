@@ -2,7 +2,7 @@
   <catalogItems>
     <catalogItem>
       <categoryId>org.eclipse.m2e.discovery.category.lifecycles</categoryId>
-      <m2e-versions>1.0,1.1</m2e-versions>
+      <m2e-versions>1.4,1.5</m2e-versions>
       <description>yang</description>
       <groupId>lifecycles</groupId>
       <id>org.eclipse.m2e.discovery.lifecyclemapping.yang</id>
@@ -11,7 +11,7 @@
       <name>yang</name>
       <provider>Cisco Systems, Inc.</provider>
       <p2>
-        <repositoryUrl>https://</repositoryUrl>
+        <repositoryUrl>@REPO_URL@</repositoryUrl>
         <iuId>com.cisco.yangide.m2e.yang.feature.group</iuId>
         <lifecycleMappingIU>
           <iuId>com.cisco.yangide.m2e.yang</iuId>

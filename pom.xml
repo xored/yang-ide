@@ -16,6 +16,8 @@
 
   <modules>
     <module>plugins/com.cisco.yangide.m2e.yang</module>
+    <module>features/com.cisco.yangide.m2e.yang.feature</module>
+    <module>plugins/com.cisco.yangide.m2e.yang.tests</module>
   </modules>
 
   <repositories>
@@ -23,6 +25,11 @@
      <id>kepler</id>
      <layout>p2</layout>
      <url>http://download.eclipse.org/releases/kepler</url>
+   </repository>
+   <repository>
+     <id>m2e</id>
+     <layout>p2</layout>
+     <url>http://download.eclipse.org/technology/m2e/releases</url>
    </repository>
   </repositories>
 

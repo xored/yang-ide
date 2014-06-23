@@ -5,24 +5,9 @@
       <pluginExecutionFilter>
         <groupId>org.opendaylight.yangtools</groupId>
         <artifactId>yang-maven-plugin</artifactId>
-        <versionRange>[0.6.2,)</versionRange>
+        <versionRange>[0.6.1,)</versionRange>
         <goals>
-          <goal>generate-source</goal>
-        </goals>
-      </pluginExecutionFilter>
-      <action>
-        <configurator>
-          <id>com.cisco.yangide.m2e.yang.yangConfigurator</id>
-        </configurator>
-      </action>
-    </pluginExecution>
-    <pluginExecution>
-      <pluginExecutionFilter>
-        <groupId>org.opendaylight.yangtools</groupId>
-        <artifactId>yang-maven-plugin</artifactId>
-        <versionRange>[0.6.2,)</versionRange>
-        <goals>
-          <goal>generate-source</goal>
+          <goal>generate-sources</goal>
         </goals>
       </pluginExecutionFilter>
       <action>
