@@ -28,30 +28,22 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
 		IMaven maven = MavenPlugin.getMaven();
 		BuildContext buildContext = getBuildContext();
 
-		File[] sources = maven.getMojoParameterValue(getSession()
+		File source = maven.getMojoParameterValue(getSession()
 				.getCurrentProject(), getMojoExecution(), "yangFilesRootDir",
-				File[].class, monitor);
+				File.class, monitor);
 
-		boolean changed = false;
-		
-		for (File source : sources) {
-			Scanner ds = buildContext.newScanner(source); // delta or full scanner
-			ds.scan();
-			String[] includedFiles = ds.getIncludedFiles();
-			if (includedFiles != null && includedFiles.length > 0) {
-				changed = true;
-			}
-		}
-
-		if (!changed) {
+		Scanner ds = buildContext.newScanner(source);
+		ds.scan();
+		String[] includedFiles = ds.getIncludedFiles();
+		if (includedFiles == null || includedFiles.length <= 0) {
 			return null;
 		}
 
 		Set<IProject> result = super.build(kind, monitor);
 
 		YangGeneratorConfiguration[] confs = maven.getMojoParameterValue(
-				getSession().getCurrentProject(), getMojoExecution(), "codeGenerators",
-				YangGeneratorConfiguration[].class, monitor);
+				getSession().getCurrentProject(), getMojoExecution(),
+				"codeGenerators", YangGeneratorConfiguration[].class, monitor);
 		if (confs != null) {
 			for (YangGeneratorConfiguration conf : confs) {
 				if (conf.getOutputBaseDir() != null) {
