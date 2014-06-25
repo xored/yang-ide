@@ -20,6 +20,7 @@
     <module>plugins/com.cisco.yangide.m2e.yang.tests</module>
     <module>product/target-platform</module>
     <module>product/update-site</module>
+    <module>plugins/com.cisco.yangide.editor</module>
   </modules>
 
   <build>
