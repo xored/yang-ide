@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            name="YANG Editor"
+            extensions="yang"
+            icon="icons/sample.gif"
+            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
+            class="com.cisco.yangide.editor.editors.YANGEditor"
+            id="com.cisco.yangide.editor.editors.YANGEditor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.cisco.yangide.editor.preferences.YANGUIPreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="com.cisco.yangide.editor.preferences.YANGBasePreferencePage"
+            id="com.cisco.yangide.editor.preferences.YANGBasePreferencePage"
+            name="YANG">
+      </page>
+      <page
+            category="com.cisco.yangide.editor.preferences.YANGBasePreferencePage"
+            class="com.cisco.yangide.editor.preferences.YANGEditorColoringPreferencePage"
+            id="com.cisco.yangide.editor.preferences.YANGEditorColoringPreferencePage"
+            name="Syntax Coloring">
+      </page>
+   </extension>   
+
+
+</plugin>
