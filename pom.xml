@@ -15,9 +15,17 @@
   </properties>
 
   <modules>
+    <!-- plugins -->
+    <module>plugins/com.cisco.yangide.core</module>
     <module>plugins/com.cisco.yangide.m2e.yang</module>
+    
+    <!-- features -->
     <module>features/com.cisco.yangide.m2e.yang.feature</module>
+    
+    <!-- tests -->
     <module>plugins/com.cisco.yangide.m2e.yang.tests</module>
+    
+    <!-- other -->
     <module>product/target-platform</module>
     <module>product/update-site</module>
   </modules>
