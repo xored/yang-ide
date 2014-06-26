@@ -18,12 +18,12 @@ import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IDocumentPartitioner;
 import org.eclipse.jface.text.rules.FastPartitioner;
 
-import com.cisco.yangide.editor.editors.YANGPartitionScanner;
+import com.cisco.yangide.editor.editors.YangPartitionScanner;
 
 /**
  * The document setup participant from Ant. 
  */
-public class YANGDocumentSetupParticipant  implements IDocumentSetupParticipant {
+public class YangDocumentSetupParticipant  implements IDocumentSetupParticipant {
 
     /**
      * The name of the Ant partitioning. Again, clarify whats the purpose of partition scanner 
@@ -32,7 +32,7 @@ public class YANGDocumentSetupParticipant  implements IDocumentSetupParticipant 
      */
     public final static String YANG_PARTITIONING= "com.cisco.yangide.editor.YANGPartitioning";  //$NON-NLS-1$
     
-    public YANGDocumentSetupParticipant() {
+    public YangDocumentSetupParticipant() {
     }
     
     /* (non-Javadoc)
@@ -49,10 +49,8 @@ public class YANGDocumentSetupParticipant  implements IDocumentSetupParticipant 
     
     private IDocumentPartitioner createDocumentPartitioner() {
         return new FastPartitioner(
-                new YANGPartitionScanner(), new String[]{
-                    YANGPartitionScanner.YANG_COMMENT,
-                    YANGPartitionScanner.YANG_IDENTIFIER, 
-                    YANGPartitionScanner.YANG_KEYWORD,
-                    YANGPartitionScanner.YANG_STRING});
+                new YangPartitionScanner(), new String[]{
+                    YangPartitionScanner.YANG_COMMENT,
+                    YangPartitionScanner.YANG_STRING});
     }
 }

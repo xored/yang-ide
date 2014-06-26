@@ -14,7 +14,7 @@ import org.eclipse.swt.widgets.Display;
  * @author Alexey Kholupko
  *
  */
-public class ColorManager implements IColorManager, IColorManagerExtension {
+public class YangColorManager implements IColorManager, IColorManagerExtension {
 
     protected Map<String, RGB> fKeyTable= new HashMap<String, RGB>(10);
     protected Map<Display, Map<RGB, Color>> fDisplayTable= new HashMap<Display, Map<RGB, Color>>(2);
@@ -31,7 +31,7 @@ public class ColorManager implements IColorManager, IColorManagerExtension {
      * disposes the allocated colors when the current display
      * gets disposed.
      */
-    public ColorManager() {
+    public YangColorManager() {
         this(true);
     }
 
@@ -44,7 +44,7 @@ public class ColorManager implements IColorManager, IColorManagerExtension {
      *
      * @since 2.1
      */
-    public ColorManager(boolean autoDisposeOnDisplayDispose) {
+    public YangColorManager(boolean autoDisposeOnDisplayDispose) {
         fAutoDisposeOnDisplayDispose= autoDisposeOnDisplayDispose;
     }
 

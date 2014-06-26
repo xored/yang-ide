@@ -2,7 +2,7 @@ package com.cisco.yangide.editor.editors;
 
 import org.eclipse.jface.text.*;
 
-public class YANGDoubleClickStrategy implements ITextDoubleClickStrategy {
+public class YangDoubleClickStrategy implements ITextDoubleClickStrategy {
 	protected ITextViewer fText;
 
 	public void doubleClicked(ITextViewer part) {

@@ -9,26 +9,26 @@
             extensions="yang"
             icon="icons/sample.gif"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            class="com.cisco.yangide.editor.editors.YANGEditor"
+            class="com.cisco.yangide.editor.editors.YangEditor"
             id="com.cisco.yangide.editor.editors.YANGEditor">
       </editor>
    </extension>
    <extension
          point="org.eclipse.core.runtime.preferences">
       <initializer
-            class="com.cisco.yangide.editor.preferences.YANGUIPreferenceInitializer">
+            class="com.cisco.yangide.editor.preferences.YangUIPreferenceInitializer">
       </initializer>
    </extension>
    <extension
          point="org.eclipse.ui.preferencePages">
       <page
-            class="com.cisco.yangide.editor.preferences.YANGBasePreferencePage"
+            class="com.cisco.yangide.editor.preferences.YangBasePreferencePage"
             id="com.cisco.yangide.editor.preferences.YANGBasePreferencePage"
             name="YANG">
       </page>
       <page
             category="com.cisco.yangide.editor.preferences.YANGBasePreferencePage"
-            class="com.cisco.yangide.editor.preferences.YANGEditorColoringPreferencePage"
+            class="com.cisco.yangide.editor.preferences.YangEditorColoringPreferencePage"
             id="com.cisco.yangide.editor.preferences.YANGEditorColoringPreferencePage"
             name="Syntax Coloring">
       </page>

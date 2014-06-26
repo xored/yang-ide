@@ -60,9 +60,9 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.model.WorkbenchViewerComparator;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
-import com.cisco.yangide.editor.YANGEditorPlugin;
-import com.cisco.yangide.editor.editors.IYANGColorConstants;
-import com.cisco.yangide.editor.editors.YANGConfiguration;
+import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.editor.editors.IYangColorConstants;
+import com.cisco.yangide.editor.editors.YangSourceViewerConfiguration;
 
 
 /**
@@ -76,7 +76,7 @@ import com.cisco.yangide.editor.editors.YANGConfiguration;
  *
  * @since 2.1
  */
-class YANGEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
+class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
 
     /**
      * Item in the highlighting color list.
@@ -231,10 +231,10 @@ class YANGEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
      */
     private final String[][] fSyntaxColorListModel= new String[][] {
 
-            { YANGPreferencesMessages.YANGEditorPreferencePage_strings, IYANGColorConstants.YANG_STRING},
-            { YANGPreferencesMessages.YANGEditorPreferencePage_keywords, PreferenceConstants.EDITOR_JAVA_DEFAULT_COLOR },
-            { YANGPreferencesMessages.YANGEditorPreferencePage_comments, PreferenceConstants.EDITOR_JAVA_DEFAULT_COLOR },
-            { YANGPreferencesMessages.YANGEditorPreferencePage_others, PreferenceConstants.EDITOR_JAVA_DEFAULT_COLOR }
+            { YangPreferencesMessages.YANGEditorPreferencePage_strings, IYangColorConstants.YANG_STRING},
+            { YangPreferencesMessages.YANGEditorPreferencePage_keywords, IYangColorConstants.YANG_KEYWORD},
+            { YangPreferencesMessages.YANGEditorPreferencePage_comments, IYangColorConstants.YANG_COMMENT},
+            { YangPreferencesMessages.YANGEditorPreferencePage_identifiers, IYangColorConstants.YANG_IDENTIFIER }
     };
 
     private ColorSelector fSyntaxForegroundColorEditor;
@@ -280,8 +280,9 @@ class YANGEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
      * @since 3.1
      */
     private FontMetrics fFontMetrics;
+    private YangPreviewerUpdater fPreviewerUpdater;
 
-    public YANGEditorColoringConfigurationBlock(OverlayPreferenceStore store) {
+    public YangEditorColoringConfigurationBlock(OverlayPreferenceStore store) {
         super(store);
 
         fColorManager= new JavaColorManager(false);
@@ -621,21 +622,23 @@ class YANGEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
     
         fPreviewViewer = new SourceViewer(parent, null, null, false, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
         
-        YANGConfiguration configuration = new YANGConfiguration(fColorManager);
+        YangSourceViewerConfiguration configuration = new YangSourceViewerConfiguration(fColorManager);
     
         fPreviewViewer.configure(configuration);
         fPreviewViewer.setEditable(false);
         Font font= JFaceResources.getFont(JFaceResources.TEXT_FONT);
         fPreviewViewer.getTextWidget().setFont(font);
         
-        IPreferenceStore store= new ChainedPreferenceStore(new IPreferenceStore[] { getPreferenceStore(), EditorsUI.getPreferenceStore() });
+        IPreferenceStore store = new ChainedPreferenceStore(new IPreferenceStore[] { getPreferenceStore(), EditorsUI.getPreferenceStore() });
         //XXX ATTENTION ! Updater needed
         //fPreviewerUpdater = new AntPreviewerUpdater(fPreviewViewer, configuration, store);
         //new JavaSourcePreviewerUpdater(fPreviewViewer, configuration, store);
         
+        new YangPreviewerUpdater(fPreviewViewer, configuration, store);
+        
         String content= loadPreviewContentFromFile("ColorSettingPreviewCode.txt"); //$NON-NLS-1$
         IDocument document = new Document(content);
-        new YANGDocumentSetupParticipant().setup(document);
+        new YangDocumentSetupParticipant().setup(document);
         fPreviewViewer.setDocument(document);
         
         return fPreviewViewer.getControl();        
@@ -653,7 +656,7 @@ class YANGEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
                 buffer.append(separator);
             }
         } catch (IOException io) {
-            YANGEditorPlugin.log(io);
+            YangEditorPlugin.log(io);
         } finally {
             if (reader != null) {
                 try { reader.close(); } catch (IOException e) {}

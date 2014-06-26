@@ -13,16 +13,17 @@ import org.eclipse.osgi.util.NLS;
  * @author Alexey Kholupko
  *
  */
-public class YANGPreferencesMessages extends NLS {
-    private static final String BUNDLE_NAME = "com.cisco.yangide.editor.preferences.YANGPreferencesMessages";//$NON-NLS-1$    
+public class YangPreferencesMessages extends NLS {
+    private static final String BUNDLE_NAME = "com.cisco.yangide.editor.preferences.YangPreferencesMessages";//$NON-NLS-1$    
     public static String YANGEditorPreferencePage_strings;
     public static String YANGEditorPreferencePage_keywords;
     public static String YANGEditorPreferencePage_comments;
-    public static String YANGEditorPreferencePage_others;
+    public static String YANGEditorPreferencePage_identifiers;
+    public static String YANGEditorPreferencePage_expandCategory;
 
     static {
         // load message values from bundle file
-        NLS.initializeMessages(BUNDLE_NAME, YANGPreferencesMessages.class);
+        NLS.initializeMessages(BUNDLE_NAME, YangPreferencesMessages.class);
     }
     
     

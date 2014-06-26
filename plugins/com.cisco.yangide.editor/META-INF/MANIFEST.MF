@@ -3,17 +3,15 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Editor
 Bundle-SymbolicName: com.cisco.yangide.editor;singleton:=true
 Bundle-Version: 0.1.0.qualifier
-Bundle-ClassPath: lib/yang-parser-impl-0.6.2-SNAPSHOT.jar,
- lib/antlr4-4.0-complete.jar,
- .
-Bundle-Activator: com.cisco.yangide.editor.YANGEditorPlugin
+Bundle-ClassPath: .
+Bundle-Activator: com.cisco.yangide.editor.YangEditorPlugin
 Bundle-Vendor: CISCO
 Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
  org.eclipse.jdt.ui,
- org.eclipse.ui.forms;bundle-version="3.5.101"
+ org.eclipse.ui.forms
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Export-Package: com.cisco.yangide.editor

@@ -4,7 +4,7 @@ package com.cisco.yangide.editor.preferences;
  * Constant definitions for plug-in preferences
  * wizard generated, might be usefull later
  */
-public class YANGPreferenceConstants {
+public class YangPreferenceConstants {
 
 	public static final String P_PATH = "pathPreference";
 

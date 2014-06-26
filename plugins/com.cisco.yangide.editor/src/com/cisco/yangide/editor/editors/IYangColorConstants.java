@@ -1,7 +1,7 @@
 package com.cisco.yangide.editor.editors;
 
 
-public interface IYANGColorConstants {
+public interface IYangColorConstants {
 	
 	String YANG_STRING = "yang_string";
 	String YANG_COMMENT = "yang_comment";

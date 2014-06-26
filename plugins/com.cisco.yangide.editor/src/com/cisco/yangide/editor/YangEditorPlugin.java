@@ -9,18 +9,18 @@ import org.osgi.framework.BundleContext;
 /**
  * The activator class controls the plug-in life cycle
  */
-public class YANGEditorPlugin extends AbstractUIPlugin {
+public class YangEditorPlugin extends AbstractUIPlugin {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "com.cisco.yangide.editor"; //$NON-NLS-1$
 
 	// The shared instance
-	private static YANGEditorPlugin plugin;
+	private static YangEditorPlugin plugin;
 	
 	/**
 	 * The constructor
 	 */
-	public YANGEditorPlugin() {
+	public YangEditorPlugin() {
 	}
 
 	/*
@@ -46,7 +46,7 @@ public class YANGEditorPlugin extends AbstractUIPlugin {
 	 *
 	 * @return the shared instance
 	 */
-	public static YANGEditorPlugin getDefault() {
+	public static YangEditorPlugin getDefault() {
 		return plugin;
 	}
 

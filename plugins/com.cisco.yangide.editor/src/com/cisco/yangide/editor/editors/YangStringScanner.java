@@ -2,28 +2,30 @@ package com.cisco.yangide.editor.editors;
 
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.text.TextAttribute;
+import org.eclipse.jface.text.rules.BufferedRuleBasedScanner;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
+import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.RuleBasedScanner;
 import org.eclipse.jface.text.rules.SingleLineRule;
 import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 
-public class YANGTagScanner extends RuleBasedScanner {
+public class YangStringScanner extends BufferedRuleBasedScanner{
 
-	public YANGTagScanner(IColorManager manager) {
+	public YangStringScanner(IColorManager manager) {
 		IToken string =
 			new Token(
-				new TextAttribute(manager.getColor(IYANGColorConstants.YANG_STRING)));
+				new TextAttribute(manager.getColor(IYangColorConstants.YANG_STRING)));
 
 		IRule[] rules = new IRule[3];
 
 		// Add rule for double quotes
-		rules[0] = new SingleLineRule("\"", "\"", string, '\\');
+		rules[0] = new MultiLineRule("\"", "\"", string, '\\');
 		// Add a rule for single quotes
-		rules[1] = new SingleLineRule("'", "'", string, '\\');
+		rules[1] = new MultiLineRule("'", "'", string, '\\');
 		// Add generic whitespace rule.
-		rules[2] = new WhitespaceRule(new YANGWhitespaceDetector());
+		rules[2] = new WhitespaceRule(new YangWhitespaceDetector());
 
 		setRules(rules);
 	}

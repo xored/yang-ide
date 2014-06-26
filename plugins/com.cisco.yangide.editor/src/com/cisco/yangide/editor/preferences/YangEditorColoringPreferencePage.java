@@ -7,9 +7,9 @@ import org.eclipse.jdt.internal.ui.preferences.OverlayPreferenceStore;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.osgi.service.prefs.BackingStoreException;
 
-import com.cisco.yangide.editor.YANGEditorPlugin;
+import com.cisco.yangide.editor.YangEditorPlugin;
 
-public class YANGEditorColoringPreferencePage extends JavaEditorColoringPreferencePage implements IWorkbenchPreferencePage {
+public class YangEditorColoringPreferencePage extends JavaEditorColoringPreferencePage implements IWorkbenchPreferencePage {
 
 
     /* (non-Javadoc)
@@ -17,7 +17,7 @@ public class YANGEditorColoringPreferencePage extends JavaEditorColoringPreferen
      */
     @Override
     protected void setPreferenceStore() {
-        setPreferenceStore(YANGEditorPlugin.getDefault().getPreferenceStore());
+        setPreferenceStore(YangEditorPlugin.getDefault().getPreferenceStore());
         
     }
     
@@ -26,7 +26,7 @@ public class YANGEditorColoringPreferencePage extends JavaEditorColoringPreferen
      */
     @Override
     protected IPreferenceConfigurationBlock createConfigurationBlock(OverlayPreferenceStore overlayPreferenceStore) {
-        return new YANGEditorColoringConfigurationBlock(overlayPreferenceStore);
+        return new YangEditorColoringConfigurationBlock(overlayPreferenceStore);
     }
     
     /* (non-Javadoc)
@@ -38,9 +38,9 @@ public class YANGEditorColoringPreferencePage extends JavaEditorColoringPreferen
         //XXX to change coloring after @apply
         //doesnot work
         try {
-            InstanceScope.INSTANCE.getNode(YANGEditorPlugin.PLUGIN_ID).flush();
+            InstanceScope.INSTANCE.getNode(YangEditorPlugin.PLUGIN_ID).flush();
         } catch (BackingStoreException e) {
-            YANGEditorPlugin.log(e);
+            YangEditorPlugin.log(e);
         }
         return super.performOk();
     }
