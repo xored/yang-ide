@@ -4,7 +4,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- */ 
+ */
 package com.cisco.yangide.core.model;
 
 import java.io.IOException;
@@ -26,17 +26,19 @@ import com.cisco.yangide.core.YangCore;
 import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.buffer.BufferManager;
 import com.cisco.yangide.core.buffer.IBuffer;
+import com.cisco.yangide.core.dom.Module;
+import com.cisco.yangide.core.internal.YangASTParser;
 import com.google.common.io.CharStreams;
 
 /**
  * @author Konstantin Zaitsev
- * @date   Jun 24, 2014
+ * @date Jun 24, 2014
  */
 public class YangFile extends Openable {
     private IFile resource;
 
     /**
-     * @param resource 
+     * @param resource
      * @param parent
      */
     public YangFile(IFile resource, IOpenable parent) {
@@ -44,10 +46,29 @@ public class YangFile extends Openable {
         this.resource = resource;
     }
 
+    public char[] getContents() throws YangModelException {
+        IBuffer buffer = getBuffer();
+        return buffer.getCharacters();
+    }
+
     @Override
     protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm,
             Map<IOpenable, OpenableElementInfo> newElements, IResource underlyingResource) throws YangModelException {
-        // FIXME KOS parse content and construct AST
+        // ensure buffer is opened
+        IBuffer buffer = getBufferManager().getBuffer(this);
+        if (buffer == null) {
+            buffer = openBuffer(pm, info);
+        }
+
+        try {
+            Module module = new YangASTParser().parseYangFile(buffer.getCharacters());
+            ((YangFileInfo) info).setModule(module);
+            info.setIsStructureKnown(true);
+        } catch (IOException e) {
+            throw new YangModelException(e, 0);
+        } catch (CoreException e) {
+            throw new YangModelException(e);
+        }
         return true;
     }
 
@@ -56,9 +77,15 @@ public class YangFile extends Openable {
         return underlyingResource.exists() && underlyingResource.isAccessible() ? Status.OK_STATUS : new Status(
                 Status.ERROR, YangCore.PLUGIN_ID, "Does not exist");
     }
+
     @Override
     protected boolean hasBuffer() {
         return true;
+    }
+
+    @Override
+    protected OpenableElementInfo createElementInfo() {
+        return new YangFileInfo();
     }
     
     @Override
@@ -68,8 +95,8 @@ public class YangFile extends Openable {
         if (buffer == null) {
             return null;
         }
-        
-        synchronized(bufManager) {
+
+        synchronized (bufManager) {
             IBuffer existingBuffer = bufManager.getBuffer(this);
             if (existingBuffer != null)
                 return existingBuffer;
@@ -81,7 +108,8 @@ public class YangFile extends Openable {
                     throw new YangModelException("File not found");
                 }
                 try {
-                    buffer.setContents(CharStreams.toString(new InputStreamReader(file.getContents(true), file.getCharset())));
+                    buffer.setContents(CharStreams.toString(new InputStreamReader(file.getContents(true), file
+                            .getCharset())));
                 } catch (IOException e) {
                     throw new YangModelException(e, 0);
                 } catch (CoreException e) {
@@ -90,8 +118,10 @@ public class YangFile extends Openable {
             }
 
             // add buffer to buffer cache
-            // note this may cause existing buffers to be removed from the buffer cache, but only primary compilation unit's buffer
-            // can be closed, thus no call to a client's IBuffer#close() can be done in this synchronized block.
+            // note this may cause existing buffers to be removed from the buffer cache, but only
+            // primary compilation unit's buffer
+            // can be closed, thus no call to a client's IBuffer#close() can be done in this
+            // synchronized block.
             bufManager.addBuffer(buffer);
 
             // listen to buffer changes
@@ -99,14 +129,18 @@ public class YangFile extends Openable {
         }
         return buffer;
     }
-    
+
     @Override
     public IResource getResource() {
         return resource;
     }
-    
+
     @Override
     public IPath getPath() {
         return resource.getFullPath().makeRelativeTo(getParent().getPath());
+    }
+
+    public Module getModule() throws YangModelException {
+        return ((YangFileInfo) getElementInfo(null)).getModule();
     }
 }

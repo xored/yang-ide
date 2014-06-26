@@ -256,10 +256,7 @@ public abstract class Openable implements IOpenable, IBufferChangedListener {
         return null;
     }
 
-    /**
-     * @return
-     */
-    private OpenableElementInfo createElementInfo() {
+    protected OpenableElementInfo createElementInfo() {
         return new OpenableElementInfo();
     }
 
