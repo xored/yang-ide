@@ -1,0 +1,24 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: com.cisco.yangide.core
+Bundle-SymbolicName: com.cisco.yangide.core;singleton:=true
+Bundle-Version: 0.1.0.SNAPSHOT
+Bundle-Activator: com.cisco.yangide.core.YangCore
+Bundle-Vendor: Cisco Systems, Inc.
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.jdt.core;bundle-version="3.7.3",
+ org.eclipse.text;bundle-version="3.5.101",
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ com.google.guava;bundle-version="15.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .,
+ lib/yang-parser-impl-0.6.1.jar,
+ lib/antlr4-runtime-4.0.jar
+Export-Package: com.cisco.yangide.core,
+ com.cisco.yangide.core.buffer,
+ com.cisco.yangide.core.dom,
+ com.cisco.yangide.core.indexing,
+ com.cisco.yangide.core.internal,
+ com.cisco.yangide.core.model
