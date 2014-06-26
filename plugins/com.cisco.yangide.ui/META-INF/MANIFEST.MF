@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: com.cisco.yangide.ui
+Bundle-SymbolicName: com.cisco.yangide.ui;singleton:=true
+Bundle-Version: 0.1.0.SNAPSHOT
+Bundle-Activator: com.cisco.yangide.ui.YangUI
+Bundle-Vendor: Cisco Systems, Inc.
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.text;bundle-version="3.5.101",
+ org.eclipse.core.resources;bundle-version="3.7.101",
+ org.eclipse.ui.workbench,
+ org.eclipse.m2e.core.ui;bundle-version="1.4.1",
+ org.eclipse.m2e.maven.runtime,
+ org.eclipse.m2e.core
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Bundle-ActivationPolicy: lazy
+Bundle-ClassPath: .
