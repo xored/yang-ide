@@ -91,7 +91,7 @@ public class YangProjectWizard extends MavenProjectWizard {
         Xpp3Dom generator = new Xpp3Dom("generator");
         generator.addChild(createSingleParameter("codeGeneratorClass",
                 "org.opendaylight.yangtools.maven.sal.api.gen.plugin.CodeGeneratorImpl"));
-        generator.addChild(createSingleParameter("outputBaseDir", "otarget/generated-sources/sal"));
+        generator.addChild(createSingleParameter("outputBaseDir", "target/generated-sources/sal"));
         codeGenerators.addChild(generator);
         config.addChild(createSingleParameter("yangFilesRootDir", "src/main/yang"));
         config.addChild(codeGenerators);

@@ -17,18 +17,21 @@
   <modules>
     <!-- plugins -->
     <module>plugins/com.cisco.yangide.core</module>
+    <module>plugins/com.cisco.yangide.ui</module>
+    <module>plugins/com.cisco.yangide.editor</module>
     <module>plugins/com.cisco.yangide.m2e.yang</module>
     
     <!-- features -->
     <module>features/com.cisco.yangide.m2e.yang.feature</module>
+    <module>features/com.cisco.yangide.feature</module>
     
     <!-- tests -->
     <module>plugins/com.cisco.yangide.m2e.yang.tests</module>
+    <module>plugins/com.cisco.yangide.core.tests</module>
     
     <!-- other -->
     <module>product/target-platform</module>
     <module>product/update-site</module>
-    <module>plugins/com.cisco.yangide.editor</module>
   </modules>
 
   <build>

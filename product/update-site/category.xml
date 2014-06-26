@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/com.cisco.yangide.m2e.yang.feature_0.1.0.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature" version="0.1.0.qualifier">
-      <category name="m2eclipse-yang"/>
-   </feature>
    <feature url="features/com.cisco.yangide.feature_0.1.0.qualifier.jar" id="com.cisco.yangide.feature" version="0.1.0.qualifier">
       <category name="yang-ide"/>
    </feature>
-   <category-def name="m2eclipse-yang" label="M2E YANG Connector"/>
+   <feature url="features/com.cisco.yangide.m2e.yang.feature_0.1.0.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature" version="0.1.0.qualifier">
+      <category name="yang-ide"/>
+   </feature>
    <category-def name="yang-ide" label="YANG IDE"/>
 </site>

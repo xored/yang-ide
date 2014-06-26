@@ -17,17 +17,30 @@
    <license url="%licenseURL">
       %license
    </license>
-   
+
+   <includes
+         id="com.cisco.yangide.m2e.yang.feature"
+         version="0.0.0"/>
+
    <plugin
          id="com.cisco.yangide.core"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
    <plugin
          id="com.cisco.yangide.ui"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
+   <plugin
+         id="com.cisco.yangide.editor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 </feature>

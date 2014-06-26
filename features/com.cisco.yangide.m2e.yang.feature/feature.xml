@@ -17,11 +17,12 @@
    <license url="%licenseURL">
       %license
    </license>
-   
+
    <plugin
          id="com.cisco.yangide.m2e.yang"
          download-size="0"
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+
 </feature>

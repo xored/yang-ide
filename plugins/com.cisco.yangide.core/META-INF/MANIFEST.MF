@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: com.cisco.yangide.core
 Bundle-SymbolicName: com.cisco.yangide.core;singleton:=true
-Bundle-Version: 0.1.0.SNAPSHOT
+Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: com.cisco.yangide.core.YangCore
 Bundle-Vendor: Cisco Systems, Inc.
 Require-Bundle: org.eclipse.ui,

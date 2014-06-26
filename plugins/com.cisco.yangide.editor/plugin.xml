@@ -1,13 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-
    <extension
          point="org.eclipse.ui.editors">
       <editor
             name="YANG Editor"
             extensions="yang"
-            icon="icons/sample.gif"
+            icon="icons/yang_file.png"
             contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
             class="com.cisco.yangide.editor.editors.YangEditor"
             id="com.cisco.yangide.editor.editors.YANGEditor">
@@ -33,6 +32,4 @@
             name="Syntax Coloring">
       </page>
    </extension>   
-
-
 </plugin>
