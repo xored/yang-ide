@@ -1,39 +1,43 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
-  <groupId>com.cisco.yangide</groupId>  
+  <groupId>com.cisco.yangide</groupId>
   <artifactId>com.cisco.yangide.parent</artifactId>
   <version>0.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>YANG IDE Parent</name>
-
   <properties>
     <tycho-version>0.20.0</tycho-version>
   </properties>
-
   <modules>
     <!-- plugins -->
     <module>plugins/com.cisco.yangide.core</module>
     <module>plugins/com.cisco.yangide.ui</module>
     <module>plugins/com.cisco.yangide.editor</module>
     <module>plugins/com.cisco.yangide.m2e.yang</module>
-    
     <!-- features -->
     <module>features/com.cisco.yangide.m2e.yang.feature</module>
     <module>features/com.cisco.yangide.feature</module>
-    
     <!-- tests -->
     <module>plugins/com.cisco.yangide.m2e.yang.tests</module>
     <module>plugins/com.cisco.yangide.core.tests</module>
-    
     <!-- other -->
     <module>product/target-platform</module>
     <module>product/update-site</module>
+    <module>product/yang-ide</module>
   </modules>
 
+  <pluginRepositories>
+    <pluginRepository>
+      <snapshots>
+        <updatePolicy>always</updatePolicy>
+      </snapshots>
+      <id>xored</id>
+      <name>Xored Maven repository</name>
+      <url>http://maven.xored.com/nexus/content/repositories/snapshots/</url>
+    </pluginRepository>
+  </pluginRepositories>
+  
   <build>
     <plugins>
       <plugin>

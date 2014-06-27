@@ -9,7 +9,7 @@ module simple-string-demo {
     revision 2013-06-18 {
         
     }
-
+	// This is also comment
     typedef typedef-string {
         type string {
             length "50";
