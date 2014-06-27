@@ -7,6 +7,11 @@
  */
 package com.cisco.yangide.ui.wizards;
 
+import java.io.IOException;
+
+import java.io.IOException;
+import java.util.List;
+
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -17,13 +22,14 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.m2e.core.ui.internal.wizards.MavenProjectWizard;
 import org.eclipse.ui.IWorkbench;
 
-import com.cisco.yangide.ui.YangUIPlugin;
+import com.cisco.yangide.ui.YangUI;
 
 /**
  * @author Konstantin Zaitsev
@@ -31,6 +37,9 @@ import com.cisco.yangide.ui.YangUIPlugin;
  */
 @SuppressWarnings("restriction")
 public class YangProjectWizard extends MavenProjectWizard {
+
+    /** Default source location. */
+    public static final String SRC_MAIN_YANG = "src/main/yang";
 
     /** YANG tools configuration page. */
     private YangProjectWizardPage yangPage;
@@ -45,8 +54,8 @@ public class YangProjectWizard extends MavenProjectWizard {
 
     @Override
     public void addPages() {
-        // yangPage = new YangProjectWizardPage();
-        // addPage(yangPage);
+        yangPage = new YangProjectWizardPage();
+        addPage(yangPage);
         super.addPages();
     }
 
@@ -60,15 +69,17 @@ public class YangProjectWizard extends MavenProjectWizard {
         boolean res = super.performFinish();
         if (res) {
             IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getModel().getArtifactId());
-            IFolder folder = project.getFolder("src/main/yang");
+            IFolder folder = project.getFolder(yangPage.getRootDir());
             if (!folder.exists()) {
                 try {
                     folder.create(true, true, null);
-                    folder.getFile("acme-system.yang").create(
-                            FileLocator.openStream(YangUIPlugin.getDefault().getBundle(), new Path(
-                                    "resources/yang/acme-system.yang"), false), true, null);
-                } catch (Exception e) {
-                    YangUIPlugin.log(e.getMessage(), e);
+                    if (yangPage.createExampleFile()) {
+                        folder.getFile("acme-system.yang").create(
+                                FileLocator.openStream(YangUI.getDefault().getBundle(), new Path(
+                                        "resources/yang/acme-system.yang"), false), true, null);
+                    }
+                } catch (CoreException | IOException e) {
+                    e.printStackTrace();
                     return false;
                 }
             }
@@ -83,14 +94,19 @@ public class YangProjectWizard extends MavenProjectWizard {
         Plugin plugin = new Plugin();
         plugin.setGroupId("org.opendaylight.yangtools");
         plugin.setArtifactId("yang-maven-plugin");
-        plugin.setVersion("0.6.2-SNAPSHOT");
+        plugin.setVersion(yangPage.getYangVersion());
 
-        Dependency dependency = new Dependency();
-        dependency.setGroupId("org.opendaylight.yangtools");
-        dependency.setArtifactId("maven-sal-api-gen-plugin");
-        dependency.setVersion("0.6.2-SNAPSHOT");
-        dependency.setType("jar");
-        plugin.addDependency(dependency);
+        // add generators
+        List<CodeGeneratorConfig> generators = yangPage.getCodeGenerators();
+        
+        for (CodeGeneratorConfig genConf : generators) {
+            Dependency dependency = new Dependency();
+            dependency.setGroupId(genConf.getGroupId());
+            dependency.setArtifactId(genConf.getArtifactId());
+            dependency.setVersion(genConf.getVersion());
+            dependency.setType("jar");
+            plugin.addDependency(dependency);
+        }
 
         PluginExecution pluginExecution = new PluginExecution();
         pluginExecution.setId("generate-sources");
@@ -98,12 +114,13 @@ public class YangProjectWizard extends MavenProjectWizard {
         Xpp3Dom config = new Xpp3Dom("configuration");
 
         Xpp3Dom codeGenerators = new Xpp3Dom("codeGenerators");
-        Xpp3Dom generator = new Xpp3Dom("generator");
-        generator.addChild(createSingleParameter("codeGeneratorClass",
-                "org.opendaylight.yangtools.maven.sal.api.gen.plugin.CodeGeneratorImpl"));
-        generator.addChild(createSingleParameter("outputBaseDir", "target/generated-sources/sal"));
-        codeGenerators.addChild(generator);
-        config.addChild(createSingleParameter("yangFilesRootDir", "src/main/yang"));
+        for (CodeGeneratorConfig genConf : generators) {
+            Xpp3Dom generator = new Xpp3Dom("generator");
+            generator.addChild(createSingleParameter("codeGeneratorClass", genConf.getGenClassName()));
+            generator.addChild(createSingleParameter("outputBaseDir",  genConf.getGenOutputDirectory()));
+            codeGenerators.addChild(generator);
+        }
+        config.addChild(createSingleParameter("yangFilesRootDir", yangPage.getRootDir()));
         config.addChild(codeGenerators);
         config.addChild(createSingleParameter("inspectDependencies", "false"));
         pluginExecution.setConfiguration(config);
@@ -125,7 +142,7 @@ public class YangProjectWizard extends MavenProjectWizard {
         Dependency dependency2 = new Dependency();
         dependency2.setGroupId("org.opendaylight.yangtools");
         dependency2.setArtifactId("yang-binding");
-        dependency2.setVersion("0.6.2-SNAPSHOT");
+        dependency2.setVersion(yangPage.getYangVersion());
         dependency2.setType("jar");
         model.addDependency(dependency2);
         return model;
