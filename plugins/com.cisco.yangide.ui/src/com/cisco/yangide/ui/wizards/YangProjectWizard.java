@@ -78,11 +78,9 @@ public class YangProjectWizard extends MavenProjectWizard {
                     }
                 } catch (CoreException e) {
                     YangUIPlugin.log(e.getMessage(), e);
-                    e.printStackTrace();
                     return false;
                 } catch (IOException e) {
                     YangUIPlugin.log(e.getMessage(), e);
-                    e.printStackTrace();
                     return false;
                 }
             }

@@ -24,7 +24,6 @@
     <!-- other -->
     <module>product/target-platform</module>
     <module>product/update-site</module>
-    <module>product/yang-ide</module>
   </modules>
 
   <pluginRepositories>

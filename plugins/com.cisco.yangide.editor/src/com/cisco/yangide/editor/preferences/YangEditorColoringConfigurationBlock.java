@@ -199,11 +199,9 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
             return ((java.util.List)inputElement).toArray();
         }
 
-        @Override
         public void dispose() {
         }
 
-        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         }
 
