@@ -85,14 +85,10 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         private String fItalicKey;
         /**
          * Strikethrough preference key.
-         * 
-         * @since 3.1
          */
         private String fStrikethroughKey;
         /**
          * Underline preference key.
-         * 
-         * @since 3.1
          */
         private String fUnderlineKey;
 
@@ -132,7 +128,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
         /**
          * @return the strikethrough preference key
-         * @since 3.1
          */
         public String getStrikethroughKey() {
             return fStrikethroughKey;
@@ -140,7 +135,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
         /**
          * @return the underline preference key
-         * @since 3.1
          */
         public String getUnderlineKey() {
             return fUnderlineKey;
@@ -204,14 +198,10 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
     private static final String ITALIC = PreferenceConstants.EDITOR_ITALIC_SUFFIX;
     /**
      * Preference key suffix for strikethrough preferences.
-     * 
-     * @since 3.1
      */
     private static final String STRIKETHROUGH = PreferenceConstants.EDITOR_STRIKETHROUGH_SUFFIX;
     /**
      * Preference key suffix for underline preferences.
-     * 
-     * @since 3.1
      */
     private static final String UNDERLINE = PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
 
@@ -234,14 +224,10 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
     private Button fItalicCheckBox;
     /**
      * Check box for strikethrough preference.
-     * 
-     * @since 3.1
      */
     private Button fStrikethroughCheckBox;
     /**
      * Check box for underline preference.
-     * 
-     * @since 3.1
      */
     private Button fUnderlineCheckBox;
     /**
@@ -258,14 +244,10 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
     private SourceViewer fPreviewViewer;
     /**
      * The color manager.
-     * 
-     * @since 3.1
      */
     private IColorManager fColorManager;
     /**
      * The font metrics.
-     * 
-     * @since 3.1
      */
     private FontMetrics fFontMetrics;
     private YangPreviewerUpdater fPreviewerUpdater;

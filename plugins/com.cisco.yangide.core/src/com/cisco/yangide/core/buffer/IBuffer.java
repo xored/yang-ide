@@ -31,8 +31,6 @@ public interface IBuffer {
      * <p>
      * This interface may be implemented by clients.
      * </p>
-     * 
-     * @since 3.4
      */
     public interface ITextEditCapability {
         /**
