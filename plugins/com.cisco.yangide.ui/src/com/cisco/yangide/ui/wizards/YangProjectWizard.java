@@ -21,6 +21,7 @@ import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.Repository;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRunnable;
@@ -34,6 +35,8 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.m2e.core.MavenPlugin;
+import org.eclipse.m2e.core.project.MavenUpdateRequest;
 import org.eclipse.m2e.core.ui.internal.wizards.MavenProjectWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -85,6 +88,15 @@ public class YangProjectWizard extends MavenProjectWizard {
                     IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getModel().getArtifactId());
                     IFolder folder = project.getFolder(yangPage.getRootDir());
                     createFolder(folder);
+
+                    IFile pomFile = project.getFile("pom.xml");
+                    Model model = MavenPlugin.getMavenModelManager().readMavenModel(pomFile);
+                    updateModel(model);
+
+                    pomFile.delete(true, new NullProgressMonitor());
+                    MavenPlugin.getMavenModelManager().createMavenModel(pomFile, model);
+                    MavenPlugin.getProjectConfigurationManager().updateProjectConfiguration(project,
+                            new NullProgressMonitor());
                     try {
                         if (yangPage.createExampleFile()) {
                             InputStream demoFileContents = null;
@@ -147,9 +159,8 @@ public class YangProjectWizard extends MavenProjectWizard {
         }
     }
 
-    @Override
-    public Model getModel() {
-        Model model = super.getModel();
+    public void updateModel(Model model) {
+        // Model model = super.getModel();
         model.setBuild(new Build());
         Plugin plugin = new Plugin();
         plugin.setGroupId("org.opendaylight.yangtools");
@@ -205,7 +216,6 @@ public class YangProjectWizard extends MavenProjectWizard {
         dependency2.setVersion(yangPage.getYangVersion());
         dependency2.setType("jar");
         model.addDependency(dependency2);
-        return model;
     }
 
     /**
