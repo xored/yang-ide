@@ -54,7 +54,6 @@ class YangProjectWizardPage extends WizardPage {
         setDescription("Specify YANG Code Generators Parameters");
     }
 
-    @Override
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NULL);
         container.setLayout(new GridLayout(1, false));
@@ -130,24 +129,19 @@ class YangProjectWizardPage extends WizardPage {
 
         generatorsViewer.setLabelProvider(new ITableLabelProvider() {
 
-            @Override
             public void removeListener(ILabelProviderListener listener) {
             }
 
-            @Override
             public boolean isLabelProperty(Object element, String property) {
                 return false;
             }
 
-            @Override
             public void dispose() {
             }
 
-            @Override
             public void addListener(ILabelProviderListener listener) {
             }
 
-            @Override
             public String getColumnText(Object element, int columnIndex) {
                 if (element instanceof CodeGeneratorConfig) {
                     CodeGeneratorConfig conf = (CodeGeneratorConfig) element;
@@ -174,7 +168,6 @@ class YangProjectWizardPage extends WizardPage {
                 return "";
             }
 
-            @Override
             public Image getColumnImage(Object element, int columnIndex) {
                 return null;
             }
@@ -249,7 +242,7 @@ class YangProjectWizardPage extends WizardPage {
     }
 
     public List<CodeGeneratorConfig> getCodeGenerators() {
-        List<CodeGeneratorConfig> list = new ArrayList<>();
+        List<CodeGeneratorConfig> list = new ArrayList<CodeGeneratorConfig>();
         for (TableItem item : generatorsTable.getItems()) {
             list.add((CodeGeneratorConfig) item.getData());
         }
