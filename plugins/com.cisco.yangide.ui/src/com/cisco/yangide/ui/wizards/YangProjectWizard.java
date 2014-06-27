@@ -8,8 +8,6 @@
 package com.cisco.yangide.ui.wizards;
 
 import java.io.IOException;
-
-import java.io.IOException;
 import java.util.List;
 
 import org.apache.maven.model.Build;
@@ -29,7 +27,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.m2e.core.ui.internal.wizards.MavenProjectWizard;
 import org.eclipse.ui.IWorkbench;
 
-import com.cisco.yangide.ui.YangUI;
+import com.cisco.yangide.ui.YangUIPlugin;
 
 /**
  * @author Konstantin Zaitsev
@@ -75,10 +73,15 @@ public class YangProjectWizard extends MavenProjectWizard {
                     folder.create(true, true, null);
                     if (yangPage.createExampleFile()) {
                         folder.getFile("acme-system.yang").create(
-                                FileLocator.openStream(YangUI.getDefault().getBundle(), new Path(
+                                FileLocator.openStream(YangUIPlugin.getDefault().getBundle(), new Path(
                                         "resources/yang/acme-system.yang"), false), true, null);
                     }
-                } catch (CoreException | IOException e) {
+                } catch (CoreException e) {
+                    YangUIPlugin.log(e.getMessage(), e);
+                    e.printStackTrace();
+                    return false;
+                } catch (IOException e) {
+                    YangUIPlugin.log(e.getMessage(), e);
                     e.printStackTrace();
                     return false;
                 }
@@ -98,7 +101,7 @@ public class YangProjectWizard extends MavenProjectWizard {
 
         // add generators
         List<CodeGeneratorConfig> generators = yangPage.getCodeGenerators();
-        
+
         for (CodeGeneratorConfig genConf : generators) {
             Dependency dependency = new Dependency();
             dependency.setGroupId(genConf.getGroupId());
@@ -117,7 +120,7 @@ public class YangProjectWizard extends MavenProjectWizard {
         for (CodeGeneratorConfig genConf : generators) {
             Xpp3Dom generator = new Xpp3Dom("generator");
             generator.addChild(createSingleParameter("codeGeneratorClass", genConf.getGenClassName()));
-            generator.addChild(createSingleParameter("outputBaseDir",  genConf.getGenOutputDirectory()));
+            generator.addChild(createSingleParameter("outputBaseDir", genConf.getGenOutputDirectory()));
             codeGenerators.addChild(generator);
         }
         config.addChild(createSingleParameter("yangFilesRootDir", yangPage.getRootDir()));
