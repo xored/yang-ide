@@ -8,6 +8,9 @@
 package com.cisco.yangide.ui.wizards;
 
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.apache.maven.model.Build;
@@ -17,12 +20,17 @@ import org.apache.maven.model.Plugin;
 import org.apache.maven.model.PluginExecution;
 import org.apache.maven.model.Repository;
 import org.codehaus.plexus.util.xml.Xpp3Dom;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.m2e.core.ui.internal.wizards.MavenProjectWizard;
 import org.eclipse.ui.IWorkbench;
@@ -68,24 +76,45 @@ public class YangProjectWizard extends MavenProjectWizard {
         if (res) {
             IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getModel().getArtifactId());
             IFolder folder = project.getFolder(yangPage.getRootDir());
-            if (!folder.exists()) {
-                try {
-                    folder.create(true, true, null);
-                    if (yangPage.createExampleFile()) {
-                        folder.getFile("acme-system.yang").create(
-                                FileLocator.openStream(YangUIPlugin.getDefault().getBundle(), new Path(
-                                        "resources/yang/acme-system.yang"), false), true, null);
+            createFolder(folder);
+            try {
+                if (yangPage.createExampleFile()) {
+                    InputStream demoFileContents = null;
+                    try {
+                        Path demoPath = new Path("resources/yang/acme-system.yang");
+                        demoFileContents = FileLocator.openStream(YangUIPlugin.getDefault().getBundle(), demoPath,
+                                false);
+
+                        folder.getFile("acme-system.yang").create(demoFileContents, true, null);
+                    } finally {
+                        if (demoFileContents != null) {
+                            demoFileContents.close();
+                        }
                     }
-                } catch (CoreException e) {
-                    YangUIPlugin.log(e.getMessage(), e);
-                    return false;
-                } catch (IOException e) {
-                    YangUIPlugin.log(e.getMessage(), e);
-                    return false;
                 }
+            } catch (CoreException e) {
+                YangUIPlugin.log(e.getMessage(), e);
+                return false;
+            } catch (IOException e) {
+                YangUIPlugin.log(e.getMessage(), e);
+                return false;
             }
         }
         return res;
+    }
+
+    private void createFolder(IFolder folder) {
+        if (!folder.exists()) {
+            IContainer parent = folder.getParent();
+            if (parent instanceof IFolder) {
+                createFolder((IFolder) parent);
+            }
+            try {
+                folder.create(true, true, new NullProgressMonitor());
+            } catch (CoreException e) {
+                YangUIPlugin.log(e);
+            }
+        }
     }
 
     @Override
