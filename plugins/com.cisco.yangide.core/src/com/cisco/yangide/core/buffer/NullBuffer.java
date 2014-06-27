@@ -16,7 +16,7 @@ import com.cisco.yangide.core.IOpenable;
  * @date Jun 24, 2014
  */
 public class NullBuffer extends Buffer {
-    
+
     /**
      * Creates a new null buffer on an underlying resource.
      */

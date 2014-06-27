@@ -15,7 +15,7 @@ import com.cisco.yangide.core.Openable;
  * @author Konstantin Zaitsev
  * @date Jun 24, 2014
  */
-@SuppressWarnings({ "rawtypes", "unchecked"})
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class BufferCache extends OverflowingLRUCache {
 
     private ThreadLocal buffersToClose = new ThreadLocal();

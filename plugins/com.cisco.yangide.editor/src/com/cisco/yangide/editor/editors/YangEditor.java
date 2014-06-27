@@ -21,26 +21,27 @@ import com.cisco.yangide.editor.YangEditorPlugin;
 
 public class YangEditor extends TextEditor {
 
-	private IColorManager colorManager;
+    private IColorManager colorManager;
 
-	public YangEditor() {
-		super();
-		//colorManager = new YangColorManager();
-		colorManager = new YangColorManager(false);
-		setSourceViewerConfiguration(new YangSourceViewerConfiguration(colorManager));
-		setDocumentProvider(new YangDocumentProvider());
-	}
-	public void dispose() {
-		colorManager.dispose();
-		super.dispose();
-	}
-	
+    public YangEditor() {
+        super();
+        // colorManager = new YangColorManager();
+        colorManager = new YangColorManager(false);
+        setSourceViewerConfiguration(new YangSourceViewerConfiguration(colorManager));
+        setDocumentProvider(new YangDocumentProvider());
+    }
+
+    public void dispose() {
+        colorManager.dispose();
+        super.dispose();
+    }
+
     /*
      * @see AbstractTextEditor#doSetInput
      */
     @Override
     protected void doSetInput(IEditorInput input) throws CoreException {
-        ISourceViewer sourceViewer= getSourceViewer();
+        ISourceViewer sourceViewer = getSourceViewer();
         if (!(sourceViewer instanceof ISourceViewerExtension2)) {
             setPreferenceStore(createCombinedPreferenceStore(input));
             internalDoSetInput(input);
@@ -49,7 +50,7 @@ public class YangEditor extends TextEditor {
 
         // uninstall & unregister preference store listener
         getSourceViewerDecorationSupport(sourceViewer).uninstall();
-        ((ISourceViewerExtension2)sourceViewer).unconfigure();
+        ((ISourceViewerExtension2) sourceViewer).unconfigure();
 
         setPreferenceStore(createCombinedPreferenceStore(input));
 
@@ -59,72 +60,76 @@ public class YangEditor extends TextEditor {
 
         internalDoSetInput(input);
     }
-    /*//TODO
-     * @see JavaEditor#internalDoSetInput 
+
+    /*
+     * //TODO
+     * 
+     * @see JavaEditor#internalDoSetInput
      */
     private void internalDoSetInput(IEditorInput input) throws CoreException {
-        ISourceViewer sourceViewer= getSourceViewer();
-        JavaSourceViewer javaSourceViewer= null;
+        ISourceViewer sourceViewer = getSourceViewer();
+        JavaSourceViewer javaSourceViewer = null;
         if (sourceViewer instanceof JavaSourceViewer)
-            javaSourceViewer= (JavaSourceViewer)sourceViewer;
+            javaSourceViewer = (JavaSourceViewer) sourceViewer;
 
-        IPreferenceStore store= getPreferenceStore();
+        IPreferenceStore store = getPreferenceStore();
 
         super.doSetInput(input);
 
-//        if (javaSourceViewer != null && javaSourceViewer.getReconciler() == null) {
-//            IReconciler reconciler= getSourceViewerConfiguration().getReconciler(javaSourceViewer);
-//            if (reconciler != null) {
-//                reconciler.install(javaSourceViewer);
-//                javaSourceViewer.setReconciler(reconciler);
-//            }
-//        }
-        
+        // if (javaSourceViewer != null && javaSourceViewer.getReconciler() == null) {
+        // IReconciler reconciler= getSourceViewerConfiguration().getReconciler(javaSourceViewer);
+        // if (reconciler != null) {
+        // reconciler.install(javaSourceViewer);
+        // javaSourceViewer.setReconciler(reconciler);
+        // }
+        // }
+
         if (fEncodingSupport != null)
             fEncodingSupport.reset();
 
-//        setOutlinePageInput(fOutlinePage, input);
-//
-//        if (isShowingOverrideIndicators())
-//            installOverrideIndicator(false);
-    }    
-    
+        // setOutlinePageInput(fOutlinePage, input);
+        //
+        // if (isShowingOverrideIndicators())
+        // installOverrideIndicator(false);
+    }
+
     /**
      * Creates and returns the preference store for this Java editor with the given input.
      *
      * @param input The editor input for which to create the preference store
      * @return the preference store for this editor
-     *
      * @since 3.0
      */
     private IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
-        List<IPreferenceStore> stores= new ArrayList<IPreferenceStore>(3);
+        List<IPreferenceStore> stores = new ArrayList<IPreferenceStore>(3);
 
         stores.add(YangEditorPlugin.getDefault().getPreferenceStore());
         stores.add(EditorsUI.getPreferenceStore());
         stores.add(PlatformUI.getPreferenceStore());
 
         return new ChainedPreferenceStore(stores.toArray(new IPreferenceStore[stores.size()]));
-    }    
-	
-	@Override
-	protected void configureSourceViewerDecorationSupport(
-			SourceViewerDecorationSupport support) {
-		// TODO brackets higlihting
-		super.configureSourceViewerDecorationSupport(support);
-	}
+    }
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ui.editors.text.TextEditor#handlePreferenceStoreChanged(org.eclipse.jface.util.PropertyChangeEvent)
-	 */
-	@Override
-	protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
-	    
-	    ((YangSourceViewerConfiguration)getSourceViewerConfiguration()).handlePropertyChangeEvent(event);
-	    getSourceViewer().invalidateTextPresentation();
+    @Override
+    protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
+        // TODO brackets higlihting
+        super.configureSourceViewerDecorationSupport(support);
+    }
 
-	    super.handlePreferenceStoreChanged(event);
-	    
-	    
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.ui.editors.text.TextEditor#handlePreferenceStoreChanged(org.eclipse.jface.util
+     * .PropertyChangeEvent)
+     */
+    @Override
+    protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
+
+        ((YangSourceViewerConfiguration) getSourceViewerConfiguration()).handlePropertyChangeEvent(event);
+        getSourceViewer().invalidateTextPresentation();
+
+        super.handlePreferenceStoreChanged(event);
+
+    }
 }

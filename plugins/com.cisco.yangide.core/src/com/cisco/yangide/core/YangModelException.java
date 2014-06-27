@@ -24,7 +24,7 @@ public class YangModelException extends CoreException {
     public YangModelException(String message) {
         super(new Status(IStatus.ERROR, YangCorePlugin.PLUGIN_ID, message));
     }
-    
+
     public YangModelException(Throwable e, int code) {
         super(new Status(code, YangCorePlugin.PLUGIN_ID, e.getMessage(), e));
     }

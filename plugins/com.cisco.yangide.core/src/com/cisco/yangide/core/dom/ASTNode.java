@@ -12,13 +12,13 @@ package com.cisco.yangide.core.dom;
  * @date Jun 26, 2014
  */
 public abstract class ASTNode {
-    
+
     /** Common field "description" for Yang statement. */
     private String description;
-    
-    /** Common field "reference" for Yang statement.*/
+
+    /** Common field "reference" for Yang statement. */
     private String reference;
-    
+
     /**
      * A character index into the original source string, or <code>-1</code> if no source position
      * information is available for this node; <code>-1</code> by default.
@@ -32,11 +32,11 @@ public abstract class ASTNode {
     private int length = 0;
 
     private ASTNode parent = null;
-    
+
     public ASTNode(ASTNode parent) {
         this.parent = parent;
     }
-    
+
     /**
      * @return the startPosition
      */

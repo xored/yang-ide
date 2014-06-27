@@ -10,6 +10,7 @@ package com.cisco.yangide.core;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.JavaModelException;
 
 import com.cisco.yangide.core.buffer.IBuffer;
 
@@ -144,58 +145,51 @@ public interface IOpenable {
      * </ul>
      */
     public void save(IProgressMonitor progress, boolean force) throws YangModelException;
-    
+
     /**
      * Returns whether this Java element exists in the model.
      * <p>
-     * Java elements are handle objects that may or may not be backed by an
-     * actual element. Java elements that are backed by an actual element are
-     * said to "exist", and this method returns <code>true</code>. For Java
-     * elements that are not working copies, it is always the case that if the
-     * element exists, then its parent also exists (provided it has one) and
-     * includes the element as one of its children. It is therefore possible
-     * to navigated to any existing Java element from the root of the Java model
-     * along a chain of existing Java elements. On the other hand, working
-     * copies are said to exist until they are destroyed (with
-     * <code>IWorkingCopy.destroy</code>). Unlike regular Java elements, a
-     * working copy never shows up among the children of its parent element
-     * (which may or may not exist).
+     * Java elements are handle objects that may or may not be backed by an actual element. Java
+     * elements that are backed by an actual element are said to "exist", and this method returns
+     * <code>true</code>. For Java elements that are not working copies, it is always the case that
+     * if the element exists, then its parent also exists (provided it has one) and includes the
+     * element as one of its children. It is therefore possible to navigated to any existing Java
+     * element from the root of the Java model along a chain of existing Java elements. On the other
+     * hand, working copies are said to exist until they are destroyed (with
+     * <code>IWorkingCopy.destroy</code>). Unlike regular Java elements, a working copy never shows
+     * up among the children of its parent element (which may or may not exist).
      * </p>
      *
-     * @return <code>true</code> if this element exists in the Java model, and
-     * <code>false</code> if this element does not exist
+     * @return <code>true</code> if this element exists in the Java model, and <code>false</code> if
+     * this element does not exist
      */
     boolean exists();
 
     /**
-     * Returns the first ancestor of this Java element that has the given type.
-     * Returns <code>null</code> if no such an ancestor can be found.
-     * This is a handle-only method.
+     * Returns the first ancestor of this Java element that has the given type. Returns
+     * <code>null</code> if no such an ancestor can be found. This is a handle-only method.
      *
      * @param ancestorType the given type
-     * @return the first ancestor of this Java element that has the given type, null if no such an ancestor can be found
+     * @return the first ancestor of this Java element that has the given type, null if no such an
+     * ancestor can be found
      * @since 2.0
      */
     IOpenable getAncestor(int ancestorType);
 
     /**
-     * Returns the element directly containing this element,
-     * or <code>null</code> if this element has no parent.
-     * This is a handle-only method.
+     * Returns the element directly containing this element, or <code>null</code> if this element
+     * has no parent. This is a handle-only method.
      *
      * @return the parent element, or <code>null</code> if this element has no parent
      */
     IOpenable getParent();
 
     /**
-     * Returns the path to the innermost resource enclosing this element.
-     * If this element is not included in an external library,
-     * the path returned is the full, absolute path to the underlying resource,
-     * relative to the workbench.
-     * If this element is included in an external library,
-     * the path returned is the absolute path to the archive or to the
-     * folder in the file system.
-     * This is a handle-only method.
+     * Returns the path to the innermost resource enclosing this element. If this element is not
+     * included in an external library, the path returned is the full, absolute path to the
+     * underlying resource, relative to the workbench. If this element is included in an external
+     * library, the path returned is the absolute path to the archive or to the folder in the file
+     * system. This is a handle-only method.
      *
      * @return the path to the innermost resource enclosing this element
      * @since 2.0
@@ -203,39 +197,35 @@ public interface IOpenable {
     IPath getPath();
 
     /**
-     * Returns the primary element (whose compilation unit is the primary compilation unit)
-     * this working copy element was created from, or this element if it is a descendant of a
-     * primary compilation unit or if it is not a descendant of a working copy (e.g. it is a
-     * binary member).
+     * Returns the primary element (whose compilation unit is the primary compilation unit) this
+     * working copy element was created from, or this element if it is a descendant of a primary
+     * compilation unit or if it is not a descendant of a working copy (e.g. it is a binary member).
      * The returned element may or may not exist.
      *
-     * @return the primary element this working copy element was created from, or this
-     *          element.
+     * @return the primary element this working copy element was created from, or this element.
      * @since 3.0
      */
     IOpenable getPrimaryElement();
 
     /**
-     * Returns the innermost resource enclosing this element.
-     * If this element is included in an archive and this archive is not external,
-     * this is the underlying resource corresponding to the archive.
-     * If this element is included in an external library, <code>null</code>
-     * is returned.
-     * This is a handle-only method.
+     * Returns the innermost resource enclosing this element. If this element is included in an
+     * archive and this archive is not external, this is the underlying resource corresponding to
+     * the archive. If this element is included in an external library, <code>null</code> is
+     * returned. This is a handle-only method.
      *
-     * @return the innermost resource enclosing this element, <code>null</code> if this
-     * element is included in an external archive
+     * @return the innermost resource enclosing this element, <code>null</code> if this element is
+     * included in an external archive
      * @since 2.0
      */
     IResource getResource();
 
     /**
-     * Returns whether this Java element is read-only. An element is read-only
-     * if its structure cannot be modified by the java model.
+     * Returns whether this Java element is read-only. An element is read-only if its structure
+     * cannot be modified by the java model.
      * <p>
-     * Note this is different from IResource.isReadOnly(). For example, .jar
-     * files are read-only as the java model doesn't know how to add/remove
-     * elements in this file, but the underlying IFile can be writable.
+     * Note this is different from IResource.isReadOnly(). For example, .jar files are read-only as
+     * the java model doesn't know how to add/remove elements in this file, but the underlying IFile
+     * can be writable.
      * <p>
      * This is a handle-only method.
      *
@@ -244,19 +234,19 @@ public interface IOpenable {
     boolean isReadOnly();
 
     /**
-     * Returns whether the structure of this element is known. For example, for a
-     * compilation unit that has syntax errors, <code>false</code> is returned.
-     * If the structure of an element is unknown, navigations will return reasonable
-     * defaults. For example, <code>getChildren</code> for a compilation unit with
-     * syntax errors will return a collection of the children that could be parsed.
+     * Returns whether the structure of this element is known. For example, for a compilation unit
+     * that has syntax errors, <code>false</code> is returned. If the structure of an element is
+     * unknown, navigations will return reasonable defaults. For example, <code>getChildren</code>
+     * for a compilation unit with syntax errors will return a collection of the children that could
+     * be parsed.
      * <p>
-     * Note: This does not imply anything about consistency with the
-     * underlying resource/buffer contents.
+     * Note: This does not imply anything about consistency with the underlying resource/buffer
+     * contents.
      * </p>
      *
      * @return <code>true</code> if the structure of this element is known
-     * @exception JavaModelException if this element does not exist or if an
-     *      exception occurs while accessing its corresponding resource
+     * @exception JavaModelException if this element does not exist or if an exception occurs while
+     * accessing its corresponding resource
      */
     boolean isStructureKnown() throws YangModelException;
 }

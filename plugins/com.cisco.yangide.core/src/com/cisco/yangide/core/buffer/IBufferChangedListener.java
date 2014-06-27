@@ -7,7 +7,6 @@
  */
 package com.cisco.yangide.core.buffer;
 
-
 /**
  * @author Konstantin Zaitsev
  * @date Jun 24, 2014

@@ -9,6 +9,8 @@ package com.cisco.yangide.core.buffer;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jdt.core.IJavaModelStatusConstants;
+import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.UndoEdit;
 
@@ -246,7 +248,8 @@ public interface IBuffer {
      * @param progress the progress monitor to notify
      * @param force a <code> boolean </code> flag indicating how to deal with resource
      * inconsistencies.
-     * @exception JavaModelException if an error occurs writing the buffer to the underlying resource
+     * @exception JavaModelException if an error occurs writing the buffer to the underlying
+     * resource
      * @see org.eclipse.core.resources.IFile#setContents(java.io.InputStream, boolean, boolean,
      * org.eclipse.core.runtime.IProgressMonitor)
      */

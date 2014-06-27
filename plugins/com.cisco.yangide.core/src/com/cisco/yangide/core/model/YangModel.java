@@ -72,7 +72,7 @@ public class YangModel extends Openable {
         }
         return projects;
     }
-    
+
     @Override
     protected IStatus validateExistence(IResource underlyingResource) {
         return Status.OK_STATUS;

@@ -4,7 +4,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- */ 
+ */
 package com.cisco.yangide.core.internal;
 
 import java.io.IOException;
@@ -25,7 +25,7 @@ import com.cisco.yangide.core.dom.Module;
 
 /**
  * @author Konstantin Zaitsev
- * @date   Jun 26, 2014
+ * @date Jun 26, 2014
  */
 public class YangASTParser {
 
@@ -36,14 +36,14 @@ public class YangASTParser {
     public Module parseYangFile(InputStream stream) throws IOException, CoreException {
         return parseYangFile(new ANTLRInputStream(stream));
     }
-    
+
     private Module parseYangFile(ANTLRInputStream input) throws IOException, CoreException {
         YangContext yangContext = parseYangSource(input);
         YangParserModelListener modelListener = new YangParserModelListener();
         ParseTreeWalker.DEFAULT.walk(modelListener, yangContext);
         return modelListener.getModule();
     }
-    
+
     private YangContext parseYangSource(ANTLRInputStream input) throws IOException, CoreException {
         final YangLexer lexer = new YangLexer(input);
         final CommonTokenStream tokens = new CommonTokenStream(lexer);
@@ -56,9 +56,10 @@ public class YangASTParser {
 
         return result;
     }
-    
+
     private static class YangErrorListener extends BaseErrorListener {
         private boolean valid = true;
+
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
                 String msg, RecognitionException e) {

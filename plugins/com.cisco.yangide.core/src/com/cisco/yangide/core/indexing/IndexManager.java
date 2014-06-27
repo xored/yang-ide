@@ -4,14 +4,14 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- */ 
+ */
 package com.cisco.yangide.core.indexing;
 
 import org.eclipse.jdt.internal.core.search.processing.JobManager;
 
 /**
  * @author Konstantin Zaitsev
- * @date   Jun 25, 2014
+ * @date Jun 25, 2014
  */
 @SuppressWarnings("restriction")
 public class IndexManager extends JobManager {
