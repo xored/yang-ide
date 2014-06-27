@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.Status;
 import com.cisco.yangide.core.IOpenable;
 import com.cisco.yangide.core.Openable;
 import com.cisco.yangide.core.OpenableElementInfo;
-import com.cisco.yangide.core.YangCore;
+import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
 
 /**
@@ -31,6 +31,7 @@ import com.cisco.yangide.core.YangModelException;
  */
 public class YangFolder extends Openable {
 
+    public static final String YANG_EXTENSION = "yang";
     private IResource resource;
 
     /**
@@ -55,13 +56,12 @@ public class YangFolder extends Openable {
     @Override
     protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm,
             Map<IOpenable, OpenableElementInfo> newElements, IResource underlyingResource) throws YangModelException {
-        final ArrayList<IOpenable> result = new ArrayList<>();
+        final ArrayList<IOpenable> result = new ArrayList<IOpenable>();
         try {
             resource.accept(new IResourceVisitor() {
-                @Override
                 public boolean visit(IResource res) throws CoreException {
                     if (res.getType() == IResource.FILE
-                            && "yang".equalsIgnoreCase(res.getFullPath().getFileExtension())) {
+                            && YANG_EXTENSION.equalsIgnoreCase(res.getFullPath().getFileExtension())) {
                         result.add(new YangFile((IFile) res, YangFolder.this));
                     }
                     return true;
@@ -77,7 +77,7 @@ public class YangFolder extends Openable {
     @Override
     protected IStatus validateExistence(IResource underlyingResource) {
         return underlyingResource.exists() && underlyingResource.isAccessible() ? Status.OK_STATUS : new Status(
-                Status.ERROR, YangCore.PLUGIN_ID, "Does not exist");
+                Status.ERROR, YangCorePlugin.PLUGIN_ID, "Does not exist");
     }
 
 }

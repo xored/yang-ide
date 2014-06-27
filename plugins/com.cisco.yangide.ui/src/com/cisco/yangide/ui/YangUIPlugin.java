@@ -7,24 +7,26 @@
  */
 package com.cisco.yangide.ui;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
  * The activator class controls the plug-in life cycle
  */
-public class YangUI extends AbstractUIPlugin {
+public class YangUIPlugin extends AbstractUIPlugin {
 
     // The plug-in ID
     public static final String PLUGIN_ID = "com.cisco.yangide.ui"; //$NON-NLS-1$
 
     // The shared instance
-    private static YangUI plugin;
+    private static YangUIPlugin plugin;
 
     /**
      * The constructor
      */
-    public YangUI() {
+    public YangUIPlugin() {
     }
 
     @Override
@@ -44,7 +46,26 @@ public class YangUI extends AbstractUIPlugin {
      *
      * @return the shared instance
      */
-    public static YangUI getDefault() {
+    public static YangUIPlugin getDefault() {
         return plugin;
+    }
+
+    public static void log(String message, Throwable e) {
+        log(new Status(IStatus.ERROR, PLUGIN_ID, IStatus.ERROR, message, e));
+    }
+
+    public static void log(int statusErrorID, String message) {
+        log(new Status(statusErrorID, PLUGIN_ID, message));
+    }
+
+    /*
+     * Add a log entry
+     */
+    public static void log(IStatus status) {
+        getDefault().getLog().log(status);
+    }
+
+    public static void log(Throwable e) {
+        log(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
     }
 }

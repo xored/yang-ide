@@ -7,8 +7,6 @@
  */
 package com.cisco.yangide.ui.wizards;
 
-import java.io.IOException;
-
 import org.apache.maven.model.Build;
 import org.apache.maven.model.Dependency;
 import org.apache.maven.model.Model;
@@ -19,14 +17,13 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.m2e.core.ui.internal.wizards.MavenProjectWizard;
 import org.eclipse.ui.IWorkbench;
 
-import com.cisco.yangide.ui.YangUI;
+import com.cisco.yangide.ui.YangUIPlugin;
 
 /**
  * @author Konstantin Zaitsev
@@ -48,11 +45,11 @@ public class YangProjectWizard extends MavenProjectWizard {
 
     @Override
     public void addPages() {
-//        yangPage = new YangProjectWizardPage();
-//        addPage(yangPage);
+        // yangPage = new YangProjectWizardPage();
+        // addPage(yangPage);
         super.addPages();
     }
-    
+
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         super.init(workbench, selection);
@@ -68,10 +65,10 @@ public class YangProjectWizard extends MavenProjectWizard {
                 try {
                     folder.create(true, true, null);
                     folder.getFile("acme-system.yang").create(
-                            FileLocator.openStream(YangUI.getDefault().getBundle(), new Path(
+                            FileLocator.openStream(YangUIPlugin.getDefault().getBundle(), new Path(
                                     "resources/yang/acme-system.yang"), false), true, null);
-                } catch (CoreException | IOException e) {
-                    e.printStackTrace();
+                } catch (Exception e) {
+                    YangUIPlugin.log(e.getMessage(), e);
                     return false;
                 }
             }

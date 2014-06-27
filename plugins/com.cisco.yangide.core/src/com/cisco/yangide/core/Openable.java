@@ -35,7 +35,6 @@ public abstract class Openable implements IOpenable, IBufferChangedListener {
         this.parent = parent;
     }
 
-    @Override
     public void bufferChanged(BufferChangedEvent event) {
         if (event.getBuffer().isClosed()) {
             YangModelManager.getYangModelManager().getElementsOutOfSynchWithBuffers().remove(this);
@@ -45,7 +44,6 @@ public abstract class Openable implements IOpenable, IBufferChangedListener {
         }
     }
 
-    @Override
     public IBuffer getBuffer() throws YangModelException {
         if (hasBuffer()) {
             // ensure element is open
@@ -72,7 +70,6 @@ public abstract class Openable implements IOpenable, IBufferChangedListener {
         }
     }
 
-    @Override
     public boolean exists() {
         try {
             getElementInfo(null);
@@ -83,37 +80,30 @@ public abstract class Openable implements IOpenable, IBufferChangedListener {
         return false;
     }
 
-    @Override
     public IOpenable getAncestor(int ancestorType) {
         return null;
     }
 
-    @Override
     public IOpenable getParent() {
         return this.parent;
     }
 
-    @Override
     public IPath getPath() {
         return null;
     }
 
-    @Override
     public IOpenable getPrimaryElement() {
         return null;
     }
 
-    @Override
     public IResource getResource() {
         return null;
     }
 
-    @Override
     public boolean isReadOnly() {
         return false;
     }
 
-    @Override
     public boolean isStructureKnown() throws YangModelException {
         return false;
     }
@@ -134,7 +124,6 @@ public abstract class Openable implements IOpenable, IBufferChangedListener {
         return null;
     }
 
-    @Override
     public void close() throws YangModelException {
         if (hasBuffer()) {
             IBuffer buffer = getBufferManager().getBuffer(this);
@@ -147,33 +136,27 @@ public abstract class Openable implements IOpenable, IBufferChangedListener {
 
     }
 
-    @Override
     public boolean hasUnsavedChanges() throws YangModelException {
         // TODO Auto-generated method stub
         return false;
     }
 
-    @Override
     public boolean isConsistent() throws YangModelException {
         return !YangModelManager.getYangModelManager().getElementsOutOfSynchWithBuffers().contains(this);
     }
 
-    @Override
     public boolean isOpen() {
         return YangModelManager.getYangModelManager().getInfo(this) != null;
     }
 
-    @Override
     public void makeConsistent(IProgressMonitor progress) throws YangModelException {
         // TODO Auto-generated method stub
     }
 
-    @Override
     public void open(IProgressMonitor progress) throws YangModelException {
         getElementInfo(progress);
     }
 
-    @Override
     public void save(IProgressMonitor progress, boolean force) throws YangModelException {
         if (isReadOnly()) {
             throw new YangModelException("Resource is read-only");

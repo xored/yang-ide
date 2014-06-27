@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.cisco.yangide.m2e.yang;
 
 import java.io.File;
@@ -17,41 +24,37 @@ import org.sonatype.plexus.build.incremental.BuildContext;
  */
 public class YangBuildParticipant extends MojoExecutionBuildParticipant {
 
-	public YangBuildParticipant(MojoExecution execution,
-			boolean runOnIncremental) {
-		super(execution, runOnIncremental);
-	}
+    public YangBuildParticipant(MojoExecution execution, boolean runOnIncremental) {
+        super(execution, runOnIncremental);
+    }
 
-	@Override
-	public Set<IProject> build(int kind, IProgressMonitor monitor)
-			throws Exception {
-		IMaven maven = MavenPlugin.getMaven();
-		BuildContext buildContext = getBuildContext();
+    @Override
+    public Set<IProject> build(int kind, IProgressMonitor monitor) throws Exception {
+        IMaven maven = MavenPlugin.getMaven();
+        BuildContext buildContext = getBuildContext();
 
-		File source = maven.getMojoParameterValue(getSession()
-				.getCurrentProject(), getMojoExecution(), "yangFilesRootDir",
-				File.class, monitor);
+        File source = maven.getMojoParameterValue(getSession().getCurrentProject(), getMojoExecution(),
+                "yangFilesRootDir", File.class, monitor);
 
-		Scanner ds = buildContext.newScanner(source);
-		ds.scan();
-		String[] includedFiles = ds.getIncludedFiles();
-		if (includedFiles == null || includedFiles.length <= 0) {
-			return null;
-		}
+        Scanner ds = buildContext.newScanner(source);
+        ds.scan();
+        String[] includedFiles = ds.getIncludedFiles();
+        if (includedFiles == null || includedFiles.length <= 0) {
+            return null;
+        }
 
-		Set<IProject> result = super.build(kind, monitor);
+        Set<IProject> result = super.build(kind, monitor);
 
-		YangGeneratorConfiguration[] confs = maven.getMojoParameterValue(
-				getSession().getCurrentProject(), getMojoExecution(),
-				"codeGenerators", YangGeneratorConfiguration[].class, monitor);
-		if (confs != null) {
-			for (YangGeneratorConfiguration conf : confs) {
-				if (conf.getOutputBaseDir() != null) {
-					buildContext.refresh(conf.getOutputBaseDir());
-				}
-			}
-		}
+        YangGeneratorConfiguration[] confs = maven.getMojoParameterValue(getSession().getCurrentProject(),
+                getMojoExecution(), "codeGenerators", YangGeneratorConfiguration[].class, monitor);
+        if (confs != null) {
+            for (YangGeneratorConfiguration conf : confs) {
+                if (conf.getOutputBaseDir() != null) {
+                    buildContext.refresh(conf.getOutputBaseDir());
+                }
+            }
+        }
 
-		return result;
-	}
+        return result;
+    }
 }

@@ -21,7 +21,7 @@ import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.core.runtime.content.IContentDescription;
 
 import com.cisco.yangide.core.IOpenable;
-import com.cisco.yangide.core.LogUtil;
+import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.model.YangFile;
 
@@ -29,7 +29,7 @@ import com.cisco.yangide.core.model.YangFile;
  * @author Konstantin Zaitsev
  * @date Jun 24, 2014
  */
-@SuppressWarnings({"rawtypes"})
+@SuppressWarnings({ "rawtypes" })
 public class Buffer implements IBuffer {
     protected IFile file;
     protected int flags;
@@ -282,7 +282,7 @@ public class Buffer implements IBuffer {
                 final IBufferChangedListener listener = (IBufferChangedListener) listeners.get(i);
                 SafeRunner.run(new ISafeRunnable() {
                     public void handleException(Throwable exception) {
-                        LogUtil.log(exception, "Exception occurred in listener of buffer change notification");
+                        YangCorePlugin.log(exception, "Exception occurred in listener of buffer change notification");
                     }
 
                     public void run() throws Exception {

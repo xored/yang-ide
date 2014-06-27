@@ -4,7 +4,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- */ 
+ */
 package com.cisco.yangide.editor.preferences;
 
 import java.io.BufferedReader;
@@ -64,19 +64,17 @@ import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.editors.IYangColorConstants;
 import com.cisco.yangide.editor.editors.YangSourceViewerConfiguration;
 
-
 /**
  * @author Alexey Kholupko
  * Overlay?
  */
- 
 
 /**
  * Configures Java Editor hover preferences.
  *
  * @since 2.1
  */
-class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
+class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     /**
      * Item in the highlighting color list.
@@ -94,16 +92,20 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
         private String fItalicKey;
         /**
          * Strikethrough preference key.
+         * 
          * @since 3.1
          */
         private String fStrikethroughKey;
-        /** Underline preference key.
+        /**
+         * Underline preference key.
+         * 
          * @since 3.1
          */
         private String fUnderlineKey;
 
         /**
          * Initialize the item with the given values.
+         * 
          * @param displayName the display name
          * @param colorKey the color preference key
          * @param boldKey the bold preference key
@@ -111,13 +113,14 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
          * @param strikethroughKey the strikethrough preference key
          * @param underlineKey the underline preference key
          */
-        public HighlightingColorListItem(String displayName, String colorKey, String boldKey, String italicKey, String strikethroughKey, String underlineKey) {
-            fDisplayName= displayName;
-            fColorKey= colorKey;
-            fBoldKey= boldKey;
-            fItalicKey= italicKey;
-            fStrikethroughKey= strikethroughKey;
-            fUnderlineKey= underlineKey;
+        public HighlightingColorListItem(String displayName, String colorKey, String boldKey, String italicKey,
+                String strikethroughKey, String underlineKey) {
+            fDisplayName = displayName;
+            fColorKey = colorKey;
+            fBoldKey = boldKey;
+            fItalicKey = italicKey;
+            fStrikethroughKey = strikethroughKey;
+            fUnderlineKey = underlineKey;
         }
 
         /**
@@ -165,8 +168,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
         }
     }
 
-   
-
     /**
      * Color list label provider.
      *
@@ -180,7 +181,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
         public String getText(Object element) {
             if (element instanceof String)
                 return (String) element;
-            return ((HighlightingColorListItem)element).getDisplayName();
+            return ((HighlightingColorListItem) element).getDisplayName();
         }
     }
 
@@ -189,94 +190,102 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
      *
      * @since 3.0
      */
-    private class ColorListContentProvider implements IStructuredContentProvider{
+    private class ColorListContentProvider implements IStructuredContentProvider {
 
         /*
          * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
          */
         public Object[] getElements(Object inputElement) {
-            //return new String[] {fJavaCategory, fJavadocCategory, fCommentsCategory};
-            return ((java.util.List)inputElement).toArray();
+            // return new String[] {fJavaCategory, fJavadocCategory, fCommentsCategory};
+            return ((java.util.List) inputElement).toArray();
         }
 
-        @Override
         public void dispose() {
         }
 
-        @Override
         public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
         }
 
     }
 
-    private static final String BOLD= PreferenceConstants.EDITOR_BOLD_SUFFIX;
+    private static final String BOLD = PreferenceConstants.EDITOR_BOLD_SUFFIX;
     /**
      * Preference key suffix for italic preferences.
-     * @since  3.0
+     * 
+     * @since 3.0
      */
-    private static final String ITALIC= PreferenceConstants.EDITOR_ITALIC_SUFFIX;
+    private static final String ITALIC = PreferenceConstants.EDITOR_ITALIC_SUFFIX;
     /**
      * Preference key suffix for strikethrough preferences.
-     * @since  3.1
+     * 
+     * @since 3.1
      */
-    private static final String STRIKETHROUGH= PreferenceConstants.EDITOR_STRIKETHROUGH_SUFFIX;
+    private static final String STRIKETHROUGH = PreferenceConstants.EDITOR_STRIKETHROUGH_SUFFIX;
     /**
      * Preference key suffix for underline preferences.
-     * @since  3.1
+     * 
+     * @since 3.1
      */
-    private static final String UNDERLINE= PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
+    private static final String UNDERLINE = PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
 
     /**
      * The keys of the overlay store.
      */
-    private final String[][] fSyntaxColorListModel= new String[][] {
+    private final String[][] fSyntaxColorListModel = new String[][] {
 
-            { YangPreferencesMessages.YANGEditorPreferencePage_strings, IYangColorConstants.YANG_STRING},
-            { YangPreferencesMessages.YANGEditorPreferencePage_keywords, IYangColorConstants.YANG_KEYWORD},
-            { YangPreferencesMessages.YANGEditorPreferencePage_comments, IYangColorConstants.YANG_COMMENT},
-            { YangPreferencesMessages.YANGEditorPreferencePage_identifiers, IYangColorConstants.YANG_IDENTIFIER }
-    };
+    { YangPreferencesMessages.YANGEditorPreferencePage_strings, IYangColorConstants.YANG_STRING },
+            { YangPreferencesMessages.YANGEditorPreferencePage_keywords, IYangColorConstants.YANG_KEYWORD },
+            { YangPreferencesMessages.YANGEditorPreferencePage_comments, IYangColorConstants.YANG_COMMENT },
+            { YangPreferencesMessages.YANGEditorPreferencePage_identifiers, IYangColorConstants.YANG_IDENTIFIER } };
 
     private ColorSelector fSyntaxForegroundColorEditor;
     private Label fColorEditorLabel;
     private Button fBoldCheckBox;
     /**
      * Check box for italic preference.
-     * @since  3.0
+     * 
+     * @since 3.0
      */
     private Button fItalicCheckBox;
     /**
      * Check box for strikethrough preference.
-     * @since  3.1
+     * 
+     * @since 3.1
      */
     private Button fStrikethroughCheckBox;
     /**
      * Check box for underline preference.
-     * @since  3.1
+     * 
+     * @since 3.1
      */
     private Button fUnderlineCheckBox;
     /**
      * Highlighting color list
-     * @since  3.0
+     * 
+     * @since 3.0
      */
-    private final java.util.List<HighlightingColorListItem> fListModel= new ArrayList<HighlightingColorListItem>();
+    private final java.util.List<HighlightingColorListItem> fListModel = new ArrayList<HighlightingColorListItem>();
     /**
      * Highlighting color tree viewer
-     * @since  3.0
+     * 
+     * @since 3.0
      */
     private TableViewer fHighlightingColorListViewer;
     /**
      * The previewer.
+     * 
      * @since 3.0
      */
     private SourceViewer fPreviewViewer;
     /**
      * The color manager.
+     * 
      * @since 3.1
      */
     private IColorManager fColorManager;
     /**
      * The font metrics.
+     * 
      * @since 3.1
      */
     private FontMetrics fFontMetrics;
@@ -285,29 +294,33 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
     public YangEditorColoringConfigurationBlock(OverlayPreferenceStore store) {
         super(store);
 
-        fColorManager= new JavaColorManager(false);
+        fColorManager = new JavaColorManager(false);
 
-        for (int i= 0, n= fSyntaxColorListModel.length; i < n; i++)
-            fListModel.add(new HighlightingColorListItem (fSyntaxColorListModel[i][0], fSyntaxColorListModel[i][1], fSyntaxColorListModel[i][1] + BOLD, fSyntaxColorListModel[i][1] + ITALIC, fSyntaxColorListModel[i][1] + STRIKETHROUGH, fSyntaxColorListModel[i][1] + UNDERLINE));
+        for (int i = 0, n = fSyntaxColorListModel.length; i < n; i++)
+            fListModel.add(new HighlightingColorListItem(fSyntaxColorListModel[i][0], fSyntaxColorListModel[i][1],
+                    fSyntaxColorListModel[i][1] + BOLD, fSyntaxColorListModel[i][1] + ITALIC,
+                    fSyntaxColorListModel[i][1] + STRIKETHROUGH, fSyntaxColorListModel[i][1] + UNDERLINE));
 
         store.addKeys(createOverlayStoreKeys());
     }
 
     private OverlayPreferenceStore.OverlayKey[] createOverlayStoreKeys() {
 
-        ArrayList<OverlayKey> overlayKeys= new ArrayList<OverlayKey>();
+        ArrayList<OverlayKey> overlayKeys = new ArrayList<OverlayKey>();
 
-        for (int i= 0, n= fListModel.size(); i < n; i++) {
-            HighlightingColorListItem item= fListModel.get(i);
+        for (int i = 0, n = fListModel.size(); i < n; i++) {
+            HighlightingColorListItem item = fListModel.get(i);
             overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.STRING, item.getColorKey()));
             overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, item.getBoldKey()));
             overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, item.getItalicKey()));
-            overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, item.getStrikethroughKey()));
-            overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, item.getUnderlineKey()));
+            overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, item
+                    .getStrikethroughKey()));
+            overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, item
+                    .getUnderlineKey()));
 
         }
 
-        OverlayPreferenceStore.OverlayKey[] keys= new OverlayPreferenceStore.OverlayKey[overlayKeys.size()];
+        OverlayPreferenceStore.OverlayKey[] keys = new OverlayPreferenceStore.OverlayKey[overlayKeys.size()];
         overlayKeys.toArray(keys);
         return keys;
     }
@@ -321,14 +334,14 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
     public Control createControl(Composite parent) {
         initializeDialogUnits(parent);
 
-        ScrolledPageContent scrolled= new ScrolledPageContent(parent, SWT.H_SCROLL | SWT.V_SCROLL);
+        ScrolledPageContent scrolled = new ScrolledPageContent(parent, SWT.H_SCROLL | SWT.V_SCROLL);
         scrolled.setExpandHorizontal(true);
         scrolled.setExpandVertical(true);
 
-        Control control= createSyntaxPage(scrolled);
+        Control control = createSyntaxPage(scrolled);
 
         scrolled.setContent(control);
-        final Point size= control.computeSize(SWT.DEFAULT, SWT.DEFAULT);
+        final Point size = control.computeSize(SWT.DEFAULT, SWT.DEFAULT);
         scrolled.setMinSize(size.x, size.y);
 
         return scrolled;
@@ -377,7 +390,8 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
         super.initialize();
 
         fHighlightingColorListViewer.setInput(fListModel);
-        fHighlightingColorListViewer.setSelection(new StructuredSelection(fHighlightingColorListViewer.getElementAt(0)));
+        fHighlightingColorListViewer
+                .setSelection(new StructuredSelection(fHighlightingColorListViewer.getElementAt(0)));
     }
 
     @Override
@@ -385,8 +399,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
         super.performDefaults();
 
         handleSyntaxColorListSelection();
-
-
 
         fPreviewViewer.invalidateTextPresentation();
     }
@@ -403,7 +415,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
     }
 
     private void handleSyntaxColorListSelection() {
-        HighlightingColorListItem item= getHighlightingColorListItem();
+        HighlightingColorListItem item = getHighlightingColorListItem();
         if (item == null) {
             fSyntaxForegroundColorEditor.getButton().setEnabled(false);
             fColorEditorLabel.setEnabled(false);
@@ -413,7 +425,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
             fUnderlineCheckBox.setEnabled(false);
             return;
         }
-        RGB rgb= PreferenceConverter.getColor(getPreferenceStore(), item.getColorKey());
+        RGB rgb = PreferenceConverter.getColor(getPreferenceStore(), item.getColorKey());
         fSyntaxForegroundColorEditor.setColorValue(rgb);
         fBoldCheckBox.setSelection(getPreferenceStore().getBoolean(item.getBoldKey()));
         fItalicCheckBox.setSelection(getPreferenceStore().getBoolean(item.getItalicKey()));
@@ -429,16 +441,15 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
 
     }
 
-
     private Control createSyntaxPage(final Composite parent) {
 
-        Composite colorComposite= new Composite(parent, SWT.NONE);
-        GridLayout layout= new GridLayout();
-        layout.marginHeight= 0;
-        layout.marginWidth= 0;
+        Composite colorComposite = new Composite(parent, SWT.NONE);
+        GridLayout layout = new GridLayout();
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
         colorComposite.setLayout(layout);
 
-        Link link= new Link(colorComposite, SWT.NONE);
+        Link link = new Link(colorComposite, SWT.NONE);
         link.setText(PreferencesMessages.JavaEditorColoringConfigurationBlock_link);
         link.addSelectionListener(new SelectionAdapter() {
             @Override
@@ -446,107 +457,109 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
                 if ("org.eclipse.ui.preferencePages.GeneralTextEditor".equals(e.text)) //$NON-NLS-1$
                     PreferencesUtil.createPreferenceDialogOn(parent.getShell(), e.text, null, null);
                 else if ("org.eclipse.ui.preferencePages.ColorsAndFonts".equals(e.text)) //$NON-NLS-1$
-                    PreferencesUtil.createPreferenceDialogOn(parent.getShell(), e.text, null, "selectFont:org.eclipse.jdt.ui.editors.textfont"); //$NON-NLS-1$
+                    PreferencesUtil.createPreferenceDialogOn(parent.getShell(), e.text, null,
+                            "selectFont:org.eclipse.jdt.ui.editors.textfont"); //$NON-NLS-1$
             }
         });
 
-        GridData gridData= new GridData(SWT.FILL, SWT.BEGINNING, true, false);
-        gridData.widthHint= 150; // only expand further if anyone else requires it
-        gridData.horizontalSpan= 2;
+        GridData gridData = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+        gridData.widthHint = 150; // only expand further if anyone else requires it
+        gridData.horizontalSpan = 2;
         link.setLayoutData(gridData);
 
         addFiller(colorComposite, 1);
 
         Label label;
-        label= new Label(colorComposite, SWT.LEFT);
+        label = new Label(colorComposite, SWT.LEFT);
         label.setText(PreferencesMessages.JavaEditorPreferencePage_coloring_element);
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        Composite editorComposite= new Composite(colorComposite, SWT.NONE);
-        layout= new GridLayout();
-        layout.numColumns= 2;
-        layout.marginHeight= 0;
-        layout.marginWidth= 0;
+        Composite editorComposite = new Composite(colorComposite, SWT.NONE);
+        layout = new GridLayout();
+        layout.numColumns = 2;
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
         editorComposite.setLayout(layout);
-        GridData gd= new GridData(SWT.FILL, SWT.BEGINNING, true, false);
+        GridData gd = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
         editorComposite.setLayoutData(gd);
 
-        fHighlightingColorListViewer= new TableViewer(editorComposite, SWT.SINGLE | SWT.V_SCROLL | SWT.BORDER | SWT.FULL_SELECTION);
+        fHighlightingColorListViewer = new TableViewer(editorComposite, SWT.SINGLE | SWT.V_SCROLL | SWT.BORDER
+                | SWT.FULL_SELECTION);
         fHighlightingColorListViewer.setLabelProvider(new ColorListLabelProvider());
         fHighlightingColorListViewer.setContentProvider(new ColorListContentProvider());
         fHighlightingColorListViewer.setComparator(new WorkbenchViewerComparator());
-                gd= new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
-        gd.heightHint= convertHeightInCharsToPixels(9);
-        int maxWidth= 0;
-        for (Iterator<HighlightingColorListItem> it= fListModel.iterator(); it.hasNext();) {
-            HighlightingColorListItem item= it.next();
-            maxWidth= Math.max(maxWidth, convertWidthInCharsToPixels(item.getDisplayName().length()));
+        gd = new GridData(SWT.BEGINNING, SWT.BEGINNING, false, true);
+        gd.heightHint = convertHeightInCharsToPixels(9);
+        int maxWidth = 0;
+        for (Iterator<HighlightingColorListItem> it = fListModel.iterator(); it.hasNext();) {
+            HighlightingColorListItem item = it.next();
+            maxWidth = Math.max(maxWidth, convertWidthInCharsToPixels(item.getDisplayName().length()));
         }
-        ScrollBar vBar= ((Scrollable) fHighlightingColorListViewer.getControl()).getVerticalBar();
+        ScrollBar vBar = ((Scrollable) fHighlightingColorListViewer.getControl()).getVerticalBar();
         if (vBar != null)
             maxWidth += vBar.getSize().x * 3; // scrollbars and tree indentation guess
-        gd.widthHint= maxWidth;
+        gd.widthHint = maxWidth;
 
         fHighlightingColorListViewer.getControl().setLayoutData(gd);
 
-        Composite stylesComposite= new Composite(editorComposite, SWT.NONE);
-        layout= new GridLayout();
-        layout.marginHeight= 0;
-        layout.marginWidth= 0;
-        layout.numColumns= 2;
+        Composite stylesComposite = new Composite(editorComposite, SWT.NONE);
+        layout = new GridLayout();
+        layout.marginHeight = 0;
+        layout.marginWidth = 0;
+        layout.numColumns = 2;
         stylesComposite.setLayout(layout);
         stylesComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        //XXX place to fix layout
+        // XXX place to fix layout
 
-        fColorEditorLabel= new Label(stylesComposite, SWT.LEFT);
+        fColorEditorLabel = new Label(stylesComposite, SWT.LEFT);
         fColorEditorLabel.setText(PreferencesMessages.JavaEditorPreferencePage_color);
-        gd= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-        //XXX LayoutUtil.getIndent(); only since 3.9 returns 20
-        gd.horizontalIndent= 20;
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        // XXX LayoutUtil.getIndent(); only since 3.9 returns 20
+        gd.horizontalIndent = 20;
         fColorEditorLabel.setLayoutData(gd);
 
-        fSyntaxForegroundColorEditor= new ColorSelector(stylesComposite);
-        Button foregroundColorButton= fSyntaxForegroundColorEditor.getButton();
-        gd= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        fSyntaxForegroundColorEditor = new ColorSelector(stylesComposite);
+        Button foregroundColorButton = fSyntaxForegroundColorEditor.getButton();
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         foregroundColorButton.setLayoutData(gd);
 
-        fBoldCheckBox= new Button(stylesComposite, SWT.CHECK);
+        fBoldCheckBox = new Button(stylesComposite, SWT.CHECK);
         fBoldCheckBox.setText(PreferencesMessages.JavaEditorPreferencePage_bold);
-        gd= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-        gd.horizontalIndent= 20;
-        gd.horizontalSpan= 2;
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gd.horizontalIndent = 20;
+        gd.horizontalSpan = 2;
         fBoldCheckBox.setLayoutData(gd);
 
-        fItalicCheckBox= new Button(stylesComposite, SWT.CHECK);
+        fItalicCheckBox = new Button(stylesComposite, SWT.CHECK);
         fItalicCheckBox.setText(PreferencesMessages.JavaEditorPreferencePage_italic);
-        gd= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-        gd.horizontalIndent= 20;
-        gd.horizontalSpan= 2;
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gd.horizontalIndent = 20;
+        gd.horizontalSpan = 2;
         fItalicCheckBox.setLayoutData(gd);
 
-        fStrikethroughCheckBox= new Button(stylesComposite, SWT.CHECK);
+        fStrikethroughCheckBox = new Button(stylesComposite, SWT.CHECK);
         fStrikethroughCheckBox.setText(PreferencesMessages.JavaEditorPreferencePage_strikethrough);
-        gd= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-        gd.horizontalIndent= 20;
-        gd.horizontalSpan= 2;
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gd.horizontalIndent = 20;
+        gd.horizontalSpan = 2;
         fStrikethroughCheckBox.setLayoutData(gd);
 
-        fUnderlineCheckBox= new Button(stylesComposite, SWT.CHECK);
+        fUnderlineCheckBox = new Button(stylesComposite, SWT.CHECK);
         fUnderlineCheckBox.setText(PreferencesMessages.JavaEditorPreferencePage_underline);
-        gd= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-        gd.horizontalIndent= 20;
-        gd.horizontalSpan= 2;
+        gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
+        gd.horizontalIndent = 20;
+        gd.horizontalSpan = 2;
         fUnderlineCheckBox.setLayoutData(gd);
 
-        label= new Label(colorComposite, SWT.LEFT);
+        label = new Label(colorComposite, SWT.LEFT);
         label.setText(PreferencesMessages.JavaEditorPreferencePage_preview);
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
-        Control previewer= createPreviewer(colorComposite);
-        gd= new GridData(GridData.FILL_BOTH);
-        gd.widthHint= convertWidthInCharsToPixels(20);
-        gd.heightHint= convertHeightInCharsToPixels(5);
+        Control previewer = createPreviewer(colorComposite);
+        gd = new GridData(GridData.FILL_BOTH);
+        gd.widthHint = convertWidthInCharsToPixels(20);
+        gd.heightHint = convertHeightInCharsToPixels(5);
         previewer.setLayoutData(gd);
 
         fHighlightingColorListViewer.addSelectionChangedListener(new ISelectionChangedListener() {
@@ -559,9 +572,11 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
             public void widgetDefaultSelected(SelectionEvent e) {
                 // do nothing
             }
+
             public void widgetSelected(SelectionEvent e) {
-                HighlightingColorListItem item= getHighlightingColorListItem();
-                PreferenceConverter.setValue(getPreferenceStore(), item.getColorKey(), fSyntaxForegroundColorEditor.getColorValue());
+                HighlightingColorListItem item = getHighlightingColorListItem();
+                PreferenceConverter.setValue(getPreferenceStore(), item.getColorKey(),
+                        fSyntaxForegroundColorEditor.getColorValue());
             }
         });
 
@@ -569,8 +584,9 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
             public void widgetDefaultSelected(SelectionEvent e) {
                 // do nothing
             }
+
             public void widgetSelected(SelectionEvent e) {
-                HighlightingColorListItem item= getHighlightingColorListItem();
+                HighlightingColorListItem item = getHighlightingColorListItem();
                 getPreferenceStore().setValue(item.getBoldKey(), fBoldCheckBox.getSelection());
             }
         });
@@ -579,8 +595,9 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
             public void widgetDefaultSelected(SelectionEvent e) {
                 // do nothing
             }
+
             public void widgetSelected(SelectionEvent e) {
-                HighlightingColorListItem item= getHighlightingColorListItem();
+                HighlightingColorListItem item = getHighlightingColorListItem();
                 getPreferenceStore().setValue(item.getItalicKey(), fItalicCheckBox.getSelection());
             }
         });
@@ -588,8 +605,9 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
             public void widgetDefaultSelected(SelectionEvent e) {
                 // do nothing
             }
+
             public void widgetSelected(SelectionEvent e) {
-                HighlightingColorListItem item= getHighlightingColorListItem();
+                HighlightingColorListItem item = getHighlightingColorListItem();
                 getPreferenceStore().setValue(item.getStrikethroughKey(), fStrikethroughCheckBox.getSelection());
             }
         });
@@ -598,8 +616,9 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
             public void widgetDefaultSelected(SelectionEvent e) {
                 // do nothing
             }
+
             public void widgetSelected(SelectionEvent e) {
-                HighlightingColorListItem item= getHighlightingColorListItem();
+                HighlightingColorListItem item = getHighlightingColorListItem();
                 getPreferenceStore().setValue(item.getUnderlineKey(), fUnderlineCheckBox.getSelection());
             }
         });
@@ -610,48 +629,49 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
     }
 
     private void addFiller(Composite composite, int horizontalSpan) {
-        PixelConverter pixelConverter= new PixelConverter(composite);
-        Label filler= new Label(composite, SWT.LEFT );
-        GridData gd= new GridData(GridData.HORIZONTAL_ALIGN_FILL);
-        gd.horizontalSpan= horizontalSpan;
-        gd.heightHint= pixelConverter.convertHeightInCharsToPixels(1) / 2;
+        PixelConverter pixelConverter = new PixelConverter(composite);
+        Label filler = new Label(composite, SWT.LEFT);
+        GridData gd = new GridData(GridData.HORIZONTAL_ALIGN_FILL);
+        gd.horizontalSpan = horizontalSpan;
+        gd.heightHint = pixelConverter.convertHeightInCharsToPixels(1) / 2;
         filler.setLayoutData(gd);
     }
 
     private Control createPreviewer(Composite parent) {
-    
+
         fPreviewViewer = new SourceViewer(parent, null, null, false, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
-        
+
         YangSourceViewerConfiguration configuration = new YangSourceViewerConfiguration(fColorManager);
-    
+
         fPreviewViewer.configure(configuration);
         fPreviewViewer.setEditable(false);
-        Font font= JFaceResources.getFont(JFaceResources.TEXT_FONT);
+        Font font = JFaceResources.getFont(JFaceResources.TEXT_FONT);
         fPreviewViewer.getTextWidget().setFont(font);
-        
-        IPreferenceStore store = new ChainedPreferenceStore(new IPreferenceStore[] { getPreferenceStore(), EditorsUI.getPreferenceStore() });
-        //XXX ATTENTION ! Updater needed
-        //fPreviewerUpdater = new AntPreviewerUpdater(fPreviewViewer, configuration, store);
-        //new JavaSourcePreviewerUpdater(fPreviewViewer, configuration, store);
-        
+
+        IPreferenceStore store = new ChainedPreferenceStore(new IPreferenceStore[] { getPreferenceStore(),
+                EditorsUI.getPreferenceStore() });
+        // XXX ATTENTION ! Updater needed
+        // fPreviewerUpdater = new AntPreviewerUpdater(fPreviewViewer, configuration, store);
+        // new JavaSourcePreviewerUpdater(fPreviewViewer, configuration, store);
+
         new YangPreviewerUpdater(fPreviewViewer, configuration, store);
-        
-        String content= loadPreviewContentFromFile("ColorSettingPreviewCode.txt"); //$NON-NLS-1$
+
+        String content = loadPreviewContentFromFile("ColorSettingPreviewCode.txt"); //$NON-NLS-1$
         IDocument document = new Document(content);
         new YangDocumentSetupParticipant().setup(document);
         fPreviewViewer.setDocument(document);
-        
-        return fPreviewViewer.getControl();        
+
+        return fPreviewViewer.getControl();
     }
-    
+
     private String loadPreviewContentFromFile(String filename) {
         String line;
-        String separator= System.getProperty("line.separator"); //$NON-NLS-1$
-        StringBuffer buffer= new StringBuffer(512);
-        BufferedReader reader= null;
+        String separator = System.getProperty("line.separator"); //$NON-NLS-1$
+        StringBuffer buffer = new StringBuffer(512);
+        BufferedReader reader = null;
         try {
-            reader= new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(filename)));
-            while ((line= reader.readLine()) != null) {
+            reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(filename)));
+            while ((line = reader.readLine()) != null) {
                 buffer.append(line);
                 buffer.append(separator);
             }
@@ -659,7 +679,10 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
             YangEditorPlugin.log(io);
         } finally {
             if (reader != null) {
-                try { reader.close(); } catch (IOException e) {}
+                try {
+                    reader.close();
+                } catch (IOException e) {
+                }
             }
         }
         return buffer.toString();
@@ -672,8 +695,8 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
      * @since 3.0
      */
     private HighlightingColorListItem getHighlightingColorListItem() {
-        IStructuredSelection selection= (IStructuredSelection) fHighlightingColorListViewer.getSelection();
-        Object element= selection.getFirstElement();
+        IStructuredSelection selection = (IStructuredSelection) fHighlightingColorListViewer.getSelection();
+        Object element = selection.getFirstElement();
         if (element instanceof String)
             return null;
         return (HighlightingColorListItem) element;
@@ -695,6 +718,5 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
         fFontMetrics = gc.getFontMetrics();
         gc.dispose();
     }
-
 
 }

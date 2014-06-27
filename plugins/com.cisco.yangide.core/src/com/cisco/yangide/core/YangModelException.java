@@ -22,11 +22,11 @@ public class YangModelException extends CoreException {
     private CoreException nestedCoreException;
 
     public YangModelException(String message) {
-        super(new Status(IStatus.ERROR, YangCore.PLUGIN_ID, message));
+        super(new Status(IStatus.ERROR, YangCorePlugin.PLUGIN_ID, message));
     }
     
     public YangModelException(Throwable e, int code) {
-        super(new Status(code, YangCore.PLUGIN_ID, e.getMessage(), e));
+        super(new Status(code, YangCorePlugin.PLUGIN_ID, e.getMessage(), e));
     }
 
     public YangModelException(CoreException exception) {

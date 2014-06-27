@@ -22,7 +22,7 @@ import org.eclipse.core.runtime.Status;
 import com.cisco.yangide.core.IOpenable;
 import com.cisco.yangide.core.Openable;
 import com.cisco.yangide.core.OpenableElementInfo;
-import com.cisco.yangide.core.YangCore;
+import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.buffer.BufferManager;
 import com.cisco.yangide.core.buffer.IBuffer;
@@ -75,7 +75,7 @@ public class YangFile extends Openable {
     @Override
     protected IStatus validateExistence(IResource underlyingResource) {
         return underlyingResource.exists() && underlyingResource.isAccessible() ? Status.OK_STATUS : new Status(
-                Status.ERROR, YangCore.PLUGIN_ID, "Does not exist");
+                Status.ERROR, YangCorePlugin.PLUGIN_ID, "Does not exist");
     }
 
     @Override

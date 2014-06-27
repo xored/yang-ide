@@ -5,14 +5,14 @@ Bundle-SymbolicName: com.cisco.yangide.editor;singleton:=true
 Bundle-Version: 0.1.0.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: com.cisco.yangide.editor.YangEditorPlugin
-Bundle-Vendor: CISCO
+Bundle-Vendor: Cisco
 Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.core.runtime,
  org.eclipse.jface.text,
- org.eclipse.jdt.ui,
- org.eclipse.ui.forms
-Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+ org.eclipse.ui.forms,
+ org.eclipse.jdt.ui
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Bundle-ActivationPolicy: lazy
 Export-Package: com.cisco.yangide.editor
 Import-Package: com.ibm.icu.text

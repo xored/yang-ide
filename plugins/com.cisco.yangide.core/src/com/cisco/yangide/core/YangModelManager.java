@@ -35,7 +35,7 @@ import com.cisco.yangide.core.model.YangModel;
  */
 public final class YangModelManager implements ISaveParticipant {
 
-    /** Singleton instance.*/
+    /** Singleton instance. */
     private static final YangModelManager MANAGER = new YangModelManager();
 
     /**
@@ -43,13 +43,13 @@ public final class YangModelManager implements ISaveParticipant {
      */
     private OpenableElementCache cache;
     private YangModel yangModel = new YangModel();
-    
+
     public IndexManager indexManager = null;
 
     public DeltaProcessor deltaProcessor = new DeltaProcessor();
-    
+
     protected HashSet<IOpenable> elementsOutOfSynchWithBuffers = new HashSet<IOpenable>(11);
-    
+
     /**
      * @return singleton instance
      */
@@ -64,14 +64,13 @@ public final class YangModelManager implements ISaveParticipant {
             this.cache = new OpenableElementCache(5000);
 
             final IWorkspace workspace = ResourcesPlugin.getWorkspace();
-            workspace.addResourceChangeListener(
-                    deltaProcessor,
-                /* update spec in JavaCore#addPreProcessingResourceChangedListener(...) if adding more event types */
-                IResourceChangeEvent.PRE_BUILD
-                    | IResourceChangeEvent.POST_BUILD
-                    | IResourceChangeEvent.POST_CHANGE
-                    | IResourceChangeEvent.PRE_DELETE
-                    | IResourceChangeEvent.PRE_CLOSE
+            workspace.addResourceChangeListener(deltaProcessor,
+            /*
+             * update spec in JavaCore#addPreProcessingResourceChangedListener(...) if adding more
+             * event types
+             */
+            IResourceChangeEvent.PRE_BUILD | IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.POST_CHANGE
+                    | IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.PRE_CLOSE
                     | IResourceChangeEvent.PRE_REFRESH);
 
             // start indexing
@@ -81,23 +80,24 @@ public final class YangModelManager implements ISaveParticipant {
 
             // init projects
             yangModel.getYangProjects();
-            
+
             Job processSavedState = new Job("Processing Yang changes since last activation") {
                 protected IStatus run(IProgressMonitor monitor) {
                     try {
-                        workspace.run(
-                            new IWorkspaceRunnable() {
-                                public void run(IProgressMonitor progress) throws CoreException {
-                                    ISavedState savedState = workspace.addSaveParticipant(YangCore.PLUGIN_ID, YangModelManager.this);
-                                    if (savedState != null) {
-                                        // the event type coming from the saved state is always POST_AUTO_BUILD
-                                        // force it to be POST_CHANGE so that the delta processor can handle it
-                                        YangModelManager.this.deltaProcessor.overridenEventType = IResourceChangeEvent.POST_CHANGE;
-                                        savedState.processResourceChangeEvents(YangModelManager.this.deltaProcessor);
-                                    }
+                        workspace.run(new IWorkspaceRunnable() {
+                            public void run(IProgressMonitor progress) throws CoreException {
+                                ISavedState savedState = workspace.addSaveParticipant(YangCorePlugin.PLUGIN_ID,
+                                        YangModelManager.this);
+                                if (savedState != null) {
+                                    // the event type coming from the saved state is always
+                                    // POST_AUTO_BUILD
+                                    // force it to be POST_CHANGE so that the delta processor can
+                                    // handle it
+                                    YangModelManager.this.deltaProcessor.overridenEventType = IResourceChangeEvent.POST_CHANGE;
+                                    savedState.processResourceChangeEvents(YangModelManager.this.deltaProcessor);
                                 }
-                            },
-                            monitor);
+                            }
+                        }, monitor);
                     } catch (CoreException e) {
                         return e.getStatus();
                     }
@@ -112,12 +112,12 @@ public final class YangModelManager implements ISaveParticipant {
             throw e;
         }
     }
-    
+
     @SuppressWarnings("restriction")
-    public void shutdown () {
+    public void shutdown() {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.removeResourceChangeListener(this.deltaProcessor);
-        workspace.removeSaveParticipant(YangCore.PLUGIN_ID);
+        workspace.removeSaveParticipant(YangCorePlugin.PLUGIN_ID);
 
         // Stop indexing
         if (this.indexManager != null) {
@@ -126,7 +126,7 @@ public final class YangModelManager implements ISaveParticipant {
 
         // wait for the initialization job to finish
         try {
-            Job.getJobManager().join(YangCore.PLUGIN_ID, null);
+            Job.getJobManager().join(YangCorePlugin.PLUGIN_ID, null);
         } catch (InterruptedException e) {
             // ignore
         }
@@ -141,8 +141,8 @@ public final class YangModelManager implements ISaveParticipant {
     }
 
     /*
-     * Puts the infos in the given map (keys are IJavaElements and values are JavaElementInfos)
-     * in the Java model cache in an atomic way.
+     * Puts the infos in the given map (keys are IJavaElements and values are JavaElementInfos) in
+     * the Java model cache in an atomic way.
      */
     protected synchronized void putInfos(IOpenable openedElement, Map<IOpenable, OpenableElementInfo> newElements) {
         Object existingInfo = this.cache.get(openedElement);
@@ -156,22 +156,21 @@ public final class YangModelManager implements ISaveParticipant {
     }
 
     private void closeChildren(Object info) {
-//        if (info instanceof JavaElementInfo) {
-//            IJavaElement[] children = ((JavaElementInfo)info).getChildren();
-//            for (int i = 0, size = children.length; i < size; ++i) {
-//                JavaElement child = (JavaElement) children[i];
-//                try {
-//                    child.close();
-//                } catch (JavaModelException e) {
-//                    // ignore
-//                }
-//            }
-//        }
+        // if (info instanceof JavaElementInfo) {
+        // IJavaElement[] children = ((JavaElementInfo)info).getChildren();
+        // for (int i = 0, size = children.length; i < size; ++i) {
+        // JavaElement child = (JavaElement) children[i];
+        // try {
+        // child.close();
+        // } catch (JavaModelException e) {
+        // // ignore
+        // }
+        // }
+        // }
     }
 
     /*
-     * Removes all cached info for the given element (including all children)
-     * from the cache.
+     * Removes all cached info for the given element (including all children) from the cache.
      * Returns the info for the given element, or null if it was closed.
      */
     public synchronized Object removeInfoAndChildren(IOpenable element) throws YangModelException {
@@ -183,37 +182,29 @@ public final class YangModelManager implements ISaveParticipant {
         }
         return null;
     }
-    
+
     /**
      * @return the yangModel
      */
     public YangModel getYangModel() {
         return yangModel;
     }
-    
+
     protected HashSet<IOpenable> getElementsOutOfSynchWithBuffers() {
         return this.elementsOutOfSynchWithBuffers;
     }
 
-    /// methods from ISaveParticipant
-    @Override
+    // / methods from ISaveParticipant
     public void doneSaving(ISaveContext context) {
-        // TODO Auto-generated method stub
     }
 
-    @Override
     public void prepareToSave(ISaveContext context) throws CoreException {
-        // TODO Auto-generated method stub
     }
 
-    @Override
     public void rollback(ISaveContext context) {
-        // TODO Auto-generated method stub
     }
 
-    @Override
     public void saving(ISaveContext context) throws CoreException {
-        // TODO Auto-generated method stub
     }
-    /// end of methods from ISaveParticipant
+    // / end of methods from ISaveParticipant
 }

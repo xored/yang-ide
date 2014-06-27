@@ -24,7 +24,7 @@ import org.eclipse.jdt.core.JavaCore;
 import com.cisco.yangide.core.IOpenable;
 import com.cisco.yangide.core.Openable;
 import com.cisco.yangide.core.OpenableElementInfo;
-import com.cisco.yangide.core.YangCore;
+import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
 
 /**
@@ -49,9 +49,8 @@ public class YangProject extends Openable {
         final HashSet<IResource> resources = new HashSet<IResource>();
         try {
             project.accept(new IResourceVisitor() {
-                @Override
                 public boolean visit(IResource resource) throws CoreException {
-                    if ("yang".equalsIgnoreCase(resource.getFullPath().getFileExtension())) {
+                    if (YangFolder.YANG_EXTENSION.equalsIgnoreCase(resource.getFullPath().getFileExtension())) {
                         resources.add(resource.getParent());
                     }
                     return true;
@@ -60,7 +59,7 @@ public class YangProject extends Openable {
         } catch (CoreException e) {
             throw new YangModelException(e);
         }
-        ArrayList<IOpenable> result = new ArrayList<>();
+        ArrayList<IOpenable> result = new ArrayList<IOpenable>();
         for (IResource resource : resources) {
             if (resource.getType() == IResource.FOLDER) {
                 result.add(new YangFolder(resource, this));
@@ -79,16 +78,16 @@ public class YangProject extends Openable {
     public IPath getPath() {
         return project.getFullPath();
     }
-    
+
     @Override
     protected IStatus validateExistence(IResource underlyingResource) {
         // check whether the java project can be opened
         try {
             if (!((IProject) underlyingResource).hasNature(JavaCore.NATURE_ID)) {
-                return new Status(Status.ERROR, YangCore.PLUGIN_ID, "Does not exist");
+                return new Status(Status.ERROR, YangCorePlugin.PLUGIN_ID, "Does not exist");
             }
         } catch (CoreException e) {
-            return new Status(Status.ERROR, YangCore.PLUGIN_ID, "Does not exist", e);
+            return new Status(Status.ERROR, YangCorePlugin.PLUGIN_ID, "Does not exist", e);
         }
         return Status.OK_STATUS;
     }
