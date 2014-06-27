@@ -6,6 +6,7 @@ module dhcp {
   import ietf-yang-types { prefix yang; }
   import ietf-inet-types { prefix inet; }
 
+  // This is single line comment
   organization
     "yang-central.org"; /* your organization */
   description

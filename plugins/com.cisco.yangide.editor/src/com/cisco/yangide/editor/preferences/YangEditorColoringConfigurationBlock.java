@@ -459,7 +459,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         ScrollBar vBar = ((Scrollable) fHighlightingColorListViewer.getControl()).getVerticalBar();
         if (vBar != null)
             maxWidth += vBar.getSize().x * 3; // scrollbars and tree indentation guess
-        gd.widthHint = maxWidth;
+        gd.widthHint = maxWidth + 100;
 
         fHighlightingColorListViewer.getControl().setLayoutData(gd);
 
