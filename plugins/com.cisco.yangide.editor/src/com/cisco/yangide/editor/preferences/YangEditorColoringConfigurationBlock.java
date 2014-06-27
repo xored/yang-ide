@@ -10,6 +10,7 @@ package com.cisco.yangide.editor.preferences;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -65,21 +66,13 @@ import com.cisco.yangide.editor.editors.IYangColorConstants;
 import com.cisco.yangide.editor.editors.YangSourceViewerConfiguration;
 
 /**
- * @author Alexey Kholupko
- * Overlay?
+ * @author Alexey Kholupko Overlay?
  */
 
-/**
- * Configures Java Editor hover preferences.
- *
- * @since 2.1
- */
 class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     /**
      * Item in the highlighting color list.
-     *
-     * @since 3.0
      */
     private static class HighlightingColorListItem {
         /** Display name */
@@ -170,8 +163,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     /**
      * Color list label provider.
-     *
-     * @since 3.0
      */
     private class ColorListLabelProvider extends LabelProvider {
         /*
@@ -187,8 +178,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     /**
      * Color list content provider.
-     *
-     * @since 3.0
      */
     private class ColorListContentProvider implements IStructuredContentProvider {
 
@@ -211,8 +200,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
     private static final String BOLD = PreferenceConstants.EDITOR_BOLD_SUFFIX;
     /**
      * Preference key suffix for italic preferences.
-     * 
-     * @since 3.0
      */
     private static final String ITALIC = PreferenceConstants.EDITOR_ITALIC_SUFFIX;
     /**
@@ -243,8 +230,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
     private Button fBoldCheckBox;
     /**
      * Check box for italic preference.
-     * 
-     * @since 3.0
      */
     private Button fItalicCheckBox;
     /**
@@ -261,20 +246,14 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
     private Button fUnderlineCheckBox;
     /**
      * Highlighting color list
-     * 
-     * @since 3.0
      */
     private final java.util.List<HighlightingColorListItem> fListModel = new ArrayList<HighlightingColorListItem>();
     /**
      * Highlighting color tree viewer
-     * 
-     * @since 3.0
      */
     private TableViewer fHighlightingColorListViewer;
     /**
      * The previewer.
-     * 
-     * @since 3.0
      */
     private SourceViewer fPreviewViewer;
     /**
@@ -656,7 +635,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
         new YangPreviewerUpdater(fPreviewViewer, configuration, store);
 
-        String content = loadPreviewContentFromFile("ColorSettingPreviewCode.txt"); //$NON-NLS-1$
+        String content = loadPreviewContentFromFile(); //$NON-NLS-1$
         IDocument document = new Document(content);
         new YangDocumentSetupParticipant().setup(document);
         fPreviewViewer.setDocument(document);
@@ -664,13 +643,14 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         return fPreviewViewer.getControl();
     }
 
-    private String loadPreviewContentFromFile(String filename) {
+    private String loadPreviewContentFromFile() {
         String line;
         String separator = System.getProperty("line.separator"); //$NON-NLS-1$
         StringBuffer buffer = new StringBuffer(512);
         BufferedReader reader = null;
         try {
-            reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(filename)));
+            URL entry = YangEditorPlugin.getDefault().getBundle().getEntry("resources/ColorSettingPreviewCode.txt");
+            reader = new BufferedReader(new InputStreamReader(entry.openStream()));
             while ((line = reader.readLine()) != null) {
                 buffer.append(line);
                 buffer.append(separator);
@@ -692,7 +672,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
      * Returns the current highlighting color list item.
      *
      * @return the current highlighting color list item
-     * @since 3.0
      */
     private HighlightingColorListItem getHighlightingColorListItem() {
         IStructuredSelection selection = (IStructuredSelection) fHighlightingColorListViewer.getSelection();

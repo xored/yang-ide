@@ -12,7 +12,7 @@ module simple-string-demo {
 
     typedef typedef-string {
         type string {
-            length "40";
+            length "50";
             pattern "[0-9A-F]\.*";
             pattern "[B-D]*";
             pattern "[4-7]*";

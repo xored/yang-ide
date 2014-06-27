@@ -8,7 +8,9 @@
 package com.cisco.yangide.core.model;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
@@ -28,7 +30,6 @@ import com.cisco.yangide.core.buffer.BufferManager;
 import com.cisco.yangide.core.buffer.IBuffer;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.internal.YangASTParser;
-import com.google.common.io.CharStreams;
 
 /**
  * @author Konstantin Zaitsev
@@ -87,7 +88,7 @@ public class YangFile extends Openable {
     protected OpenableElementInfo createElementInfo() {
         return new YangFileInfo();
     }
-    
+
     @Override
     protected IBuffer openBuffer(IProgressMonitor pm, Object info) throws YangModelException {
         BufferManager bufManager = getBufferManager();
@@ -107,13 +108,29 @@ public class YangFile extends Openable {
                 if (file == null || !file.exists()) {
                     throw new YangModelException("File not found");
                 }
+                InputStreamReader contents = null;
                 try {
-                    buffer.setContents(CharStreams.toString(new InputStreamReader(file.getContents(true), file
-                            .getCharset())));
-                } catch (IOException e) {
+                    contents = new InputStreamReader(file.getContents(true), "utf-8");
+                    char[] buf = new char[8096];
+                    StringBuilder builder = new StringBuilder();
+                    while (true) {
+                        int r = contents.read(buf);
+                        if (r == -1) {
+                            break;
+                        }
+                        builder.append(buf, 0, r);
+                    }
+                    buffer.setContents(builder.toString());
+                } catch (Exception e) {
                     throw new YangModelException(e, 0);
-                } catch (CoreException e) {
-                    throw new YangModelException(e);
+                } finally {
+                    if (contents != null) {
+                        try {
+                            contents.close();
+                        } catch (IOException e) {
+                            // Ingore
+                        }
+                    }
                 }
             }
 

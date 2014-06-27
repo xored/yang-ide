@@ -4,7 +4,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- */ 
+ */
 package com.cisco.yangide.editor.preferences;
 
 /**
@@ -21,36 +21,37 @@ import org.eclipse.jface.text.rules.FastPartitioner;
 import com.cisco.yangide.editor.editors.YangPartitionScanner;
 
 /**
- * The document setup participant from Ant. 
+ * The document setup participant from Ant.
  */
-public class YangDocumentSetupParticipant  implements IDocumentSetupParticipant {
+public class YangDocumentSetupParticipant implements IDocumentSetupParticipant {
 
     /**
-     * The name of the Ant partitioning. Again, clarify whats the purpose of partition scanner 
-     * and why can it be used in preview instead of real scanne
-     * @since 3.0
+     * The name of the Ant partitioning. Again, clarify whats the purpose of partition scanner and
+     * why can it be used in preview instead of real scanne
      */
-    public final static String YANG_PARTITIONING= "com.cisco.yangide.editor.YANGPartitioning";  //$NON-NLS-1$
-    
+    public final static String YANG_PARTITIONING = "com.cisco.yangide.editor.YANGPartitioning"; //$NON-NLS-1$
+
     public YangDocumentSetupParticipant() {
     }
-    
-    /* (non-Javadoc)
-     * @see org.eclipse.core.filebuffers.IDocumentSetupParticipant#setup(org.eclipse.jface.text.IDocument)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.core.filebuffers.IDocumentSetupParticipant#setup(org.eclipse.jface.text.IDocument
+     * )
      */
     public void setup(IDocument document) {
         if (document instanceof IDocumentExtension3) {
-            IDocumentExtension3 extension3= (IDocumentExtension3) document;
+            IDocumentExtension3 extension3 = (IDocumentExtension3) document;
             IDocumentPartitioner partitioner = createDocumentPartitioner();
             extension3.setDocumentPartitioner(YANG_PARTITIONING, partitioner);
             partitioner.connect(document);
-        } 
+        }
     }
-    
+
     private IDocumentPartitioner createDocumentPartitioner() {
-        return new FastPartitioner(
-                new YangPartitionScanner(), new String[]{
-                    YangPartitionScanner.YANG_COMMENT,
-                    YangPartitionScanner.YANG_STRING});
+        return new FastPartitioner(new YangPartitionScanner(), new String[] { YangPartitionScanner.YANG_COMMENT,
+                YangPartitionScanner.YANG_STRING });
     }
 }
