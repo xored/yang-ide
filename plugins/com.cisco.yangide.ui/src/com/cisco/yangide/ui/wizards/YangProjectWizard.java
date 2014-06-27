@@ -23,9 +23,11 @@ import org.codehaus.plexus.util.xml.Xpp3Dom;
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jdt.core.IClasspathEntry;
@@ -73,34 +75,60 @@ public class YangProjectWizard extends MavenProjectWizard {
     @Override
     public boolean performFinish() {
         boolean res = super.performFinish();
-        if (res) {
-            IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getModel().getArtifactId());
-            IFolder folder = project.getFolder(yangPage.getRootDir());
-            createFolder(folder);
-            try {
-                if (yangPage.createExampleFile()) {
-                    InputStream demoFileContents = null;
+        if (!res) {
+            return false;
+        }
+        try {
+            ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
+                @Override
+                public void run(IProgressMonitor monitor) throws CoreException {
+                    IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getModel().getArtifactId());
+                    IFolder folder = project.getFolder(yangPage.getRootDir());
+                    createFolder(folder);
                     try {
-                        Path demoPath = new Path("resources/yang/acme-system.yang");
-                        demoFileContents = FileLocator.openStream(YangUIPlugin.getDefault().getBundle(), demoPath,
-                                false);
+                        if (yangPage.createExampleFile()) {
+                            InputStream demoFileContents = null;
+                            try {
+                                Path demoPath = new Path("resources/yang/acme-system.yang");
+                                demoFileContents = FileLocator.openStream(YangUIPlugin.getDefault().getBundle(),
+                                        demoPath, false);
 
-                        folder.getFile("acme-system.yang").create(demoFileContents, true, null);
-                    } finally {
-                        if (demoFileContents != null) {
-                            demoFileContents.close();
+                                folder.getFile("acme-system.yang").create(demoFileContents, true, null);
+                            } finally {
+                                if (demoFileContents != null) {
+                                    demoFileContents.close();
+                                }
+                            }
                         }
+                        // Add yang folder to java classpath
+                        IJavaProject javaProject = JavaCore.create(project);
+                        List<IClasspathEntry> classpath = new ArrayList<>(Arrays.asList(javaProject.getRawClasspath()));
+                        IClasspathEntry yangSrc = JavaCore.newSourceEntry(folder.getFullPath());
+                        boolean hasSame = false;
+                        for (IClasspathEntry ee : classpath) {
+                            if (ee.getPath().equals(yangSrc.getPath())) {
+                                hasSame = true;
+                                break;
+                            }
+                        }
+                        if (!hasSame) {
+                            classpath.add(yangSrc);
+                            javaProject.setRawClasspath(classpath.toArray(new IClasspathEntry[0]),
+                                    new NullProgressMonitor());
+                        }
+
+                    } catch (CoreException e) {
+                        YangUIPlugin.log(e.getMessage(), e);
+                    } catch (IOException e) {
+                        YangUIPlugin.log(e.getMessage(), e);
                     }
                 }
-            } catch (CoreException e) {
-                YangUIPlugin.log(e.getMessage(), e);
-                return false;
-            } catch (IOException e) {
-                YangUIPlugin.log(e.getMessage(), e);
-                return false;
-            }
+            }, new NullProgressMonitor());
+        } catch (CoreException e) {
+            YangUIPlugin.log(e);
+            return false;
         }
-        return res;
+        return true;
     }
 
     private void createFolder(IFolder folder) {
@@ -110,7 +138,9 @@ public class YangProjectWizard extends MavenProjectWizard {
                 createFolder((IFolder) parent);
             }
             try {
-                folder.create(true, true, new NullProgressMonitor());
+                if (!folder.exists()) {
+                    folder.create(true, true, new NullProgressMonitor());
+                }
             } catch (CoreException e) {
                 YangUIPlugin.log(e);
             }
