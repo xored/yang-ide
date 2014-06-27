@@ -35,11 +35,24 @@ import com.cisco.yangide.ui.YangUI;
 @SuppressWarnings("restriction")
 public class YangProjectWizard extends MavenProjectWizard {
 
+    /** YANG tools configuration page. */
+    private YangProjectWizardPage yangPage;
+
+    /**
+     * Constructor.
+     */
     public YangProjectWizard() {
         super();
         setWindowTitle("New YANG Project");
     }
 
+    @Override
+    public void addPages() {
+//        yangPage = new YangProjectWizardPage();
+//        addPage(yangPage);
+        super.addPages();
+    }
+    
     @Override
     public void init(IWorkbench workbench, IStructuredSelection selection) {
         super.init(workbench, selection);
@@ -108,10 +121,10 @@ public class YangProjectWizard extends MavenProjectWizard {
                 "http://nexus.opendaylight.org/content/repositories/opendaylight.release/"));
         model.addRepository(createRepoParameter("opendaylight-snapshot",
                 "http://nexus.opendaylight.org/content/repositories/opendaylight.snapshot/"));
-        
+
         model.getProperties().put("maven.compiler.source", "1.7");
         model.getProperties().put("maven.compiler.target", "1.7");
-        
+
         Dependency dependency2 = new Dependency();
         dependency2.setGroupId("org.opendaylight.yangtools");
         dependency2.setArtifactId("yang-binding");
@@ -121,12 +134,24 @@ public class YangProjectWizard extends MavenProjectWizard {
         return model;
     }
 
+    /**
+     * Creates single configuration parameter.
+     * 
+     * @param name name
+     * @param value value
+     * @return config parameter
+     */
     private Xpp3Dom createSingleParameter(String name, String value) {
         Xpp3Dom parameter = new Xpp3Dom(name);
         parameter.setValue(value);
         return parameter;
     }
 
+    /**
+     * @param name name
+     * @param url url
+     * @return repository configuration by name and url
+     */
     private Repository createRepoParameter(String name, String url) {
         Repository r = new Repository();
         r.setId(name);
