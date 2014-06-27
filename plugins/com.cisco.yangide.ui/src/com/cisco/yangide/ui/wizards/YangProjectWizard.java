@@ -24,19 +24,20 @@ import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IFolder;
 import org.eclipse.core.resources.IProject;
-import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.m2e.core.MavenPlugin;
-import org.eclipse.m2e.core.project.MavenUpdateRequest;
 import org.eclipse.m2e.core.ui.internal.wizards.MavenProjectWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -81,65 +82,71 @@ public class YangProjectWizard extends MavenProjectWizard {
         if (!res) {
             return false;
         }
-        try {
-            ResourcesPlugin.getWorkspace().run(new IWorkspaceRunnable() {
-                @Override
-                public void run(IProgressMonitor monitor) throws CoreException {
-                    IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getModel().getArtifactId());
-                    IFolder folder = project.getFolder(yangPage.getRootDir());
+        final boolean doCreateDemoFile = yangPage.createExampleFile();
+        final IProject project = ResourcesPlugin.getWorkspace().getRoot().getProject(getModel().getArtifactId());
+        final String yangRoot = yangPage.getRootDir();
+        final IFolder folder = project.getFolder(yangRoot);
+
+        final String yangVersion = yangPage.getYangVersion();
+
+        final List<CodeGeneratorConfig> generators = yangPage.getCodeGenerators();
+
+        Job updateJob = new Job("Yang Project update") {
+            @Override
+            public IStatus run(IProgressMonitor monitor) {
+                try {
                     createFolder(folder);
 
                     IFile pomFile = project.getFile("pom.xml");
                     Model model = MavenPlugin.getMavenModelManager().readMavenModel(pomFile);
-                    updateModel(model);
+                    updateModel(model, yangVersion, generators, yangRoot);
 
                     pomFile.delete(true, new NullProgressMonitor());
                     MavenPlugin.getMavenModelManager().createMavenModel(pomFile, model);
                     MavenPlugin.getProjectConfigurationManager().updateProjectConfiguration(project,
                             new NullProgressMonitor());
-                    try {
-                        if (yangPage.createExampleFile()) {
-                            InputStream demoFileContents = null;
-                            try {
-                                Path demoPath = new Path("resources/yang/acme-system.yang");
-                                demoFileContents = FileLocator.openStream(YangUIPlugin.getDefault().getBundle(),
-                                        demoPath, false);
 
-                                folder.getFile("acme-system.yang").create(demoFileContents, true, null);
-                            } finally {
-                                if (demoFileContents != null) {
-                                    demoFileContents.close();
-                                }
+                    if (doCreateDemoFile) {
+                        InputStream demoFileContents = null;
+                        try {
+                            Path demoPath = new Path("resources/yang/acme-system.yang");
+                            demoFileContents = FileLocator.openStream(YangUIPlugin.getDefault().getBundle(), demoPath,
+                                    false);
+
+                            folder.getFile("acme-system.yang").create(demoFileContents, true, null);
+                        } finally {
+                            if (demoFileContents != null) {
+                                demoFileContents.close();
                             }
                         }
-                        // Add yang folder to java classpath
-                        IJavaProject javaProject = JavaCore.create(project);
-                        List<IClasspathEntry> classpath = new ArrayList<>(Arrays.asList(javaProject.getRawClasspath()));
-                        IClasspathEntry yangSrc = JavaCore.newSourceEntry(folder.getFullPath());
-                        boolean hasSame = false;
-                        for (IClasspathEntry ee : classpath) {
-                            if (ee.getPath().equals(yangSrc.getPath())) {
-                                hasSame = true;
-                                break;
-                            }
-                        }
-                        if (!hasSame) {
-                            classpath.add(yangSrc);
-                            javaProject.setRawClasspath(classpath.toArray(new IClasspathEntry[0]),
-                                    new NullProgressMonitor());
-                        }
-
-                    } catch (CoreException e) {
-                        YangUIPlugin.log(e.getMessage(), e);
-                    } catch (IOException e) {
-                        YangUIPlugin.log(e.getMessage(), e);
                     }
+                    // Add yang folder to java classpath
+                    IJavaProject javaProject = JavaCore.create(project);
+                    List<IClasspathEntry> classpath = new ArrayList<>(Arrays.asList(javaProject.getRawClasspath()));
+                    IClasspathEntry yangSrc = JavaCore.newSourceEntry(folder.getFullPath());
+                    boolean hasSame = false;
+                    for (IClasspathEntry ee : classpath) {
+                        if (ee.getPath().equals(yangSrc.getPath())) {
+                            hasSame = true;
+                            break;
+                        }
+                    }
+                    if (!hasSame) {
+                        classpath.add(yangSrc);
+                        javaProject.setRawClasspath(classpath.toArray(new IClasspathEntry[0]),
+                                new NullProgressMonitor());
+                    }
+
+                } catch (CoreException e) {
+                    YangUIPlugin.log(e.getMessage(), e);
+                } catch (IOException e) {
+                    YangUIPlugin.log(e.getMessage(), e);
                 }
-            }, new NullProgressMonitor());
-        } catch (CoreException e) {
-            YangUIPlugin.log(e);
-            return false;
-        }
+                return Status.OK_STATUS;
+            }
+        };
+        updateJob.setRule(MavenPlugin.getProjectConfigurationManager().getRule());
+        updateJob.schedule();
         return true;
     }
 
@@ -159,16 +166,13 @@ public class YangProjectWizard extends MavenProjectWizard {
         }
     }
 
-    public void updateModel(Model model) {
+    public void updateModel(Model model, String yangVersion, List<CodeGeneratorConfig> generators, String yangRoot) {
         // Model model = super.getModel();
         model.setBuild(new Build());
         Plugin plugin = new Plugin();
         plugin.setGroupId("org.opendaylight.yangtools");
         plugin.setArtifactId("yang-maven-plugin");
-        plugin.setVersion(yangPage.getYangVersion());
-
-        // add generators
-        List<CodeGeneratorConfig> generators = yangPage.getCodeGenerators();
+        plugin.setVersion(yangVersion);
 
         for (CodeGeneratorConfig genConf : generators) {
             Dependency dependency = new Dependency();
@@ -191,7 +195,7 @@ public class YangProjectWizard extends MavenProjectWizard {
             generator.addChild(createSingleParameter("outputBaseDir", genConf.getGenOutputDirectory()));
             codeGenerators.addChild(generator);
         }
-        config.addChild(createSingleParameter("yangFilesRootDir", yangPage.getRootDir()));
+        config.addChild(createSingleParameter("yangFilesRootDir", yangRoot));
         config.addChild(codeGenerators);
         config.addChild(createSingleParameter("inspectDependencies", "false"));
         pluginExecution.setConfiguration(config);
@@ -213,7 +217,7 @@ public class YangProjectWizard extends MavenProjectWizard {
         Dependency dependency2 = new Dependency();
         dependency2.setGroupId("org.opendaylight.yangtools");
         dependency2.setArtifactId("yang-binding");
-        dependency2.setVersion(yangPage.getYangVersion());
+        dependency2.setVersion(yangVersion);
         dependency2.setType("jar");
         model.addDependency(dependency2);
     }
