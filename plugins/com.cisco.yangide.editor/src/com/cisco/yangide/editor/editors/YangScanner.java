@@ -5,23 +5,17 @@ import java.util.List;
 
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.rules.EndOfLineRule;
-import org.eclipse.jface.text.rules.IPredicateRule;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
-import org.eclipse.jface.text.rules.MultiLineRule;
 import org.eclipse.jface.text.rules.NumberRule;
-import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
 public class YangScanner extends AbstractYangScanner{
 
     private static String[] tokenProperties= {
-        //IYangColorConstants.YANG_COMMENT,
         IYangColorConstants.YANG_IDENTIFIER,
         IYangColorConstants.YANG_KEYWORD,
-        //IYangColorConstants.YANG_STRING,
         IYangColorConstants.YANG_TYPE,
         IYangColorConstants.YANG_NUMBER,
     };    
@@ -70,20 +64,11 @@ public class YangScanner extends AbstractYangScanner{
         // Add generic whitespace rule.
         rules.add(new WhitespaceRule(new YangWhitespaceDetector()));
 
-//        IToken string = getToken(IYangColorConstants.YANG_STRING);
-//        rules.add(new MultiLineRule("\"", "\"", string));
-//        
-//        rules.add(new MultiLineRule("'", "'", string)); 
-//        
-//        IToken comment = getToken(IYangColorConstants.YANG_COMMENT);
-//        rules.add(new MultiLineRule("/*", "*/", comment));
-//        
-//        rules.add(new EndOfLineRule("//", comment)); //$NON-NLS-1$
-
-        
         IToken identifier = getToken(IYangColorConstants.YANG_IDENTIFIER);
         IToken keyword = getToken(IYangColorConstants.YANG_KEYWORD);
         IToken type = getToken(IYangColorConstants.YANG_TYPE);
+        
+        setDefaultReturnToken(identifier);
         
         WordRule wordRule = new WordRule(new YangWordDetector(), identifier);
 

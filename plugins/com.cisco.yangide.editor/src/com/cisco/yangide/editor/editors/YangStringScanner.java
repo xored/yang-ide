@@ -5,17 +5,13 @@ import java.util.List;
 
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.TextAttribute;
-import org.eclipse.jface.text.rules.BufferedRuleBasedScanner;
-import org.eclipse.jface.text.rules.EndOfLineRule;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
-import org.eclipse.jface.text.rules.MultiLineRule;
-import org.eclipse.jface.text.rules.RuleBasedScanner;
-import org.eclipse.jface.text.rules.SingleLineRule;
-import org.eclipse.jface.text.rules.Token;
-import org.eclipse.jface.text.rules.WhitespaceRule;
 
+/**
+ * @author Alexey Kholupko
+ *
+ */
 public class YangStringScanner extends AbstractYangScanner {
 
     private static String[] tokenProperties= {
@@ -50,14 +46,11 @@ public class YangStringScanner extends AbstractYangScanner {
         List<IRule> rules = new ArrayList<IRule>();
         
         IToken string = getToken(IYangColorConstants.YANG_STRING);
-        // Add rule for double quotes
-        rules.add(new MultiLineRule("\"", "\"", string, '\\'));
-        // Add a rule for single quotes
-        rules.add(new MultiLineRule("'", "'", string, '\\'));
+        setDefaultReturnToken(string);
         
-        // Add generic whitespace rule.
-        rules.add(new WhitespaceRule(new YangWhitespaceDetector()));
-
+        //Do not create rules here, they are defined in PartitionScanner
+        //here we just define default token for string partition
+        
         return rules;
     }
 }

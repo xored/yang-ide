@@ -1,22 +1,22 @@
 package com.cisco.yangide.editor.editors;
 
+
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
-import org.eclipse.jface.text.TextAttribute;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
-import org.eclipse.jface.text.rules.Token;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.editor.preferences.YangDocumentSetupParticipant;
 
 public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
 	private YangDoubleClickStrategy doubleClickStrategy;
@@ -57,13 +57,8 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
 		return scanner;
 	}
 	protected YangStringScanner getYangStringScanner() {
-		if (stringScanner == null) {
+		if (stringScanner == null) 
 			stringScanner = new YangStringScanner(colorManager, preferencesStore);
-			stringScanner.setDefaultReturnToken(
-				new Token(
-					new TextAttribute(
-						colorManager.getColor(IYangColorConstants.YANG_STRING))));
-		}
 		return stringScanner;
 	}
 	
@@ -72,13 +67,8 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
      * @return the commentScanner
      */
     public YangCommentScanner getYangCommentScanner() {
-        if (commentScanner == null) {
+        if (commentScanner == null)
             commentScanner = new YangCommentScanner(colorManager, preferencesStore);
-            commentScanner.setDefaultReturnToken(
-                new Token(
-                    new TextAttribute(
-                        colorManager.getColor(IYangColorConstants.YANG_COMMENT))));     
-        }
         return commentScanner;
     }
 
@@ -86,6 +76,9 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
 
 	public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 	    
+	    /**
+	     * for semantic higlighting @see org.eclipse.jdt.internal.ui.text.JavaPresentationReconciler
+	     */
 		PresentationReconciler reconciler = new PresentationReconciler();
 		reconciler.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 		
@@ -93,6 +86,9 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
         reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
         reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
         
+        /**
+         *  may need to be used @see org.eclipse.ant.internal.ui.editor.text.MultilineDamagerRepairer
+         */
 		dr = new DefaultDamagerRepairer(getYangCommentScanner());
 		reconciler.setDamager(dr, YangPartitionScanner.YANG_COMMENT);
 		reconciler.setRepairer(dr, YangPartitionScanner.YANG_COMMENT);
@@ -104,6 +100,13 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
 		return reconciler;
 	}
 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getConfiguredDocumentPartitioning(org.eclipse.jface.text.source.ISourceViewer)
+     */
+    public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
+        return YangDocumentSetupParticipant.YANG_PARTITIONING;
+    }	
+	
     /**
      * Determines whether the preference change encoded by the given event
      * changes the behavior of one of its contained components.

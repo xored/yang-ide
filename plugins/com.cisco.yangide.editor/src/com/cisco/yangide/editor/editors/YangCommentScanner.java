@@ -5,12 +5,13 @@ import java.util.List;
 
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.text.rules.EndOfLineRule;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
-import org.eclipse.jface.text.rules.MultiLineRule;
-import org.eclipse.jface.text.rules.WhitespaceRule;
 
+/**
+ * @author Alexey Kholupko
+ *
+ */
 public class YangCommentScanner extends AbstractYangScanner {
 
     private static String[] tokenProperties= {
@@ -45,12 +46,11 @@ public class YangCommentScanner extends AbstractYangScanner {
         List<IRule> rules = new ArrayList<IRule>();
         
         IToken comment = getToken(IYangColorConstants.YANG_COMMENT);
-        rules.add(new MultiLineRule("/*", "*/", comment, '\\'));
+        setDefaultReturnToken(comment);
         
-        rules.add(new EndOfLineRule("//", comment));
-        
-        // Add generic whitespace rule.
-        rules.add(new WhitespaceRule(new YangWhitespaceDetector()));
+        /*
+         * @see com.cisco.yangide.editor.editors.YangStringScanner#createRules()
+         */
 
         return rules;
     }

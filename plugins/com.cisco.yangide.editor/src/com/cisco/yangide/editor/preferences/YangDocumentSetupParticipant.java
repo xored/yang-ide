@@ -25,6 +25,8 @@ import com.cisco.yangide.editor.editors.YangPartitionScanner;
  */
 public class YangDocumentSetupParticipant implements IDocumentSetupParticipant {
     
+    public final static String YANG_PARTITIONING = "com.cisco.yangide.editor.ui.yangPartitioning";  //$NON-NLS-1$
+    
     public YangDocumentSetupParticipant() {
     }
     
@@ -35,7 +37,8 @@ public class YangDocumentSetupParticipant implements IDocumentSetupParticipant {
         if (document instanceof IDocumentExtension3) {
             IDocumentExtension3 extension3 = (IDocumentExtension3) document;
             IDocumentPartitioner partitioner = createDocumentPartitioner();
-            extension3.setDocumentPartitioner(IDocumentExtension3.DEFAULT_PARTITIONING, partitioner);
+            //extension3.setDocumentPartitioner(IDocumentExtension3.DEFAULT_PARTITIONING, partitioner);
+            extension3.setDocumentPartitioner(YANG_PARTITIONING, partitioner);
             partitioner.connect(document);
         } 
     }
@@ -43,7 +46,7 @@ public class YangDocumentSetupParticipant implements IDocumentSetupParticipant {
     private IDocumentPartitioner createDocumentPartitioner() {
         return new FastPartitioner(
                 new YangPartitionScanner(), new String[]{
-                    IDocument.DEFAULT_CONTENT_TYPE,
+                    //IDocument.DEFAULT_CONTENT_TYPE, //?? is this right?
                     YangPartitionScanner.YANG_COMMENT,
                     YangPartitionScanner.YANG_STRING});
     }

@@ -18,13 +18,13 @@ public class YangPartitionScanner extends RuleBasedPartitionScanner {
         List<IPredicateRule> rules = new ArrayList<IPredicateRule>();
 
         IToken comment = new Token(YANG_COMMENT);
-        rules.add(new MultiLineRule("/*", "*/", comment));
+        rules.add(new MultiLineRule("/*", "*/", comment, (char) 0, true));
         rules.add(new EndOfLineRule("//", comment));
 
-        IToken multiLinestring = new Token(YANG_STRING);
+        IToken multiLineString = new Token(YANG_STRING);
         // TODO escaping " or ' in each other sequence
-        rules.add(new MultiLineRule("\"", "\"", multiLinestring, '\\'));
-        rules.add(new MultiLineRule("'", "'", multiLinestring, '\\'));
+        rules.add(new MultiLineRule("\"", "\"", multiLineString, '\\', true));
+        rules.add(new MultiLineRule("'", "'", multiLineString, '\\', true));
 
         IPredicateRule[] result = new IPredicateRule[rules.size()];
         rules.toArray(result);
