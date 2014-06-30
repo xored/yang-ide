@@ -18,10 +18,10 @@ import org.eclipse.jface.text.rules.WordRule;
 public class YangScanner extends AbstractYangScanner{
 
     private static String[] tokenProperties= {
-        IYangColorConstants.YANG_COMMENT,
+        //IYangColorConstants.YANG_COMMENT,
         IYangColorConstants.YANG_IDENTIFIER,
         IYangColorConstants.YANG_KEYWORD,
-        IYangColorConstants.YANG_STRING,
+        //IYangColorConstants.YANG_STRING,
         IYangColorConstants.YANG_TYPE,
         IYangColorConstants.YANG_NUMBER,
     };    
@@ -49,7 +49,6 @@ public class YangScanner extends AbstractYangScanner{
      */
     public YangScanner(IColorManager manager, IPreferenceStore store) {
         super(manager, store);
-        initialize();
     }
 
 
@@ -75,11 +74,11 @@ public class YangScanner extends AbstractYangScanner{
 //        rules.add(new MultiLineRule("\"", "\"", string));
 //        
 //        rules.add(new MultiLineRule("'", "'", string)); 
-        
-        IToken comment = getToken(IYangColorConstants.YANG_COMMENT);
-        rules.add(new MultiLineRule("/*", "*/", comment));
-        
-        rules.add(new EndOfLineRule("//", comment)); //$NON-NLS-1$
+//        
+//        IToken comment = getToken(IYangColorConstants.YANG_COMMENT);
+//        rules.add(new MultiLineRule("/*", "*/", comment));
+//        
+//        rules.add(new EndOfLineRule("//", comment)); //$NON-NLS-1$
 
         
         IToken identifier = getToken(IYangColorConstants.YANG_IDENTIFIER);

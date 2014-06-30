@@ -23,13 +23,7 @@ import com.cisco.yangide.editor.editors.YangPartitionScanner;
 /**
  * The document setup participant from Ant. 
  */
-public class YangDocumentSetupParticipant  implements IDocumentSetupParticipant {
-
-    /**
-     * The name of the Ant partitioning. Again, clarify whats the purpose of partition scanner 
-     * and why can it be used in preview instead of real scanner
-     * @since 3.0
-     */
+public class YangDocumentSetupParticipant implements IDocumentSetupParticipant {
     
     public YangDocumentSetupParticipant() {
     }
@@ -39,7 +33,7 @@ public class YangDocumentSetupParticipant  implements IDocumentSetupParticipant 
      */
     public void setup(IDocument document) {
         if (document instanceof IDocumentExtension3) {
-            IDocumentExtension3 extension3= (IDocumentExtension3) document;
+            IDocumentExtension3 extension3 = (IDocumentExtension3) document;
             IDocumentPartitioner partitioner = createDocumentPartitioner();
             extension3.setDocumentPartitioner(IDocumentExtension3.DEFAULT_PARTITIONING, partitioner);
             partitioner.connect(document);
@@ -49,6 +43,7 @@ public class YangDocumentSetupParticipant  implements IDocumentSetupParticipant 
     private IDocumentPartitioner createDocumentPartitioner() {
         return new FastPartitioner(
                 new YangPartitionScanner(), new String[]{
+                    IDocument.DEFAULT_CONTENT_TYPE,
                     YangPartitionScanner.YANG_COMMENT,
                     YangPartitionScanner.YANG_STRING});
     }

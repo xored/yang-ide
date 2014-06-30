@@ -134,6 +134,7 @@ public abstract class AbstractYangScanner extends BufferedRuleBasedScanner {
         super();
         fColorManager= manager;
         fPreferenceStore= store;
+        initialize();
     }
 
     /**

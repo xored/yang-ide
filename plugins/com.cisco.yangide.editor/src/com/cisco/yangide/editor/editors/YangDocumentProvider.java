@@ -15,6 +15,7 @@ public class YangDocumentProvider extends FileDocumentProvider {
 				new FastPartitioner(
 					new YangPartitionScanner(),
 					new String[] {
+					    IDocument.DEFAULT_CONTENT_TYPE,
 						YangPartitionScanner.YANG_COMMENT,
 						YangPartitionScanner.YANG_STRING });
 			partitioner.connect(document);
