@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
+//import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
@@ -14,7 +14,6 @@ import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.graphics.RGB;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
@@ -24,7 +23,6 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
-import com.cisco.yangide.editor.preferences.YangDocumentSetupParticipant;
 
 public class YangEditor extends TextEditor {
 
@@ -90,14 +88,15 @@ public class YangEditor extends TextEditor {
      * @see JavaEditor#internalDoSetInput 
      */
     private void internalDoSetInput(IEditorInput input) throws CoreException {
-        ISourceViewer sourceViewer= getSourceViewer();
-        JavaSourceViewer javaSourceViewer= null;
-        if (sourceViewer instanceof JavaSourceViewer)
-            javaSourceViewer= (JavaSourceViewer)sourceViewer;
-
-        IPreferenceStore store= getPreferenceStore();
-
+        
         super.doSetInput(input);
+        
+//        ISourceViewer sourceViewer= getSourceViewer();
+//        JavaSourceViewer javaSourceViewer= null;
+//        if (sourceViewer instanceof JavaSourceViewer)
+//            javaSourceViewer= (JavaSourceViewer)sourceViewer;
+//
+//        IPreferenceStore store= getPreferenceStore();
 
 //        if (javaSourceViewer != null && javaSourceViewer.getReconciler() == null) {
 //            IReconciler reconciler= getSourceViewerConfiguration().getReconciler(javaSourceViewer);

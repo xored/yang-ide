@@ -10,40 +10,18 @@ package com.cisco.yangide.editor.preferences;
 //import org.eclipse.ant.internal.ui.AntSourceViewerConfiguration;
 //import org.eclipse.ant.internal.ui.editor.formatter.FormattingPreferences;
 //import org.eclipse.ant.internal.ui.editor.formatter.XmlFormatter;
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.DisposeEvent;
 import org.eclipse.swt.events.DisposeListener;
-import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Font;
-import org.eclipse.swt.graphics.RGB;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.texteditor.AbstractTextEditor;
 
 import com.cisco.yangide.editor.editors.YangSourceViewerConfiguration;
-
-
-    import org.eclipse.swt.events.DisposeEvent;
-    import org.eclipse.swt.events.DisposeListener;
-    import org.eclipse.swt.graphics.Font;
-
-    import org.eclipse.core.runtime.Assert;
-
-    import org.eclipse.jface.preference.IPreferenceStore;
-    import org.eclipse.jface.resource.JFaceResources;
-    import org.eclipse.jface.util.IPropertyChangeListener;
-    import org.eclipse.jface.util.PropertyChangeEvent;
-
-    import org.eclipse.jface.text.source.SourceViewer;
-
-    import org.eclipse.jdt.ui.PreferenceConstants;
-    import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
 
     /**
      * @author Alexey Kholupko

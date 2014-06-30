@@ -103,7 +103,7 @@ public final class YangHeuristicScanner implements Symbols {
      */
     private static class NonWhitespace extends StopCondition {
         /*
-         * @see org.eclipse.jdt.internal.ui.text.JavaHeuristicScanner.StopCondition#stop(char)
+         * @see com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#stop(char)
          */
         @Override
         public boolean stop(char ch, int position, boolean forward) {
@@ -118,7 +118,7 @@ public final class YangHeuristicScanner implements Symbols {
      */
     private final class NonWhitespaceDefaultPartition extends NonWhitespace {
         /*
-         * @see org.eclipse.jdt.internal.ui.text.JavaHeuristicScanner.StopCondition#stop(char)
+         * @see com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#stop(char)
          */
         @Override
         public boolean stop(char ch, int position, boolean forward) {
@@ -126,7 +126,7 @@ public final class YangHeuristicScanner implements Symbols {
         }
 
         /*
-         * @see org.eclipse.jdt.internal.ui.text.JavaHeuristicScanner.StopCondition#nextPosition(int, boolean)
+         * @see com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#nextPosition(int, boolean)
          */
         @Override
         public int nextPosition(int position, boolean forward) {
@@ -152,7 +152,7 @@ public final class YangHeuristicScanner implements Symbols {
      */
     private static class NonJavaIdentifierPart extends StopCondition {
         /*
-         * @see org.eclipse.jdt.internal.ui.text.JavaHeuristicScanner.StopCondition#stop(char)
+         * @see com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#stop(char)
          */
         @Override
         public boolean stop(char ch, int position, boolean forward) {
@@ -167,7 +167,7 @@ public final class YangHeuristicScanner implements Symbols {
      */
     private final class NonJavaIdentifierPartDefaultPartition extends NonJavaIdentifierPart {
         /*
-         * @see org.eclipse.jdt.internal.ui.text.JavaHeuristicScanner.StopCondition#stop(char)
+         * @see com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#stop(char)
          */
         @Override
         public boolean stop(char ch, int position, boolean forward) {
@@ -175,7 +175,7 @@ public final class YangHeuristicScanner implements Symbols {
         }
 
         /*
-         * @see org.eclipse.jdt.internal.ui.text.JavaHeuristicScanner.StopCondition#nextPosition(int, boolean)
+         * @see com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#nextPosition(int, boolean)
          */
         @Override
         public int nextPosition(int position, boolean forward) {
@@ -222,7 +222,7 @@ public final class YangHeuristicScanner implements Symbols {
         }
 
         /*
-         * @see org.eclipse.jdt.internal.ui.text.JavaHeuristicScanner.StopCondition#stop(char, int)
+         * @see com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#stop(char, int)
          */
         @Override
         public boolean stop(char ch, int position, boolean forward) {
@@ -230,7 +230,7 @@ public final class YangHeuristicScanner implements Symbols {
         }
 
         /*
-         * @see org.eclipse.jdt.internal.ui.text.JavaHeuristicScanner.StopCondition#nextPosition(int, boolean)
+         * @see com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#nextPosition(int, boolean)
          */
         @Override
         public int nextPosition(int position, boolean forward) {

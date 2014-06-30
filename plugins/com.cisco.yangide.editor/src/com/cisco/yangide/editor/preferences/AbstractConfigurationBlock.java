@@ -28,13 +28,6 @@ import java.util.Set;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.internal.corext.util.Messages;
-import org.eclipse.jdt.internal.ui.dialogs.StatusInfo;
-import org.eclipse.jdt.internal.ui.dialogs.StatusUtil;
-import org.eclipse.jdt.internal.ui.preferences.IPreferenceConfigurationBlock;
-import org.eclipse.jdt.internal.ui.preferences.OverlayPreferenceStore;
-import org.eclipse.jdt.internal.ui.preferences.PreferencesMessages;
-import org.eclipse.jdt.internal.ui.preferences.ScrolledPageContent;
 import org.eclipse.jface.layout.PixelConverter;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferencePage;
@@ -49,12 +42,19 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.FormColors;
 import org.eclipse.ui.forms.events.ExpansionAdapter;
 import org.eclipse.ui.forms.events.ExpansionEvent;
 import org.eclipse.ui.forms.widgets.ExpandableComposite;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.SharedScrolledComposite;
+
+import com.cisco.yangide.editor.dialogs.StatusInfo;
+import com.cisco.yangide.editor.dialogs.StatusUtil;
 
 
 /**
@@ -216,6 +216,43 @@ abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlo
 			return contents;
 		}
 	}
+	
+    public class ScrolledPageContent extends SharedScrolledComposite {
+
+        private FormToolkit fToolkit;
+
+        public ScrolledPageContent(Composite parent) {
+            this(parent, SWT.V_SCROLL | SWT.H_SCROLL);
+        }
+
+        public ScrolledPageContent(Composite parent, int style) {
+            super(parent, style);
+
+            setFont(parent.getFont());
+
+            FormColors colors= new FormColors(Display.getCurrent());
+            colors.setBackground(null);
+            colors.setForeground(null);
+            fToolkit = new FormToolkit(colors);
+            
+            setExpandHorizontal(true);
+            setExpandVertical(true);
+
+            Composite body= new Composite(this, SWT.NONE);
+            body.setFont(parent.getFont());
+            setContent(body);
+        }
+
+
+        public void adaptChild(Control childControl) {
+            fToolkit.adapt(childControl, true, true);
+        }
+
+        public Composite getBody() {
+            return (Composite) getContent();
+        }
+
+    }    	
 
 	protected static final int INDENT= 20;
 	private OverlayPreferenceStore fStore;
@@ -425,7 +462,7 @@ abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlo
 	}
 
 	/*
-	 * @see org.eclipse.jdt.internal.ui.preferences.IPreferenceConfigurationBlock#dispose()
+	 * @see com.cisco.yangide.editor.preferences.IPreferenceConfigurationBlock#dispose()
 	 * @since 3.0
 	 */
 	public void dispose() {
@@ -442,14 +479,14 @@ abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlo
 	private IStatus validatePositiveNumber(String number) {
 		StatusInfo status= new StatusInfo();
 		if (number.length() == 0) {
-			status.setError(PreferencesMessages.JavaEditorPreferencePage_empty_input);
+			status.setError(YangPreferencesMessages.YANGEditorPreferencePage_empty_input);
 		} else {
 			try {
 				int value= Integer.parseInt(number);
 				if (value < 0)
-					status.setError(Messages.format(PreferencesMessages.JavaEditorPreferencePage_invalid_input, number));
+					status.setError(String.format(YangPreferencesMessages.YANGEditorPreferencePage_invalid_input, number));
 			} catch (NumberFormatException e) {
-				status.setError(Messages.format(PreferencesMessages.JavaEditorPreferencePage_invalid_input, number));
+				status.setError(String.format(YangPreferencesMessages.YANGEditorPreferencePage_invalid_input, number));
 			}
 		}
 		return status;

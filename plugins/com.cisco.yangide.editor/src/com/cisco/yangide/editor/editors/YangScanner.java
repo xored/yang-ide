@@ -54,7 +54,7 @@ public class YangScanner extends AbstractYangScanner{
 
 
     /* (non-Javadoc)
-     * @see org.eclipse.jdt.internal.ui.text.AbstractJavaScanner#getTokenProperties()
+     * @see com.cisco.yangide.editor.editors.AbstractYangScanner#getTokenProperties()
      */
     @Override
     protected String[] getTokenProperties() {
@@ -62,7 +62,7 @@ public class YangScanner extends AbstractYangScanner{
     }
 
     /* (non-Javadoc)
-     * @see org.eclipse.jdt.internal.ui.text.AbstractJavaScanner#createRules()
+     * @see com.cisco.yangide.editor.editors.AbstractYangScanner#createRules()
      */
     @Override
     protected List<IRule> createRules() {

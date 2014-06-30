@@ -13,11 +13,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import org.eclipse.jdt.internal.ui.preferences.OverlayPreferenceStore;
-import org.eclipse.jdt.internal.ui.preferences.OverlayPreferenceStore.OverlayKey;
-import org.eclipse.jdt.internal.ui.preferences.PreferencesMessages;
-import org.eclipse.jdt.internal.ui.preferences.ScrolledPageContent;
-import org.eclipse.jdt.internal.ui.text.JavaColorManager;
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.dialogs.Dialog;
@@ -51,18 +46,24 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Link;
 import org.eclipse.swt.widgets.ScrollBar;
 import org.eclipse.swt.widgets.Scrollable;
 import org.eclipse.ui.dialogs.PreferencesUtil;
 import org.eclipse.ui.editors.text.EditorsUI;
+import org.eclipse.ui.forms.FormColors;
+import org.eclipse.ui.forms.widgets.FormToolkit;
+import org.eclipse.ui.forms.widgets.SharedScrolledComposite;
 import org.eclipse.ui.model.WorkbenchViewerComparator;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.editors.IYangColorConstants;
+import com.cisco.yangide.editor.editors.YangColorManager;
 import com.cisco.yangide.editor.editors.YangSourceViewerConfiguration;
+import com.cisco.yangide.editor.preferences.OverlayPreferenceStore.OverlayKey;
 
 
 /**
@@ -194,6 +195,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
         /*
          * @see org.eclipse.jface.viewers.IStructuredContentProvider#getElements(java.lang.Object)
          */
+        @SuppressWarnings("rawtypes")
         public Object[] getElements(Object inputElement) {
             //return new String[] {fJavaCategory, fJavadocCategory, fCommentsCategory};
             return ((java.util.List)inputElement).toArray();
@@ -280,12 +282,11 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
      * @since 3.1
      */
     private FontMetrics fFontMetrics;
-    private YangPreviewerUpdater fPreviewerUpdater;
 
     public YangEditorColoringConfigurationBlock(OverlayPreferenceStore store) {
         super(store);
 
-        fColorManager= new JavaColorManager(false);
+        fColorManager= new YangColorManager(false);
 
         for (int i= 0, n= fSyntaxColorListModel.length; i < n; i++)
             fListModel.add(new HighlightingColorListItem (fSyntaxColorListModel[i][0], fSyntaxColorListModel[i][1], fSyntaxColorListModel[i][1] + BOLD, fSyntaxColorListModel[i][1] + ITALIC, fSyntaxColorListModel[i][1] + STRIKETHROUGH, fSyntaxColorListModel[i][1] + UNDERLINE));
@@ -392,7 +393,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
     }
 
     /*
-     * @see org.eclipse.jdt.internal.ui.preferences.IPreferenceConfigurationBlock#dispose()
+     * @see com.cisco.yangide.editor.preferences.IPreferenceConfigurationBlock#dispose()
      */
     @Override
     public void dispose() {
@@ -439,7 +440,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
         colorComposite.setLayout(layout);
 
         Link link= new Link(colorComposite, SWT.NONE);
-        link.setText(PreferencesMessages.JavaEditorColoringConfigurationBlock_link);
+        link.setText(YangPreferencesMessages.YANGEditorColoringConfigurationBlock_link);
         link.addSelectionListener(new SelectionAdapter() {
             @Override
             public void widgetSelected(SelectionEvent e) {
@@ -459,7 +460,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
 
         Label label;
         label= new Label(colorComposite, SWT.LEFT);
-        label.setText(PreferencesMessages.JavaEditorPreferencePage_coloring_element);
+        label.setText(YangPreferencesMessages.YANGEditorPreferencePage_coloring_element);
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         Composite editorComposite= new Composite(colorComposite, SWT.NONE);
@@ -500,7 +501,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
         //XXX place to fix layout
 
         fColorEditorLabel= new Label(stylesComposite, SWT.LEFT);
-        fColorEditorLabel.setText(PreferencesMessages.JavaEditorPreferencePage_color);
+        fColorEditorLabel.setText(YangPreferencesMessages.YANGEditorPreferencePage_color);
         gd= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         //XXX LayoutUtil.getIndent(); only since 3.9 returns 20
         gd.horizontalIndent= 20;
@@ -512,35 +513,35 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock{
         foregroundColorButton.setLayoutData(gd);
 
         fBoldCheckBox= new Button(stylesComposite, SWT.CHECK);
-        fBoldCheckBox.setText(PreferencesMessages.JavaEditorPreferencePage_bold);
+        fBoldCheckBox.setText(YangPreferencesMessages.YANGEditorPreferencePage_bold);
         gd= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         gd.horizontalIndent= 20;
         gd.horizontalSpan= 2;
         fBoldCheckBox.setLayoutData(gd);
 
         fItalicCheckBox= new Button(stylesComposite, SWT.CHECK);
-        fItalicCheckBox.setText(PreferencesMessages.JavaEditorPreferencePage_italic);
+        fItalicCheckBox.setText(YangPreferencesMessages.YANGEditorPreferencePage_italic);
         gd= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         gd.horizontalIndent= 20;
         gd.horizontalSpan= 2;
         fItalicCheckBox.setLayoutData(gd);
 
         fStrikethroughCheckBox= new Button(stylesComposite, SWT.CHECK);
-        fStrikethroughCheckBox.setText(PreferencesMessages.JavaEditorPreferencePage_strikethrough);
+        fStrikethroughCheckBox.setText(YangPreferencesMessages.YANGEditorPreferencePage_strikethrough);
         gd= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         gd.horizontalIndent= 20;
         gd.horizontalSpan= 2;
         fStrikethroughCheckBox.setLayoutData(gd);
 
         fUnderlineCheckBox= new Button(stylesComposite, SWT.CHECK);
-        fUnderlineCheckBox.setText(PreferencesMessages.JavaEditorPreferencePage_underline);
+        fUnderlineCheckBox.setText(YangPreferencesMessages.YANGEditorPreferencePage_underline);
         gd= new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
         gd.horizontalIndent= 20;
         gd.horizontalSpan= 2;
         fUnderlineCheckBox.setLayoutData(gd);
 
         label= new Label(colorComposite, SWT.LEFT);
-        label.setText(PreferencesMessages.JavaEditorPreferencePage_preview);
+        label.setText(YangPreferencesMessages.YANGEditorPreferencePage_preview);
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
 
         Control previewer= createPreviewer(colorComposite);
