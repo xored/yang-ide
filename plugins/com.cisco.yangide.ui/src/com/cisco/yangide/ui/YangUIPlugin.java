@@ -68,4 +68,16 @@ public class YangUIPlugin extends AbstractUIPlugin {
     public static void log(Throwable e) {
         log(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
     }
+    
+    /**
+     * Configurable option value: {@value}.
+     * @category OptionValue
+     */
+    public static final String TAB = "tab"; //$NON-NLS-1$
+    /**
+     * Configurable option value: {@value}.
+     * @category OptionValue
+     */
+    public static final String SPACE = "space"; //$NON-NLS-1$    
+    
 }

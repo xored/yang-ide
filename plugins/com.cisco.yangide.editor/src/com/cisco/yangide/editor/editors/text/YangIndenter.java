@@ -9,7 +9,7 @@ import org.eclipse.jface.text.IRegion;
 
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
-import com.cisco.yangide.core.YangCore;
+import com.cisco.yangide.ui.YangUIPlugin;
 import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.formatter.DefaultCodeFormatterConstants;
 
@@ -153,13 +153,13 @@ public final class YangIndenter {
 
         private String getPrefTabChar(){
             if(YangEditorPlugin.getDefault().getCombinedPreferenceStore().getBoolean(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS))
-                return YangCore.SPACE;
-            return YangCore.TAB;
+                return YangUIPlugin.SPACE;
+            return YangUIPlugin.TAB;
             
         }
         
         private boolean prefUseTabs() {
-            return !YangCore.SPACE.equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR));
+            return !YangUIPlugin.SPACE.equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR));
         }
 
         private int prefTabSize() {
@@ -645,10 +645,10 @@ public final class YangIndenter {
         // add additional indent
         int missing= totalLength - maxCopyLength;
         final int tabs, spaces;
-        if (YangCore.SPACE.equals(fPrefs.prefTabChar)) {
+        if (YangUIPlugin.SPACE.equals(fPrefs.prefTabChar)) {
             tabs= 0;
             spaces= missing;
-        } else if (YangCore.TAB.equals(fPrefs.prefTabChar)) {
+        } else if (YangUIPlugin.TAB.equals(fPrefs.prefTabChar)) {
             tabs= tabSize > 0 ? missing / tabSize : 0;
             spaces= tabSize > 0 ? missing % tabSize : missing;
         } else if (DefaultCodeFormatterConstants.MIXED.equals(fPrefs.prefTabChar)) {
