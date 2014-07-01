@@ -22,6 +22,7 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
+import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.editor.YangEditorPlugin;
 
 public class YangEditor extends TextEditor {
@@ -33,6 +34,8 @@ public class YangEditor extends TextEditor {
 
     public YangEditor() {
         super();
+		// core plugin initialization
+		YangCorePlugin.getDefault();        
         // colorManager = new YangColorManager();
         colorManager = new YangColorManager(false);
         setSourceViewerConfiguration(new YangSourceViewerConfiguration(colorManager));

@@ -14,7 +14,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
 
 import com.cisco.yangide.core.IOpenable;
-import com.cisco.yangide.core.Openable;
+import com.cisco.yangide.core.model.YangElement;
 
 /**
  * @author Konstantin Zaitsev
@@ -35,7 +35,7 @@ public class BufferManager {
      */
     public void addBuffer(IBuffer buffer) {
         if (VERBOSE) {
-            String owner = ((Openable) buffer.getOwner()).toStringWithAncestors();
+            String owner = ((YangElement) buffer.getOwner()).toStringWithAncestors();
             System.out.println("Adding buffer for " + owner); //$NON-NLS-1$
         }
         synchronized (this.openBuffers) {

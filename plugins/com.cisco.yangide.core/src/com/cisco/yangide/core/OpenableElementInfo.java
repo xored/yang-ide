@@ -7,6 +7,8 @@
  */
 package com.cisco.yangide.core;
 
+import com.cisco.yangide.core.model.YangElement;
+
 /**
  * @author Konstantin Zaitsev
  * @date Jun 25, 2014
@@ -17,7 +19,7 @@ public class OpenableElementInfo implements Cloneable {
      * Collection of handles of immediate children of this object. This is an empty array if this
      * element has no children.
      */
-    protected IOpenable[] children = Openable.NO_ELEMENTS;
+    protected IOpenable[] children = YangElement.NO_ELEMENTS;
 
     /**
      * Is the structure of this element known
@@ -64,7 +66,7 @@ public class OpenableElementInfo implements Cloneable {
             IOpenable element = this.children[i];
             if (element.equals(child)) {
                 if (length == 1) {
-                    this.children = Openable.NO_ELEMENTS;
+                    this.children = YangElement.NO_ELEMENTS;
                 } else {
                     IOpenable[] newChildren = new IOpenable[length - 1];
                     System.arraycopy(this.children, 0, newChildren, 0, i);

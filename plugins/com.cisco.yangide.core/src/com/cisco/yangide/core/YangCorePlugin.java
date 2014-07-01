@@ -7,12 +7,21 @@
  */
 package com.cisco.yangide.core;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
 
+import com.cisco.yangide.core.model.YangElement;
+import com.cisco.yangide.core.model.YangFile;
+import com.cisco.yangide.core.model.YangFolder;
 import com.cisco.yangide.core.model.YangModel;
+import com.cisco.yangide.core.model.YangModelManager;
+import com.cisco.yangide.core.model.YangProject;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -82,5 +91,44 @@ public class YangCorePlugin extends Plugin {
 
     public static void log(Throwable e) {
         log(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
+    }
+
+    public static boolean isYangProject(IProject project) {
+        try {
+            return project.hasNature("org.eclipse.jdt.core.javanature")
+                    || project.hasNature("org.eclipse.m2e.core.maven2Nature");
+        } catch (CoreException e) {
+            log(e);
+            return false;
+        }
+    }
+
+    /**
+     * @param project
+     * @return
+     */
+    public static YangProject create(IProject project) {
+        return new YangProject(project, getYangModel());
+    }
+
+    /**
+     * @param deltaRes
+     * @return
+     */
+    public static YangElement create(IResource resource) {
+        switch (resource.getType()) {
+        case IResource.PROJECT:
+            return new YangProject((IProject) resource, getYangModel());
+        case IResource.FOLDER:
+            return new YangFolder(resource, create(resource.getProject()));
+        }
+        return new YangFile((IFile) resource, create(resource.getParent()));
+    }
+
+    /**
+     * @param resource
+     */
+    public static YangFile createYangFile(IResource resource) {
+        return new YangFile((IFile) resource, create(resource.getParent()));
     }
 }

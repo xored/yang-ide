@@ -9,6 +9,7 @@ package com.cisco.yangide.core;
 
 import com.cisco.yangide.core.buffer.LRUCache;
 import com.cisco.yangide.core.buffer.OverflowingLRUCache;
+import com.cisco.yangide.core.model.YangElement;
 
 /**
  * @author Konstantin Zaitsev
@@ -39,7 +40,7 @@ public class OpenableElementCache extends OverflowingLRUCache {
      * NOTE: this triggers an external removal of this element by closing the element.
      */
     protected boolean close(LRUCacheEntry entry) {
-        Openable element = (Openable) entry.key;
+        YangElement element = (YangElement) entry.key;
         try {
             if (!element.canBeRemovedFromCache()) {
                 return false;

@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package com.cisco.yangide.core;
+package com.cisco.yangide.core.model;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -16,6 +16,10 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 
+import com.cisco.yangide.core.CoreUtil;
+import com.cisco.yangide.core.IOpenable;
+import com.cisco.yangide.core.OpenableElementInfo;
+import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.buffer.BufferChangedEvent;
 import com.cisco.yangide.core.buffer.BufferManager;
 import com.cisco.yangide.core.buffer.IBuffer;
@@ -26,12 +30,12 @@ import com.cisco.yangide.core.buffer.NullBuffer;
  * @author Konstantin Zaitsev
  * @date Jun 24, 2014
  */
-public abstract class Openable implements IOpenable, IBufferChangedListener {
+public abstract class YangElement implements IOpenable, IBufferChangedListener {
     public static final IOpenable[] NO_ELEMENTS = new IOpenable[0];
 
     private final IOpenable parent;
 
-    public Openable(IOpenable parent) {
+    public YangElement(IOpenable parent) {
         this.parent = parent;
     }
 
@@ -80,8 +84,13 @@ public abstract class Openable implements IOpenable, IBufferChangedListener {
         return false;
     }
 
-    public IOpenable getAncestor(int ancestorType) {
-        return null;
+    public String toStringWithAncestors() {
+        StringBuffer sb = new StringBuffer(getName());
+        IOpenable p = getParent();
+        if (p != null) {
+            sb.append("[").append(p.toStringWithAncestors()).append("]");
+        }
+        return sb.toString();
     }
 
     public IOpenable getParent() {
@@ -114,14 +123,6 @@ public abstract class Openable implements IOpenable, IBufferChangedListener {
      */
     public boolean canBufferBeRemovedFromCache(IBuffer buffer) {
         return !buffer.hasUnsavedChanges();
-    }
-
-    /**
-     * @return
-     */
-    public String toStringWithAncestors() {
-        // TODO Auto-generated method stub
-        return null;
     }
 
     public void close() throws YangModelException {
@@ -186,6 +187,34 @@ public abstract class Openable implements IOpenable, IBufferChangedListener {
         }
     }
 
+    public String getName() {
+        return getPath().toString();
+    }
+
+    @Override
+    public int hashCode() {
+        if (this.parent == null) {
+            return super.hashCode();
+        }
+        return CoreUtil.combineHashCodes(getName().hashCode(), this.parent.hashCode());
+    }
+
+    public boolean equals(Object o) {
+
+        if (this == o) {
+            return true;
+        }
+
+        // Yang model parent is null
+        if (this.parent == null) {
+            return super.equals(o);
+        }
+
+        // assume instanceof check is done in subclass
+        YangElement other = (YangElement) o;
+        return getName().equals(other.getName()) && this.parent.equals(other.parent);
+    }
+
     protected void generateInfos(OpenableElementInfo info, HashMap<IOpenable, OpenableElementInfo> newElements,
             IProgressMonitor monitor) throws YangModelException {
 
@@ -224,7 +253,7 @@ public abstract class Openable implements IOpenable, IBufferChangedListener {
 
     protected void openAncestors(HashMap<IOpenable, OpenableElementInfo> newElements, IProgressMonitor monitor)
             throws YangModelException {
-        Openable openableParent = (Openable) getParent();
+        YangElement openableParent = (YangElement) getParent();
         if (openableParent != null && !openableParent.isOpen()) {
             openableParent.generateInfos(openableParent.createElementInfo(), newElements, monitor);
         }
@@ -282,4 +311,10 @@ public abstract class Openable implements IOpenable, IBufferChangedListener {
      * Validates the existence of this openable. Returns a non ok status if it doesn't exist.
      */
     abstract protected IStatus validateExistence(IResource underlyingResource);
+
+    /**
+     * @return element type.
+     */
+    public abstract YangElementType getElementType();
+
 }
