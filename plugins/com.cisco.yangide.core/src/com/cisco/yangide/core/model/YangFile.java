@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
 import com.cisco.yangide.core.IOpenable;
-import com.cisco.yangide.core.Openable;
 import com.cisco.yangide.core.OpenableElementInfo;
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
@@ -33,7 +32,7 @@ import com.cisco.yangide.core.internal.YangASTParser;
  * @author Konstantin Zaitsev
  * @date Jun 24, 2014
  */
-public class YangFile extends Openable {
+public class YangFile extends YangElement {
     private IFile resource;
 
     /**
@@ -152,10 +151,15 @@ public class YangFile extends Openable {
 
     @Override
     public IPath getPath() {
-        return resource.getFullPath().makeRelativeTo(getParent().getPath());
+        return resource.getFullPath().makeRelativeTo(getParent().getResource().getFullPath());
     }
 
     public Module getModule() throws YangModelException {
         return ((YangFileInfo) getElementInfo(null)).getModule();
+    }
+
+    @Override
+    public YangElementType getElementType() {
+        return YangElementType.YANG_FILE;
     }
 }

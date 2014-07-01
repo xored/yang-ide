@@ -22,7 +22,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.JavaCore;
 
 import com.cisco.yangide.core.IOpenable;
-import com.cisco.yangide.core.Openable;
 import com.cisco.yangide.core.OpenableElementInfo;
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
@@ -31,7 +30,7 @@ import com.cisco.yangide.core.YangModelException;
  * @author Konstantin Zaitsev
  * @date Jun 24, 2014
  */
-public class YangProject extends Openable {
+public class YangProject extends YangElement {
 
     private IProject project;
 
@@ -80,14 +79,15 @@ public class YangProject extends Openable {
     }
 
     @Override
+    public YangElementType getElementType() {
+        return YangElementType.YANG_PROJECT;
+    }
+
+    @Override
     protected IStatus validateExistence(IResource underlyingResource) {
         // check whether the java project can be opened
-        try {
-            if (!((IProject) underlyingResource).hasNature(JavaCore.NATURE_ID)) {
-                return new Status(Status.ERROR, YangCorePlugin.PLUGIN_ID, "Does not exist");
-            }
-        } catch (CoreException e) {
-            return new Status(Status.ERROR, YangCorePlugin.PLUGIN_ID, "Does not exist", e);
+        if (!YangCorePlugin.isYangProject((IProject) underlyingResource)) {
+            return new Status(Status.ERROR, YangCorePlugin.PLUGIN_ID, "Does not exist");
         }
         return Status.OK_STATUS;
     }

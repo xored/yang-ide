@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package com.cisco.yangide.core;
+package com.cisco.yangide.core.model;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -25,9 +25,13 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
+import com.cisco.yangide.core.IOpenable;
+import com.cisco.yangide.core.OpenableElementCache;
+import com.cisco.yangide.core.OpenableElementInfo;
+import com.cisco.yangide.core.YangCorePlugin;
+import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.indexing.DeltaProcessor;
 import com.cisco.yangide.core.indexing.IndexManager;
-import com.cisco.yangide.core.model.YangModel;
 
 /**
  * @author Konstantin Zaitsev
@@ -46,7 +50,7 @@ public final class YangModelManager implements ISaveParticipant {
 
     public IndexManager indexManager = null;
 
-    public DeltaProcessor deltaProcessor = new DeltaProcessor();
+    public DeltaProcessor deltaProcessor = null;
 
     protected HashSet<IOpenable> elementsOutOfSynchWithBuffers = new HashSet<IOpenable>(11);
 
@@ -62,7 +66,7 @@ public final class YangModelManager implements ISaveParticipant {
         try {
             // initialize Yang model cache, 5000 is default value for JDT openable cache
             this.cache = new OpenableElementCache(5000);
-
+            this.deltaProcessor = new DeltaProcessor(this);
             final IWorkspace workspace = ResourcesPlugin.getWorkspace();
             workspace.addResourceChangeListener(deltaProcessor,
             /*
@@ -190,6 +194,13 @@ public final class YangModelManager implements ISaveParticipant {
         return yangModel;
     }
 
+    /**
+     * @return index manager
+     */
+    public static IndexManager getIndexManager() {
+        return MANAGER.indexManager;
+    }
+    
     protected HashSet<IOpenable> getElementsOutOfSynchWithBuffers() {
         return this.elementsOutOfSynchWithBuffers;
     }
@@ -206,5 +217,7 @@ public final class YangModelManager implements ISaveParticipant {
 
     public void saving(ISaveContext context) throws CoreException {
     }
+
     // / end of methods from ISaveParticipant
+
 }

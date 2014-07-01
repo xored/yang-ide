@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 
 import com.cisco.yangide.core.IOpenable;
-import com.cisco.yangide.core.Openable;
 import com.cisco.yangide.core.OpenableElementInfo;
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
@@ -29,7 +28,7 @@ import com.cisco.yangide.core.YangModelException;
  * @author Konstantin Zaitsev
  * @date Jun 24, 2014
  */
-public class YangFolder extends Openable {
+public class YangFolder extends YangElement {
 
     public static final String YANG_EXTENSION = "yang";
     private IResource resource;
@@ -50,7 +49,7 @@ public class YangFolder extends Openable {
 
     @Override
     public IPath getPath() {
-        return resource.getFullPath();
+        return resource.getFullPath().makeRelativeTo(getParent().getPath());
     }
 
     @Override
@@ -80,4 +79,8 @@ public class YangFolder extends Openable {
                 Status.ERROR, YangCorePlugin.PLUGIN_ID, "Does not exist");
     }
 
+    @Override
+    public YangElementType getElementType() {
+        return YangElementType.YANG_FOLDER;
+    }
 }

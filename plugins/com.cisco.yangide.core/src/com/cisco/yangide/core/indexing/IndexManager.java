@@ -7,6 +7,8 @@
  */
 package com.cisco.yangide.core.indexing;
 
+import org.eclipse.core.resources.IProject;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.jdt.internal.core.search.processing.JobManager;
 
 /**
@@ -21,4 +23,14 @@ public class IndexManager extends JobManager {
         return "Yang indexer";
     }
 
+    /**
+     * @param res
+     */
+    public void indexAll(IProject project) {
+        // TODO Auto-generated method stub
+        
+    }
+
+    public synchronized void removeIndexFamily(IPath path) {
+    }
 }

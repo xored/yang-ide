@@ -9,7 +9,7 @@ package com.cisco.yangide.core.buffer;
 
 import java.util.ArrayList;
 
-import com.cisco.yangide.core.Openable;
+import com.cisco.yangide.core.model.YangElement;
 
 /**
  * @author Konstantin Zaitsev
@@ -45,7 +45,7 @@ public class BufferCache extends OverflowingLRUCache {
 
         // prevent buffer that have unsaved changes or working copy buffer to be removed
         // see https://bugs.eclipse.org/bugs/show_bug.cgi?id=39311
-        if (!((Openable) buffer.getOwner()).canBufferBeRemovedFromCache(buffer)) {
+        if (!((YangElement) buffer.getOwner()).canBufferBeRemovedFromCache(buffer)) {
             return false;
         } else {
             ArrayList buffers = (ArrayList) this.buffersToClose.get();

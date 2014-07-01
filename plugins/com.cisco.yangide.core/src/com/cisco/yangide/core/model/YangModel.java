@@ -21,7 +21,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.JavaCore;
 
 import com.cisco.yangide.core.IOpenable;
-import com.cisco.yangide.core.Openable;
 import com.cisco.yangide.core.OpenableElementInfo;
 import com.cisco.yangide.core.YangModelException;
 
@@ -29,7 +28,7 @@ import com.cisco.yangide.core.YangModelException;
  * @author Konstantin Zaitsev
  * @date Jun 25, 2014
  */
-public class YangModel extends Openable {
+public class YangModel extends YangElement {
 
     public YangModel() {
         super(null);
@@ -83,4 +82,8 @@ public class YangModel extends Openable {
         return Path.ROOT;
     }
 
+    @Override
+    public YangElementType getElementType() {
+        return YangElementType.YANG_MODEL;
+    }
 }

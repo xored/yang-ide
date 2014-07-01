@@ -166,17 +166,6 @@ public interface IOpenable {
     boolean exists();
 
     /**
-     * Returns the first ancestor of this Java element that has the given type. Returns
-     * <code>null</code> if no such an ancestor can be found. This is a handle-only method.
-     *
-     * @param ancestorType the given type
-     * @return the first ancestor of this Java element that has the given type, null if no such an
-     * ancestor can be found
-     * @since 2.0
-     */
-    IOpenable getAncestor(int ancestorType);
-
-    /**
      * Returns the element directly containing this element, or <code>null</code> if this element
      * has no parent. This is a handle-only method.
      *
@@ -192,7 +181,6 @@ public interface IOpenable {
      * system. This is a handle-only method.
      *
      * @return the path to the innermost resource enclosing this element
-     * @since 2.0
      */
     IPath getPath();
 
@@ -215,7 +203,6 @@ public interface IOpenable {
      *
      * @return the innermost resource enclosing this element, <code>null</code> if this element is
      * included in an external archive
-     * @since 2.0
      */
     IResource getResource();
 
@@ -249,4 +236,7 @@ public interface IOpenable {
      * accessing its corresponding resource
      */
     boolean isStructureKnown() throws YangModelException;
+    
+    String getName();
+    String toStringWithAncestors();
 }
