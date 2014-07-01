@@ -24,7 +24,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
-
+import org.eclipse.jdt.internal.ui.text.JavaHeuristicScanner;
 import org.eclipse.jdt.ui.text.IJavaPartitions;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
@@ -39,7 +39,8 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
     /** The line comment introducer. Value is "{@value} " */
     private static final String LINE_COMMENT = "//"; //$NON-NLS-1$
-    private static final int DEFAULT_TAB_WIDTH = 4;
+    //XXX  Useless yet
+    private static final int DEFAULT_TAB_WIDTH = 2;
     private static final boolean DEFAULT_SPACES_FOR_TAB = true;
 
 
@@ -268,9 +269,7 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
             // insert closing brace on new line after an unclosed opening brace
             // TODO
-            if (getBracketCount(d, start, c.offset, true) > 0 && closeBrace()) {// && !isClosed(d,
-                                                                                // c.offset,
-                                                                                // c.length)) {
+            if (getBracketCount(d, start, c.offset, true) > 0 && closeBrace() && !isClosed(d, c.offset, c.length)) {
                 c.caretOffset = c.offset + buf.length();
                 c.shiftsCaret = false;
 
@@ -462,106 +461,14 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         return false;
     }
 
-    // TODO
-    // private boolean isClosed(IDocument document, int offset, int length) {
-    //
-    // CompilationUnitInfo info= getCompilationUnitForMethod(document, offset);
-    // if (info == null)
-    // return false;
-    //
-    // CompilationUnit compilationUnit= null;
-    // try {
-    // ASTParser parser= ASTParser.newParser(ASTProvider.SHARED_AST_LEVEL);
-    // parser.setSource(info.buffer);
-    // compilationUnit= (CompilationUnit) parser.createAST(null);
-    // } catch (ArrayIndexOutOfBoundsException x) {
-    // // work around for parser problem
-    // return false;
-    // }
-    //
-    // IProblem[] problems= compilationUnit.getProblems();
-    // for (int i= 0; i != problems.length; ++i) {
-    // if (problems[i].getID() == IProblem.UnmatchedBracket)
-    // return true;
-    // }
-    //
-    // final int relativeOffset= offset - info.delta;
-    //
-    // ASTNode node= NodeFinder.perform(compilationUnit, relativeOffset, length);
-    //
-    // if (length == 0) {
-    // while (node != null && (relativeOffset == node.getStartPosition() || relativeOffset ==
-    // node.getStartPosition() + node.getLength()))
-    // node= node.getParent();
-    // }
-    //
-    // if (node == null)
-    // return false;
-    //
-    // switch (node.getNodeType()) {
-    // case ASTNode.BLOCK:
-    // return getBlockBalance(document, offset, fPartitioning) <= 0;
-    //
-    // case ASTNode.IF_STATEMENT:
-    // {
-    // IfStatement ifStatement= (IfStatement) node;
-    // Expression expression= ifStatement.getExpression();
-    // IRegion expressionRegion= createRegion(expression, info.delta);
-    // Statement thenStatement= ifStatement.getThenStatement();
-    // IRegion thenRegion= createRegion(thenStatement, info.delta);
-    //
-    // // between expression and then statement
-    // if (expressionRegion.getOffset() + expressionRegion.getLength() <= offset && offset + length
-    // <= thenRegion.getOffset())
-    // return thenStatement != null;
-    //
-    // Statement elseStatement= ifStatement.getElseStatement();
-    // IRegion elseRegion= createRegion(elseStatement, info.delta);
-    //
-    // if (elseStatement != null) {
-    // int sourceOffset= thenRegion.getOffset() + thenRegion.getLength();
-    // int sourceLength= elseRegion.getOffset() - sourceOffset;
-    // IRegion elseToken= getToken(document, new Region(sourceOffset, sourceLength),
-    // ITerminalSymbols.TokenNameelse);
-    // return elseToken != null && elseToken.getOffset() + elseToken.getLength() <= offset && offset
-    // + length < elseRegion.getOffset();
-    // }
-    // }
-    // break;
-    //
-    // case ASTNode.WHILE_STATEMENT:
-    // case ASTNode.FOR_STATEMENT:
-    // {
-    // Expression expression= node.getNodeType() == ASTNode.WHILE_STATEMENT ? ((WhileStatement)
-    // node).getExpression() : ((ForStatement) node).getExpression();
-    // IRegion expressionRegion= createRegion(expression, info.delta);
-    // Statement body= node.getNodeType() == ASTNode.WHILE_STATEMENT ? ((WhileStatement)
-    // node).getBody() : ((ForStatement) node).getBody();
-    // IRegion bodyRegion= createRegion(body, info.delta);
-    //
-    // // between expression and body statement
-    // if (expressionRegion.getOffset() + expressionRegion.getLength() <= offset && offset + length
-    // <= bodyRegion.getOffset())
-    // return body != null;
-    // }
-    // break;
-    //
-    // case ASTNode.DO_STATEMENT:
-    // {
-    // DoStatement doStatement= (DoStatement) node;
-    // IRegion doRegion= createRegion(doStatement, info.delta);
-    // Statement body= doStatement.getBody();
-    // IRegion bodyRegion= createRegion(body, info.delta);
-    //
-    // if (doRegion.getOffset() + doRegion.getLength() <= offset && offset + length <=
-    // bodyRegion.getOffset())
-    // return body != null;
-    // }
-    // break;
-    // }
-    //
-    // return true;
-    // }
+    /* TODO
+     * @see org.eclipse.jdt.internal.ui.text.java.JavaAutoIndentStrategy#isClosed
+     */
+    private boolean isClosed(IDocument document, int offset, int length) {
+
+        return getBlockBalance(document, offset, fPartitioning) <= 0;
+
+    }
 
 
     /**
@@ -998,6 +905,39 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         }
         return false;
     }
+    
+    /**
+     * Returns the block balance, i.e. zero if the blocks are balanced at <code>offset</code>, a
+     * negative number if there are more closing than opening braces, and a positive number if there
+     * are more opening than closing braces.
+     * 
+     * @param document the document
+     * @param offset the offset
+     * @param partitioning the partitioning
+     * @return the block balance
+     */
+    private static int getBlockBalance(IDocument document, int offset, String partitioning) {
+        if (offset < 1)
+            return -1;
+        if (offset >= document.getLength())
+            return 1;
+
+        int begin= offset;
+        int end= offset - 1;
+
+        YangHeuristicScanner scanner= new YangHeuristicScanner(document);
+
+        while (true) {
+            begin= scanner.findOpeningPeer(begin - 1, '{', '}');
+            end= scanner.findClosingPeer(end + 1, '{', '}');
+            if (begin == -1 && end == -1)
+                return 0;
+            if (begin == -1)
+                return -1;
+            if (end == -1)
+                return 1;
+        }
+    }    
 
     // private static IRegion createRegion(ASTNode node, int delta) {
     // return node == null ? null : new Region(node.getStartPosition() + delta, node.getLength());

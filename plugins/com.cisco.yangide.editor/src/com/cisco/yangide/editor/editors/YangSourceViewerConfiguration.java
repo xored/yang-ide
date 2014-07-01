@@ -13,6 +13,7 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
@@ -24,7 +25,7 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
 	private YangCommentScanner commentScanner;
 	private YangScanner scanner;
 	private IColorManager colorManager;
-	private IPreferenceStore preferencesStore = YangEditorPlugin.getDefault().getPreferenceStore();
+	private IPreferenceStore preferencesStore = YangEditorPlugin.getDefault().getCombinedPreferenceStore();
 
     public YangSourceViewerConfiguration() {
         super();
@@ -161,5 +162,14 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
 
     }
 
+    /*
+     * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getTabWidth(org.eclipse.jface.text.source.ISourceViewer)
+     */
+    public int getTabWidth(ISourceViewer sourceViewer) {
+        if (preferencesStore == null)
+            return super.getTabWidth(sourceViewer);
+        return preferencesStore.getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
+    }
+    
 	
 }

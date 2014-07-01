@@ -63,6 +63,10 @@ public class YangScanner extends AbstractYangScanner{
         List<IRule> rules= new ArrayList<IRule>();        
         // Add generic whitespace rule.
         rules.add(new WhitespaceRule(new YangWhitespaceDetector()));
+        
+        IToken number = getToken(IYangColorConstants.YANG_NUMBER);
+        NumberRule numberRule = new NumberRule(number);
+        rules.add(numberRule);        
 
         IToken identifier = getToken(IYangColorConstants.YANG_IDENTIFIER);
         IToken keyword = getToken(IYangColorConstants.YANG_KEYWORD);
@@ -83,10 +87,6 @@ public class YangScanner extends AbstractYangScanner{
         }        
         
         rules.add(wordRule);
-        
-        IToken number = getToken(IYangColorConstants.YANG_NUMBER);
-        NumberRule numberRule = new NumberRule(number);
-        rules.add(numberRule);
 
         return rules;
     }

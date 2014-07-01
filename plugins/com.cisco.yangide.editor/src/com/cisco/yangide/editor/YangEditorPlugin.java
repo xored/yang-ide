@@ -2,10 +2,13 @@ package com.cisco.yangide.editor;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -18,6 +21,11 @@ public class YangEditorPlugin extends AbstractUIPlugin {
 
 	// The shared instance
 	private static YangEditorPlugin plugin;
+	
+    /**
+     * The combined preference store.
+     */
+    private IPreferenceStore fCombinedPreferenceStore;	
 	
 	/**
 	 * The constructor
@@ -82,5 +90,21 @@ public class YangEditorPlugin extends AbstractUIPlugin {
     
     public static IWorkbenchPage getActivePage() {
         return getDefault().internalGetActivePage();
-    }    
+    }
+    
+    /**
+     * Returns a combined preference store, this store is read-only.
+     * 
+     * @return the combined preference store
+     * 
+     * @since 3.1
+     */
+    public IPreferenceStore getCombinedPreferenceStore() {
+        if (fCombinedPreferenceStore == null) {
+            IPreferenceStore generalTextStore= EditorsUI.getPreferenceStore(); 
+            fCombinedPreferenceStore= new ChainedPreferenceStore(new IPreferenceStore[] { getPreferenceStore(), generalTextStore });
+        }
+        return fCombinedPreferenceStore;
+    }
+    
 }

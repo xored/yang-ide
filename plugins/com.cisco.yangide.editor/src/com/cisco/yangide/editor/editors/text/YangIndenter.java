@@ -1,32 +1,38 @@
-/*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License v1.0 which accompanies this distribution,
- * and is available at http://www.eclipse.org/legal/epl-v10.html
- */ 
 package com.cisco.yangide.editor.editors.text;
+
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
+//import org.eclipse.jdt.internal.corext.util.CodeFormatterUtil;
 
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
+
+import com.cisco.yangide.core.YangCore;
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.editor.formatter.DefaultCodeFormatterConstants;
 
 
 /**
- * @author Alexey Kholupko
+ * Uses the {@link org.eclipse.jdt.internal.ui.text.YangHeuristicScanner} to
+ * get the indentation level for a certain position in a document.
  *
+ * <p>
+ * An instance holds some internal position in the document and is therefore
+ * not threadsafe.
+ * </p>
+ *
+ * @since 3.0
  */
-public class YangIndenter {
+public final class YangIndenter {
 
     /**
      * The JDT Core preferences.
      * @since 3.2
      */
-    /*
     private final class CorePrefs {
+        private static final int DEFAULT_INDENT_WIDTH_TEMPORARILY = 4;
         final boolean prefUseTabs;
         final int prefTabSize;
         final int prefIndentationSize;
@@ -56,63 +62,64 @@ public class YangIndenter {
         final boolean prefHasGenerics;
         final String prefTabChar;
 
-        private final IJavaProject fProject;
 
-        **
+        /**
          * Returns <code>true</code> if the class is used outside the workbench,
          * <code>false</code> in normal mode
          *
          * @return <code>true</code> if the plug-ins are not available
-         *
+         */
         private boolean isStandalone() {
-            return JavaCore.getPlugin() == null;
+            return YangEditorPlugin.getDefault() == null;
         }
 
-        **
+        /**
          * Returns the possibly project-specific core preference defined under <code>key</code>.
          *
          * @param key the key of the preference
          * @return the value of the preference
          * @since 3.1
-         *
+         */
         private String getCoreFormatterOption(String key) {
-            if (fProject == null)
-                return JavaCore.getOption(key);
-            return fProject.getOption(key, true);
+            //TODO            
+            //return JavaCore.getOption(key);
+            return null;
         }
 
-        CorePrefs(IJavaProject project) {
-            fProject= project;
-            if (isStandalone()) {
-                prefUseTabs= true;
-                prefTabSize= 4;
-                prefIndentationSize= 4;
-                prefArrayDimensionsDeepIndent= true;
-                prefContinuationIndent= 2;
-                prefBlockIndent= 1;
-                prefArrayIndent= prefContinuationIndent;
-                prefArrayDeepIndent= true;
-                prefTernaryDeepAlign= false;
-                prefTernaryIndent= prefContinuationIndent;
-                prefCaseIndent= 0;
-                prefCaseBlockIndent= prefBlockIndent;
-                prefIndentBracesForBlocks= false;
-                prefSimpleIndent= (prefIndentBracesForBlocks && prefBlockIndent == 0) ? 1 : prefBlockIndent;
-                prefBracketIndent= prefBlockIndent;
-                prefMethodDeclDeepIndent= true;
-                prefMethodDeclIndent= 1;
-                prefMethodCallDeepIndent= false;
-                prefMethodCallIndent= 1;
-                prefParenthesisDeepIndent= false;
-                prefParenthesisIndent= prefContinuationIndent;
-                prefMethodBodyIndent= 1;
-                prefTypeIndent= 1;
-                prefIndentBracesForArrays= false;
-                prefIndentBracesForMethods= false;
-                prefIndentBracesForTypes= false;
-                prefHasGenerics= false;
-                prefTabChar= JavaCore.TAB;
-            } else {
+        CorePrefs() {
+            /*if (isStandalone())*/ {
+                //useless, cause only invocation in createIndent(), which also invoked once with false parameter 
+                prefUseTabs = YangEditorPlugin.getDefault().getCombinedPreferenceStore().getBoolean(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS);//false;// true;
+                prefTabSize = prefTabSize();//2;// 4;
+                //XXX
+                prefIndentationSize = prefTabSize();//2;// 4;
+                prefArrayDimensionsDeepIndent = true;
+                //XXX
+                prefContinuationIndent = prefTabSize();//2;
+                prefBlockIndent = 1;
+                prefArrayIndent = prefContinuationIndent;
+                prefArrayDeepIndent = true;
+                prefTernaryDeepAlign = false;
+                prefTernaryIndent = prefContinuationIndent;
+                prefCaseIndent = 0;
+                prefCaseBlockIndent = prefBlockIndent;
+                prefIndentBracesForBlocks = false;
+                prefSimpleIndent = (prefIndentBracesForBlocks && prefBlockIndent == 0) ? 1 : prefBlockIndent;
+                prefBracketIndent = prefBlockIndent;
+                prefMethodDeclDeepIndent = true;
+                prefMethodDeclIndent = 1;
+                prefMethodCallDeepIndent = false;
+                prefMethodCallIndent = 1;
+                prefParenthesisDeepIndent = false;
+                prefParenthesisIndent = prefContinuationIndent;
+                prefMethodBodyIndent = 1;
+                prefTypeIndent = 1;
+                prefIndentBracesForArrays = false;
+                prefIndentBracesForMethods = false;
+                prefIndentBracesForTypes = false;
+                prefHasGenerics = false;
+                prefTabChar = getPrefTabChar(); //YangCore.TAB;
+            } /*else {
                 prefUseTabs= prefUseTabs();
                 prefTabSize= prefTabSize();
                 prefIndentationSize= prefIndentationSize();
@@ -140,20 +147,30 @@ public class YangIndenter {
                 prefIndentBracesForMethods= prefIndentBracesForMethods();
                 prefIndentBracesForTypes= prefIndentBracesForTypes();
                 prefHasGenerics= hasGenerics();
-                prefTabChar= getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR);
-            }
+                prefTabChar= YangCore.TAB;//getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR);
+            }*/
         }
 
+        private String getPrefTabChar(){
+            if(YangEditorPlugin.getDefault().getCombinedPreferenceStore().getBoolean(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS))
+                return YangCore.SPACE;
+            return YangCore.TAB;
+            
+        }
+        
         private boolean prefUseTabs() {
-            return !JavaCore.SPACE.equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR));
+            return !YangCore.SPACE.equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR));
         }
 
         private int prefTabSize() {
-            return CodeFormatterUtil.getTabWidth(fProject);
+            //return CodeFormatterUtil.getTabWidth(fProject);
+            //return DEFAULT_INDENT_WIDTH_TEMPORARILY;
+            return YangEditorPlugin.getDefault().getCombinedPreferenceStore().getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
         }
 
         private int prefIndentationSize() {
-            return CodeFormatterUtil.getIndentWidth(fProject);
+            //return CodeFormatterUtil.getIndentWidth(fProject);
+            return DEFAULT_INDENT_WIDTH_TEMPORARILY;
         }
 
         private boolean prefArrayDimensionsDeepIndent() {
@@ -336,12 +353,9 @@ public class YangIndenter {
             return 2; // sensible default
         }
         private boolean hasGenerics() {
-            return JavaCore.VERSION_1_5.compareTo(getCoreFormatterOption(JavaCore.COMPILER_SOURCE)) <= 0;
+            return false;
         }
     }
-    */
-
-    private static final int DEFAULT_MIN_INDENT_SIZE = 1;
 
     /** The document being scanned. */
     private final IDocument fDocument;
@@ -369,6 +383,7 @@ public class YangIndenter {
      * The JDT Core preferences.
      * @since 3.2
      */
+    private final CorePrefs fPrefs;
 
     /**
      * Creates a new instance.
@@ -382,7 +397,9 @@ public class YangIndenter {
         Assert.isNotNull(scanner);
         fDocument= document;
         fScanner= scanner;
+        fPrefs= new CorePrefs();
     }
+
 
     /**
      * Computes the indentation at the reference point of <code>position</code>.
@@ -474,7 +491,7 @@ public class YangIndenter {
      * @return the visual length in characters
      */
     private int computeVisualLength(CharSequence indent) {
-        final int tabSize= DEFAULT_MIN_INDENT_SIZE;
+        final int tabSize= fPrefs.prefTabSize;
         int length= 0;
         for (int i= 0; i < indent.length(); i++) {
             char ch= indent.charAt(i);
@@ -502,7 +519,7 @@ public class YangIndenter {
      * @return the stripped <code>reference</code>
      */
     private StringBuffer stripExceedingChars(StringBuffer reference, int indentLength) {
-        final int tabSize= DEFAULT_MIN_INDENT_SIZE;
+        final int tabSize= fPrefs.prefTabSize;
         int measured= 0;
         int chars= reference.length();
         int i= 0;
@@ -568,8 +585,8 @@ public class YangIndenter {
      *         by <code>start</code> and <code>indent</code>
      */
     private StringBuffer createIndent(int start, final int indent, final boolean convertSpaceRunsToTabs) {
-        final boolean convertTabs= false && convertSpaceRunsToTabs;
-        final int tabLen= DEFAULT_MIN_INDENT_SIZE;
+        final boolean convertTabs= fPrefs.prefUseTabs && convertSpaceRunsToTabs;
+        final int tabLen= fPrefs.prefTabSize;
         final StringBuffer ret= new StringBuffer();
         try {
             int spaces= 0;
@@ -613,14 +630,14 @@ public class YangIndenter {
      */
     private StringBuffer createReusingIndent(StringBuffer buffer, int additional) {
         int refLength= computeVisualLength(buffer);
-        int addLength= DEFAULT_MIN_INDENT_SIZE * additional; // may be < 0
+        int addLength= fPrefs.prefIndentationSize * additional; // may be < 0
         int totalLength= Math.max(0, refLength + addLength);
 
 
         // copy the reference indentation for the indent up to the last tab
         // stop within the maxCopy area
         int minLength= Math.min(totalLength, refLength);
-        int tabSize= DEFAULT_MIN_INDENT_SIZE;
+        int tabSize= fPrefs.prefTabSize;
         int maxCopyLength= tabSize > 0 ? minLength - minLength % tabSize : minLength; // maximum indent to copy
         stripExceedingChars(buffer, maxCopyLength);
 
@@ -628,7 +645,13 @@ public class YangIndenter {
         // add additional indent
         int missing= totalLength - maxCopyLength;
         final int tabs, spaces;
-        if (DEFAULT_MIN_INDENT_SIZE == DEFAULT_MIN_INDENT_SIZE) {
+        if (YangCore.SPACE.equals(fPrefs.prefTabChar)) {
+            tabs= 0;
+            spaces= missing;
+        } else if (YangCore.TAB.equals(fPrefs.prefTabChar)) {
+            tabs= tabSize > 0 ? missing / tabSize : 0;
+            spaces= tabSize > 0 ? missing % tabSize : missing;
+        } else if (DefaultCodeFormatterConstants.MIXED.equals(fPrefs.prefTabChar)) {
             tabs= tabSize > 0 ? missing / tabSize : 0;
             spaces= tabSize > 0 ? missing % tabSize : missing;
         } else {
@@ -735,11 +758,11 @@ public class YangIndenter {
                             matchCase= true;
                         break;
                     case Symbols.TokenLBRACE: // for opening-brace-on-new-line style
-                        if (bracelessBlockStart && !true)
+                        if (bracelessBlockStart && !fPrefs.prefIndentBracesForBlocks)
                             unindent= true;
-                        else if ((prevToken == Symbols.TokenCOLON || prevToken == Symbols.TokenEQUAL) && !true)
+                        else if ((prevToken == Symbols.TokenCOLON || prevToken == Symbols.TokenEQUAL) && !fPrefs.prefIndentBracesForArrays)
                             unindent= true;
-                        else if (!bracelessBlockStart && true)
+                        else if (!bracelessBlockStart && fPrefs.prefIndentBracesForMethods)
                             indent= true;
                         break;
                     case Symbols.TokenRBRACE: // closing braces get unindented
@@ -757,7 +780,7 @@ public class YangIndenter {
                         if (isStringContinuation(offset)) {
                             if (isSecondLineOfStringContinuation(offset)) {
                                 fAlign= YangHeuristicScanner.NOT_FOUND;
-                                fIndent= DEFAULT_MIN_INDENT_SIZE;
+                                fIndent= fPrefs.prefContinuationIndent;
                             } else {
                                 int previousLineOffset= fDocument.getLineOffset(fDocument.getLineOfOffset(offset) - 1);
                                 fAlign= fScanner.findNonWhitespaceForwardInAnyPartition(previousLineOffset, YangHeuristicScanner.UNBOUND);
@@ -940,7 +963,7 @@ public class YangIndenter {
         // align parenthesis'
         if (matchParen) {
             if (skipScope(Symbols.TokenLPAREN, Symbols.TokenRPAREN)) {
-                fIndent= DEFAULT_MIN_INDENT_SIZE;
+                fIndent= fPrefs.prefContinuationIndent;
                 return fPosition;
             } else {
                 // if we can't find the matching paren, the heuristic is to unindent
@@ -973,12 +996,12 @@ public class YangIndenter {
                 // search to the end of the statement / block before the previous; the token just after that is previous.start
                 pos= fPosition;
                 if (isSemicolonPartOfForStatement()) {
-                    fIndent= DEFAULT_MIN_INDENT_SIZE;
+                    fIndent= fPrefs.prefContinuationIndent;
                     return fPosition;
                 } else {
                     fPosition= pos;
                     if (isTryWithResources()) {
-                        fIndent= DEFAULT_MIN_INDENT_SIZE;
+                        fIndent= fPrefs.prefContinuationIndent;
                         return fPosition;
                     } else {
                         fPosition= pos;
@@ -1001,27 +1024,35 @@ public class YangIndenter {
 
             case Symbols.TokenCOLON:
                 // TODO handle ternary deep indentation
-                fIndent= DEFAULT_MIN_INDENT_SIZE;
+                fIndent= fPrefs.prefCaseBlockIndent;
                 return fPosition;
 
+            case Symbols.TokenQUESTIONMARK:
+                if (fPrefs.prefTernaryDeepAlign) {
+                    setFirstElementAlignment(fPosition, offset + 1);
+                    return fPosition;
+                } else {
+                    fIndent= fPrefs.prefTernaryIndent;
+                    return fPosition;
+                }
 
             // indentation for blockless introducers:
             case Symbols.TokenDO:
             case Symbols.TokenWHILE:
             case Symbols.TokenELSE:
-                fIndent= DEFAULT_MIN_INDENT_SIZE;
+                fIndent= fPrefs.prefSimpleIndent;
                 return fPosition;
 
             case Symbols.TokenTRY:
                 return skipToStatementStart(danglingElse, false);
 
             case Symbols.TokenRBRACKET:
-                fIndent= DEFAULT_MIN_INDENT_SIZE;
+                fIndent= fPrefs.prefContinuationIndent;
                 return fPosition;
 
             case Symbols.TokenRPAREN:
                 if (throwsClause) {
-                    fIndent= DEFAULT_MIN_INDENT_SIZE;
+                    fIndent= fPrefs.prefContinuationIndent;
                     return fPosition;
                 }
                 int line= fLine;
@@ -1029,7 +1060,7 @@ public class YangIndenter {
                     int scope= fPosition;
                     nextToken();
                     if (fToken == Symbols.TokenIF || fToken == Symbols.TokenWHILE || fToken == Symbols.TokenFOR) {
-                        fIndent= DEFAULT_MIN_INDENT_SIZE;
+                        fIndent= fPrefs.prefSimpleIndent;
                         return fPosition;
                     }
                     fPosition= scope;
@@ -1054,14 +1085,14 @@ public class YangIndenter {
 
                 return skipToPreviousListItemOrListStart();
             case Symbols.TokenRETURN:
-                fIndent= DEFAULT_MIN_INDENT_SIZE;
+                fIndent= fPrefs.prefContinuationIndent;
                 return fPosition;
             case Symbols.TokenPLUS:
                 if (isStringContinuation(fPosition)) {
                     try {
                         if (isSecondLineOfStringContinuation(offset)) {
                             fAlign= YangHeuristicScanner.NOT_FOUND;
-                            fIndent= DEFAULT_MIN_INDENT_SIZE;
+                            fIndent= fPrefs.prefContinuationIndent;
                         } else {
                             int previousLineOffset= fDocument.getLineOffset(fDocument.getLineOfOffset(offset) - 1);
                             fAlign= fScanner.findNonWhitespaceForwardInAnyPartition(previousLineOffset, YangHeuristicScanner.UNBOUND);
@@ -1108,7 +1139,7 @@ public class YangIndenter {
             return fPosition;
         }
 
-        fIndent= DEFAULT_MIN_INDENT_SIZE;
+        fIndent= fPrefs.prefContinuationIndent;
         return fPosition;
     }
 
@@ -1207,7 +1238,7 @@ public class YangIndenter {
                         break;
 
                     case Symbols.TokenSWITCH:
-                        fIndent= DEFAULT_MIN_INDENT_SIZE;
+                        fIndent= fPrefs.prefCaseIndent;
                         return fPosition;
                 }
             }
@@ -1311,7 +1342,12 @@ public class YangIndenter {
     }
 
     private int getBlockIndent(boolean isMethodBody, boolean isTypeBody) {
-            return DEFAULT_MIN_INDENT_SIZE;
+        if (isTypeBody)
+            return fPrefs.prefTypeIndent + (fPrefs.prefIndentBracesForTypes ? 1 : 0);
+        else if (isMethodBody)
+            return fPrefs.prefMethodBodyIndent + (fPrefs.prefIndentBracesForMethods ? 1 : 0);
+        else
+            return fIndent;
     }
 
     /**
@@ -1358,7 +1394,7 @@ public class YangIndenter {
                     return fPosition;
                 case Symbols.TokenLBRACE:
                     // opening brace of switch statement
-                    fIndent= DEFAULT_MIN_INDENT_SIZE;
+                    fIndent= fPrefs.prefCaseIndent;
                     return fPosition;
                 case Symbols.TokenCASE:
                 case Symbols.TokenDEFAULT:
@@ -1430,13 +1466,20 @@ public class YangIndenter {
                 case Symbols.TokenSEMICOLON:
                     int savedPosition= fPosition;
                     if (isSemicolonPartOfForStatement())
-                        fIndent= DEFAULT_MIN_INDENT_SIZE;
+                        fIndent= fPrefs.prefContinuationIndent;
                     else
                         fPosition= savedPosition;
                     return fPosition;
-                
+                case Symbols.TokenQUESTIONMARK:
+                    if (fPrefs.prefTernaryDeepAlign) {
+                        setFirstElementAlignment(fPosition - 1, fPosition + 1);
+                        return fPosition;
+                    } else {
+                        fIndent= fPrefs.prefTernaryIndent;
+                        return fPosition;
+                    }
                 case Symbols.TokenRETURN:
-                    fIndent= DEFAULT_MIN_INDENT_SIZE;
+                    fIndent= fPrefs.prefContinuationIndent;
                     return fPosition;
                 case Symbols.TokenEQUAL:
                     return handleEqual();
@@ -1465,6 +1508,8 @@ public class YangIndenter {
             case Symbols.TokenRBRACE:
                 return skipScope(Symbols.TokenLBRACE, Symbols.TokenRBRACE);
             case Symbols.TokenGREATERTHAN:
+                if (!fPrefs.prefHasGenerics)
+                    return false;
                 int storedPosition= fPosition;
                 int storedToken= fToken;
                 nextToken();
@@ -1531,33 +1576,45 @@ public class YangIndenter {
 
                 // special: method declaration deep indentation
                 if (looksLikeMethodDecl()) {
-                    {
-                        fIndent= DEFAULT_MIN_INDENT_SIZE;
+                    if (fPrefs.prefMethodDeclDeepIndent)
+                        return setFirstElementAlignment(pos, bound);
+                    else {
+                        fIndent= fPrefs.prefMethodDeclIndent;
                         return pos;
                     }
                 } else {
                     fPosition= pos;
                     if (looksLikeMethodCall()) {
-                        {
-                            fIndent= DEFAULT_MIN_INDENT_SIZE;
+                        if (fPrefs.prefMethodCallDeepIndent)
+                            return setFirstElementAlignment(pos, bound);
+                        else {
+                            fIndent= fPrefs.prefMethodCallIndent;
                             return pos;
                         }
-                    } 
+                    } else if (fPrefs.prefParenthesisDeepIndent)
+                        return setFirstElementAlignment(pos, bound);
                 }
 
                 // normal: return the parenthesis as reference
-                fIndent=DEFAULT_MIN_INDENT_SIZE;
+                fIndent= fPrefs.prefParenthesisIndent;
                 return pos;
 
             case Symbols.TokenLBRACE:
                 pos= fPosition; // store
 
-                    fIndent= DEFAULT_MIN_INDENT_SIZE;
+                // special: array initializer
+                if (looksLikeArrayInitializerIntro())
+                    if (fPrefs.prefArrayDeepIndent)
+                        return setFirstElementAlignment(pos, bound);
+                    else
+                        fIndent= fPrefs.prefArrayIndent;
+                else
+                    fIndent= fPrefs.prefBlockIndent;
 
                 // normal: skip to the statement start before the scope introducer
                 // opening braces are often on differently ending indents than e.g. a method definition
-                if (looksLikeArrayInitializerIntro() && !true
-                        || !true) {
+                if (looksLikeArrayInitializerIntro() && !fPrefs.prefIndentBracesForArrays
+                        || !fPrefs.prefIndentBracesForBlocks) {
                     fPosition= pos; // restore
                     return skipToStatementStart(true, true); // set to true to match the first if
                 } else {
@@ -1567,10 +1624,13 @@ public class YangIndenter {
             case Symbols.TokenLBRACKET:
                 pos= fPosition; // store
 
-
+                // special: method declaration deep indentation
+                if (fPrefs.prefArrayDimensionsDeepIndent) {
+                    return setFirstElementAlignment(pos, bound);
+                }
 
                 // normal: return the bracket as reference
-                fIndent= DEFAULT_MIN_INDENT_SIZE;
+                fIndent= fPrefs.prefBracketIndent;
                 return pos; // restore
 
             default:
