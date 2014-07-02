@@ -4,15 +4,21 @@ package com.cisco.yangide.editor.editors;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.JFacePreferences;
+import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
+import org.eclipse.jface.text.contentassist.ContentAssistant;
+import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
+import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -170,6 +176,41 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
             return super.getTabWidth(sourceViewer);
         return preferencesStore.getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
     }
-    
+ 
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.text.source.SourceViewerConfiguration#getContentAssistant(org.eclipse.jface.text.source.ISourceViewer)
+     */
+    @Override
+    public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
+
+        ContentAssistant assistant= new ContentAssistant();
+        IContentAssistProcessor processor = new YangSimpleCompletionProcessor();
+        assistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
+        
+        assistant.setDocumentPartitioning(YangDocumentSetupParticipant.YANG_PARTITIONING);
+
+        
+
+        assistant.enableAutoActivation(false);
+        assistant.setAutoActivationDelay(500);
+        assistant.setProposalPopupOrientation(ContentAssistant.PROPOSAL_REMOVE);
+        assistant.setContextInformationPopupOrientation(ContentAssistant.CONTEXT_INFO_ABOVE);
+
+        Color background = JFaceResources.getColorRegistry().get(JFacePreferences.CONTENT_ASSIST_BACKGROUND_COLOR);
+        assistant.setContextInformationPopupBackground(background);
+        assistant.setContextSelectorBackground(background);
+
+        Color foreground= JFaceResources.getColorRegistry().get(JFacePreferences.CONTENT_ASSIST_FOREGROUND_COLOR);
+        assistant.setContextInformationPopupForeground(foreground);
+        assistant.setContextSelectorForeground(foreground);
+
+        //assistant.setRepeatedInvocationMode(true);
+        assistant.setStatusLineVisible(true);
+        //assistant.setShowEmptyList(true);
+        
+
+        return assistant;
+    }
+
 	
 }
