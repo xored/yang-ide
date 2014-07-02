@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -26,6 +27,7 @@ import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.core.JavaProject;
 
+import com.cisco.yangide.core.CoreUtil;
 import com.cisco.yangide.core.ElementChangedEvent;
 import com.cisco.yangide.core.IYangElementChangedListener;
 import com.cisco.yangide.core.IYangElementDelta;
@@ -43,6 +45,7 @@ import com.cisco.yangide.core.model.YangProject;
  * @author Konstantin Zaitsev
  * @date Jun 25, 2014
  */
+@SuppressWarnings("restriction")
 public class DeltaProcessor implements IResourceChangeListener {
     static class OutputsInfo {
         int outputCount;
@@ -283,7 +286,8 @@ public class DeltaProcessor implements IResourceChangeListener {
 
         IYangElementDelta deltaToNotify;
         if (customDelta == null) {
-            deltaToNotify = null; //TODO KOS: need merge delta for notify mergeDeltas(this.yangModelDeltas);
+            deltaToNotify = null; // TODO KOS: need merge delta for notify
+                                  // mergeDeltas(this.yangModelDeltas);
         } else {
             deltaToNotify = customDelta;
         }
@@ -325,7 +329,8 @@ public class DeltaProcessor implements IResourceChangeListener {
 
     private void fireReconcileDelta(IYangElementChangedListener[] listeners, int[] listenerMask, int listenerCount) {
 
-        IYangElementDelta deltaToNotify = null; // TODO KOS need merge deltas like mergeDeltas(this.reconcileDeltas.values());
+        IYangElementDelta deltaToNotify = null; // TODO KOS need merge deltas like
+                                                // mergeDeltas(this.reconcileDeltas.values());
         if (deltaToNotify != null) {
             this.reconcileDeltas = new HashMap<Object, Object>();
 
@@ -364,10 +369,12 @@ public class DeltaProcessor implements IResourceChangeListener {
         boolean processChildren = true;
         if (delta.getResource().getType() == IResource.PROJECT) {
             processChildren = updateCurrentDeltaAndIndex(delta);
-        // skip non YANG files
-        } else if (delta.getResource().getType() == IResource.FILE
-                && !(delta.getResource().getFullPath().getFileExtension().equalsIgnoreCase("yang"))) {
-            return;
+        } else if (delta.getResource().getType() == IResource.FILE) {
+            // skip non YANG files
+            if (!CoreUtil.isYangLikeFileName(delta.getResource().getFullPath().toString())) {
+                return;
+            }
+            processChildren = updateCurrentDeltaAndIndex(delta);
         }
 
         // process children if needed
@@ -446,160 +453,42 @@ public class DeltaProcessor implements IResourceChangeListener {
         return true;
     }
 
+    @SuppressWarnings("incomplete-switch")
     private void updateIndex(YangElement element, IResourceDelta delta) {
-        //
-        // IndexManager indexManager = this.manager.indexManager;
-        // if (indexManager == null)
-        // return;
-        //
-        // switch (element.getElementType()) {
-        // case IJavaElement.JAVA_PROJECT:
-        // switch (delta.getKind()) {
-        // case IResourceDelta.ADDED:
-        // indexManager.indexAll(element.getJavaProject().getProject());
-        // break;
-        // case IResourceDelta.REMOVED:
-        // indexManager.removeIndexFamily(element.getJavaProject().getProject().getFullPath());
-        // // NB: Discarding index jobs belonging to this project was done during PRE_DELETE
-        // break;
-        // // NB: Update of index if project is opened, closed, or its java nature is added or
-        // // removed
-        // // is done in updateCurrentDeltaAndIndex
-        // }
-        // break;
-        // case IJavaElement.PACKAGE_FRAGMENT_ROOT:
-        // if (element instanceof JarPackageFragmentRoot) {
-        // JarPackageFragmentRoot root = (JarPackageFragmentRoot) element;
-        // // index jar file only once (if the root is in its declaring project)
-        // IPath jarPath = root.getPath();
-        // switch (delta.getKind()) {
-        // case IResourceDelta.ADDED:
-        // // index the new jar
-        // indexManager.indexLibrary(jarPath, root.getJavaProject().getProject());
-        // break;
-        // case IResourceDelta.CHANGED:
-        // // first remove the index so that it is forced to be re-indexed
-        // indexManager.removeIndex(jarPath);
-        // // then index the jar
-        // indexManager.indexLibrary(jarPath, root.getJavaProject().getProject());
-        // break;
-        // case IResourceDelta.REMOVED:
-        // // the jar was physically removed: remove the index
-        // indexManager.discardJobs(jarPath.toString());
-        // indexManager.removeIndex(jarPath);
-        // break;
-        // }
-        // break;
-        // }
-        // int kind = delta.getKind();
-        // if (kind == IResourceDelta.ADDED || kind == IResourceDelta.REMOVED
-        // || (kind == IResourceDelta.CHANGED && (delta.getFlags() & IResourceDelta.LOCAL_CHANGED)
-        // != 0)) {
-        // PackageFragmentRoot root = (PackageFragmentRoot) element;
-        // updateRootIndex(root, CharOperation.NO_STRINGS, delta);
-        // break;
-        // }
-        // // don't break as packages of the package fragment root can be indexed below
-        // // $FALL-THROUGH$
-        // case IJavaElement.PACKAGE_FRAGMENT:
-        // switch (delta.getKind()) {
-        // case IResourceDelta.CHANGED:
-        // if ((delta.getFlags() & IResourceDelta.LOCAL_CHANGED) == 0)
-        // break;
-        // // $FALL-THROUGH$
-        // case IResourceDelta.ADDED:
-        // case IResourceDelta.REMOVED:
-        // IPackageFragment pkg = null;
-        // if (element instanceof IPackageFragmentRoot) {
-        // PackageFragmentRoot root = (PackageFragmentRoot) element;
-        // pkg = root.getPackageFragment(CharOperation.NO_STRINGS);
-        // } else {
-        // pkg = (IPackageFragment) element;
-        // }
-        // RootInfo rootInfo = rootInfo(pkg.getParent().getPath(), delta.getKind());
-        // boolean isSource = rootInfo == null // if null, defaults to source
-        // || rootInfo.entryKind == IClasspathEntry.CPE_SOURCE;
-        // IResourceDelta[] children = delta.getAffectedChildren();
-        // for (int i = 0, length = children.length; i < length; i++) {
-        // IResourceDelta child = children[i];
-        // IResource resource = child.getResource();
-        // // TODO (philippe) Why do this? Every child is added anyway as the delta is
-        // // walked
-        // if (resource instanceof IFile) {
-        // String name = resource.getName();
-        // if (isSource) {
-        // if (org.eclipse.jdt.internal.core.util.Util.isJavaLikeFileName(name)) {
-        // Openable cu = (Openable) pkg.getCompilationUnit(name);
-        // updateIndex(cu, child);
-        // }
-        // } else if (org.eclipse.jdt.internal.compiler.util.Util.isClassFileName(name)) {
-        // Openable classFile = (Openable) pkg.getClassFile(name);
-        // updateIndex(classFile, child);
-        // }
-        // }
-        // }
-        // break;
-        // }
-        // break;
-        // case IJavaElement.CLASS_FILE:
-        // IFile file = (IFile) delta.getResource();
-        // IJavaProject project = element.getJavaProject();
-        // PackageFragmentRoot root = element.getPackageFragmentRoot();
-        // IPath binaryFolderPath = root.isExternal() && !root.isArchive() ?
-        // root.resource().getFullPath() : root
-        // .getPath();
-        // // if the class file is part of the binary output, it has been created by
-        // // the java builder -> ignore
-        // try {
-        // if (binaryFolderPath.equals(project.getOutputLocation())) {
-        // break;
-        // }
-        // } catch (JavaModelException e) {
-        // // project doesn't exist: ignore
-        // }
-        // switch (delta.getKind()) {
-        // case IResourceDelta.CHANGED:
-        // // no need to index if the content has not changed
-        // int flags = delta.getFlags();
-        // if ((flags & IResourceDelta.CONTENT) == 0 && (flags & IResourceDelta.ENCODING) == 0)
-        // break;
-        // // $FALL-THROUGH$
-        // case IResourceDelta.ADDED:
-        // indexManager.addBinary(file, binaryFolderPath);
-        // break;
-        // case IResourceDelta.REMOVED:
-        // String containerRelativePath = Util.relativePath(file.getFullPath(),
-        // binaryFolderPath.segmentCount());
-        // indexManager.remove(containerRelativePath, binaryFolderPath);
-        // break;
-        // }
-        // break;
-        // case IJavaElement.COMPILATION_UNIT:
-        // file = (IFile) delta.getResource();
-        // switch (delta.getKind()) {
-        // case IResourceDelta.CHANGED:
-        // // no need to index if the content has not changed
-        // int flags = delta.getFlags();
-        // if ((flags & IResourceDelta.CONTENT) == 0 && (flags & IResourceDelta.ENCODING) == 0)
-        // break;
-        // // $FALL-THROUGH$
-        // case IResourceDelta.ADDED:
-        // indexManager.addSource(file, file.getProject().getFullPath(),
-        // getSourceElementParser(element));
-        // // Clean file from secondary types cache but do not update indexing secondary type
-        // // cache as it will be updated through indexing itself
-        // this.manager.secondaryTypesRemoving(file, false);
-        // break;
-        // case IResourceDelta.REMOVED:
-        // indexManager.remove(Util.relativePath(file.getFullPath(), 1/* remove project segment */),
-        // file
-        // .getProject().getFullPath());
-        // // Clean file from secondary types cache and update indexing secondary type cache as
-        // // indexing cannot remove secondary types from cache
-        // this.manager.secondaryTypesRemoving(file, true);
-        // break;
-        // }
-        // }
+
+        IndexManager indexManager = this.manager.indexManager;
+        if (indexManager == null) {
+            return;
+        }
+
+        switch (element.getElementType()) {
+        case YANG_PROJECT:
+            switch (delta.getKind()) {
+            case IResourceDelta.ADDED:
+                indexManager.indexAll(element.getResource().getProject());
+                break;
+            case IResourceDelta.REMOVED:
+                indexManager.removeIndexFamily(element.getResource().getFullPath());
+                break;
+            }
+            break;
+        case YANG_FILE:
+            IFile file = (IFile) delta.getResource();
+            switch (delta.getKind()) {
+            case IResourceDelta.CHANGED:
+                // no need to index if the content has not changed
+                int flags = delta.getFlags();
+                if ((flags & IResourceDelta.CONTENT) == 0 && (flags & IResourceDelta.ENCODING) == 0) {
+                    break;
+                }
+            case IResourceDelta.ADDED:
+                indexManager.addSource(file);
+                break;
+            case IResourceDelta.REMOVED:
+                indexManager.remove(file);
+                break;
+            }
+        }
     }
 
     /*
