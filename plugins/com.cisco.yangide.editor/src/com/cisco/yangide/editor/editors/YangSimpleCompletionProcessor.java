@@ -7,11 +7,6 @@
  */ 
 package com.cisco.yangide.editor.editors;
 
-/**
- * @author Alexey Kholupko
- *
- */
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,8 +15,10 @@ import java.util.List;
 
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewer;
+import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ContentAssistEvent;
 import org.eclipse.jface.text.contentassist.ContextInformation;
@@ -31,13 +28,21 @@ import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistantExtension2;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
+import org.eclipse.jface.text.templates.Template;
+import org.eclipse.jface.text.templates.TemplateCompletionProcessor;
+import org.eclipse.jface.text.templates.TemplateContext;
+import org.eclipse.jface.text.templates.TemplateContextType;
+import org.eclipse.jface.text.templates.TemplateException;
+import org.eclipse.swt.graphics.Image;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.editor.templates.GeneralContextType;
+import com.cisco.yangide.editor.templates.YangTemplateAccess;
 
 /**
- * Example Java completion processor.
+ * @author Alexey Kholupko
  */
-public class YangSimpleCompletionProcessor implements IContentAssistProcessor {
+public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor implements IContentAssistProcessor {
 
     
     private final static ICompletionProposal[] NO_PROPOSALS= new ICompletionProposal[0];
@@ -77,7 +82,7 @@ public class YangSimpleCompletionProcessor implements IContentAssistProcessor {
     protected final static String[] fgProposals = YangScanner.keywords;
         //{ "abstract", "boolean", "break", "byte", "case", "catch", "char", "class", "continue", "default", "do", "double", "else", "extends", "false", "final", "finally", "float", "for", "if", "implements", "import", "instanceof", "int", "interface", "long", "native", "new", "null", "package", "private", "protected", "public", "return", "short", "static", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try", "void", "volatile", "while" }; //$NON-NLS-48$ //$NON-NLS-47$ //$NON-NLS-46$ //$NON-NLS-45$ //$NON-NLS-44$ //$NON-NLS-43$ //$NON-NLS-42$ //$NON-NLS-41$ //$NON-NLS-40$ //$NON-NLS-39$ //$NON-NLS-38$ //$NON-NLS-37$ //$NON-NLS-36$ //$NON-NLS-35$ //$NON-NLS-34$ //$NON-NLS-33$ //$NON-NLS-32$ //$NON-NLS-31$ //$NON-NLS-30$ //$NON-NLS-29$ //$NON-NLS-28$ //$NON-NLS-27$ //$NON-NLS-26$ //$NON-NLS-25$ //$NON-NLS-24$ //$NON-NLS-23$ //$NON-NLS-22$ //$NON-NLS-21$ //$NON-NLS-20$ //$NON-NLS-19$ //$NON-NLS-18$ //$NON-NLS-17$ //$NON-NLS-16$ //$NON-NLS-15$ //$NON-NLS-14$ //$NON-NLS-13$ //$NON-NLS-12$ //$NON-NLS-11$ //$NON-NLS-10$ //$NON-NLS-9$ //$NON-NLS-8$ //$NON-NLS-7$ //$NON-NLS-6$ //$NON-NLS-5$ //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
 
-    protected IContextInformationValidator fValidator= new Validator();
+    protected IContextInformationValidator fValidator = new Validator();
 
     private IContentAssistantExtension2 fContentAssistant;
 
@@ -101,18 +106,24 @@ public class YangSimpleCompletionProcessor implements IContentAssistProcessor {
         currentPrefix = null;
         
         ICompletionProposal[] proposals = determineProposals();
-        Arrays.sort(proposals, proposalComparator);
         
-        return proposals; 
+        ICompletionProposal[] templates = determineTemplateProposalsForContext(documentOffset);
         
-        /*        
-        ICompletionProposal[] result= new ICompletionProposal[fgProposals.length];
-        for (int i= 0; i < fgProposals.length; i++) {
-            IContextInformation info= new ContextInformation(fgProposals[i], MessageFormat.format("{0}", new Object[] { fgProposals[i] })); //$NON-NLS-1$
-            result[i]= new CompletionProposal(fgProposals[i], documentOffset, 0, fgProposals[i].length(), info); //$NON-NLS-1$
-        }
-        */
+        return mergeProposals(proposals, templates);
+        
     }
+    
+    private ICompletionProposal[] mergeProposals(ICompletionProposal[] proposals1, ICompletionProposal[] proposals2) {
+
+        ICompletionProposal[] combinedProposals = new ICompletionProposal[proposals1.length + proposals2.length];
+                
+        System.arraycopy(proposals1, 0, combinedProposals, 0, proposals1.length);
+        System.arraycopy(proposals2, 0, combinedProposals, proposals1.length, proposals2.length);                       
+
+        Arrays.sort(combinedProposals, proposalComparator);
+        return combinedProposals;
+    }
+    
     
     /* (non-Javadoc)
      * Method declared on IContentAssistProcessor
@@ -244,5 +255,63 @@ public class YangSimpleCompletionProcessor implements IContentAssistProcessor {
         return currentPrefix;
     }
      
+    private ICompletionProposal[] determineTemplateProposalsForContext(int offset) {
+        ITextSelection selection = (ITextSelection) viewer.getSelectionProvider().getSelection();
+        // adjust offset to end of normalized selection
+        if (selection.getOffset() == offset)
+            offset = selection.getOffset() + selection.getLength();
+        
+        String prefix = extractPrefix(viewer, offset);
+        Region region = new Region(offset - prefix.length(), prefix.length());
+        TemplateContext context = createContext(viewer, region);
+        if (context == null)
+            return new ICompletionProposal[0];
+        
+        context.setVariable("selection", selection.getText()); // name of the selection variables {line, word_selection //$NON-NLS-1$
+        
+        Template[] templates = getTemplates(context.getContextType().getId());
+        List<ICompletionProposal> matches = new ArrayList<ICompletionProposal>();
+        for (int i = 0; i < templates.length; i++) {
+            Template template = templates[i];
+            try {
+                context.getContextType().validate(template.getPattern());
+            } catch (TemplateException e) {
+                continue;
+            }
+            if (!prefix.equals("")
+                    && (template.getName().startsWith(prefix) && template.matches(prefix, context.getContextType()
+                            .getId())))
+                matches.add(createProposal(template, context, (IRegion) region, getRelevance(template, prefix)));
+        }
+        return matches.toArray(new ICompletionProposal[matches.size()]);
+    }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.text.templates.TemplateCompletionProcessor#extractPrefix(org.eclipse.jface.text.ITextViewer, int)
+     */
+    protected String extractPrefix(ITextViewer textViewer, int offset) {
+        return getPrefixFromDocument(textViewer.getDocument().get(), offset);
+    }    
+    
+    protected Template[] getTemplates(String contextTypeId) {
+        YangTemplateAccess access = YangTemplateAccess.getDefault();
+        return access.getTemplateStore().getTemplates();
+    }
+
+    protected TemplateContextType getContextType(ITextViewer viewer, IRegion region) {
+        YangTemplateAccess access = YangTemplateAccess.getDefault();
+        return access.getContextTypeRegistry().getContextType(GeneralContextType.CONTEXT_TYPE);
+    }
+
+    /* (non-Javadoc)
+     * @see org.eclipse.jface.text.templates.TemplateCompletionProcessor#getImage(org.eclipse.jface.text.templates.Template)
+     */
+    @Override
+    protected Image getImage(Template template) {
+        // TODO 
+        //return Activator.getDefault().getImageRegistry().get(Activator.ICON_TEMPLATE);
+        return null;
+    }
+ 
     
 }

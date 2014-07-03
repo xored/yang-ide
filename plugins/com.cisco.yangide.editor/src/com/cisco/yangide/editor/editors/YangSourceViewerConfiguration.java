@@ -183,7 +183,7 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
     @Override
     public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 
-        ContentAssistant assistant= new ContentAssistant();
+        ContentAssistant assistant = new ContentAssistant();
         IContentAssistProcessor processor = new YangSimpleCompletionProcessor();
         assistant.setContentAssistProcessor(processor, IDocument.DEFAULT_CONTENT_TYPE);
         
@@ -207,7 +207,7 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
         //assistant.setRepeatedInvocationMode(true);
         assistant.setStatusLineVisible(true);
         //assistant.setShowEmptyList(true);
-        
+        assistant.enableAutoInsert(true);
 
         return assistant;
     }

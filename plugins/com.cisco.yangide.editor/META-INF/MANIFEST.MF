@@ -19,3 +19,4 @@ Bundle-ActivationPolicy: lazy
 Export-Package: com.cisco.yangide.editor,
  com.cisco.yangide.editor.editors,
  com.cisco.yangide.editor.preferences
+Import-Package: org.eclipse.ui.texteditor.templates

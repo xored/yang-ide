@@ -31,5 +31,33 @@
             id="com.cisco.yangide.editor.preferences.YANGEditorColoringPreferencePage"
             name="Syntax Coloring">
       </page>
+      <page
+            category="com.cisco.yangide.editor.preferences.YANGBasePreferencePage"
+            class="com.cisco.yangide.editor.templates.YangEditorTemplatesPage"
+            id="com.cisco.yangide.editor.templates.YANGEditorTemplatesPage"
+            name="Templates">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors.templates">
+      <contextType
+            class="com.cisco.yangide.editor.templates.GeneralContextType"
+            id="com.cisco.yangide.editor.templates.general"
+            name="General">
+      </contextType>
+      <include
+            file="templates/yang.xml"
+            translations="templates/yang.xml">
+      </include>
+      <template
+            autoinsert="true"
+            contextTypeId="com.cisco.yangide.editor.templates.general"
+            id="com.cisco.yangide.editor.template1"
+            name="organizationContributed">
+         <pattern>
+            bla bla &quot;${author}&quot;
+&quot;${cursor}&quot;
+         </pattern>
+      </template>
    </extension>   
 </plugin>
