@@ -1,12 +1,13 @@
-package com.cisco.yangide.editor.preferences;
+package com.cisco.yangide.ui.internal.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.swt.graphics.RGB;
 
-import com.cisco.yangide.editor.YangEditorPlugin;
-import com.cisco.yangide.editor.editors.IYangColorConstants;
+import com.cisco.yangide.ui.YangUIPlugin;
+import com.cisco.yangide.ui.preferences.IYangColorConstants;
+import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
 
 public class YangUIPreferenceInitializer extends AbstractPreferenceInitializer {
 
@@ -18,7 +19,7 @@ public class YangUIPreferenceInitializer extends AbstractPreferenceInitializer {
      * ()
      */
     public void initializeDefaultPreferences() {
-        IPreferenceStore store = YangEditorPlugin.getDefault().getPreferenceStore();
+        IPreferenceStore store = YangUIPlugin.getDefault().getPreferenceStore();
 
         // store.setDefault(YangPreferenceConstants.P_STRING, "Default value");
         store.setDefault(YangPreferenceConstants.EDITOR_CLOSE_BRACES, true);

@@ -20,4 +20,20 @@
          <description>%yang.wizard.project.description</description>
       </wizard>
    </extension>
+   
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="com.cisco.yangide.ui.internal.preferences.YangUIPreferenceInitializer">
+      </initializer>
+   </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="com.cisco.yangide.ui.internal.preferences.YangBasePreferencePage"
+            id="com.cisco.yangide.ui.preferences.YANGBasePreferencePage"
+            name="YANG">
+      </page>
+   </extension>
+   
 </plugin>

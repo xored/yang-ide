@@ -21,7 +21,6 @@ public class YangPreferencesMessages extends NLS {
     public static String YANGEditorPreferencePage_identifiers;
     public static String YANGEditorPreferencePage_types;
     public static String YANGEditorPreferencePage_numbers;
-    public static String YANGEditorPreferencePage_expandCategory;
 
     public static String YANGEditorPreferencePage_color;
     public static String YANGEditorPreferencePage_bold;

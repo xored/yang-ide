@@ -11,6 +11,8 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.osgi.framework.BundleContext;
 
+import com.cisco.yangide.ui.YangUIPlugin;
+
 /**
  * The activator class controls the plug-in life cycle
  */
@@ -102,7 +104,8 @@ public class YangEditorPlugin extends AbstractUIPlugin {
     public IPreferenceStore getCombinedPreferenceStore() {
         if (fCombinedPreferenceStore == null) {
             IPreferenceStore generalTextStore= EditorsUI.getPreferenceStore(); 
-            fCombinedPreferenceStore= new ChainedPreferenceStore(new IPreferenceStore[] { getPreferenceStore(), generalTextStore });
+            fCombinedPreferenceStore = new ChainedPreferenceStore(new IPreferenceStore[] {
+                    YangUIPlugin.getDefault().getPreferenceStore(), generalTextStore });
         }
         return fCombinedPreferenceStore;
     }

@@ -1,4 +1,4 @@
-package com.cisco.yangide.editor.preferences;
+package com.cisco.yangide.ui.preferences;
 
 /**
  * Constant definitions for plug-in preferences

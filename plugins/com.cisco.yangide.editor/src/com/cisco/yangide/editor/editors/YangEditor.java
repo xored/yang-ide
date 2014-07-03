@@ -23,6 +23,8 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.ui.YangUIPlugin;
+import com.cisco.yangide.ui.preferences.IYangColorConstants;
 
 public class YangEditor extends TextEditor {
 
@@ -131,7 +133,7 @@ public class YangEditor extends TextEditor {
     private IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
         List<IPreferenceStore> stores = new ArrayList<IPreferenceStore>(3);
 
-        stores.add(YangEditorPlugin.getDefault().getPreferenceStore());
+        stores.add(YangUIPlugin.getDefault().getPreferenceStore());
         stores.add(EditorsUI.getPreferenceStore());
         stores.add(PlatformUI.getPreferenceStore());
 
@@ -142,7 +144,7 @@ public class YangEditor extends TextEditor {
     protected void configureSourceViewerDecorationSupport(SourceViewerDecorationSupport support) {
         // Enable bracket highlighting in the preference store
 
-        IPreferenceStore store = YangEditorPlugin.getDefault().getPreferenceStore();
+        IPreferenceStore store = YangUIPlugin.getDefault().getPreferenceStore();
         store.setDefault(EDITOR_MATCHING_BRACKETS, true);
 
         char[] matchChars = { '{', '}', '(', ')', '[', ']' }; // which brackets to match

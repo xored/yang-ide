@@ -5,6 +5,8 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.ui.YangUIPlugin;
+import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
 
 public class YangEditorColoringPreferencePage extends AbstractConfigurationBlockPreferencePage implements IWorkbenchPreferencePage {
 
@@ -17,7 +19,7 @@ public class YangEditorColoringPreferencePage extends AbstractConfigurationBlock
      */
     @Override
     protected void setPreferenceStore() {
-        setPreferenceStore(YangEditorPlugin.getDefault().getPreferenceStore());
+        setPreferenceStore(YangUIPlugin.getDefault().getPreferenceStore());
         
     }
     

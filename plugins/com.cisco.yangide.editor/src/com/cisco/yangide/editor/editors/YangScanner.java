@@ -11,6 +11,8 @@ import org.eclipse.jface.text.rules.NumberRule;
 import org.eclipse.jface.text.rules.WhitespaceRule;
 import org.eclipse.jface.text.rules.WordRule;
 
+import com.cisco.yangide.ui.preferences.IYangColorConstants;
+
 public class YangScanner extends AbstractYangScanner{
 
     private static String[] tokenProperties= {

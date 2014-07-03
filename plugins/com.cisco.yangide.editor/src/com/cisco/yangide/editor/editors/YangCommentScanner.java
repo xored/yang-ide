@@ -8,6 +8,8 @@ import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.rules.IRule;
 import org.eclipse.jface.text.rules.IToken;
 
+import com.cisco.yangide.ui.preferences.IYangColorConstants;
+
 /**
  * @author Alexey Kholupko
  *

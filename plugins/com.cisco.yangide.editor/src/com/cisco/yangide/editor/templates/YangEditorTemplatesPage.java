@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.texteditor.templates.TemplatePreferencePage;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.ui.YangUIPlugin;
 
 /**
  * @author Alexey Kholupko
@@ -22,7 +23,7 @@ import com.cisco.yangide.editor.YangEditorPlugin;
 public class YangEditorTemplatesPage extends TemplatePreferencePage {
         
         public YangEditorTemplatesPage() {
-            setPreferenceStore(YangEditorPlugin.getDefault().getPreferenceStore());
+            setPreferenceStore(YangUIPlugin.getDefault().getPreferenceStore());
             setTemplateStore(YangTemplateAccess.getDefault().getTemplateStore());
             setContextTypeRegistry(YangTemplateAccess.getDefault().getContextTypeRegistry());
         }

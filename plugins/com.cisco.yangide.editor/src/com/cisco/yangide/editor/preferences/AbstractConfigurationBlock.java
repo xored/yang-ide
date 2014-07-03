@@ -55,6 +55,7 @@ import org.eclipse.ui.forms.widgets.SharedScrolledComposite;
 
 import com.cisco.yangide.editor.dialogs.StatusInfo;
 import com.cisco.yangide.editor.dialogs.StatusUtil;
+import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
 
 
 /**

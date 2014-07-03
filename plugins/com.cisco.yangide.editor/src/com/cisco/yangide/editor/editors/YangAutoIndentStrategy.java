@@ -8,29 +8,26 @@
 package com.cisco.yangide.editor.editors;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.jdt.ui.text.IJavaPartitions;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.DocumentCommand;
-import org.eclipse.jface.text.DocumentRewriteSession;
-import org.eclipse.jface.text.DocumentRewriteSessionType;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextUtilities;
-import org.eclipse.jface.text.rules.FastPartitioner;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
-import org.eclipse.jdt.internal.ui.text.JavaHeuristicScanner;
-import org.eclipse.jdt.ui.text.IJavaPartitions;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.editors.text.YangHeuristicScanner;
 import com.cisco.yangide.editor.editors.text.YangIndenter;
-import com.cisco.yangide.editor.preferences.YangPreferenceConstants;
+import com.cisco.yangide.ui.YangUIPlugin;
+import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
 
 /**
  * @author Alexey Kholupko Auto indent strategy sensitive to brackets.
@@ -879,7 +876,7 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     }
 
     private static IPreferenceStore getPreferenceStore() {
-        return YangEditorPlugin.getDefault().getPreferenceStore();
+        return YangUIPlugin.getDefault().getPreferenceStore();
     }
 
     private boolean closeBrace() {

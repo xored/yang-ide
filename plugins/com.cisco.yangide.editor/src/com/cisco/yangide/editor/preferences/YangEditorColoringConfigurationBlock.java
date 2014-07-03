@@ -60,10 +60,11 @@ import org.eclipse.ui.model.WorkbenchViewerComparator;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
-import com.cisco.yangide.editor.editors.IYangColorConstants;
 import com.cisco.yangide.editor.editors.YangColorManager;
 import com.cisco.yangide.editor.editors.YangSourceViewerConfiguration;
-import com.cisco.yangide.editor.preferences.OverlayPreferenceStore.OverlayKey;
+import com.cisco.yangide.ui.preferences.IYangColorConstants;
+import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
+import com.cisco.yangide.ui.preferences.OverlayPreferenceStore.OverlayKey;
 
 
 /**

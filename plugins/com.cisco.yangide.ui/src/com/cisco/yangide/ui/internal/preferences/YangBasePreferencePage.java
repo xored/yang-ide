@@ -1,4 +1,4 @@
-package com.cisco.yangide.editor.preferences;
+package com.cisco.yangide.ui.internal.preferences;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.PreferencePage;
@@ -35,7 +35,7 @@ public class YangBasePreferencePage extends PreferencePage implements IWorkbench
         pageArea.setLayout(layout);
 
         Label label = new Label(pageArea, SWT.NONE);
-        label.setText(YangPreferencesMessages.YANGEditorPreferencePage_expandCategory);
+        label.setText("Expand the tree to edit preferences for a specific feature.");
 
         label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
 

@@ -15,6 +15,7 @@ import org.eclipse.ui.editors.text.templates.ContributionContextTypeRegistry;
 import org.eclipse.ui.editors.text.templates.ContributionTemplateStore;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.ui.YangUIPlugin;
 
 /**
  * @author Alexey Kholupko
@@ -54,7 +55,7 @@ public class YangTemplateAccess {
      */
     public TemplateStore getTemplateStore() {
         if (fStore == null) {
-            fStore = new ContributionTemplateStore(getContextTypeRegistry(), YangEditorPlugin.getDefault()
+            fStore = new ContributionTemplateStore(getContextTypeRegistry(), YangUIPlugin.getDefault()
                     .getPreferenceStore(), CUSTOM_TEMPLATES_KEY);
             try {
                 fStore.load();

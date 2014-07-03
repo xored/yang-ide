@@ -1,4 +1,4 @@
-package com.cisco.yangide.editor.editors;
+package com.cisco.yangide.ui.preferences;
 
 
 public interface IYangColorConstants {

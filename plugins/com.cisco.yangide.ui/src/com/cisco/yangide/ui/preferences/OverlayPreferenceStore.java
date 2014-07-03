@@ -9,7 +9,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.cisco.yangide.editor.preferences;
+package com.cisco.yangide.ui.preferences;
 
 import org.eclipse.core.runtime.Assert;
 

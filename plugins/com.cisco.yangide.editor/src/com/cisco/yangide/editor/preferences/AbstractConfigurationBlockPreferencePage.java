@@ -22,6 +22,7 @@ import org.eclipse.ui.PlatformUI;
 import org.osgi.service.prefs.BackingStoreException;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
 
 /**
  * Abstract preference page which is used to wrap a
