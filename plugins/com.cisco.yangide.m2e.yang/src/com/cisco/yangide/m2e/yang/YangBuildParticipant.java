@@ -8,16 +8,23 @@
 package com.cisco.yangide.m2e.yang;
 
 import java.io.File;
+import java.util.HashSet;
 import java.util.Set;
 
 import org.apache.maven.plugin.MojoExecution;
 import org.codehaus.plexus.util.Scanner;
+import org.eclipse.core.filesystem.URIUtil;
+import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IProject;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.embedder.IMaven;
 import org.eclipse.m2e.core.project.configurator.MojoExecutionBuildParticipant;
 import org.sonatype.plexus.build.incremental.BuildContext;
+
+import com.cisco.yangide.ui.YangUIPlugin;
+import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
 
 /**
  * @author Konstantin Zaitsev
@@ -45,18 +52,35 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
             return null;
         }
 
-        Set<IProject> result = super.build(kind, monitor);
-
+        Set<File> outputDirs = new HashSet<>();
         YangGeneratorConfiguration[] confs = maven.getMojoParameterValue(getSession().getCurrentProject(),
                 getMojoExecution(), YangM2EPlugin.YANG_CODE_GENERATORS, YangGeneratorConfiguration[].class, monitor);
         if (confs != null) {
             for (YangGeneratorConfiguration conf : confs) {
                 if (conf.getOutputBaseDir() != null) {
-                    buildContext.refresh(conf.getOutputBaseDir());
+                    outputDirs.add(conf.getOutputBaseDir());
                 }
             }
         }
 
+        boolean isCleanRequired = YangUIPlugin.getDefault().getPreferenceStore().getBoolean(YangPreferenceConstants.M2E_PLUGIN_CLEAN_TARGET);
+        
+        if (isCleanRequired) {
+            for (File outputDir : outputDirs) {
+                IContainer[] containers = ResourcesPlugin.getWorkspace().getRoot()
+                        .findContainersForLocationURI(URIUtil.toURI(outputDir.getAbsolutePath()));
+                if (containers != null && containers.length > 0) {
+                    containers[0].delete(true, monitor);
+                }
+            }
+        }
+        
+        Set<IProject> result = super.build(kind, monitor);
+
+        for (File outputDir : outputDirs) {
+            buildContext.refresh(outputDir);
+        }
+        
         return result;
     }
 }

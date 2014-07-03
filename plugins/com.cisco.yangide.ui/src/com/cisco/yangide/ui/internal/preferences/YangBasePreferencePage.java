@@ -5,43 +5,49 @@ import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 
+import com.cisco.yangide.ui.YangUIPlugin;
+import com.cisco.yangide.ui.nls.Messages;
+import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
+
 public class YangBasePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.eclipse.ui.IWorkbenchPreferencePage#init(org.eclipse.ui.IWorkbench)
-     */
+    private Button cleanBtn;
+
+    @Override
     public void init(IWorkbench workbench) {
-        this.noDefaultAndApplyButton();
+        this.setPreferenceStore(YangUIPlugin.getDefault().getPreferenceStore());
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.preference.PreferencePage#createContents(org.eclipse.swt.widgets.Composite)
-     */
-
+    @Override
     protected Control createContents(Composite parent) {
         Composite pageArea = new Composite(parent, SWT.NONE);
-        GridLayout layout = new GridLayout();
+        GridLayout layout = new GridLayout(1, true);
         pageArea.setLayout(layout);
 
-        Label label = new Label(pageArea, SWT.NONE);
-        label.setText("Expand the tree to edit preferences for a specific feature.");
-
-        label.setLayoutData(new GridData(GridData.FILL_HORIZONTAL | GridData.GRAB_HORIZONTAL));
-
+        cleanBtn = new Button(pageArea, SWT.CHECK);
+        cleanBtn.setText(Messages.pref_Base_cleanCodeGen);
+        cleanBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+        cleanBtn.setSelection(getPreferenceStore().getBoolean(YangPreferenceConstants.M2E_PLUGIN_CLEAN_TARGET));
         Dialog.applyDialogFont(pageArea);
 
         return pageArea;
     }
 
+    @Override
+    public boolean performOk() {
+        getPreferenceStore().setValue(YangPreferenceConstants.M2E_PLUGIN_CLEAN_TARGET, cleanBtn.getSelection());
+        return true;
+    }
+
+    @Override
+    protected void performDefaults() {
+        cleanBtn.setSelection(getPreferenceStore().getDefaultBoolean(YangPreferenceConstants.M2E_PLUGIN_CLEAN_TARGET));
+        super.performDefaults();
+    }
 }

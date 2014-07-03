@@ -41,5 +41,6 @@ public class YangPreferenceConstants {
      * @since 3.7
      */
     public final static String EDITOR_SMART_INDENT_AFTER_NEWLINE= "smartIndentAfterNewline"; //$NON-NLS-1$    
-    
+ 
+    public final static String M2E_PLUGIN_CLEAN_TARGET = "m2ePluginCleanTarget";
 }
