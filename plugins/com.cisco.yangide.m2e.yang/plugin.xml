@@ -1,15 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.eclipse.m2e.core.projectConfigurators">
+   <extension point="org.eclipse.m2e.core.projectConfigurators">
       <configurator
             class="com.cisco.yangide.m2e.yang.YangProjectConfigurator"
-            id="com.cisco.yangide.m2e.yang.yangConfigurator"
-            name="YANG Project Configurator">
-      </configurator>
+            id="com.cisco.yangide.m2e.yang.YangProjectConfigurator"
+            name="YANG Project Configurator"/>
    </extension>
+
+   <extension point="org.eclipse.m2e.core.mavenProjectChangedListeners">
+      <listener class="com.cisco.yangide.m2e.yang.MavenProjectChangedListener"/>
+   </extension>
+
    <extension
-         point="org.eclipse.m2e.core.lifecycleMappingMetadataSource">
+         point="org.eclipse.m2e.core.lifecycleMappings">
+      <lifecycleMapping
+            name="YANG Lifecycle Mapping"
+            class="com.cisco.yangide.m2e.yang.LifecycleMapping"
+            id="org.eclipse.m2e.jdt.JarLifecycleMapping">
+      </lifecycleMapping>
    </extension>
+
+   <extension
+         point="org.eclipse.m2e.core.lifecycleMappings">
+      <lifecycleMapping
+            name="YANG Lifecycle Mapping"
+            class="com.cisco.yangide.m2e.yang.LifecycleMapping"
+            id="DEFAULT">
+      </lifecycleMapping>
+   </extension>
+   <extension point="org.eclipse.m2e.core.lifecycleMappingMetadataSource"/>
 </plugin>

@@ -5,28 +5,15 @@
       <pluginExecutionFilter>
         <groupId>org.opendaylight.yangtools</groupId>
         <artifactId>yang-maven-plugin</artifactId>
-        <versionRange>[0.6.1,)</versionRange>
+        <versionRange>[0.5.0,)</versionRange>
         <goals>
           <goal>generate-sources</goal>
         </goals>
       </pluginExecutionFilter>
       <action>
         <configurator>
-          <id>com.cisco.yangide.m2e.yang.yangConfigurator</id>
+          <id>com.cisco.yangide.m2e.yang.YangProjectConfigurator</id>
         </configurator>
-      </action>
-    </pluginExecution>
-    <pluginExecution>
-      <pluginExecutionFilter>
-        <groupId>org.codehaus.mojo</groupId>
-        <artifactId>build-helper-maven-plugin</artifactId>
-        <versionRange>[0.0.0,)</versionRange>
-        <goals>
-          <goal>add-source</goal>
-        </goals>
-      </pluginExecutionFilter>
-      <action>
-      	<ignore/>
       </action>
     </pluginExecution>
   </pluginExecutions>

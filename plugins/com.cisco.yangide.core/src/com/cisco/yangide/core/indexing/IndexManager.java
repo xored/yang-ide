@@ -71,6 +71,7 @@ public class IndexManager extends JobManager {
     @Override
     public void shutdown() {
         super.shutdown();
+        db.commit();
         db.compact();
         db.close();
     }
@@ -99,6 +100,7 @@ public class IndexManager extends JobManager {
     public synchronized void addElementIndexInfo(ElementIndexInfo info) {
         System.err.println("Add element to index - " + info.getName() + " - " + info.getType());
         idxKeywords.add(Fun.t5(info.getNamespace(), info.getName(), info.getType(), info.getPath(), info));
+        db.commit();
     }
 
     public synchronized ElementIndexInfo[] search(String namespace, String name, ElementIndexType type, IPath scope) {
