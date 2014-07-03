@@ -84,7 +84,6 @@ public class YangModelUpdater {
      * <li>Add a REMOVED entry in the delta
      * </ul>
      */
-    @SuppressWarnings("restriction")
     protected void elementRemoved(YangElement element) {
 
         if (element.isOpen()) {

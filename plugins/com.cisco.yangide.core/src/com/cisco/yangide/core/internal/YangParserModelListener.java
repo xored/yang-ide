@@ -30,6 +30,7 @@ import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Revision_date_stmt
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Revision_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Revision_stmtsContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.StringContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Typedef_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Yang_version_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParserBaseListener;
 
@@ -38,13 +39,14 @@ import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
 import com.cisco.yangide.core.dom.SimpleNode;
+import com.cisco.yangide.core.dom.TypeDefinition;
 
 /**
  * @author Konstantin Zaitsev
  * @date Jun 26, 2014
  */
 public class YangParserModelListener extends YangParserBaseListener {
-    private final DateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    public final static DateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     private Module module;
     private URI namespace;
@@ -149,6 +151,14 @@ public class YangParserModelListener extends YangParserBaseListener {
         updateNodePosition(moduleImport, ctx);
         setNamedNode(moduleImport, ctx);
         module.getImports().add(moduleImport);
+    }
+    
+    @Override
+    public void enterTypedef_stmt(Typedef_stmtContext ctx) {
+        TypeDefinition typeDefinition = new TypeDefinition(module);
+        updateNodePosition(typeDefinition, ctx);
+        setNamedNode(typeDefinition, ctx);
+        module.getTypeDefinitions().add(typeDefinition);
     }
 
     /**

@@ -27,8 +27,8 @@ public class Module extends ASTNamedNode {
     private ArrayList<ModuleImport> imports = new ArrayList<ModuleImport>();
 
     // private final Set<FeatureDefinition> features = new TreeSet<>(Comparators.SCHEMA_NODE_COMP);
-    // private final Set<TypeDefinition<?>> typeDefinitions = new
-    // TreeSet<>(Comparators.SCHEMA_NODE_COMP);
+    private ArrayList<TypeDefinition> typeDefinitions = new ArrayList<TypeDefinition>();
+    
     // private final Set<NotificationDefinition> notifications = new
     // TreeSet<>(Comparators.SCHEMA_NODE_COMP);
     // private final Set<AugmentationSchema> augmentations = new HashSet<>();
@@ -157,5 +157,29 @@ public class Module extends ASTNamedNode {
      */
     public ArrayList<ModuleImport> getImports() {
         return imports;
+    }
+
+    /**
+     * @return the typeDefinitions
+     */
+    public ArrayList<TypeDefinition> getTypeDefinitions() {
+        return typeDefinitions;
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        boolean visitChildren = visitor.visit(this);
+        if (visitChildren) {
+            acceptChild(visitor, namespace);
+            acceptChild(visitor, sourcePath);
+            acceptChild(visitor, revision);
+            acceptChild(visitor, prefix);
+            acceptChild(visitor, yangVersion);
+            acceptChild(visitor, organization);
+            acceptChild(visitor, contact);
+            
+            acceptChildren(visitor, imports);
+            acceptChildren(visitor, typeDefinitions);
+        }
     }
 }

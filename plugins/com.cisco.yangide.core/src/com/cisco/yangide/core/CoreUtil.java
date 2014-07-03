@@ -26,4 +26,12 @@ public final class CoreUtil {
     public static int combineHashCodes(int hashCode1, int hashCode2) {
         return hashCode1 * 17 + hashCode2;
     }
+
+    public static boolean isYangLikeFileName(String name) {
+        if (name == null || name.length() == 0) {
+            return false;
+        }
+
+        return name.toLowerCase().endsWith(".yang");
+    }
 }

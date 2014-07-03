@@ -61,11 +61,11 @@ public final class YangModelManager implements ISaveParticipant {
         return MANAGER;
     }
 
-    @SuppressWarnings("restriction")
     public void startup() throws CoreException {
         try {
             // initialize Yang model cache, 5000 is default value for JDT openable cache
             this.cache = new OpenableElementCache(5000);
+            this.indexManager = new IndexManager();
             this.deltaProcessor = new DeltaProcessor(this);
             final IWorkspace workspace = ResourcesPlugin.getWorkspace();
             workspace.addResourceChangeListener(deltaProcessor,
@@ -117,7 +117,6 @@ public final class YangModelManager implements ISaveParticipant {
         }
     }
 
-    @SuppressWarnings("restriction")
     public void shutdown() {
         IWorkspace workspace = ResourcesPlugin.getWorkspace();
         workspace.removeResourceChangeListener(this.deltaProcessor);

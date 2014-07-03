@@ -19,7 +19,6 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.JavaCore;
 
 import com.cisco.yangide.core.IOpenable;
 import com.cisco.yangide.core.OpenableElementInfo;

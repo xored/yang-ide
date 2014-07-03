@@ -8,13 +8,17 @@
 package com.cisco.yangide.core.dom;
 
 /**
+ * Simple named node with typed value.
+ * 
  * @author Konstantin Zaitsev
  * @date Jun 26, 2014
  */
 public class SimpleNode<T> extends ASTNode {
+
     /** Name. */
     private String nodeName;
 
+    /** Node value. */
     private T value;
 
     public SimpleNode(ASTNode parent, String nodeName, T value) {
@@ -40,5 +44,10 @@ public class SimpleNode<T> extends ASTNode {
     @Override
     public String getNodeName() {
         return nodeName;
+    }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.visit(this);
     }
 }

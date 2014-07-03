@@ -12,16 +12,15 @@ import java.util.Map;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.jdt.core.JavaCore;
 
 import com.cisco.yangide.core.IOpenable;
 import com.cisco.yangide.core.OpenableElementInfo;
+import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
 
 /**
@@ -44,12 +43,8 @@ public class YangModel extends YangElement {
         int index = 0;
         for (int i = 0; i < length; i++) {
             IProject project = projects[i];
-            try {
-                if (project.hasNature(JavaCore.NATURE_ID)) {
-                    children[index++] = new YangProject(project, this);
-                }
-            } catch (CoreException e) {
-                throw new YangModelException(e);
+            if (project.isAccessible() && YangCorePlugin.isYangProject(project)) {
+                children[index++] = new YangProject(project, this);
             }
         }
         if (index < length) {
