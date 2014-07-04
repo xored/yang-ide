@@ -36,10 +36,9 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
     /** The line comment introducer. Value is "{@value} " */
     private static final String LINE_COMMENT = "//"; //$NON-NLS-1$
-    //XXX  Useless yet
+    // XXX Useless yet
     private static final int DEFAULT_TAB_WIDTH = 2;
     private static final boolean DEFAULT_SPACES_FOR_TAB = true;
-
 
     private boolean fCloseBrace;
     private boolean fIsSmartMode;
@@ -155,44 +154,30 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         }
         return endOffset;
     }
-/*
-    private void smartIndentAfterClosingBracket(IDocument d, DocumentCommand c) {
-        if (c.offset == -1 || d.getLength() == 0)
-            return;
 
-        try {
-            
-            int p = (c.offset == d.getLength() ? c.offset - 1 : c.offset);
-            int line = d.getLineOfOffset(p);
-            int start = d.getLineOffset(line);
-            int whiteend = findEndOfWhiteSpace(d, start, c.offset);
-
-            YangHeuristicScanner scanner = new YangHeuristicScanner(d);
-            YangIndenter indenter = new YangIndenter(d, scanner);
-
-            // shift only when line does not contain any text up to the closing bracket
-            if (whiteend == c.offset) {
-                // evaluate the line with the opening bracket that matches out closing bracket
-                int reference = indenter.findReferencePosition(c.offset, false, true, false, false);
-                int indLine = d.getLineOfOffset(reference);
-                if (indLine != -1 && indLine != line) {
-                    // take the indent of the found line
-                    StringBuffer replaceText = new StringBuffer(getIndentOfLine(d, indLine));
-                    // add the rest of the current line including the just added close bracket
-                    replaceText.append(d.get(whiteend, c.offset - whiteend));
-                    replaceText.append(c.text);
-                    // modify document command
-                    c.length += c.offset - start;
-                    c.offset = start;
-                    c.text = replaceText.toString();
-                }
-            }
-        } catch (BadLocationException e) {
-            YangEditorPlugin.log(e);
-        }
-    }
-
-*/    private void smartIndentAfterOpeningBracket(IDocument d, DocumentCommand c) {
+    /*
+     * private void smartIndentAfterClosingBracket(IDocument d, DocumentCommand c) { if (c.offset ==
+     * -1 || d.getLength() == 0) return;
+     * 
+     * try {
+     * 
+     * int p = (c.offset == d.getLength() ? c.offset - 1 : c.offset); int line =
+     * d.getLineOfOffset(p); int start = d.getLineOffset(line); int whiteend =
+     * findEndOfWhiteSpace(d, start, c.offset);
+     * 
+     * YangHeuristicScanner scanner = new YangHeuristicScanner(d); YangIndenter indenter = new
+     * YangIndenter(d, scanner);
+     * 
+     * // shift only when line does not contain any text up to the closing bracket if (whiteend ==
+     * c.offset) { // evaluate the line with the opening bracket that matches out closing bracket
+     * int reference = indenter.findReferencePosition(c.offset, false, true, false, false); int
+     * indLine = d.getLineOfOffset(reference); if (indLine != -1 && indLine != line) { // take the
+     * indent of the found line StringBuffer replaceText = new StringBuffer(getIndentOfLine(d,
+     * indLine)); // add the rest of the current line including the just added close bracket
+     * replaceText.append(d.get(whiteend, c.offset - whiteend)); replaceText.append(c.text); //
+     * modify document command c.length += c.offset - start; c.offset = start; c.text =
+     * replaceText.toString(); } } } catch (BadLocationException e) { YangEditorPlugin.log(e); } }
+     */private void smartIndentAfterOpeningBracket(IDocument d, DocumentCommand c) {
         if (c.offset < 1 || d.getLength() == 0)
             return;
 
@@ -241,8 +226,8 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         if (indent == null)
             indent = new StringBuffer();
 
-        //indent.append("    ");
-        
+        // indent.append("    ");
+
         int docLength = d.getLength();
         if (c.offset == -1 || docLength == 0)
             return;
@@ -261,8 +246,8 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
             int start = reg.getOffset();
             ITypedRegion region = TextUtilities.getPartition(d, fPartitioning, start, true);
-//            if (IJavaPartitions.JAVA_DOC.equals(region.getType()))
-//                start = d.getLineInformationOfOffset(region.getOffset()).getOffset();
+            // if (IJavaPartitions.JAVA_DOC.equals(region.getType()))
+            // start = d.getLineInformationOfOffset(region.getOffset()).getOffset();
 
             // insert closing brace on new line after an unclosed opening brace
             // TODO
@@ -330,49 +315,37 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
      * @return an insert position relative to the line start if <code>line</code> contains a
      * parenthesized expression that can be followed by a block, -1 otherwise
      */
-/*    private static int computeAnonymousPosition(IDocument document, int offset, String partitioning, int max) {
-        // find the opening parenthesis for every closing parenthesis on the current line after
-        // offset
-        // return the position behind the closing parenthesis if it looks like a method declaration
-        // or an expression for an if, while, for, catch statement
-
-        YangHeuristicScanner scanner = new YangHeuristicScanner(document);
-        int pos = offset;
-        int length = max;
-        int scanTo = scanner.scanForward(pos, length, '}');
-        if (scanTo == -1)
-            scanTo = length;
-
-        int closingParen = findClosingParenToLeft(scanner, pos) - 1;
-        boolean hasNewToken = looksLikeAnonymousClassDef(document, partitioning, scanner, pos);
-        int openingParen = -1;
-        while (true) {
-            int startScan = closingParen + 1;
-            closingParen = scanner.scanForward(startScan, scanTo, ')');
-            if (closingParen == -1) {
-                if (hasNewToken && openingParen != -1)
-                    return openingParen + 1;
-                break;
-            }
-
-            openingParen = scanner.findOpeningPeer(closingParen - 1, '(', ')');
-
-            // no way an expression at the beginning of the document can mean anything
-            if (openingParen < 1)
-                break;
-
-            // only select insert positions for parenthesis currently embracing the caret
-            if (openingParen > pos)
-                continue;
-
-            if (looksLikeAnonymousClassDef(document, partitioning, scanner, openingParen - 1))
-                return closingParen + 1;
-
-        }
-
-        return -1;
-    }
-*/
+    /*
+     * private static int computeAnonymousPosition(IDocument document, int offset, String
+     * partitioning, int max) { // find the opening parenthesis for every closing parenthesis on the
+     * current line after // offset // return the position behind the closing parenthesis if it
+     * looks like a method declaration // or an expression for an if, while, for, catch statement
+     * 
+     * YangHeuristicScanner scanner = new YangHeuristicScanner(document); int pos = offset; int
+     * length = max; int scanTo = scanner.scanForward(pos, length, '}'); if (scanTo == -1) scanTo =
+     * length;
+     * 
+     * int closingParen = findClosingParenToLeft(scanner, pos) - 1; boolean hasNewToken =
+     * looksLikeAnonymousClassDef(document, partitioning, scanner, pos); int openingParen = -1;
+     * while (true) { int startScan = closingParen + 1; closingParen =
+     * scanner.scanForward(startScan, scanTo, ')'); if (closingParen == -1) { if (hasNewToken &&
+     * openingParen != -1) return openingParen + 1; break; }
+     * 
+     * openingParen = scanner.findOpeningPeer(closingParen - 1, '(', ')');
+     * 
+     * // no way an expression at the beginning of the document can mean anything if (openingParen <
+     * 1) break;
+     * 
+     * // only select insert positions for parenthesis currently embracing the caret if
+     * (openingParen > pos) continue;
+     * 
+     * if (looksLikeAnonymousClassDef(document, partitioning, scanner, openingParen - 1)) return
+     * closingParen + 1;
+     * 
+     * }
+     * 
+     * return -1; }
+     */
     /**
      * Finds a closing parenthesis to the left of <code>position</code> in document, where that
      * parenthesis is only separated by whitespace from <code>position</code>. If no such
@@ -384,15 +357,12 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
      * whitespace, or <code>position</code> if no parenthesis can be found
      */
     /*
-    private static int findClosingParenToLeft(YangHeuristicScanner scanner, int position) {
-        if (position < 1)
-            return position;
-
-        if (scanner.previousToken(position - 1, YangHeuristicScanner.UNBOUND) == Symbols.TokenRPAREN)
-            return scanner.getPosition() + 1;
-        return position;
-    }
-    */
+     * private static int findClosingParenToLeft(YangHeuristicScanner scanner, int position) { if
+     * (position < 1) return position;
+     * 
+     * if (scanner.previousToken(position - 1, YangHeuristicScanner.UNBOUND) == Symbols.TokenRPAREN)
+     * return scanner.getPosition() + 1; return position; }
+     */
 
     /**
      * Checks whether the content of <code>document</code> in the range (<code>offset</code>,
@@ -433,7 +403,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         return false;
     }
 
-
     /**
      * Checks whether <code>position</code> resides in a default (Java) partition of
      * <code>document</code>.
@@ -458,7 +427,9 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         return false;
     }
 
-    /* TODO
+    /*
+     * TODO
+     * 
      * @see org.eclipse.jdt.internal.ui.text.java.JavaAutoIndentStrategy#isClosed
      */
     private boolean isClosed(IDocument document, int offset, int length) {
@@ -466,7 +437,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         return getBlockBalance(document, offset, fPartitioning) <= 0;
 
     }
-
 
     /**
      * Installs a java partitioner with <code>document</code>.
@@ -478,126 +448,76 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     }
 
     /*
-    private void smartPaste(IDocument document, DocumentCommand command) {
-        int newOffset = command.offset;
-        int newLength = command.length;
-        String newText = command.text;
-
-        try {
-            YangHeuristicScanner scanner = new YangHeuristicScanner(document);
-            JavaIndenter indenter = new JavaIndenter(document, scanner, null);
-            int offset = newOffset;
-
-            // reference position to get the indent from
-            int refOffset = indenter.findReferencePosition(offset);
-            if (refOffset == YangHeuristicScanner.NOT_FOUND)
-                return;
-            int peerOffset = getPeerPosition(document, command);
-            peerOffset = indenter.findReferencePosition(peerOffset);
-            if (peerOffset != YangHeuristicScanner.NOT_FOUND)
-                refOffset = Math.min(refOffset, peerOffset);
-
-            // eat any WS before the insertion to the beginning of the line
-            int firstLine = 1; // don't format the first line per default, as it has other content
-                               // before it
-            IRegion line = document.getLineInformationOfOffset(offset);
-            String notSelected = document.get(line.getOffset(), offset - line.getOffset());
-            if (notSelected.trim().length() == 0) {
-                newLength += notSelected.length();
-                newOffset = line.getOffset();
-                firstLine = 0;
-            }
-
-            // prefix: the part we need for formatting but won't paste
-            IRegion refLine = document.getLineInformationOfOffset(refOffset);
-            String prefix = document.get(refLine.getOffset(), newOffset - refLine.getOffset());
-
-            // handle the indentation computation inside a temporary document
-            Document temp = new Document(prefix + newText);
-            DocumentRewriteSession session = temp.startRewriteSession(DocumentRewriteSessionType.STRICTLY_SEQUENTIAL);
-            scanner = new YangHeuristicScanner(temp);
-            indenter = new JavaIndenter(temp, scanner, null);
-            installJavaStuff(temp);
-
-            // indent the first and second line
-            // compute the relative indentation difference from the second line
-            // (as the first might be partially selected) and use the value to
-            // indent all other lines.
-            boolean isIndentDetected = false;
-            StringBuffer addition = new StringBuffer();
-            int insertLength = 0;
-            int firstLineInsertLength = 0;
-            int firstLineIndent = 0;
-            int first = document.computeNumberOfLines(prefix) + firstLine; // don't format first
-                                                                           // line
-            int lines = temp.getNumberOfLines();
-            int tabLength = getVisualTabLengthPreference();
-            boolean changed = false;
-            for (int l = first; l < lines; l++) { // we don't change the number of lines while
-                                                  // adding indents
-
-                IRegion r = temp.getLineInformation(l);
-                int lineOffset = r.getOffset();
-                int lineLength = r.getLength();
-
-                if (lineLength == 0) // don't modify empty lines
-                    continue;
-
-                if (!isIndentDetected) {
-
-                    // indent the first pasted line
-                    String current = getCurrentIndent(temp, l);
-                    StringBuffer correct = indenter.computeIndentation(lineOffset);
-                    if (correct == null)
-                        return; // bail out
-
-                    insertLength = subtractIndent(correct, current, addition, tabLength);
-                    if (l == first) {
-                        firstLineInsertLength = insertLength;
-                        firstLineIndent = current.length();
-                    }
-                    if (l != first && temp.get(lineOffset, lineLength).trim().length() != 0) {
-                        isIndentDetected = true;
-                        if (firstLineIndent >= current.length())
-                            insertLength = firstLineInsertLength;
-                        if (insertLength == 0) {
-                            // no adjustment needed, bail out
-                            if (firstLine == 0) {
-                                // but we still need to adjust the first line
-                                command.offset = newOffset;
-                                command.length = newLength;
-                                if (changed)
-                                    break; // still need to get the leading indent of the first line
-                            }
-                            return;
-                        }
-                    } else {
-                        changed = insertLength != 0;
-                    }
-                }
-
-                // relatively indent all pasted lines
-                if (insertLength > 0)
-                    addIndent(temp, l, addition, tabLength);
-                else if (insertLength < 0)
-                    cutIndent(temp, l, -insertLength, tabLength);
-
-            }
-
-            removeJavaStuff(temp);
-            temp.stopRewriteSession(session);
-            newText = temp.get(prefix.length(), temp.getLength() - prefix.length());
-
-            command.offset = newOffset;
-            command.length = newLength;
-            command.text = newText;
-
-        } catch (BadLocationException e) {
-            YangEditorPlugin.log(e);
-        }
-
-    }
-    */
+     * private void smartPaste(IDocument document, DocumentCommand command) { int newOffset =
+     * command.offset; int newLength = command.length; String newText = command.text;
+     * 
+     * try { YangHeuristicScanner scanner = new YangHeuristicScanner(document); JavaIndenter
+     * indenter = new JavaIndenter(document, scanner, null); int offset = newOffset;
+     * 
+     * // reference position to get the indent from int refOffset =
+     * indenter.findReferencePosition(offset); if (refOffset == YangHeuristicScanner.NOT_FOUND)
+     * return; int peerOffset = getPeerPosition(document, command); peerOffset =
+     * indenter.findReferencePosition(peerOffset); if (peerOffset != YangHeuristicScanner.NOT_FOUND)
+     * refOffset = Math.min(refOffset, peerOffset);
+     * 
+     * // eat any WS before the insertion to the beginning of the line int firstLine = 1; // don't
+     * format the first line per default, as it has other content // before it IRegion line =
+     * document.getLineInformationOfOffset(offset); String notSelected =
+     * document.get(line.getOffset(), offset - line.getOffset()); if (notSelected.trim().length() ==
+     * 0) { newLength += notSelected.length(); newOffset = line.getOffset(); firstLine = 0; }
+     * 
+     * // prefix: the part we need for formatting but won't paste IRegion refLine =
+     * document.getLineInformationOfOffset(refOffset); String prefix =
+     * document.get(refLine.getOffset(), newOffset - refLine.getOffset());
+     * 
+     * // handle the indentation computation inside a temporary document Document temp = new
+     * Document(prefix + newText); DocumentRewriteSession session =
+     * temp.startRewriteSession(DocumentRewriteSessionType.STRICTLY_SEQUENTIAL); scanner = new
+     * YangHeuristicScanner(temp); indenter = new JavaIndenter(temp, scanner, null);
+     * installJavaStuff(temp);
+     * 
+     * // indent the first and second line // compute the relative indentation difference from the
+     * second line // (as the first might be partially selected) and use the value to // indent all
+     * other lines. boolean isIndentDetected = false; StringBuffer addition = new StringBuffer();
+     * int insertLength = 0; int firstLineInsertLength = 0; int firstLineIndent = 0; int first =
+     * document.computeNumberOfLines(prefix) + firstLine; // don't format first // line int lines =
+     * temp.getNumberOfLines(); int tabLength = getVisualTabLengthPreference(); boolean changed =
+     * false; for (int l = first; l < lines; l++) { // we don't change the number of lines while //
+     * adding indents
+     * 
+     * IRegion r = temp.getLineInformation(l); int lineOffset = r.getOffset(); int lineLength =
+     * r.getLength();
+     * 
+     * if (lineLength == 0) // don't modify empty lines continue;
+     * 
+     * if (!isIndentDetected) {
+     * 
+     * // indent the first pasted line String current = getCurrentIndent(temp, l); StringBuffer
+     * correct = indenter.computeIndentation(lineOffset); if (correct == null) return; // bail out
+     * 
+     * insertLength = subtractIndent(correct, current, addition, tabLength); if (l == first) {
+     * firstLineInsertLength = insertLength; firstLineIndent = current.length(); } if (l != first &&
+     * temp.get(lineOffset, lineLength).trim().length() != 0) { isIndentDetected = true; if
+     * (firstLineIndent >= current.length()) insertLength = firstLineInsertLength; if (insertLength
+     * == 0) { // no adjustment needed, bail out if (firstLine == 0) { // but we still need to
+     * adjust the first line command.offset = newOffset; command.length = newLength; if (changed)
+     * break; // still need to get the leading indent of the first line } return; } } else { changed
+     * = insertLength != 0; } }
+     * 
+     * // relatively indent all pasted lines if (insertLength > 0) addIndent(temp, l, addition,
+     * tabLength); else if (insertLength < 0) cutIndent(temp, l, -insertLength, tabLength);
+     * 
+     * }
+     * 
+     * removeJavaStuff(temp); temp.stopRewriteSession(session); newText = temp.get(prefix.length(),
+     * temp.getLength() - prefix.length());
+     * 
+     * command.offset = newOffset; command.length = newLength; command.text = newText;
+     * 
+     * } catch (BadLocationException e) { YangEditorPlugin.log(e); }
+     * 
+     * }
+     */
 
     /**
      * Returns the indentation of the line <code>line</code> in <code>document</code>. The returned
@@ -804,7 +724,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         return DEFAULT_SPACES_FOR_TAB;
     }
 
-  
     private boolean isLineDelimiter(IDocument document, String text) {
         String[] delimiters = document.getLegalLineDelimiters();
         if (delimiters != null)
@@ -814,14 +733,15 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
     private void smartIndentOnKeypress(IDocument document, DocumentCommand command) {
         switch (command.text.charAt(0)) {
-//        case '}':
-//            smartIndentAfterClosingBracket(document, command);
-//            break;
-//        case '{':
-//            smartIndentAfterOpeningBracket(document, command);
-//            break;
+        // case '}':
+        // smartIndentAfterClosingBracket(document, command);
+        // break;
+        // case '{':
+        // smartIndentAfterOpeningBracket(document, command);
+        // break;
         }
     }
+
     /*
      * @see
      * org.eclipse.jface.text.IAutoIndentStrategy#customizeDocumentCommand(org.eclipse.jface.text
@@ -834,19 +754,19 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
         clearCachedValues();
 
-//        if (!fIsSmartMode) {
-//            super.customizeDocumentCommand(d, c);
-//            return;
-//        }
-//
-//        if (!fIsSmartTab && isRepresentingTab(c.text))
-//            return;
+        // if (!fIsSmartMode) {
+        // super.customizeDocumentCommand(d, c);
+        // return;
+        // }
+        //
+        // if (!fIsSmartTab && isRepresentingTab(c.text))
+        // return;
 
         if (c.length == 0 && c.text != null && isLineDelimiter(d, c.text)) {
             if (fIsSmartIndentAfterNewline)
                 smartIndentAfterNewLine(d, c);
-//            else
-//                super.customizeDocumentCommand(d, c);
+            // else
+            // super.customizeDocumentCommand(d, c);
         } else if (c.text.length() == 1)
             smartIndentOnKeypress(d, c);
 
@@ -887,7 +807,8 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         IPreferenceStore preferenceStore = getPreferenceStore();
         fCloseBrace = preferenceStore.getBoolean(YangPreferenceConstants.EDITOR_CLOSE_BRACES);
         fIsSmartTab = preferenceStore.getBoolean(YangPreferenceConstants.EDITOR_SMART_TAB);
-        fIsSmartIndentAfterNewline = preferenceStore.getBoolean(YangPreferenceConstants.EDITOR_SMART_INDENT_AFTER_NEWLINE);
+        fIsSmartIndentAfterNewline = preferenceStore
+                .getBoolean(YangPreferenceConstants.EDITOR_SMART_INDENT_AFTER_NEWLINE);
         fIsSmartMode = computeSmartMode();
     }
 
@@ -902,7 +823,7 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         }
         return false;
     }
-    
+
     /**
      * Returns the block balance, i.e. zero if the blocks are balanced at <code>offset</code>, a
      * negative number if there are more closing than opening braces, and a positive number if there
@@ -919,14 +840,14 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         if (offset >= document.getLength())
             return 1;
 
-        int begin= offset;
-        int end= offset - 1;
+        int begin = offset;
+        int end = offset - 1;
 
-        YangHeuristicScanner scanner= new YangHeuristicScanner(document);
+        YangHeuristicScanner scanner = new YangHeuristicScanner(document);
 
         while (true) {
-            begin= scanner.findOpeningPeer(begin - 1, '{', '}');
-            end= scanner.findClosingPeer(end + 1, '{', '}');
+            begin = scanner.findOpeningPeer(begin - 1, '{', '}');
+            end = scanner.findClosingPeer(end + 1, '{', '}');
             if (begin == -1 && end == -1)
                 return 0;
             if (begin == -1)
@@ -934,7 +855,7 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             if (end == -1)
                 return 1;
         }
-    }    
+    }
 
     // private static IRegion createRegion(ASTNode node, int delta) {
     // return node == null ? null : new Region(node.getStartPosition() + delta, node.getLength());
@@ -965,6 +886,5 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     // return null;
     // }
     // }
-    
 
 }

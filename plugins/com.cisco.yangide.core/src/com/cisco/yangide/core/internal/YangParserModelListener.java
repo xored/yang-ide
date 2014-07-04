@@ -152,7 +152,7 @@ public class YangParserModelListener extends YangParserBaseListener {
         setNamedNode(moduleImport, ctx);
         module.getImports().add(moduleImport);
     }
-    
+
     @Override
     public void enterTypedef_stmt(Typedef_stmtContext ctx) {
         TypeDefinition typeDefinition = new TypeDefinition(module);

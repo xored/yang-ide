@@ -7,7 +7,6 @@ import org.eclipse.core.runtime.CoreException;
 //import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
@@ -181,11 +180,11 @@ public class YangEditor extends TextEditor {
     protected void initializeKeyBindingScopes() {
         setKeyBindingScopes(new String[] { "com.cisco.yangide.ui.Context" }); //$NON-NLS-1$
     }
-    
+
     public ISelectionProvider getSelectionProvider() {
         return getSourceViewer().getSelectionProvider();
     }
-    
+
     public IDocument getDocument() {
         return getSourceViewer().getDocument();
     }

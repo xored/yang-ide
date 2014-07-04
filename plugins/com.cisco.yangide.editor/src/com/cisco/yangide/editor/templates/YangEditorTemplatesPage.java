@@ -13,43 +13,43 @@ import org.eclipse.jface.text.templates.persistence.TemplatePersistenceData;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.texteditor.templates.TemplatePreferencePage;
 
-import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.ui.YangUIPlugin;
 
 /**
  * @author Alexey Kholupko
- *
  */
 public class YangEditorTemplatesPage extends TemplatePreferencePage {
-        
-        public YangEditorTemplatesPage() {
-            setPreferenceStore(YangUIPlugin.getDefault().getPreferenceStore());
-            setTemplateStore(YangTemplateAccess.getDefault().getTemplateStore());
-            setContextTypeRegistry(YangTemplateAccess.getDefault().getContextTypeRegistry());
+
+    public YangEditorTemplatesPage() {
+        setPreferenceStore(YangUIPlugin.getDefault().getPreferenceStore());
+        setTemplateStore(YangTemplateAccess.getDefault().getTemplateStore());
+        setContextTypeRegistry(YangTemplateAccess.getDefault().getContextTypeRegistry());
+    }
+
+    /*
+     * @see org.eclipse.ui.texteditor.templates.TemplatePreferencePage#updateViewerInput()
+     */
+    protected void updateViewerInput() {
+        IStructuredSelection selection = (IStructuredSelection) getTableViewer().getSelection();
+        SourceViewer viewer = getViewer();
+
+        if (selection.size() == 1 && selection.getFirstElement() instanceof TemplatePersistenceData) {
+            TemplatePersistenceData data = (TemplatePersistenceData) selection.getFirstElement();
+            Template template = data.getTemplate();
+            viewer.getDocument().set(template.getPattern());
+
+        } else {
+            viewer.getDocument().set("");
         }
+    }
 
-        /*
-         * @see org.eclipse.ui.texteditor.templates.TemplatePreferencePage#updateViewerInput()
-         */
-        protected void updateViewerInput() {
-            IStructuredSelection selection= (IStructuredSelection) getTableViewer().getSelection();
-            SourceViewer viewer= getViewer();
-            
-            if (selection.size() == 1 && selection.getFirstElement() instanceof TemplatePersistenceData) {
-                TemplatePersistenceData data= (TemplatePersistenceData) selection.getFirstElement();
-                Template template= data.getTemplate();
-                viewer.getDocument().set(template.getPattern());
-
-            } else {
-                viewer.getDocument().set("");
-            }       
-        }
-        /* (non-Javadoc)
-         * @see org.eclipse.ui.texteditor.templates.TemplatePreferencePage#isShowFormatterSetting()
-         */
-        protected boolean isShowFormatterSetting() {
-            return false;
-        }    
-
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.ui.texteditor.templates.TemplatePreferencePage#isShowFormatterSetting()
+     */
+    protected boolean isShowFormatterSetting() {
+        return false;
+    }
 
 }

@@ -4,7 +4,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- */ 
+ */
 package com.cisco.yangide.core.indexing;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -19,7 +19,7 @@ import com.cisco.yangide.core.YangCorePlugin;
 
 /**
  * @author Konstantin Zaitsev
- * @date   Jul 1, 2014
+ * @date Jul 1, 2014
  */
 public abstract class JobManager implements Runnable {
 
@@ -33,8 +33,10 @@ public abstract class JobManager implements Runnable {
     protected Thread processingThread;
     protected Job progressJob;
 
-    /* counter indicating whether job execution is enabled or not, disabled if <= 0
-        it cannot go beyond 1 */
+    /*
+     * counter indicating whether job execution is enabled or not, disabled if <= 0 it cannot go
+     * beyond 1
+     */
     private int enableCount = 1;
 
     /* flag indicating that the activation has completed */
@@ -48,6 +50,7 @@ public abstract class JobManager implements Runnable {
     public void activateProcessing() {
         this.activated = true;
     }
+
     /**
      * Answer the amount of awaiting jobs.
      */
@@ -55,28 +58,31 @@ public abstract class JobManager implements Runnable {
         // pretend busy in case concurrent job attempts performing before activated
         return this.activated ? this.jobEnd - this.jobStart + 1 : 1;
     }
+
     /**
-     * Answers the first job in the queue, or null if there is no job available
-     * Until the job has completed, the job manager will keep answering the same job.
+     * Answers the first job in the queue, or null if there is no job available Until the job has
+     * completed, the job manager will keep answering the same job.
      */
     public synchronized IJob currentJob() {
         if (this.enableCount > 0 && this.jobStart <= this.jobEnd)
             return this.awaitingJobs[this.jobStart];
         return null;
     }
+
     public synchronized void disable() {
         this.enableCount--;
     }
+
     /**
-     * Remove the index from cache for a given project.
-     * Passing null as a job family discards them all.
+     * Remove the index from cache for a given project. Passing null as a job family discards them
+     * all.
      */
     public void discardJobs(String jobFamily) {
 
         try {
             IJob currentJob;
             // cancel current job if it belongs to the given family
-            synchronized(this){
+            synchronized (this) {
                 currentJob = currentJob();
                 disable();
             }
@@ -84,10 +90,10 @@ public abstract class JobManager implements Runnable {
                 currentJob.cancel();
 
                 // wait until current active job has finished
-                while (this.processingThread != null && this.executing){
+                while (this.processingThread != null && this.executing) {
                     try {
                         Thread.sleep(50);
-                    } catch(InterruptedException e){
+                    } catch (InterruptedException e) {
                         // ignore
                     }
                 }
@@ -95,12 +101,13 @@ public abstract class JobManager implements Runnable {
 
             // flush and compact awaiting jobs
             int loc = -1;
-            synchronized(this) {
+            synchronized (this) {
                 for (int i = this.jobStart; i <= this.jobEnd; i++) {
                     currentJob = this.awaitingJobs[i];
                     if (currentJob != null) { // sanity check
                         this.awaitingJobs[i] = null;
-                        if (!(jobFamily == null || currentJob.belongsTo(jobFamily))) { // copy down, compacting
+                        if (!(jobFamily == null || currentJob.belongsTo(jobFamily))) { // copy down,
+                                                                                       // compacting
                             this.awaitingJobs[++loc] = currentJob;
                         } else {
                             currentJob.cancel();
@@ -114,21 +121,27 @@ public abstract class JobManager implements Runnable {
             enable();
         }
     }
+
     public synchronized void enable() {
         this.enableCount++;
-        notifyAll(); // wake up the background thread if it is waiting (context must be synchronized)
+        notifyAll(); // wake up the background thread if it is waiting (context must be
+                     // synchronized)
     }
+
     protected synchronized boolean isJobWaiting(IJob request) {
-        for (int i = this.jobEnd; i > this.jobStart; i--) // don't check job at jobStart, as it may have already started
-            if (request.equals(this.awaitingJobs[i])) return true;
+        for (int i = this.jobEnd; i > this.jobStart; i--)
+            // don't check job at jobStart, as it may have already started
+            if (request.equals(this.awaitingJobs[i]))
+                return true;
         return false;
     }
+
     /**
-     * Advance to the next available job, once the current one has been completed.
-     * Note: clients awaiting until the job count is zero are still waiting at this point.
+     * Advance to the next available job, once the current one has been completed. Note: clients
+     * awaiting until the job count is zero are still waiting at this point.
      */
     protected synchronized void moveToNextJob() {
-        //if (!enabled) return;
+        // if (!enabled) return;
 
         if (this.jobStart <= this.jobEnd) {
             this.awaitingJobs[this.jobStart++] = null;
@@ -138,26 +151,23 @@ public abstract class JobManager implements Runnable {
             }
         }
     }
+
     /**
      * When idle, give chance to do something
      */
     protected void notifyIdle(long idlingTime) {
         // do nothing
     }
+
     /**
-     * This API is allowing to run one job in concurrence with background processing.
-     * Indeed since other jobs are performed in background, resource sharing might be
-     * an issue.Therefore, this functionality allows a given job to be run without
-     * colliding with background ones.
-     * Note: multiple thread might attempt to perform concurrent jobs at the same time,
-     *            and should synchronize (it is deliberately left to clients to decide whether
-     *            concurrent jobs might interfere or not. In general, multiple read jobs are ok).
-     *
-     * Waiting policy can be:
-     *      IJobConstants.ForceImmediateSearch
-     *      IJobConstants.CancelIfNotReadyToSearch
-     *      IJobConstants.WaitUntilReadyToSearch
-     *
+     * This API is allowing to run one job in concurrence with background processing. Indeed since
+     * other jobs are performed in background, resource sharing might be an issue.Therefore, this
+     * functionality allows a given job to be run without colliding with background ones. Note:
+     * multiple thread might attempt to perform concurrent jobs at the same time, and should
+     * synchronize (it is deliberately left to clients to decide whether concurrent jobs might
+     * interfere or not. In general, multiple read jobs are ok). Waiting policy can be:
+     * IJobConstants.ForceImmediateSearch IJobConstants.CancelIfNotReadyToSearch
+     * IJobConstants.WaitUntilReadyToSearch
      */
     public boolean performConcurrentJob(IJob searchJob, int waitingPolicy, IProgressMonitor progress) {
         searchJob.ensureReadyToRun();
@@ -170,85 +180,89 @@ public abstract class JobManager implements Runnable {
             if (awaitingJobsCount() > 0) {
                 switch (waitingPolicy) {
 
-                    case IJob.ForceImmediate :
-                        try {
-                            disable(); // pause indexing
-                            status = searchJob.execute(progress == null ? null : new SubProgressMonitor(progress, concurrentJobWork));
-                        } finally {
-                            enable();
+                case IJob.ForceImmediate:
+                    try {
+                        disable(); // pause indexing
+                        status = searchJob.execute(progress == null ? null : new SubProgressMonitor(progress,
+                                concurrentJobWork));
+                    } finally {
+                        enable();
+                    }
+                    return status;
+
+                case IJob.CancelIfNotReady:
+                    throw new OperationCanceledException();
+
+                case IJob.WaitUntilReady:
+                    IProgressMonitor subProgress = null;
+                    try {
+                        int totalWork = 1000;
+                        if (progress != null) {
+                            subProgress = new SubProgressMonitor(progress, concurrentJobWork * 8 / 10);
+                            subProgress.beginTask("", totalWork); //$NON-NLS-1$
+                            concurrentJobWork = concurrentJobWork * 2 / 10;
                         }
-                        return status;
-
-                    case IJob.CancelIfNotReady :
-                        throw new OperationCanceledException();
-
-                    case IJob.WaitUntilReady :
-                        IProgressMonitor subProgress = null;
+                        // use local variable to avoid potential NPE (see bug 20435 NPE when
+                        // searching java method
+                        // and bug 42760 NullPointerException in JobManager when searching)
+                        Thread t = this.processingThread;
+                        int originalPriority = t == null ? -1 : t.getPriority();
                         try {
-                            int totalWork = 1000;
-                            if (progress != null) {
-                                subProgress = new SubProgressMonitor(progress, concurrentJobWork * 8 / 10);
-                                subProgress.beginTask("", totalWork); //$NON-NLS-1$
-                                concurrentJobWork = concurrentJobWork * 2 / 10;
+                            if (t != null)
+                                t.setPriority(Thread.currentThread().getPriority());
+                            synchronized (this) {
+                                this.awaitingClients++;
                             }
-                            // use local variable to avoid potential NPE (see bug 20435 NPE when searching java method
-                            // and bug 42760 NullPointerException in JobManager when searching)
-                            Thread t = this.processingThread;
-                            int originalPriority = t == null ? -1 : t.getPriority();
-                            try {
-                                if (t != null)
-                                    t.setPriority(Thread.currentThread().getPriority());
-                                synchronized(this) {
-                                    this.awaitingClients++;
-                                }
-                                IJob previousJob = null;
-                                int awaitingJobsCount;
-                                int lastJobsCount = totalWork;
-                                float lastWorked = 0;
-                                float totalWorked = 0;
-                                while ((awaitingJobsCount = awaitingJobsCount()) > 0) {
-                                    if ((subProgress != null && subProgress.isCanceled())
-                                            || this.processingThread == null)
-                                        throw new OperationCanceledException();
-                                    IJob currentJob = currentJob();
-                                    // currentJob can be null when jobs have been added to the queue but job manager is not enabled
-                                    if (currentJob != null && currentJob != previousJob) {
-                                        if (subProgress != null) {
-                                            String indexing = NLS.bind("{1} files to index ({0})", currentJob.getJobFamily(), Integer.toString(awaitingJobsCount));
-                                            subProgress.subTask(indexing);
-                                            // ratio of the amount of work relative to the total work
-                                            float ratio = awaitingJobsCount < totalWork ? 1 : ((float) totalWork) / awaitingJobsCount;
-                                            if (lastJobsCount > awaitingJobsCount) {
-                                                totalWorked += (lastJobsCount - awaitingJobsCount) * ratio;
-                                            } else {
-                                                // more jobs were added, just increment by the ratio
-                                                totalWorked += ratio;
-                                            }
-                                            if (totalWorked - lastWorked >= 1) {
-                                                subProgress.worked((int) (totalWorked - lastWorked));
-                                                lastWorked = totalWorked;
-                                            }
-                                            lastJobsCount = awaitingJobsCount;
+                            IJob previousJob = null;
+                            int awaitingJobsCount;
+                            int lastJobsCount = totalWork;
+                            float lastWorked = 0;
+                            float totalWorked = 0;
+                            while ((awaitingJobsCount = awaitingJobsCount()) > 0) {
+                                if ((subProgress != null && subProgress.isCanceled()) || this.processingThread == null)
+                                    throw new OperationCanceledException();
+                                IJob currentJob = currentJob();
+                                // currentJob can be null when jobs have been added to the queue but
+                                // job manager is not enabled
+                                if (currentJob != null && currentJob != previousJob) {
+                                    if (subProgress != null) {
+                                        String indexing = NLS.bind("{1} files to index ({0})",
+                                                currentJob.getJobFamily(), Integer.toString(awaitingJobsCount));
+                                        subProgress.subTask(indexing);
+                                        // ratio of the amount of work relative to the total work
+                                        float ratio = awaitingJobsCount < totalWork ? 1 : ((float) totalWork)
+                                                / awaitingJobsCount;
+                                        if (lastJobsCount > awaitingJobsCount) {
+                                            totalWorked += (lastJobsCount - awaitingJobsCount) * ratio;
+                                        } else {
+                                            // more jobs were added, just increment by the ratio
+                                            totalWorked += ratio;
                                         }
-                                        previousJob = currentJob;
+                                        if (totalWorked - lastWorked >= 1) {
+                                            subProgress.worked((int) (totalWorked - lastWorked));
+                                            lastWorked = totalWorked;
+                                        }
+                                        lastJobsCount = awaitingJobsCount;
                                     }
-                                    try {
-                                        Thread.sleep(50);
-                                    } catch (InterruptedException e) {
-                                        // ignore
-                                    }
+                                    previousJob = currentJob;
                                 }
-                            } finally {
-                                synchronized(this) {
-                                    this.awaitingClients--;
+                                try {
+                                    Thread.sleep(50);
+                                } catch (InterruptedException e) {
+                                    // ignore
                                 }
-                                if (t != null && originalPriority > -1 && t.isAlive())
-                                    t.setPriority(originalPriority);
                             }
                         } finally {
-                            if (subProgress != null)
-                                subProgress.done();
+                            synchronized (this) {
+                                this.awaitingClients--;
+                            }
+                            if (t != null && originalPriority > -1 && t.isAlive())
+                                t.setPriority(originalPriority);
                         }
+                    } finally {
+                        if (subProgress != null)
+                            subProgress.done();
+                    }
                 }
             }
             status = searchJob.execute(progress == null ? null : new SubProgressMonitor(progress, concurrentJobWork));
@@ -258,6 +272,7 @@ public abstract class JobManager implements Runnable {
         }
         return status;
     }
+
     public abstract String processName();
 
     public synchronized void request(IJob job) {
@@ -269,18 +284,21 @@ public abstract class JobManager implements Runnable {
         if (++this.jobEnd == size) { // when growing, relocate jobs starting at position 0
             this.jobEnd -= this.jobStart; // jobEnd now equals the number of jobs
             if (this.jobEnd < 50 && this.jobEnd < this.jobStart) {
-                // plenty of free space in the queue so shift the remaining jobs to the beginning instead of growing it
+                // plenty of free space in the queue so shift the remaining jobs to the beginning
+                // instead of growing it
                 System.arraycopy(this.awaitingJobs, this.jobStart, this.awaitingJobs, 0, this.jobEnd);
                 for (int i = this.jobStart; i < size; i++)
                     this.awaitingJobs[i] = null;
             } else {
-                System.arraycopy(this.awaitingJobs, this.jobStart, this.awaitingJobs = new IJob[size * 2], 0, this.jobEnd);
+                System.arraycopy(this.awaitingJobs, this.jobStart, this.awaitingJobs = new IJob[size * 2], 0,
+                        this.jobEnd);
             }
             this.jobStart = 0;
         }
         this.awaitingJobs[this.jobEnd] = job;
         notifyAll(); // wake up the background thread if it is waiting
     }
+
     /**
      * Flush current state
      */
@@ -293,13 +311,14 @@ public abstract class JobManager implements Runnable {
             this.processingThread = new Thread(this, processName());
             this.processingThread.setDaemon(true);
             // less prioritary by default, priority is raised if clients are actively waiting on it
-            this.processingThread.setPriority(Thread.NORM_PRIORITY-1);
+            this.processingThread.setPriority(Thread.NORM_PRIORITY - 1);
             // https://bugs.eclipse.org/bugs/show_bug.cgi?id=296343
             // set the context loader to avoid leaking the current context loader
             this.processingThread.setContextClassLoader(this.getClass().getClassLoader());
             this.processingThread.start();
         }
     }
+
     /**
      * Infinite loop performing resource indexing
      */
@@ -312,12 +331,13 @@ public abstract class JobManager implements Runnable {
                 ProgressJob(String name) {
                     super(name);
                 }
+
                 protected IStatus run(IProgressMonitor monitor) {
                     IJob job = currentJob();
                     while (!monitor.isCanceled() && job != null) {
-                         String taskName = new StringBuffer("YANG indexing...")
-                            .append(NLS.bind("{1} files to index ({0})", job.getJobFamily(), Integer.toString(awaitingJobsCount())))
-                            .toString();
+                        String taskName = new StringBuffer("YANG indexing...").append(
+                                NLS.bind("{1} files to index ({0})", job.getJobFamily(),
+                                        Integer.toString(awaitingJobsCount()))).toString();
                         monitor.subTask(taskName);
                         setName(taskName);
                         try {
@@ -335,8 +355,10 @@ public abstract class JobManager implements Runnable {
                 try {
                     IJob job;
                     synchronized (this) {
-                        // handle shutdown case when notifyAll came before the wait but after the while loop was entered
-                        if (this.processingThread == null) continue;
+                        // handle shutdown case when notifyAll came before the wait but after the
+                        // while loop was entered
+                        if (this.processingThread == null)
+                            continue;
 
                         // must check for new job inside this sync block to avoid timing hole
                         if ((job = currentJob()) == null) {
@@ -355,7 +377,8 @@ public abstract class JobManager implements Runnable {
                     }
                     if (job == null) {
                         notifyIdle(System.currentTimeMillis() - idlingStart);
-                        // just woke up, delay before processing any new jobs, allow some time for the active thread to finish
+                        // just woke up, delay before processing any new jobs, allow some time for
+                        // the active thread to finish
                         Thread.sleep(500);
                         continue;
                     }
@@ -367,8 +390,8 @@ public abstract class JobManager implements Runnable {
                             this.progressJob.setSystem(true);
                             this.progressJob.schedule();
                         }
-                        /*boolean status = */job.execute(null);
-                        //if (status == FAILED) request(job);
+                        /* boolean status = */job.execute(null);
+                        // if (status == FAILED) request(job);
                     } finally {
                         this.executing = false;
                         moveToNextJob();
@@ -386,7 +409,8 @@ public abstract class JobManager implements Runnable {
                 // keep job manager alive
                 discardJobs(null);
                 this.processingThread = null;
-                reset(); // this will fork a new thread with no waiting jobs, some indexes will be inconsistent
+                reset(); // this will fork a new thread with no waiting jobs, some indexes will be
+                         // inconsistent
             }
             throw e;
         } catch (Error e) {
@@ -397,11 +421,13 @@ public abstract class JobManager implements Runnable {
                 // keep job manager alive
                 discardJobs(null);
                 this.processingThread = null;
-                reset(); // this will fork a new thread with no waiting jobs, some indexes will be inconsistent
+                reset(); // this will fork a new thread with no waiting jobs, some indexes will be
+                         // inconsistent
             }
             throw e;
         }
     }
+
     /**
      * Stop background processing, and wait until the current job is completed before returning
      */
@@ -413,7 +439,8 @@ public abstract class JobManager implements Runnable {
         try {
             if (thread != null) { // see http://bugs.eclipse.org/bugs/show_bug.cgi?id=31858
                 synchronized (this) {
-                    this.processingThread = null; // mark the job manager as shutting down so that the thread will stop by itself
+                    this.processingThread = null; // mark the job manager as shutting down so that
+                                                  // the thread will stop by itself
                     notifyAll(); // ensure its awake so it can be shutdown
                 }
                 // in case processing thread is handling a job
@@ -428,13 +455,14 @@ public abstract class JobManager implements Runnable {
             // ignore
         }
     }
+
     public String toString() {
         StringBuffer buffer = new StringBuffer(10);
         buffer.append("Enable count:").append(this.enableCount).append('\n'); //$NON-NLS-1$
         int numJobs = this.jobEnd - this.jobStart + 1;
         buffer.append("Jobs in queue:").append(numJobs).append('\n'); //$NON-NLS-1$
         for (int i = 0; i < numJobs && i < 15; i++) {
-            buffer.append(i).append(" - job["+i+"]: ").append(this.awaitingJobs[this.jobStart+i]).append('\n'); //$NON-NLS-1$ //$NON-NLS-2$
+            buffer.append(i).append(" - job[" + i + "]: ").append(this.awaitingJobs[this.jobStart + i]).append('\n'); //$NON-NLS-1$ //$NON-NLS-2$
         }
         return buffer.toString();
     }

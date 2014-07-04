@@ -13,32 +13,24 @@ import org.eclipse.jface.text.rules.WordRule;
 
 import com.cisco.yangide.ui.preferences.IYangColorConstants;
 
-public class YangScanner extends AbstractYangScanner{
+public class YangScanner extends AbstractYangScanner {
 
-    private static String[] tokenProperties= {
-        IYangColorConstants.YANG_IDENTIFIER,
-        IYangColorConstants.YANG_KEYWORD,
-        IYangColorConstants.YANG_TYPE,
-        IYangColorConstants.YANG_NUMBER,
-    };    
-    
-    static String[] keywords = {
-        "yin-element", "yang-version", "when", "value", "uses", 
-        "units", "unique", "typedef", "type", "submodule", "status", 
-        "rpc", "revision-date", "revision", "require-instance", "refine", 
-        "reference", "range", "presence", "prefix", "position", "pattern", 
-        "path", "output", "organization", "ordered-by", "notification", 
-        "namespace", "must", "module", "min-elements", "max-elements", 
-        "mandatory", "list", "length", "leaf-list", "leaf", "key", 
-        "input", "include", "import", "if-feature", "identity", "grouping", 
-        "fraction-digits", "feature", "deviate", "deviation", "extension", 
-        "error-message", "error-app-tag", "enum", "description", "default", 
-        "container", "contact", "config", "choice", "case", "bit", 
-        "belongs-to", "base", "augment", "argument", "anyxml"
-    };        
+    private static String[] tokenProperties = { IYangColorConstants.YANG_IDENTIFIER, IYangColorConstants.YANG_KEYWORD,
+            IYangColorConstants.YANG_TYPE, IYangColorConstants.YANG_NUMBER, };
 
-    static String[] types = { "binary", "bits", "boolean", "decimal64", "empty", "enumeration", "identityref", "instance-identifier", "int8", "int16",
-            "int32", "int64", "leafref", "string", "uint8", "uint16", "uint32", "uint64", "union" };
+    static String[] keywords = { "yin-element", "yang-version", "when", "value", "uses", "units", "unique", "typedef",
+            "type", "submodule", "status", "rpc", "revision-date", "revision", "require-instance", "refine",
+            "reference", "range", "presence", "prefix", "position", "pattern", "path", "output", "organization",
+            "ordered-by", "notification", "namespace", "must", "module", "min-elements", "max-elements", "mandatory",
+            "list", "length", "leaf-list", "leaf", "key", "input", "include", "import", "if-feature", "identity",
+            "grouping", "fraction-digits", "feature", "deviate", "deviation", "extension", "error-message",
+            "error-app-tag", "enum", "description", "default", "container", "contact", "config", "choice", "case",
+            "bit", "belongs-to", "base", "augment", "argument", "anyxml" };
+
+    static String[] types = { "binary", "bits", "boolean", "decimal64", "empty", "enumeration", "identityref",
+            "instance-identifier", "int8", "int16", "int32", "int64", "leafref", "string", "uint8", "uint16", "uint32",
+            "uint64", "union" };
+
     /**
      * @param manager
      * @param store
@@ -47,8 +39,9 @@ public class YangScanner extends AbstractYangScanner{
         super(manager, store);
     }
 
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.cisco.yangide.editor.editors.AbstractYangScanner#getTokenProperties()
      */
     @Override
@@ -56,41 +49,42 @@ public class YangScanner extends AbstractYangScanner{
         return tokenProperties;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see com.cisco.yangide.editor.editors.AbstractYangScanner#createRules()
      */
     @Override
     protected List<IRule> createRules() {
 
-        List<IRule> rules= new ArrayList<IRule>();        
+        List<IRule> rules = new ArrayList<IRule>();
         // Add generic whitespace rule.
         rules.add(new WhitespaceRule(new YangWhitespaceDetector()));
-        
+
         IToken number = getToken(IYangColorConstants.YANG_NUMBER);
         NumberRule numberRule = new NumberRule(number);
-        rules.add(numberRule);        
+        rules.add(numberRule);
 
         IToken identifier = getToken(IYangColorConstants.YANG_IDENTIFIER);
         IToken keyword = getToken(IYangColorConstants.YANG_KEYWORD);
         IToken type = getToken(IYangColorConstants.YANG_TYPE);
-        
+
         setDefaultReturnToken(identifier);
-        
+
         WordRule wordRule = new WordRule(new YangWordDetector(), identifier);
 
         for (int i = 0; i < keywords.length; i++) {
             String word = keywords[i];
             wordRule.addWord(word, keyword);
         }
-        
+
         for (int i = 0; i < types.length; i++) {
             String word = types[i];
             wordRule.addWord(word, type);
-        }        
-        
+        }
+
         rules.add(wordRule);
 
         return rules;
     }
 }
-

@@ -1,13 +1,14 @@
+// This is comments
+/* This is also comments*/
 module simple-string-demo {
 
     namespace "urn:simple:string:demo";
     prefix "sbd";
-
+	
     organization "OPEN DAYLIGHT";
     contact "http://www.opendaylight.org/";
 
     revision 2013-06-18 {
-        
     }
 
     typedef typedef-string {

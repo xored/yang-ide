@@ -1,8 +1,5 @@
 package com.cisco.yangide.editor.editors;
 
-import java.io.IOException;
-
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextViewer;

@@ -9,36 +9,35 @@ package com.cisco.yangide.core;
 
 import com.cisco.yangide.core.model.YangElement;
 
-
 /**
  * @author Konstantin Zaitsev
  * @date Jun 30, 2014
  */
 public interface IYangElementDelta {
-    
+
     /**
-     * Status constant indicating that the element has been added.
-     * Note that an added yang element delta has no children, as they are all implicitely added.
+     * Status constant indicating that the element has been added. Note that an added yang element
+     * delta has no children, as they are all implicitely added.
      */
     public int ADDED = 1;
 
     /**
-     * Status constant indicating that the element has been removed.
-     * Note that a removed yang element delta has no children, as they are all implicitely removed.
+     * Status constant indicating that the element has been removed. Note that a removed yang
+     * element delta has no children, as they are all implicitely removed.
      */
     public int REMOVED = 2;
 
     /**
-     * Status constant indicating that the element has been changed,
-     * as described by the change flags.
+     * Status constant indicating that the element has been changed, as described by the change
+     * flags.
      *
      * @see #getFlags()
      */
     public int CHANGED = 4;
 
     /**
-     * Change flag indicating that the content of the element has changed.
-     * This flag is only valid for elements which correspond to files.
+     * Change flag indicating that the content of the element has changed. This flag is only valid
+     * for elements which correspond to files.
      */
     public int F_CONTENT = 0x000001;
 

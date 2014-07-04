@@ -21,7 +21,7 @@ public class YangElementHyperlink implements IHyperlink {
 
     /** Hyperlink region. */
     private IRegion region;
-    
+
     /** Info to reference. */
     private ElementIndexInfo info;
 

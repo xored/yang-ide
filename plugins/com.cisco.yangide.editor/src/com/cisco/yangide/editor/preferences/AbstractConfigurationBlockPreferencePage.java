@@ -11,11 +11,11 @@
 
 package com.cisco.yangide.editor.preferences;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Control;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.preference.PreferencePage;
+import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PlatformUI;
@@ -30,112 +30,115 @@ import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
  *
  * @since 3.0
  */
-public abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage implements
+        IWorkbenchPreferencePage {
 
+    private IPreferenceConfigurationBlock fConfigurationBlock;
+    private OverlayPreferenceStore fOverlayStore;
 
-	private IPreferenceConfigurationBlock fConfigurationBlock;
-	private OverlayPreferenceStore fOverlayStore;
+    /**
+     * Creates a new preference page.
+     */
+    public AbstractConfigurationBlockPreferencePage() {
+        setDescription();
+        setPreferenceStore();
+        fOverlayStore = new OverlayPreferenceStore(getPreferenceStore(), new OverlayPreferenceStore.OverlayKey[] {});
+        fConfigurationBlock = createConfigurationBlock(fOverlayStore);
+    }
 
+    protected abstract IPreferenceConfigurationBlock createConfigurationBlock(
+            OverlayPreferenceStore overlayPreferenceStore);
 
-	/**
-	 * Creates a new preference page.
-	 */
-	public AbstractConfigurationBlockPreferencePage() {
-		setDescription();
-		setPreferenceStore();
-		fOverlayStore= new OverlayPreferenceStore(getPreferenceStore(), new OverlayPreferenceStore.OverlayKey[] {});
-		fConfigurationBlock= createConfigurationBlock(fOverlayStore);
-	}
+    protected abstract String getHelpId();
 
-	protected abstract IPreferenceConfigurationBlock createConfigurationBlock(OverlayPreferenceStore overlayPreferenceStore);
-	protected abstract String getHelpId();
-	protected abstract void setDescription();
-	protected abstract void setPreferenceStore();
+    protected abstract void setDescription();
 
-	/*
-	 * @see IWorkbenchPreferencePage#init()
-	 */
-	public void init(IWorkbench workbench) {
-	}
-
-	/*
-	 * @see PreferencePage#createControl(Composite)
-	 */
-	@Override
-	public void createControl(Composite parent) {
-		super.createControl(parent);
-		PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), getHelpId());
-	}
-
-	/*
-	 * @see PreferencePage#createContents(Composite)
-	 */
-	@Override
-	protected Control createContents(Composite parent) {
-
-		fOverlayStore.load();
-		fOverlayStore.start();
-
-		Control content= fConfigurationBlock.createControl(parent);
-
-		initialize();
-
-		Dialog.applyDialogFont(content);
-		return content;
-	}
-
-	private void initialize() {
-		fConfigurationBlock.initialize();
-	}
+    protected abstract void setPreferenceStore();
 
     /*
-	 * @see PreferencePage#performOk()
-	 */
-	@Override
-	public boolean performOk() {
+     * @see IWorkbenchPreferencePage#init()
+     */
+    public void init(IWorkbench workbench) {
+    }
 
-		fConfigurationBlock.performOk();
+    /*
+     * @see PreferencePage#createControl(Composite)
+     */
+    @Override
+    public void createControl(Composite parent) {
+        super.createControl(parent);
+        PlatformUI.getWorkbench().getHelpSystem().setHelp(getControl(), getHelpId());
+    }
 
-		fOverlayStore.propagate();
+    /*
+     * @see PreferencePage#createContents(Composite)
+     */
+    @Override
+    protected Control createContents(Composite parent) {
 
-		//JavaPlugin.flushInstanceScope();
-		
-        //TODO etxract to plugin class
+        fOverlayStore.load();
+        fOverlayStore.start();
+
+        Control content = fConfigurationBlock.createControl(parent);
+
+        initialize();
+
+        Dialog.applyDialogFont(content);
+        return content;
+    }
+
+    private void initialize() {
+        fConfigurationBlock.initialize();
+    }
+
+    /*
+     * @see PreferencePage#performOk()
+     */
+    @Override
+    public boolean performOk() {
+
+        fConfigurationBlock.performOk();
+
+        fOverlayStore.propagate();
+
+        // JavaPlugin.flushInstanceScope();
+
+        // TODO etxract to plugin class
 
         try {
             InstanceScope.INSTANCE.getNode(YangEditorPlugin.PLUGIN_ID).flush();
         } catch (BackingStoreException e) {
             YangEditorPlugin.log(e);
-        }		
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	/*
-	 * @see PreferencePage#performDefaults()
-	 */
-	@Override
-	public void performDefaults() {
+    /*
+     * @see PreferencePage#performDefaults()
+     */
+    @Override
+    public void performDefaults() {
 
-		fOverlayStore.loadDefaults();
-		fConfigurationBlock.performDefaults();
+        fOverlayStore.loadDefaults();
+        fConfigurationBlock.performDefaults();
 
-		super.performDefaults();
-	}
+        super.performDefaults();
+    }
 
-	/*
-	 * @see DialogPage#dispose()
-	 */
-	@Override
-	public void dispose() {
+    /*
+     * @see DialogPage#dispose()
+     */
+    @Override
+    public void dispose() {
 
-		fConfigurationBlock.dispose();
+        fConfigurationBlock.dispose();
 
-		if (fOverlayStore != null) {
-			fOverlayStore.stop();
-			fOverlayStore= null;
-		}
+        if (fOverlayStore != null) {
+            fOverlayStore.stop();
+            fOverlayStore = null;
+        }
 
-		super.dispose();
-	}
+        super.dispose();
+    }
 }

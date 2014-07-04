@@ -46,7 +46,7 @@ public class YangCodeGeneratorDialog extends TitleAreaDialog {
         super.configureShell(newShell);
         newShell.setText("Code Generator Configuration");
     }
-    
+
     @Override
     public void create() {
         super.create();
@@ -68,7 +68,8 @@ public class YangCodeGeneratorDialog extends TitleAreaDialog {
         artifactIdTxt = createTextInput(container, "Maven Artifact ID:", config.getArtifactId());
         versionTxt = createTextInput(container, "Maven Artifact Version:", config.getVersion());
         genClassNameTxt = createTextInput(container, "Generator Class Name:", config.getGenClassName());
-        genOutputDirectoryTxt = createTextInput(container, "Generator Output Directory:", config.getGenOutputDirectory());
+        genOutputDirectoryTxt = createTextInput(container, "Generator Output Directory:",
+                config.getGenOutputDirectory());
 
         return area;
     }

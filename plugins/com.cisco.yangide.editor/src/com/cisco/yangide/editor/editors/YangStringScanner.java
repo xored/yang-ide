@@ -12,14 +12,11 @@ import com.cisco.yangide.ui.preferences.IYangColorConstants;
 
 /**
  * @author Alexey Kholupko
- *
  */
 public class YangStringScanner extends AbstractYangScanner {
 
-    private static String[] tokenProperties= {
-        IYangColorConstants.YANG_STRING
-    };        
-    
+    private static String[] tokenProperties = { IYangColorConstants.YANG_STRING };
+
     /**
      * @param manager
      * @param store
@@ -46,13 +43,13 @@ public class YangStringScanner extends AbstractYangScanner {
     @Override
     protected List<IRule> createRules() {
         List<IRule> rules = new ArrayList<IRule>();
-        
+
         IToken string = getToken(IYangColorConstants.YANG_STRING);
         setDefaultReturnToken(string);
-        
-        //Do not create rules here, they are defined in PartitionScanner
-        //here we just define default token for string partition
-        
+
+        // Do not create rules here, they are defined in PartitionScanner
+        // here we just define default token for string partition
+
         return rules;
     }
 }

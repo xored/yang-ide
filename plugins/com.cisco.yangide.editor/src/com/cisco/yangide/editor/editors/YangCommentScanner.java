@@ -12,14 +12,11 @@ import com.cisco.yangide.ui.preferences.IYangColorConstants;
 
 /**
  * @author Alexey Kholupko
- *
  */
 public class YangCommentScanner extends AbstractYangScanner {
 
-    private static String[] tokenProperties= {
-        IYangColorConstants.YANG_COMMENT
-    };        
-    
+    private static String[] tokenProperties = { IYangColorConstants.YANG_COMMENT };
+
     /**
      * @param manager
      * @param store
@@ -46,10 +43,10 @@ public class YangCommentScanner extends AbstractYangScanner {
     @Override
     protected List<IRule> createRules() {
         List<IRule> rules = new ArrayList<IRule>();
-        
+
         IToken comment = getToken(IYangColorConstants.YANG_COMMENT);
         setDefaultReturnToken(comment);
-        
+
         /*
          * @see com.cisco.yangide.editor.editors.YangStringScanner#createRules()
          */

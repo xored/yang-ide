@@ -63,8 +63,9 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
             }
         }
 
-        boolean isCleanRequired = YangUIPlugin.getDefault().getPreferenceStore().getBoolean(YangPreferenceConstants.M2E_PLUGIN_CLEAN_TARGET);
-        
+        boolean isCleanRequired = YangUIPlugin.getDefault().getPreferenceStore()
+                .getBoolean(YangPreferenceConstants.M2E_PLUGIN_CLEAN_TARGET);
+
         if (isCleanRequired) {
             for (File outputDir : outputDirs) {
                 IContainer[] containers = ResourcesPlugin.getWorkspace().getRoot()
@@ -74,13 +75,13 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
                 }
             }
         }
-        
+
         Set<IProject> result = super.build(kind, monitor);
 
         for (File outputDir : outputDirs) {
             buildContext.refresh(outputDir);
         }
-        
+
         return result;
     }
 }

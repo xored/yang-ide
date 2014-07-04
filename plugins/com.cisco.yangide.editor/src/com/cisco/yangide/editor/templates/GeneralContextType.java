@@ -12,7 +12,6 @@ import org.eclipse.jface.text.templates.TemplateContextType;
 
 /**
  * @author Alexey Kholupko
- *
  */
 public class GeneralContextType extends TemplateContextType {
 
@@ -20,12 +19,11 @@ public class GeneralContextType extends TemplateContextType {
         addGlobalResolvers();
     }
 
-   
     /** This context's id */
     public static final String CONTEXT_TYPE = "com.cisco.yangide.editor.templates.general"; //$NON-NLS-1$
 
     /**
-     * Creates a new YANG context type. 
+     * Creates a new YANG context type.
      */
 
     private void addGlobalResolvers() {
@@ -38,6 +36,5 @@ public class GeneralContextType extends TemplateContextType {
         addResolver(new GlobalTemplateVariables.Time());
         addResolver(new GlobalTemplateVariables.User());
     }
-    
 
 }

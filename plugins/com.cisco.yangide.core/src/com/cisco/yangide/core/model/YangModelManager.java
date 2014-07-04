@@ -205,7 +205,7 @@ public final class YangModelManager implements ISaveParticipant {
 
     public static ElementIndexInfo[] search(String namespace, String name, ElementIndexType type, IPath scope) {
         // FIXME KOS temporary workaround to wait while index finish
-        while(YangModelManager.getIndexManager().awaitingJobsCount() > 0) {
+        while (YangModelManager.getIndexManager().awaitingJobsCount() > 0) {
             try {
                 Thread.sleep(100);
             } catch (InterruptedException e) {

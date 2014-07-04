@@ -40,20 +40,25 @@ public class IndexFileRequest extends IndexRequest {
 
             YangFileInfo info = (YangFileInfo) YangCorePlugin.createYangFile(file).getElementInfo(progressMonitor);
             Module module = info.getModule();
-            final String namespace = module.getNamespace().getValue().toASCIIString();
+            if (module != null && module.getNamespace() != null && module.getNamespace().getValue() != null) {
+                final String namespace = module.getNamespace().getValue().toASCIIString();
 
-            module.accept(new ASTVisitor() {
-                @Override
-                public boolean visit(Module module) {
-                    manager.addElementIndexInfo(new ElementIndexInfo(module, namespace, ElementIndexType.MODULE, file));
-                    return true;
-                }
-                @Override
-                public boolean visit(TypeDefinition typeDefinition) {
-                    manager.addElementIndexInfo(new ElementIndexInfo(typeDefinition, namespace, ElementIndexType.TYPE, file));
-                    return true;
-                }
-            });
+                module.accept(new ASTVisitor() {
+                    @Override
+                    public boolean visit(Module module) {
+                        manager.addElementIndexInfo(new ElementIndexInfo(module, namespace, ElementIndexType.MODULE,
+                                file));
+                        return true;
+                    }
+
+                    @Override
+                    public boolean visit(TypeDefinition typeDefinition) {
+                        manager.addElementIndexInfo(new ElementIndexInfo(typeDefinition, namespace,
+                                ElementIndexType.TYPE, file));
+                        return true;
+                    }
+                });
+            }
             System.err.println(toString());
         } catch (YangModelException e) {
             YangCorePlugin.log(e);

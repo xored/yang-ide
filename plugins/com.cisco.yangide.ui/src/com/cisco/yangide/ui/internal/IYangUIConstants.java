@@ -4,18 +4,18 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- */ 
+ */
 package com.cisco.yangide.ui.internal;
 
 /**
  * @author Alexey Kholupko
- *
  */
 public interface IYangUIConstants {
     public static final String PLUGIN_ID = "com.cisco.yangide.ui"; //$NON-NLS-1$;
-    
+
     public static final String IMG_TEMPLATE_PROPOSAL = PLUGIN_ID + ".template_obj"; //$NON-NLS-1$
     public static final String IMG_IMPORT_PROPOSAL = PLUGIN_ID + ".import_obj";
     public static final String IMG_KEYWORD_PROPOSAL = PLUGIN_ID + ".keyword_obj";
+    public static final String IMG_TYPE_PROPOSAL = PLUGIN_ID + ".keyword_obj";
 
 }

@@ -4,7 +4,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- */ 
+ */
 package com.cisco.yangide.editor.editors.text;
 
 /**
@@ -12,30 +12,25 @@ package com.cisco.yangide.editor.editors.text;
  *
  */
 
-
 import java.text.CharacterIterator;
 
 import org.eclipse.core.runtime.Assert;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 
-
 /**
- * An <code>IDocument</code> based implementation of
- * <code>CharacterIterator</code> and <code>CharSequence</code>. Note that
- * the supplied document is not copied; if the document is modified during the
- * lifetime of a <code>DocumentCharacterIterator</code>, the methods
- * returning document content may not always return the same values. Also, if
- * accessing the document fails with a {@link BadLocationException}, any of
- * <code>CharacterIterator</code> methods as well as <code>charAt</code>may
- * return {@link CharacterIterator#DONE}.
+ * An <code>IDocument</code> based implementation of <code>CharacterIterator</code> and
+ * <code>CharSequence</code>. Note that the supplied document is not copied; if the document is
+ * modified during the lifetime of a <code>DocumentCharacterIterator</code>, the methods returning
+ * document content may not always return the same values. Also, if accessing the document fails
+ * with a {@link BadLocationException}, any of <code>CharacterIterator</code> methods as well as
+ * <code>charAt</code>may return {@link CharacterIterator#DONE}.
  *
  * @since 3.0
  */
 public class DocumentCharacterIterator implements CharacterIterator, CharSequence {
 
-    private int fIndex= -1;
+    private int fIndex = -1;
     private final IDocument fDocument;
     private final int fFirst;
     private final int fLast;
@@ -83,10 +78,10 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
         if (last > document.getLength()) {
             throw new BadLocationException();
         }
-        fDocument= document;
-        fFirst= first;
-        fLast= last;
-        fIndex= first;
+        fDocument = document;
+        fFirst = first;
+        fLast = last;
+        fIndex = first;
         invariant();
     }
 
@@ -143,7 +138,7 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
      */
     public char setIndex(int position) {
         if (position >= getBeginIndex() && position <= getEndIndex())
-            fIndex= position;
+            fIndex = position;
         else
             throw new IllegalArgumentException();
 
@@ -194,9 +189,9 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
     /**
      * {@inheritDoc}
      * <p>
-     * Note that, if the document is modified concurrently, this method may
-     * return {@link CharacterIterator#DONE} if a {@link BadLocationException}
-     * was thrown when accessing the backing document.
+     * Note that, if the document is modified concurrently, this method may return
+     * {@link CharacterIterator#DONE} if a {@link BadLocationException} was thrown when accessing
+     * the backing document.
      * </p>
      *
      * @param index {@inheritDoc}

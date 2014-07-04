@@ -70,6 +70,7 @@ public abstract class ASTNode {
     public int getEndPosition() {
         return this.startPosition + this.length;
     }
+
     /**
      * @return the parent
      */
@@ -109,7 +110,7 @@ public abstract class ASTNode {
      * @return the name
      */
     public abstract String getNodeName();
-    
+
     public abstract void accept(ASTVisitor visitor);
 
     final void acceptChild(ASTVisitor visitor, ASTNode child) {
@@ -122,7 +123,7 @@ public abstract class ASTNode {
 
     final void acceptChildren(ASTVisitor visitor, List<? extends ASTNode> children) {
         // TODO KOS: rewrite to concurrent invocation
-        for (ASTNode child: children) {
+        for (ASTNode child : children) {
             visitor.preVisit(child);
             child.accept(visitor);
         }

@@ -14,11 +14,11 @@ import java.util.Date;
  * @date Jun 26, 2014
  */
 public class ModuleImport extends ASTNamedNode {
-    
+
     /** Module revision in date format. */
     private Date revision;
-    
-    /** Module namespace prefix.*/
+
+    /** Module namespace prefix. */
     private String prefix;
 
     public ModuleImport(ASTNode parent, String name, Date revision, String prefix) {

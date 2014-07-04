@@ -30,14 +30,14 @@ public class YangPreferencesMessages extends NLS {
     public static String YANGEditorPreferencePage_enable;
     public static String YANGEditorPreferencePage_preview;
     public static String YANGEditorPreferencePage_highlightMatchingBrackets;
-    
+
     public static String YANGEditorColoringConfigurationBlock_link;
     public static String YANGEditorPreferencePage_coloring_element;
     public static String YANGEditorPreferencePage_colors;
-    
+
     public static String YANGEditorPreferencePage_invalid_input;
     public static String YANGEditorPreferencePage_empty_input;
-    
+
     static {
         // load message values from bundle file
         NLS.initializeMessages(BUNDLE_NAME, YangPreferencesMessages.class);

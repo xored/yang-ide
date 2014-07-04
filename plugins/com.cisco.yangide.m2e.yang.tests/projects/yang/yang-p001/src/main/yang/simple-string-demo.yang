@@ -1,4 +1,4 @@
-module simple-string-demo {
+	module simple-string-demo {
 
     namespace "urn:simple:string:demo";
     prefix "sbd";

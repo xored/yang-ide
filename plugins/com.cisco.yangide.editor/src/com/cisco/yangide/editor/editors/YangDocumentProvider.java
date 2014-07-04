@@ -9,7 +9,6 @@ import com.cisco.yangide.editor.preferences.YangDocumentSetupParticipant;
 
 /**
  * @author Alexey Kholupko
- *
  */
 public class YangDocumentProvider extends FileDocumentProvider {
 

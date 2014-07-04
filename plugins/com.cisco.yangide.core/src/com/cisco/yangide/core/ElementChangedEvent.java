@@ -9,6 +9,8 @@ package com.cisco.yangide.core;
 
 import java.util.EventObject;
 
+import org.eclipse.jdt.core.IJavaElementDelta;
+
 /**
  * An element changed event describes a change to the structure or contents of a tree of Yang
  * elements. The changes to the elements are described by the associated delta object carried by

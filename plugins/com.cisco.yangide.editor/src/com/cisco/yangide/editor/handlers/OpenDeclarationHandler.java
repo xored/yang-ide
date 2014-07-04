@@ -7,19 +7,13 @@
  */
 package com.cisco.yangide.editor.handlers;
 
-import java.io.IOException;
-
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.resources.IFile;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.jdt.internal.ui.javaeditor.ASTProvider;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
-import org.eclipse.ui.part.FileEditorInput;
 
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
@@ -52,12 +46,13 @@ public class OpenDeclarationHandler extends AbstractHandler {
                 ASTNode node = module.getNodeAtPosition(((ITextSelection) selection).getOffset());
                 if (node instanceof ModuleImport) {
                     ModuleImport moduleImport = (ModuleImport) node;
-                    ElementIndexInfo[] result = YangModelManager.search(null, moduleImport.getName(), ElementIndexType.MODULE, null);
+                    ElementIndexInfo[] result = YangModelManager.search(null, moduleImport.getName(),
+                            ElementIndexType.MODULE, null);
                     if (result.length > 0) {
                         EditorUtility.openInEditor(result[0]);
                     }
                 }
-                
+
             } catch (Exception e) {
                 YangUIPlugin.log(e);
             }

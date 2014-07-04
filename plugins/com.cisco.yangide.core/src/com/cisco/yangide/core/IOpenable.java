@@ -236,7 +236,8 @@ public interface IOpenable {
      * accessing its corresponding resource
      */
     boolean isStructureKnown() throws YangModelException;
-    
+
     String getName();
+
     String toStringWithAncestors();
 }

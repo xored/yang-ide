@@ -4,14 +4,14 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- */ 
+ */
 package com.cisco.yangide.core.indexing;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 
 /**
  * @author Konstantin Zaitsev
- * @date   Jul 1, 2014
+ * @date Jul 1, 2014
  */
 public interface IJob {
 
@@ -28,15 +28,18 @@ public interface IJob {
      * Answer true if the job belongs to a given family (tag)
      */
     public boolean belongsTo(String jobFamily);
+
     /**
-     * Asks this job to cancel its execution. The cancellation
-     * can take an undertermined amount of time.
+     * Asks this job to cancel its execution. The cancellation can take an undertermined amount of
+     * time.
      */
     public void cancel();
+
     /**
      * Ensures that this job is ready to run.
      */
     public void ensureReadyToRun();
+
     /**
      * Execute the current job, answer whether it was successful.
      */
