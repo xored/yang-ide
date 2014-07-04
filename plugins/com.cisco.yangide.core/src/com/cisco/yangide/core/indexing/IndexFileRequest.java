@@ -15,7 +15,6 @@ import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.ASTVisitor;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.TypeDefinition;
-import com.cisco.yangide.core.internal.YangParserModelListener;
 import com.cisco.yangide.core.model.YangFileInfo;
 
 /**

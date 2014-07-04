@@ -40,6 +40,8 @@ public class YangParserTest extends TestCase {
 
             Module module = new YangASTParser().parseYangFile(in);
             assertNotNull(module);
+            assertEquals(1, module.getImports().size());
+            assertNotNull(module.getImports().get(0));
         }
     }
 }

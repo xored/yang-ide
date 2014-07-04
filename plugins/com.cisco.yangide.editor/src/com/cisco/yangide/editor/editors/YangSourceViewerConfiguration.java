@@ -12,6 +12,7 @@ import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
@@ -212,5 +213,12 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
         return assistant;
     }
 
-	
+    @Override
+    public IHyperlinkDetector[] getHyperlinkDetectors(ISourceViewer sourceViewer) {
+        IHyperlinkDetector[] detectors = super.getHyperlinkDetectors(sourceViewer);
+        IHyperlinkDetector[] result = new IHyperlinkDetector[detectors.length + 1];
+        System.arraycopy(detectors, 0, result, 0, detectors.length);
+        result[detectors.length] = new YangElementHyperlinkDetector();
+        return result;
+    }
 }

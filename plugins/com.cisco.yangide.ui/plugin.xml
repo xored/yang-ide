@@ -8,7 +8,31 @@
 -->
 <?eclipse version="3.4"?>
 <plugin>
-   <extension point="org.eclipse.ui.newWizards">
+    <extension point="org.eclipse.ui.contexts">
+       <context
+             id="com.cisco.yangide.ui.Context"
+             name="YANG Editor"/>
+    </extension>
+    
+    <extension point="org.eclipse.ui.commands">
+      <category
+           name="Source"
+           description="YANG Source Actions"
+           id="com.cisco.yangide.category.source">
+      </category>
+      <category
+           name="Navigate"
+           description="YANG Navigate Actions"
+           id="com.cisco.yangide.category.navigate">
+      </category>
+      <category
+           name="Search"
+           description="YANG Search Actions"
+           id="com.cisco.yangide.category.search">
+      </category>
+    </extension>
+    
+    <extension point="org.eclipse.ui.newWizards">
       <category id="com.cisco.yangide.yang" name="%yang.wizard.category.name"/>
 
       <wizard id="com.cisco.yangide.ui.wizards.YangProjectWizard"
@@ -19,21 +43,19 @@
             project="true">
          <description>%yang.wizard.project.description</description>
       </wizard>
-   </extension>
+    </extension>
    
-   <extension
-         point="org.eclipse.core.runtime.preferences">
+    <extension point="org.eclipse.core.runtime.preferences">
       <initializer
             class="com.cisco.yangide.ui.internal.preferences.YangUIPreferenceInitializer">
       </initializer>
-   </extension>
-   <extension
-         point="org.eclipse.ui.preferencePages">
+    </extension>
+    
+    <extension point="org.eclipse.ui.preferencePages">
       <page
             class="com.cisco.yangide.ui.internal.preferences.YangBasePreferencePage"
             id="com.cisco.yangide.ui.preferences.YANGBasePreferencePage"
             name="YANG">
       </page>
-   </extension>
-   
+    </extension>
 </plugin>

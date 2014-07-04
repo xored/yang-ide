@@ -7,8 +7,13 @@
  */
 package com.cisco.yangide.ui;
 
+import org.eclipse.core.resources.IWorkspace;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
@@ -50,6 +55,30 @@ public class YangUIPlugin extends AbstractUIPlugin {
         return plugin;
     }
 
+    public static IWorkspace getWorkspace() {
+        return ResourcesPlugin.getWorkspace();
+    }
+
+    public static IWorkbenchPage getActivePage() {
+        IWorkbenchWindow window = getDefault().getWorkbench().getActiveWorkbenchWindow();
+        if (window == null) {
+            return null;
+        }
+        return window.getActivePage();
+    }
+
+    public static IWorkbenchWindow getActiveWorkbenchWindow() {
+        return getDefault().getWorkbench().getActiveWorkbenchWindow();
+    }
+
+    public static Shell getActiveWorkbenchShell() {
+        IWorkbenchWindow window = getActiveWorkbenchWindow();
+        if (window != null) {
+            return window.getShell();
+        }
+        return null;
+    }
+
     public static void log(String message, Throwable e) {
         log(new Status(IStatus.ERROR, PLUGIN_ID, IStatus.ERROR, message, e));
     }
@@ -68,16 +97,18 @@ public class YangUIPlugin extends AbstractUIPlugin {
     public static void log(Throwable e) {
         log(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
     }
-    
+
     /**
-     * Configurable option value: {@value}.
+     * Configurable option value: {@value} .
+     * 
      * @category OptionValue
      */
     public static final String TAB = "tab"; //$NON-NLS-1$
     /**
-     * Configurable option value: {@value}.
+     * Configurable option value: {@value} .
+     * 
      * @category OptionValue
      */
     public static final String SPACE = "space"; //$NON-NLS-1$    
-    
+
 }

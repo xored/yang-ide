@@ -47,6 +47,7 @@ public class YangASTParser {
         final YangParser parser = new YangParser(tokens);
         // remove any error listener to get possibility parse incompleted file
         parser.removeErrorListeners();
+        
         return parser.yang();
     }
 }

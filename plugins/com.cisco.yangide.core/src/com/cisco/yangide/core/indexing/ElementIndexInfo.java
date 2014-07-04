@@ -39,8 +39,8 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
         this.namespace = namespace;
         this.name = node.getName();
         this.type = type;
-        this.startPosition = node.getStartPosition();
-        this.length = node.getLength();
+        this.startPosition = node.getNameStartPosition();
+        this.length = node.getNameLength();
         this.description = node.getDescription();
         this.reference = node.getReference();
         this.path = file.getFullPath().toString();

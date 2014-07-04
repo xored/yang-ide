@@ -8,12 +8,14 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
 import org.eclipse.jface.util.PropertyChangeEvent;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
@@ -35,7 +37,7 @@ public class YangEditor extends TextEditor {
 
     public YangEditor() {
         super();
-	
+
         // colorManager = new YangColorManager();
         colorManager = new YangColorManager(false);
         setSourceViewerConfiguration(new YangSourceViewerConfiguration(colorManager));
@@ -173,5 +175,18 @@ public class YangEditor extends TextEditor {
 
         super.handlePreferenceStoreChanged(event);
 
+    }
+
+    @Override
+    protected void initializeKeyBindingScopes() {
+        setKeyBindingScopes(new String[] { "com.cisco.yangide.ui.Context" }); //$NON-NLS-1$
+    }
+    
+    public ISelectionProvider getSelectionProvider() {
+        return getSourceViewer().getSelectionProvider();
+    }
+    
+    public IDocument getDocument() {
+        return getSourceViewer().getDocument();
     }
 }

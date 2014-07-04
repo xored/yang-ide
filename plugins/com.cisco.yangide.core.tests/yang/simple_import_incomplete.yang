@@ -2,5 +2,15 @@ module my-crypto {
     namespace "http://example.com/my-crypto";
     prefix mc;
     
-    import 
+    import
+    
+    identity aes {
+        base "crypto:crypto-alg";
+    }
+    
+    leaf crypto {
+        type identityref {
+            base "crypto:crypto-alg";
+        }
+    }
 }
