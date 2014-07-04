@@ -12,6 +12,7 @@ import java.io.InputStream;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.ConsoleErrorListener;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.eclipse.core.runtime.CoreException;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangLexer;
@@ -47,7 +48,6 @@ public class YangASTParser {
         final YangParser parser = new YangParser(tokens);
         // remove any error listener to get possibility parse incompleted file
         parser.removeErrorListeners();
-        
         return parser.yang();
     }
 }

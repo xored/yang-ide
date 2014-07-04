@@ -38,16 +38,6 @@
             file="templates/yang.xml"
             translations="templates/yang.xml">
       </include>
-      <template
-            autoinsert="true"
-            contextTypeId="com.cisco.yangide.editor.templates.general"
-            id="com.cisco.yangide.editor.template1"
-            name="organizationContributed">
-         <pattern>
-            bla bla &quot;${author}&quot;
-&quot;${cursor}&quot;
-         </pattern>
-      </template>
    </extension>   
    
     <extension point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">

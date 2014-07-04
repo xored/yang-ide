@@ -19,5 +19,6 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
 Export-Package: com.cisco.yangide.ui,
+ com.cisco.yangide.ui.internal;x-friends:="com.cisco.yangide.editor",
  com.cisco.yangide.ui.nls,
  com.cisco.yangide.ui.preferences

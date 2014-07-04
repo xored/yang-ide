@@ -20,4 +20,5 @@ Export-Package: com.cisco.yangide.core,
  com.cisco.yangide.core.dom,
  com.cisco.yangide.core.indexing,
  com.cisco.yangide.core.internal,
- com.cisco.yangide.core.model
+ com.cisco.yangide.core.model,
+ org.antlr.v4.runtime

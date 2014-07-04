@@ -7,12 +7,14 @@
  */ 
 package com.cisco.yangide.editor.editors;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -35,9 +37,22 @@ import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.swt.graphics.Image;
 
+import com.cisco.yangide.core.dom.ASTNode;
+import com.cisco.yangide.core.dom.ASTVisitor;
+import com.cisco.yangide.core.dom.Module;
+import com.cisco.yangide.core.dom.ModuleImport;
+import com.cisco.yangide.core.dom.SimpleNode;
+import com.cisco.yangide.core.indexing.ElementIndexInfo;
+import com.cisco.yangide.core.indexing.ElementIndexType;
+import com.cisco.yangide.core.internal.YangASTParser;
+import com.cisco.yangide.core.model.YangModel;
+import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.templates.GeneralContextType;
 import com.cisco.yangide.editor.templates.YangTemplateAccess;
+import com.cisco.yangide.ui.YangUIPlugin;
+import com.cisco.yangide.ui.internal.IYangUIConstants;
+import com.cisco.yangide.ui.internal.YangUIImages;
 
 /**
  * @author Alexey Kholupko
@@ -45,7 +60,7 @@ import com.cisco.yangide.editor.templates.YangTemplateAccess;
 public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor implements IContentAssistProcessor {
 
     
-    private final static ICompletionProposal[] NO_PROPOSALS= new ICompletionProposal[0];
+    private final static ICompletionProposal[] NO_PROPOSALS = new ICompletionProposal[0];
     
     /**
      * Simple content assist tip closer. The tip is valid in a range
@@ -66,7 +81,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
          * @see IContextInformationValidator#install(IContextInformation, ITextViewer, int)
          */
         public void install(IContextInformation info, ITextViewer viewer, int offset) {
-            fInstallOffset= offset;
+            fInstallOffset = offset;
         }
     };
 
@@ -79,8 +94,14 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         }
     };
 
-    protected final static String[] fgProposals = YangScanner.keywords;
+    protected final static String[] fgKeywordProposals = YangScanner.keywords;
         //{ "abstract", "boolean", "break", "byte", "case", "catch", "char", "class", "continue", "default", "do", "double", "else", "extends", "false", "final", "finally", "float", "for", "if", "implements", "import", "instanceof", "int", "interface", "long", "native", "new", "null", "package", "private", "protected", "public", "return", "short", "static", "super", "switch", "synchronized", "this", "throw", "throws", "transient", "true", "try", "void", "volatile", "while" }; //$NON-NLS-48$ //$NON-NLS-47$ //$NON-NLS-46$ //$NON-NLS-45$ //$NON-NLS-44$ //$NON-NLS-43$ //$NON-NLS-42$ //$NON-NLS-41$ //$NON-NLS-40$ //$NON-NLS-39$ //$NON-NLS-38$ //$NON-NLS-37$ //$NON-NLS-36$ //$NON-NLS-35$ //$NON-NLS-34$ //$NON-NLS-33$ //$NON-NLS-32$ //$NON-NLS-31$ //$NON-NLS-30$ //$NON-NLS-29$ //$NON-NLS-28$ //$NON-NLS-27$ //$NON-NLS-26$ //$NON-NLS-25$ //$NON-NLS-24$ //$NON-NLS-23$ //$NON-NLS-22$ //$NON-NLS-21$ //$NON-NLS-20$ //$NON-NLS-19$ //$NON-NLS-18$ //$NON-NLS-17$ //$NON-NLS-16$ //$NON-NLS-15$ //$NON-NLS-14$ //$NON-NLS-13$ //$NON-NLS-12$ //$NON-NLS-11$ //$NON-NLS-10$ //$NON-NLS-9$ //$NON-NLS-8$ //$NON-NLS-7$ //$NON-NLS-6$ //$NON-NLS-5$ //$NON-NLS-4$ //$NON-NLS-3$ //$NON-NLS-2$ //$NON-NLS-1$
+    
+    
+    protected final static int PROPOSAL_MODE_KEYWORD = 0;
+    protected final static int PROPOSAL_MODE_IMPORT = 1;
+    protected final static int PROPOSAL_MODE_TYPE = 2;
+        
 
     protected IContextInformationValidator fValidator = new Validator();
 
@@ -95,6 +116,12 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     private int columnNumber;
 
     private String currentPrefix = null;
+
+    /**
+     * The proposal mode for the current content assist
+     * @see #determineProposalMode(IDocument, int, String)
+     */
+    private int currentProposalMode= -1;    
 
     /* (non-Javadoc)
      * Method declared on IContentAssistProcessor
@@ -127,6 +154,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     
     /* (non-Javadoc)
      * Method declared on IContentAssistProcessor
+     * XXX will be used later
      */
     public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
         
@@ -138,30 +166,18 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         return result;
     }
     
-    /* (non-Javadoc)
-     * Method declared on IContentAssistProcessor
-     */
     public char[] getCompletionProposalAutoActivationCharacters() {
         return new char[] { ':' };
     }
     
-    /* (non-Javadoc)
-     * Method declared on IContentAssistProcessor
-     */
     public char[] getContextInformationAutoActivationCharacters() {
         return new char[] { '#' };
     }
     
-    /* (non-Javadoc)
-     * Method declared on IContentAssistProcessor
-     */
     public IContextInformationValidator getContextInformationValidator() {
         return fValidator;
     }
     
-    /* (non-Javadoc)
-     * Method declared on IContentAssistProcessor
-     */
     public String getErrorMessage() {
         return null;
     }
@@ -174,11 +190,11 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         if (assistant instanceof IContentAssistantExtension2) {
             fContentAssistant = (IContentAssistantExtension2) assistant;
         }
-    }    
-    
+    }        
+
     /**
-     * Returns the new determined proposals.
-     */ 
+     * @return new determined proposals
+     */
     private ICompletionProposal[] determineProposals() {
         ITextSelection selection= (ITextSelection)viewer.getSelectionProvider().getSelection();
         cursorPosition = selection.getOffset() + selection.getLength();
@@ -195,21 +211,102 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         if (prefix == null || cursorPosition == -1) {
             return NO_PROPOSALS;
         }
-    
-        //ICompletionProposal[] proposals = getProposalsFromDocument(doc, prefix);
-        List<ICompletionProposal> proposalsList = new ArrayList<ICompletionProposal>();
-        for(String proposal : fgProposals){
-            if(proposal.startsWith(prefix))
-                proposalsList.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix.length(), proposal.length()));
+        
+        ICompletionProposal[] proposals = getProposalsFromDocument(doc, prefix);
 
-
-        }
-
-        return (ICompletionProposal[]) proposalsList.toArray(new ICompletionProposal[proposalsList.size()]);
+        return proposals;
     }    
 
     /**
-     * Determines the current prefix that should be used for completion.
+     * @param document
+     * @param prefix
+     * @return proposals for the specified document
+     */
+    protected ICompletionProposal[] getProposalsFromDocument(IDocument document, String prefix) {
+        ICompletionProposal[] proposals= null;
+        currentProposalMode = determineProposalMode(document, cursorPosition, prefix);
+        List<ICompletionProposal> proposalsList = new ArrayList<ICompletionProposal>();
+        switch (currentProposalMode) {
+            case PROPOSAL_MODE_IMPORT:
+                proposals = getImportProposals(prefix);
+                break;
+            case PROPOSAL_MODE_KEYWORD:
+            default:
+                proposals = getKeywordProposals(prefix);
+        }
+        
+        return proposals;
+    }
+
+    /**
+     * @param prefix
+     * @return importable module names
+     */
+    private ICompletionProposal[] getImportProposals(String prefix) {
+        
+        ElementIndexInfo[] importModules = YangModelManager.getIndexManager().search(null, null, ElementIndexType.MODULE, null);
+        
+        List<ICompletionProposal> moduleProposals = new ArrayList<ICompletionProposal>();
+        
+        for(int i = 0; i < importModules.length; i++){
+            ElementIndexInfo importModuleIndo = importModules[i];
+                    
+            String proposal =  importModuleIndo.getName();
+            if(prefix.length() == 0 || proposal.startsWith(prefix))
+                //moduleProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix.length(), proposal.length()));
+                moduleProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix.length(), proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL), proposal, null, null));
+        }
+    
+        return (ICompletionProposal[]) moduleProposals.toArray(new ICompletionProposal[moduleProposals.size()]);
+
+    }
+
+    /**
+     * @param prefix
+     * @return general keyword proposals
+     */
+    private ICompletionProposal[] getKeywordProposals(String prefix) {
+        //ICompletionProposal[] proposals = getProposalsFromDocument(doc, prefix);
+        List<ICompletionProposal> proposalsList = new ArrayList<ICompletionProposal>();
+        for(String proposal : fgKeywordProposals){
+            if(proposal.startsWith(prefix))
+                proposalsList.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix.length(), proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_KEYWORD_PROPOSAL), proposal, null, null));
+        }
+
+        return (ICompletionProposal[]) proposalsList.toArray(new ICompletionProposal[proposalsList.size()]);
+    }
+
+    
+    /**
+     * @param document
+     * @param cursorPosition
+     * @param prefix
+     * @return proposal mode basing on current cursor position (context)
+     */
+    protected int determineProposalMode(IDocument document, int cursorPosition, String prefix) {
+        
+        YangASTParser parser = new YangASTParser();
+        Module module = null;
+        try {
+            module = parser.parseYangFile(viewer.getDocument().get().toCharArray());
+        } catch (IOException | CoreException e) {
+            YangEditorPlugin.log(e);
+        }
+        
+        if (module != null) {
+            ASTNode nodeAtPos = module.getNodeAtPosition(cursorPosition);
+
+            if (nodeAtPos instanceof ModuleImport
+                    && cursorPosition > nodeAtPos.getStartPosition() + nodeAtPos.getNodeName().length())
+                return PROPOSAL_MODE_IMPORT;
+        }
+
+        return PROPOSAL_MODE_KEYWORD;        
+    
+    }
+
+    /**
+     * @return current prefix that should be used for completion
      */
     private String getCurrentPrefix() {
         if (currentPrefix != null) {
@@ -221,10 +318,10 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     }
 
     /**
-     * Returns the prefix in the specified document text with respect to the specified offset.
-     * 
      * @param aDocumentText the whole content of the edited file as String
      * @param anOffset the cursor position
+     * 
+     * @return prefix in the specified document text with respect to the specified offset
      */
     protected String getPrefixFromDocument(String aDocumentText, int anOffset) {
         if (currentPrefix != null) {
@@ -308,9 +405,8 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
      */
     @Override
     protected Image getImage(Template template) {
-        // TODO 
-        //return Activator.getDefault().getImageRegistry().get(Activator.ICON_TEMPLATE);
-        return null;
+        Image temp = YangUIImages.getImage(IYangUIConstants.IMG_TEMPLATE_PROPOSAL);
+        return YangUIImages.getImage(IYangUIConstants.IMG_TEMPLATE_PROPOSAL);
     }
  
     

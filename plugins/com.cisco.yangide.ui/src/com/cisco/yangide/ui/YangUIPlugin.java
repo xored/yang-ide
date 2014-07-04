@@ -11,6 +11,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.IWorkbenchWindow;
@@ -98,6 +99,20 @@ public class YangUIPlugin extends AbstractUIPlugin {
         log(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
     }
 
+    /**
+     * Returns the standard display to be used. The method first checks, if
+     * the thread calling this method has an associated display. If so, this
+     * display is returned. Otherwise the method returns the default display.
+     */
+    public static Display getStandardDisplay() {
+        Display display = Display.getCurrent();
+        if (display == null) {
+            display = Display.getDefault();
+        }
+        return display;
+    }    
+        
+    
     /**
      * Configurable option value: {@value} .
      * 
