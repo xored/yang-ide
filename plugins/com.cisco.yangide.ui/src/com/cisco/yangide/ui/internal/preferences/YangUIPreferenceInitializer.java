@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.cisco.yangide.ui.internal.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
@@ -9,18 +16,18 @@ import com.cisco.yangide.ui.YangUIPlugin;
 import com.cisco.yangide.ui.preferences.IYangColorConstants;
 import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
 
+/**
+ * @author Konstantin Zaitsev
+ * @date   Jul 4, 2014
+ */
 public class YangUIPreferenceInitializer extends AbstractPreferenceInitializer {
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer#initializeDefaultPreferences
-     * ()
-     */
+    @Override
     public void initializeDefaultPreferences() {
         IPreferenceStore store = YangUIPlugin.getDefault().getPreferenceStore();
 
+        store.setDefault(YangPreferenceConstants.M2E_PLUGIN_CLEAN_TARGET, true);
+        
         // store.setDefault(YangPreferenceConstants.P_STRING, "Default value");
         store.setDefault(YangPreferenceConstants.EDITOR_CLOSE_BRACES, true);
         store.setDefault(YangPreferenceConstants.EDITOR_SMART_PASTE, true);
