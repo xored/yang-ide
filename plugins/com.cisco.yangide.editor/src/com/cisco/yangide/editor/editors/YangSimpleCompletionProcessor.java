@@ -48,6 +48,8 @@ import com.cisco.yangide.core.internal.YangASTParser;
 import com.cisco.yangide.core.model.YangModel;
 import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.editor.editors.text.YangHeuristicScanner;
+import com.cisco.yangide.editor.editors.text.YangIndenter;
 import com.cisco.yangide.editor.templates.GeneralContextType;
 import com.cisco.yangide.editor.templates.YangTemplateAccess;
 import com.cisco.yangide.ui.YangUIPlugin;
@@ -369,7 +371,8 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         Template[] templates = getTemplates(context.getContextType().getId());
         List<ICompletionProposal> matches = new ArrayList<ICompletionProposal>();
         for (int i = 0; i < templates.length; i++) {
-            Template template = templates[i];
+            Template template = generateIndentedTemplate(templates[i]);
+                        
             try {
                 context.getContextType().validate(template.getPattern());
             } catch (TemplateException e) {
@@ -383,6 +386,39 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         return matches.toArray(new ICompletionProposal[matches.size()]);
     }
     
+    /**
+     * @param template
+     * @return template with correctly indented pattern
+     * TODO should be invoked when pattern is being inserted, not computed (perfomance)
+     */
+    private Template generateIndentedTemplate(Template template) {
+        
+        Template indentedTemplate = template;
+        
+        String pattern = template.getPattern();
+
+        String[] patternLines = pattern.split("\n");
+        int linesCount = patternLines.length;
+        
+        if(linesCount > 1){
+        
+            YangIndenter indenteter = new YangIndenter(viewer.getDocument(), new YangHeuristicScanner(viewer.getDocument()));
+            StringBuffer intendation = indenteter.computeIndentation(cursorPosition);
+                
+            StringBuffer indentedPattern = new StringBuffer();
+            indentedPattern.append(patternLines[0]);
+            for(int i = 1; i < linesCount; i++){
+                indentedPattern.append("\n" + intendation + patternLines[i]);
+            }
+
+            indentedTemplate = new Template(template.getName(), template.getDescription(),
+                    template.getContextTypeId(), indentedPattern.toString(), template.isAutoInsertable());
+            
+        }      
+        
+        return indentedTemplate;
+    }
+
     /* (non-Javadoc)
      * @see org.eclipse.jface.text.templates.TemplateCompletionProcessor#extractPrefix(org.eclipse.jface.text.ITextViewer, int)
      */
