@@ -1,81 +1,101 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <templates>
 	<template autoinsert="true"
-		context="com.cisco.yangide.editor.templates.general" deleted="false"
-		description="new container declaration" enabled="true" name="container">container
-		${name} {
-		${cursor}
-		}
+		context="com.cisco.yangide.editor.templates.general"
+		description="new container declaration"
+		enabled="true"
+		id="com.cisco.yangide.editor.templates.container"
+		name="container">container ${name} {
+	${cursor}
+}
 	</template>
 	<template autoinsert="true"
-		context="com.cisco.yangide.editor.templates.general" deleted="false"
-		description="leaf template" enabled="true" name="leaf">leaf ${name} {
-		type ${type};
-		}
+		context="com.cisco.yangide.editor.templates.general" 
+		description="leaf template"
+		enabled="true"
+		id="com.cisco.yangide.editor.templates.leaf"
+		name="leaf">leaf ${name} {
+	type ${type};
+}
 	</template>
-	<template autoinsert="true"
-		context="com.cisco.yangide.editor.templates.general" deleted="false"
-		description="Module default structure" enabled="true"
-		id="com.cisco.yangide.editor.templates.module" name="module">module ${name} {
-		namespace "${namespace}";
-		prefix "${prefix}";
-		organization "${organization}";
-		contact "${contact}";
+	<template autoinsert="true" context="com.cisco.yangide.editor.templates.general" 
+		description="Module default structure"
+		enabled="true"
+		id="com.cisco.yangide.editor.templates.module"
+		name="module">module ${name} {
+	namespace "${namespace}";
+	prefix "${prefix}";
+	organization "${organization}";
+	description "${description}";
+	revision ${revision} {
 		description "${description}";
-		revision ${revision} {
-		description "${description}";
-		}
-		${cursor}
-		}
+	}
+	${cursor}
+}
 	</template>
-	<template autoinsert="true"
-		context="com.cisco.yangide.editor.templates.general" deleted="false"
-		description="organization declaration" enabled="true"
-		id="com.cisco.yangide.editor.templates.organization" name="organization">organization
-		"${name}";</template>
-	<template autoinsert="true"
-		context="com.cisco.yangide.editor.templates.general" deleted="false"
-		description="prefix declaration" enabled="true"
-		id="com.cisco.yangide.editor.templates.prefix" name="prefix">prefix "${name}";
+	<template autoinsert="true" context="com.cisco.yangide.editor.templates.general" 
+		description="organization declaration"
+		enabled="true"
+		id="com.cisco.yangide.editor.templates.organization"
+		name="organization">organization "${name}";
 	</template>
-	<template autoinsert="true"
-		context="com.cisco.yangide.editor.templates.general" deleted="false"
-		description="revision declaration" enabled="true"
-		id="com.cisco.yangide.editor.templates.revision" name="revision">revision
-		${revision} {
-		"${description}";
-		}
+
+	<template autoinsert="true" context="com.cisco.yangide.editor.templates.general" 
+		description="prefix declaration"
+		enabled="true"
+		id="com.cisco.yangide.editor.templates.prefix"
+		name="prefix">prefix "${name}";
 	</template>
-	<template autoinsert="true"
-		context="com.cisco.yangide.editor.templates.general" deleted="false"
-		description="rpc declaration" enabled="true"
-		id="com.cisco.yangide.editor.templates.rpc" name="rpc">rpc ${name} {
-		input {
+
+	<template autoinsert="true" context="com.cisco.yangide.editor.templates.general" 
+		description="revision declaration"
+		enabled="true"
+		id="com.cisco.yangide.editor.templates.revision"
+		name="revision">revision ${revision} {
+	"${description}";
+}
+	</template>
+	<template
+		autoinsert="true"
+		context="com.cisco.yangide.editor.templates.general" 
+		description="rpc declaration"
+		enabled="true"
+		id="com.cisco.yangide.editor.templates.rpc"
+		name="rpc">rpc ${name} {
+	input {
 		leaf ${name}{
-		type ${name};
+			type ${name};
 		}
-		}
-		output {
+	}
+	output {
 		leaf ${name} {
-		type ${name};
-		}
-		}
-		}
+			type ${name};
+			}
+	}
+}
 	</template>
-	<template autoinsert="true"
-		context="com.cisco.yangide.editor.templates.general" deleted="false"
-		description="new submodule container" enabled="true" name="submodule">submodule
-		${name} {
-		${cursor}
-		}
+
+	<template
+		autoinsert="true"
+		context="com.cisco.yangide.editor.templates.general" 
+		description="new submodule container"
+		enabled="true"
+		id="com.cisco.yangide.editor.templates.submodule"
+		name="submodule">submodule ${name} {
+	${cursor}
+}
 	</template>
-	<template autoinsert="true"
-		context="com.cisco.yangide.editor.templates.general" deleted="false"
-		description="typedef declaration" enabled="true"
-		id="com.cisco.yangide.editor.templates.typedef" name="typedef">typedef ${name} {
-		type ${type};
-		default ${value};
-		description ${description};
-		}
+
+	<template
+		autoinsert="true"
+		context="com.cisco.yangide.editor.templates.general" 
+		description="typedef declaration"
+		enabled="true"
+		id="com.cisco.yangide.editor.templates.typedef"
+		name="typedef">typedef ${name} {
+	type ${type};
+	default ${value};
+	description ${description};
+}
 	</template>
 </templates>
