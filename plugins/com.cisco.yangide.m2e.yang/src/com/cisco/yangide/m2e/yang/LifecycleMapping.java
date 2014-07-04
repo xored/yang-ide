@@ -65,6 +65,7 @@ public class LifecycleMapping extends AbstractCustomizableLifecycleMapping {
                 if (executionMetadatas != null) {
                     for (IPluginExecutionMetadata executionMetadata : executionMetadatas) {
                         switch (executionMetadata.getAction()) {
+                        case ignore:
                         case execute:
                             if (mojoExecutionKey.getArtifactId().equals(YangM2EPlugin.YANG_MAVEN_PLUGIN)) {
                                 executionMappings.add(new YangBuildParticipant(projectFacade.getMojoExecution(
@@ -87,7 +88,6 @@ public class LifecycleMapping extends AbstractCustomizableLifecycleMapping {
                                 executionMappings.add(buildParticipant);
                             }
                             break;
-                        case ignore:
                         case error:
                             break;
                         default:
