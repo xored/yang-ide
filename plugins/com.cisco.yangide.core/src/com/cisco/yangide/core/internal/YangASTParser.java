@@ -11,10 +11,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
-import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.CommonTokenStream;
-import org.antlr.v4.runtime.RecognitionException;
-import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.eclipse.core.runtime.CoreException;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangLexer;
@@ -48,29 +45,8 @@ public class YangASTParser {
         final YangLexer lexer = new YangLexer(input);
         final CommonTokenStream tokens = new CommonTokenStream(lexer);
         final YangParser parser = new YangParser(tokens);
-        YangErrorListener errorListener = new YangErrorListener();
+        // remove any error listener to get possibility parse incompleted file
         parser.removeErrorListeners();
-        parser.addErrorListener(errorListener);
-        final YangContext result = parser.yang();
-        errorListener.validate();
-
-        return result;
-    }
-
-    private static class YangErrorListener extends BaseErrorListener {
-        private boolean valid = true;
-
-        @Override
-        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
-                String msg, RecognitionException e) {
-            System.out.println(e.getMessage());
-            valid = false;
-        }
-
-        public void validate() {
-            if (!valid) {
-                throw new RuntimeException("Parse error");
-            }
-        }
+        return parser.yang();
     }
 }

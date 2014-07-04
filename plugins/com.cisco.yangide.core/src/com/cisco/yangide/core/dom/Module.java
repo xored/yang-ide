@@ -10,6 +10,7 @@ package com.cisco.yangide.core.dom;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Konstantin Zaitsev
@@ -28,7 +29,7 @@ public class Module extends ASTNamedNode {
 
     // private final Set<FeatureDefinition> features = new TreeSet<>(Comparators.SCHEMA_NODE_COMP);
     private ArrayList<TypeDefinition> typeDefinitions = new ArrayList<TypeDefinition>();
-    
+
     // private final Set<NotificationDefinition> notifications = new
     // TreeSet<>(Comparators.SCHEMA_NODE_COMP);
     // private final Set<AugmentationSchema> augmentations = new HashSet<>();
@@ -168,6 +169,7 @@ public class Module extends ASTNamedNode {
 
     @Override
     public void accept(ASTVisitor visitor) {
+        visitor.preVisit(this);
         boolean visitChildren = visitor.visit(this);
         if (visitChildren) {
             acceptChild(visitor, namespace);
@@ -177,9 +179,26 @@ public class Module extends ASTNamedNode {
             acceptChild(visitor, yangVersion);
             acceptChild(visitor, organization);
             acceptChild(visitor, contact);
-            
+
             acceptChildren(visitor, imports);
             acceptChildren(visitor, typeDefinitions);
         }
+    }
+
+    /**
+     * @param position absolute offset position in the file content
+     * @return ASTNode at specified position or <code>null</code> if position out of any of nodes
+     */
+    public ASTNode getNodeAtPosition(final int position) {
+        final AtomicReference<ASTNode> result = new AtomicReference<ASTNode>(null);
+        this.accept(new ASTVisitor() {
+            @Override
+            public void preVisit(ASTNode node) {
+                if (node.getStartPosition() <= position && node.getEndPosition() >= position) {
+                    result.set(node);
+                }
+            }
+        });
+        return result.get();
     }
 }

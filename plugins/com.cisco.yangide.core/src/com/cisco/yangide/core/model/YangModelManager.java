@@ -20,6 +20,7 @@ import org.eclipse.core.resources.IWorkspace;
 import org.eclipse.core.resources.IWorkspaceRunnable;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -31,6 +32,8 @@ import com.cisco.yangide.core.OpenableElementInfo;
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.indexing.DeltaProcessor;
+import com.cisco.yangide.core.indexing.ElementIndexInfo;
+import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.core.indexing.IndexManager;
 
 /**
@@ -199,7 +202,11 @@ public final class YangModelManager implements ISaveParticipant {
     public static IndexManager getIndexManager() {
         return MANAGER.indexManager;
     }
-    
+
+    public static ElementIndexInfo[] search(String namespace, String name, ElementIndexType type, IPath scope) {
+        return MANAGER.indexManager.search(namespace, name, type, scope);
+    }
+
     protected HashSet<IOpenable> getElementsOutOfSynchWithBuffers() {
         return this.elementsOutOfSynchWithBuffers;
     }

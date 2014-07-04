@@ -13,14 +13,33 @@ import com.cisco.yangide.core.internal.YangASTParser;
 
 public class YangParserTest extends TestCase {
     public void testSimpleParser() throws Exception {
-        InputStream in = FileLocator.openStream(Platform.getBundle("com.cisco.yangide.core.tests"), new Path(
-                "yang/simple_import.yang"), false);
+        try (InputStream in = FileLocator.openStream(Platform.getBundle("com.cisco.yangide.core.tests"), new Path(
+                "yang/simple_import.yang"), false)) {
 
-        Module module = new YangASTParser().parseYangFile(in);
-        assertEquals("my-crypto", module.getName());
-        assertEquals(7, module.getNameStartPosition());
-        assertEquals(0, module.getStartPosition());
-        assertEquals(328, module.getLength());
-        in.close();
+            Module module = new YangASTParser().parseYangFile(in);
+            assertEquals("my-crypto", module.getName());
+            assertEquals(7, module.getNameStartPosition());
+            assertEquals(0, module.getStartPosition());
+            assertEquals(328, module.getLength());
+        }
+    }
+
+    public void testNodeAtPostion() throws Exception {
+        try (InputStream in = FileLocator.openStream(Platform.getBundle("com.cisco.yangide.core.tests"), new Path(
+                "yang/simple_import.yang"), false)) {
+
+            Module module = new YangASTParser().parseYangFile(in);
+            assertEquals(module, module.getNodeAtPosition(1));
+            assertEquals(module.getImports().get(0), module.getNodeAtPosition(100));
+        }
+    }
+
+    public void testIncompleteParse() throws Exception {
+        try (InputStream in = FileLocator.openStream(Platform.getBundle("com.cisco.yangide.core.tests"), new Path(
+                "yang/simple_import_incomplete.yang"), false)) {
+
+            Module module = new YangASTParser().parseYangFile(in);
+            assertNotNull(module);
+        }
     }
 }

@@ -28,4 +28,8 @@ public abstract class ASTVisitor {
     public boolean visit(SimpleNode<?> simpleNode) {
         return true;
     }
+    
+    public void preVisit(ASTNode node) {
+        
+    }
 }

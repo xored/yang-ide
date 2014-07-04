@@ -1,0 +1,6 @@
+module my-crypto {
+    namespace "http://example.com/my-crypto";
+    prefix mc;
+    
+    import 
+}

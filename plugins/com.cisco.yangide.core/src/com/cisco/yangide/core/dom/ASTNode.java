@@ -67,6 +67,9 @@ public abstract class ASTNode {
         this.length = length;
     }
 
+    public int getEndPosition() {
+        return this.startPosition + this.length;
+    }
     /**
      * @return the parent
      */
@@ -113,12 +116,14 @@ public abstract class ASTNode {
         if (child == null) {
             return;
         }
+        visitor.preVisit(child);
         child.accept(visitor);
     }
 
     final void acceptChildren(ASTVisitor visitor, List<? extends ASTNode> children) {
         // TODO KOS: rewrite to concurrent invocation
         for (ASTNode child: children) {
+            visitor.preVisit(child);
             child.accept(visitor);
         }
     }
