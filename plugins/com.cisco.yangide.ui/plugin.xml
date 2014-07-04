@@ -11,7 +11,8 @@
     <extension point="org.eclipse.ui.contexts">
        <context
              id="com.cisco.yangide.ui.Context"
-             name="YANG Editor"/>
+             name="YANG Editor"
+             parentId="org.eclipse.ui.textEditorScope"/>
     </extension>
     
     <extension point="org.eclipse.ui.commands">
