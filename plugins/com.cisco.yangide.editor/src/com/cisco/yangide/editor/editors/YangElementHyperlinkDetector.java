@@ -54,5 +54,4 @@ public class YangElementHyperlinkDetector extends AbstractHyperlinkDetector {
 
         return null;
     }
-
 }

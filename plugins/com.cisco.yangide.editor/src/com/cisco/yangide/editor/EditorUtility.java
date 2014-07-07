@@ -8,10 +8,12 @@
 package com.cisco.yangide.editor;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.internal.ui.javaeditor.JarEntryEditorInput;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextSelection;
 import org.eclipse.jface.viewers.ISelectionProvider;
@@ -33,7 +35,7 @@ import com.cisco.yangide.ui.YangUIPlugin;
  * A number of routines for working with YangElements in editors. Use 'isOpenInEditor' to test if an
  * element is already open in a editor Use 'openInEditor' to force opening an element in a editor
  * With 'getWorkingCopy' you get the working copy (element in the editor) of an element
- * 
+ *
  * @author Konstantin Zaitsev
  * @date Jul 4, 2014
  */
@@ -107,7 +109,7 @@ public class EditorUtility {
 
     /**
      * Selects and reveals the given offset and length in the given editor part.
-     * 
+     *
      * @param editor the editor part
      * @param offset the offset
      * @param length the length
@@ -120,23 +122,30 @@ public class EditorUtility {
 
         if (editor != null && editor.getEditorSite().getSelectionProvider() != null) {
             IEditorSite site = editor.getEditorSite();
-            if (site == null)
+            if (site == null) {
                 return;
+            }
 
             ISelectionProvider provider = editor.getEditorSite().getSelectionProvider();
-            if (provider == null)
+            if (provider == null) {
                 return;
+            }
 
             provider.setSelection(new TextSelection(offset, length));
         }
     }
 
     public static void openInEditor(ElementIndexInfo info) {
-        IFile file = YangUIPlugin.getWorkspace().getRoot().getFile(new Path(info.getPath()));
-        IEditorPart editor = isOpenInEditor(file);
+        IStorage storage = null;
+        if (info.getEntry() != null && info.getEntry().length() > 0) {
+            storage = new JarFileEntryStorage(new Path(info.getPath()), info.getEntry());
+        } else {
+            storage = YangUIPlugin.getWorkspace().getRoot().getFile(new Path(info.getPath()));
+        }
+        IEditorPart editor = isOpenInEditor(storage);
         if (editor == null) {
             try {
-                editor = openInEditor(file, true);
+                editor = openInEditor(storage, true);
             } catch (PartInitException e) {
                 YangUIPlugin.log(e);
             }
@@ -184,9 +193,9 @@ public class EditorUtility {
     public static String getEditorID(IEditorInput input) throws PartInitException {
         Assert.isNotNull(input);
         IEditorDescriptor editorDescriptor;
-        if (input instanceof IFileEditorInput)
+        if (input instanceof IFileEditorInput) {
             editorDescriptor = IDE.getEditorDescriptor(((IFileEditorInput) input).getFile());
-        else {
+        } else {
             editorDescriptor = IDE.getEditorDescriptor(input.getName());
         }
         return editorDescriptor.getId();
@@ -194,11 +203,13 @@ public class EditorUtility {
 
     public static IEditorInput getEditorInput(Object input) {
 
-        if (input instanceof IFile)
+        if (input instanceof IFile) {
             return new FileEditorInput((IFile) input);
+        }
 
-        // if (YangModelUtil.isOpenableStorage(input))
-        // return new JarEntryEditorInput((IStorage) input);
+        if (input instanceof IStorage) {
+            return new JarEntryEditorInput((IStorage) input);
+        }
 
         return null;
     }

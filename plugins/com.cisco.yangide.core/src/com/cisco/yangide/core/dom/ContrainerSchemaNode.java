@@ -7,23 +7,30 @@
  */
 package com.cisco.yangide.core.dom;
 
+import java.util.List;
+
 /**
  * @author Konstantin Zaitsev
- * @date Jul 2, 2014
+ * @date Jul 4, 2014
  */
-public class TypeDefinition extends ASTNamedNode {
+public class ContrainerSchemaNode extends ASTNamedNode {
+    private List<ASTNode> children;
 
-    public TypeDefinition(ASTNode parent) {
+    public ContrainerSchemaNode(ASTNode parent) {
         super(parent);
     }
 
     @Override
     public String getNodeName() {
-        return "typedef";
+        return "container";
     }
 
     @Override
     public void accept(ASTVisitor visitor) {
-        visitor.visit(this);
+        visitor.preVisit(this);
+        boolean visitChildren = visitor.visit(this);
+        if (visitChildren) {
+            acceptChildren(visitor, children);
+        }
     }
 }

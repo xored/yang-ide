@@ -36,8 +36,9 @@ public class Module extends ASTNamedNode {
     // private final Set<RpcDefinition> rpcs = new TreeSet<>(Comparators.SCHEMA_NODE_COMP);
     // private final Set<Deviation> deviations = new HashSet<>();
     // private final Set<DataSchemaNode> childNodes = new TreeSet<>(Comparators.SCHEMA_NODE_COMP);
-    // private final Set<GroupingDefinition> groupings = new
-    // TreeSet<>(Comparators.SCHEMA_NODE_COMP);
+
+    private ArrayList<GroupingDefinition> groupings = new ArrayList<>();
+
     // private final Set<UsesNode> uses = new HashSet<>();
     // private final List<ExtensionDefinition> extensionNodes = new ArrayList<>();
     // private final Set<IdentitySchemaNode> identities = new
@@ -47,7 +48,7 @@ public class Module extends ASTNamedNode {
     //
 
     public Module() {
-        super(null, null);
+        super(null);
     }
 
     @Override
@@ -167,6 +168,13 @@ public class Module extends ASTNamedNode {
         return typeDefinitions;
     }
 
+    /**
+     * @return the groupings
+     */
+    public ArrayList<GroupingDefinition> getGroupings() {
+        return groupings;
+    }
+
     @Override
     public void accept(ASTVisitor visitor) {
         visitor.preVisit(this);
@@ -182,6 +190,7 @@ public class Module extends ASTNamedNode {
 
             acceptChildren(visitor, imports);
             acceptChildren(visitor, typeDefinitions);
+            acceptChildren(visitor, groupings);
         }
     }
 

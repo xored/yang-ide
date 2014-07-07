@@ -1,0 +1,77 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+package com.cisco.yangide.core.model;
+
+import java.io.IOException;
+import java.util.Map;
+import java.util.jar.JarFile;
+
+import org.eclipse.core.resources.IResource;
+import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+
+import com.cisco.yangide.core.IOpenable;
+import com.cisco.yangide.core.OpenableElementInfo;
+import com.cisco.yangide.core.YangModelException;
+import com.cisco.yangide.core.dom.Module;
+import com.cisco.yangide.core.internal.YangASTParser;
+
+/**
+ * @author Konstantin Zaitsev
+ * @date Jul 07, 2014
+ */
+public class YangJarEntry extends YangElement {
+    private IPath path;
+
+    public YangJarEntry(IPath path, IOpenable parent) {
+        super(parent);
+        this.path = path;
+    }
+
+    @Override
+    protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm,
+            Map<IOpenable, OpenableElementInfo> newElements, IResource underlyingResource) throws YangModelException {
+        try (JarFile file = new JarFile(getParent().getPath().toFile())) {
+            Module module = new YangASTParser().parseYangFile(file.getInputStream(file.getEntry(path.toString())));
+            ((YangFileInfo) info).setModule(module);
+            info.setIsStructureKnown(true);
+        } catch (IOException e) {
+            throw new YangModelException(e, 0);
+        } catch (CoreException e) {
+            throw new YangModelException(e);
+        }
+        return true;
+    }
+
+    @Override
+    protected IStatus validateExistence(IResource underlyingResource) {
+        return Status.OK_STATUS;
+    }
+
+    @Override
+    protected OpenableElementInfo createElementInfo() {
+        return new YangFileInfo();
+    }
+
+    @Override
+    public IPath getPath() {
+        return path;
+    }
+
+    public Module getModule() throws YangModelException {
+        return ((YangFileInfo) getElementInfo(null)).getModule();
+    }
+
+    @Override
+    public YangElementType getElementType() {
+        return YangElementType.YANG_JAR_ENTRY;
+    }
+}

@@ -29,6 +29,18 @@ public abstract class ASTVisitor {
         return true;
     }
 
+    public boolean visit(ContrainerSchemaNode container) {
+        return true;
+    }
+
+    public boolean visit(GroupingDefinition grouping) {
+        return true;
+    }
+
+    public boolean visit(LeafSchemaNode leaf) {
+        return true;
+    }
+
     public void preVisit(ASTNode node) {
 
     }

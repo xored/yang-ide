@@ -23,5 +23,12 @@ public enum YangElementType {
     YANG_FOLDER,
 
     /** Yang File type. */
-    YANG_FILE;
+    YANG_FILE,
+
+    /** Yang Jar File type. */
+    YANG_JAR_FILE,
+
+    /** Yang Jar Entry. */
+    YANG_JAR_ENTRY;
+
 }

@@ -7,7 +7,10 @@
  */
 package com.cisco.yangide.core.indexing;
 
+import java.io.IOException;
 import java.util.HashSet;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -23,6 +26,7 @@ import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.core.JavaProject;
 
 import com.cisco.yangide.core.CoreUtil;
+import com.cisco.yangide.core.YangCorePlugin;
 
 /**
  * @author Konstantin Zaitsev
@@ -38,6 +42,7 @@ public class IndexAllProject extends IndexRequest {
         this.project = project;
     }
 
+    @Override
     public boolean equals(Object o) {
         if (o instanceof IndexAllProject) {
             return this.project.equals(((IndexAllProject) o).project);
@@ -45,6 +50,7 @@ public class IndexAllProject extends IndexRequest {
         return false;
     }
 
+    @Override
     public boolean execute(IProgressMonitor progressMonitor) {
 
         if (this.isCancelled || progressMonitor != null && progressMonitor.isCanceled()) {
@@ -55,6 +61,7 @@ public class IndexAllProject extends IndexRequest {
             return true;
         }
         final HashSet<IPath> ignoredPath = new HashSet<IPath>();
+        final HashSet<IPath> externalJarsPath = new HashSet<IPath>();
         try {
             JavaProject proj = (JavaProject) JavaCore.create(project);
             if (proj != null) {
@@ -62,6 +69,9 @@ public class IndexAllProject extends IndexRequest {
                 for (int i = 0, length = classpath.length; i < length; i++) {
                     IClasspathEntry entry = classpath[i];
                     IPath entryPath = entry.getPath();
+                    if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+                        externalJarsPath.add(entryPath);
+                    }
                     IPath output = entry.getOutputLocation();
                     if (output != null && !entryPath.equals(output)) {
                         ignoredPath.add(output);
@@ -72,9 +82,20 @@ public class IndexAllProject extends IndexRequest {
             // java project doesn't exist: ignore
         }
 
+        for (IPath iPath : externalJarsPath) {
+            try (JarFile jarFile = new JarFile(iPath.toFile())) {
+                ZipEntry entry = jarFile.getEntry("META-INF/yang/");
+                if (entry != null) {
+                    this.manager.addJarFile(iPath);
+                }
+            } catch (IOException e) {
+                YangCorePlugin.log(e);
+            }
+        }
         try {
             final HashSet<IFile> indexedFiles = new HashSet<IFile>();
             project.accept(new IResourceProxyVisitor() {
+                @Override
                 public boolean visit(IResourceProxy proxy) {
                     if (IndexAllProject.this.isCancelled) {
                         return false;
@@ -103,10 +124,12 @@ public class IndexAllProject extends IndexRequest {
         return true;
     }
 
+    @Override
     public int hashCode() {
         return this.project.hashCode();
     }
 
+    @Override
     public String toString() {
         return "indexing project " + this.project.getFullPath(); //$NON-NLS-1$
     }

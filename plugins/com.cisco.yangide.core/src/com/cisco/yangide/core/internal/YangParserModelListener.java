@@ -12,14 +12,18 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Stack;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Contact_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Container_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Description_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Grouping_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Import_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Leaf_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Module_header_stmtsContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Module_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Namespace_stmtContext;
@@ -30,15 +34,23 @@ import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Revision_date_stmt
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Revision_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Revision_stmtsContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.StringContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Submodule_header_stmtsContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Submodule_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Type_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Typedef_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Yang_version_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParserBaseListener;
 
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
+import com.cisco.yangide.core.dom.ContrainerSchemaNode;
+import com.cisco.yangide.core.dom.GroupingDefinition;
+import com.cisco.yangide.core.dom.LeafSchemaNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
+import com.cisco.yangide.core.dom.QName;
 import com.cisco.yangide.core.dom.SimpleNode;
+import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.TypeDefinition;
 
 /**
@@ -52,12 +64,22 @@ public class YangParserModelListener extends YangParserBaseListener {
     private URI namespace;
     private String yangModelPrefix;
     private Date revision = new Date(0L);
+    private Stack<ASTNode> stack = new Stack<>();
+    private LeafSchemaNode typeNode = null;
 
     @Override
     public void enterModule_stmt(Module_stmtContext ctx) {
         module = new Module();
-        setNamedNode(module, ctx);
-        updateNodePosition(module, ctx);
+        stack.push(module);
+        updateNamedNode(module, ctx);
+        setNodeDescription(module, ctx);
+    }
+
+    @Override
+    public void enterSubmodule_stmt(Submodule_stmtContext ctx) {
+        module = new SubModule();
+        stack.push(module);
+        updateNamedNode(module, ctx);
         setNodeDescription(module, ctx);
     }
 
@@ -68,6 +90,32 @@ public class YangParserModelListener extends YangParserBaseListener {
 
     @Override
     public void enterModule_header_stmts(Module_header_stmtsContext ctx) {
+        for (int i = 0; i < ctx.getChildCount(); ++i) {
+            final ParseTree treeNode = ctx.getChild(i);
+            if (treeNode instanceof Namespace_stmtContext) {
+                final String namespaceStr = stringFromNode(treeNode);
+                namespace = URI.create(namespaceStr);
+                SimpleNode<URI> astNode = new SimpleNode<URI>(module, ((Namespace_stmtContext) treeNode)
+                        .NAMESPACE_KEYWORD().getText(), namespace);
+                updateNodePosition(astNode, treeNode);
+                module.setNamespace(astNode);
+            } else if (treeNode instanceof Prefix_stmtContext) {
+                yangModelPrefix = stringFromNode(treeNode);
+                SimpleNode<String> astNode = new SimpleNode<String>(module, ((Prefix_stmtContext) treeNode)
+                        .PREFIX_KEYWORD().getText(), yangModelPrefix);
+                updateNodePosition(astNode, treeNode);
+                module.setPrefix(astNode);
+            } else if (treeNode instanceof Yang_version_stmtContext) {
+                SimpleNode<String> astNode = new SimpleNode<String>(module, ((Yang_version_stmtContext) treeNode)
+                        .YANG_VERSION_KEYWORD().getText(), stringFromNode(treeNode));
+                updateNodePosition(astNode, treeNode);
+                module.setYangVersion(astNode);
+            }
+        }
+    }
+
+    @Override
+    public void enterSubmodule_header_stmts(Submodule_header_stmtsContext ctx) {
         for (int i = 0; i < ctx.getChildCount(); ++i) {
             final ParseTree treeNode = ctx.getChild(i);
             if (treeNode instanceof Namespace_stmtContext) {
@@ -128,8 +176,6 @@ public class YangParserModelListener extends YangParserBaseListener {
 
     @Override
     public void enterImport_stmt(Import_stmtContext ctx) {
-        final String importName = stringFromNode(ctx);
-
         String importPrefix = null;
         Date importRevision = null;
 
@@ -147,18 +193,59 @@ public class YangParserModelListener extends YangParserBaseListener {
                 }
             }
         }
-        ModuleImport moduleImport = new ModuleImport(module, importName, importRevision, importPrefix);
-        updateNodePosition(moduleImport, ctx);
-        setNamedNode(moduleImport, ctx);
+        ModuleImport moduleImport = new ModuleImport(module, importRevision, importPrefix);
+        updateNamedNode(moduleImport, ctx);
         module.getImports().add(moduleImport);
     }
 
     @Override
     public void enterTypedef_stmt(Typedef_stmtContext ctx) {
         TypeDefinition typeDefinition = new TypeDefinition(module);
-        updateNodePosition(typeDefinition, ctx);
-        setNamedNode(typeDefinition, ctx);
+        updateNamedNode(typeDefinition, ctx);
         module.getTypeDefinitions().add(typeDefinition);
+    }
+
+    @Override
+    public void enterGrouping_stmt(Grouping_stmtContext ctx) {
+        GroupingDefinition grouping = new GroupingDefinition(stack.peek());
+        stack.push(grouping);
+        module.getGroupings().add(grouping);
+        updateNamedNode(grouping, ctx);
+    }
+
+    @Override
+    public void exitGrouping_stmt(Grouping_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterContainer_stmt(Container_stmtContext ctx) {
+        ContrainerSchemaNode container = new ContrainerSchemaNode(stack.peek());
+        stack.push(container);
+        updateNamedNode(container, ctx);
+    }
+
+    @Override
+    public void exitContainer_stmt(Container_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterLeaf_stmt(Leaf_stmtContext ctx) {
+        LeafSchemaNode leaf = new LeafSchemaNode(stack.peek());
+        typeNode = leaf;
+    }
+
+    @Override
+    public void enterType_stmt(Type_stmtContext ctx) {
+        final String typeName = stringFromNode(ctx);
+        final QName typeQName = parseQName(typeName);
+        if (typeNode != null) {
+            typeNode.setType(typeQName);
+        } else {
+            // System.err.println(ctx);
+        }
+
     }
 
     /**
@@ -166,6 +253,14 @@ public class YangParserModelListener extends YangParserBaseListener {
      */
     public Module getModule() {
         return module;
+    }
+
+    /**
+     * @param typeName
+     * @return
+     */
+    private QName parseQName(String typeName) {
+        return null;
     }
 
     private void updateRevisionForRevisionStatement(final ParseTree treeNode) {
@@ -214,7 +309,8 @@ public class YangParserModelListener extends YangParserBaseListener {
         astNode.setReference(reference);
     }
 
-    private void setNamedNode(ASTNamedNode astNode, ParseTree treeNode) {
+    private void updateNamedNode(ASTNamedNode astNode, ParseTree treeNode) {
+        updateNodePosition(astNode, treeNode);
         for (int i = 0; i < treeNode.getChildCount(); ++i) {
             if (treeNode.getChild(i) instanceof StringContext) {
                 final StringContext context = (StringContext) treeNode.getChild(i);

@@ -13,6 +13,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
@@ -22,6 +23,8 @@ import org.osgi.framework.BundleContext;
 import com.cisco.yangide.core.model.YangElement;
 import com.cisco.yangide.core.model.YangFile;
 import com.cisco.yangide.core.model.YangFolder;
+import com.cisco.yangide.core.model.YangJarEntry;
+import com.cisco.yangide.core.model.YangJarFile;
 import com.cisco.yangide.core.model.YangModel;
 import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.core.model.YangProject;
@@ -109,12 +112,12 @@ public class YangCorePlugin extends Plugin {
         }
     }
 
-    /**
-     * @param project
-     * @return
-     */
-    public static YangProject create(IProject project) {
-        return new YangProject(project, getYangModel());
+    public static YangJarEntry createJarEntry(IPath path, String entry) {
+        return new YangJarEntry(new Path(entry), createJarFile(path));
+    }
+
+    public static YangJarFile createJarFile(IPath path) {
+        return new YangJarFile(path, getYangModel());
     }
 
     /**
@@ -140,7 +143,7 @@ public class YangCorePlugin extends Plugin {
 
     /**
      * Creates YANG problem marker for resource.
-     * 
+     *
      * @param path workspace relative path
      * @param message text message
      * @param lineNumber optional line number or <code>-1</code> if no line number

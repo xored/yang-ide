@@ -21,8 +21,8 @@ public class ModuleImport extends ASTNamedNode {
     /** Module namespace prefix. */
     private String prefix;
 
-    public ModuleImport(ASTNode parent, String name, Date revision, String prefix) {
-        super(parent, name);
+    public ModuleImport(ASTNode parent, Date revision, String prefix) {
+        super(parent);
         this.revision = revision;
         this.prefix = prefix;
     }

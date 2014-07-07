@@ -22,8 +22,10 @@ public class MavenProjectChangedListener implements IMavenProjectChangedListener
     @Override
     public void mavenProjectChanged(MavenProjectChangedEvent[] events, IProgressMonitor monitor) {
         for (MavenProjectChangedEvent event : events) {
-            event.getMavenProject().setSessionProperty(MavenProjectFacade.PROP_LIFECYCLE_MAPPING,
-                    new LifecycleMapping());
+            if (event.getMavenProject() != null) {
+                event.getMavenProject().setSessionProperty(MavenProjectFacade.PROP_LIFECYCLE_MAPPING,
+                        new LifecycleMapping());
+            }
         }
     }
 }

@@ -72,11 +72,11 @@ public final class YangModelManager implements ISaveParticipant {
             this.deltaProcessor = new DeltaProcessor(this);
             final IWorkspace workspace = ResourcesPlugin.getWorkspace();
             workspace.addResourceChangeListener(deltaProcessor,
-            /*
-             * update spec in JavaCore#addPreProcessingResourceChangedListener(...) if adding more
-             * event types
-             */
-            IResourceChangeEvent.PRE_BUILD | IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.POST_CHANGE
+                    /*
+                     * update spec in JavaCore#addPreProcessingResourceChangedListener(...) if adding more
+                     * event types
+                     */
+                    IResourceChangeEvent.PRE_BUILD | IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.POST_CHANGE
                     | IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.PRE_CLOSE
                     | IResourceChangeEvent.PRE_REFRESH);
 
@@ -89,9 +89,11 @@ public final class YangModelManager implements ISaveParticipant {
             yangModel.getYangProjects();
 
             Job processSavedState = new Job("Processing Yang changes since last activation") {
+                @Override
                 protected IStatus run(IProgressMonitor monitor) {
                     try {
                         workspace.run(new IWorkspaceRunnable() {
+                            @Override
                             public void run(IProgressMonitor progress) throws CoreException {
                                 ISavedState savedState = workspace.addSaveParticipant(YangCorePlugin.PLUGIN_ID,
                                         YangModelManager.this);
@@ -115,6 +117,7 @@ public final class YangModelManager implements ISaveParticipant {
             processSavedState.setPriority(Job.SHORT); // process asap
             processSavedState.schedule();
         } catch (RuntimeException e) {
+            e.printStackTrace();
             shutdown();
             throw e;
         }
@@ -219,15 +222,19 @@ public final class YangModelManager implements ISaveParticipant {
     }
 
     // / methods from ISaveParticipant
+    @Override
     public void doneSaving(ISaveContext context) {
     }
 
+    @Override
     public void prepareToSave(ISaveContext context) throws CoreException {
     }
 
+    @Override
     public void rollback(ISaveContext context) {
     }
 
+    @Override
     public void saving(ISaveContext context) throws CoreException {
     }
 

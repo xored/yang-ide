@@ -12,17 +12,19 @@ package com.cisco.yangide.core.dom;
  * @date Jun 26, 2014
  */
 public abstract class ASTNamedNode extends ASTNode {
-    /**
-     * @param parent
-     */
-    public ASTNamedNode(ASTNode parent, String name) {
-        super(parent);
-        this.name = name;
-    }
 
     private String name;
 
     private int nameStartPosition = -1;
+
+    public ASTNamedNode(ASTNode parent) {
+        this(parent, null);
+    }
+
+    public ASTNamedNode(ASTNode parent, String name) {
+        super(parent);
+        this.name = name;
+    }
 
     /**
      * @return the name

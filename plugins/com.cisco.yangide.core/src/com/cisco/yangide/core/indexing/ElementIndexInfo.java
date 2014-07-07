@@ -9,7 +9,7 @@ package com.cisco.yangide.core.indexing;
 
 import java.io.Serializable;
 
-import org.eclipse.core.resources.IFile;
+import org.eclipse.core.runtime.IPath;
 
 import com.cisco.yangide.core.dom.ASTNamedNode;
 
@@ -30,12 +30,14 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
     private String path;
     private String description;
     private String reference;
+    /** Optional entry in case of Jar Entry. */
+    private String entry;
 
     /**
      * @param module
      * @param module2
      */
-    public ElementIndexInfo(ASTNamedNode node, String namespace, ElementIndexType type, IFile file) {
+    public ElementIndexInfo(ASTNamedNode node, String namespace, ElementIndexType type, IPath path, String entry) {
         this.namespace = namespace;
         this.name = node.getName();
         this.type = type;
@@ -43,7 +45,8 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
         this.length = node.getNameLength();
         this.description = node.getDescription();
         this.reference = node.getReference();
-        this.path = file.getFullPath().toString();
+        this.path = path.toString();
+        this.entry = entry;
     }
 
     /**
@@ -158,11 +161,25 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
         this.reference = reference;
     }
 
+    /**
+     * @return the entry
+     */
+    public String getEntry() {
+        return entry;
+    }
+
+    /**
+     * @param entry the entry to set
+     */
+    public void setEntry(String entry) {
+        this.entry = entry;
+    }
+
     @Override
     public String toString() {
         return "ElementIndexInfo [namespace=" + namespace + ", name=" + name + ", type=" + type + ", startPosition="
                 + startPosition + ", length=" + length + ", path=" + path + ", description=" + description
-                + ", reference=" + reference + "]";
+                + ", reference=" + reference + ", entry=" + entry + "]";
     }
 
     @Override

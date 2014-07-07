@@ -7,9 +7,12 @@
  */
 package com.cisco.yangide.core.model;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
@@ -19,7 +22,10 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.JavaCore;
 
+import com.cisco.yangide.core.CoreUtil;
 import com.cisco.yangide.core.IOpenable;
 import com.cisco.yangide.core.OpenableElementInfo;
 import com.cisco.yangide.core.YangCorePlugin;
@@ -45,15 +51,25 @@ public class YangProject extends YangElement {
     protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm,
             Map<IOpenable, OpenableElementInfo> newElements, IResource underlyingResource) throws YangModelException {
         final HashSet<IResource> resources = new HashSet<IResource>();
+        final HashSet<IPath> externalJarsPath = new HashSet<IPath>();
         try {
             project.accept(new IResourceVisitor() {
+                @Override
                 public boolean visit(IResource resource) throws CoreException {
-                    if (YangFolder.YANG_EXTENSION.equalsIgnoreCase(resource.getFullPath().getFileExtension())) {
+                    if (CoreUtil.isYangLikeFileName(resource.getName())) {
                         resources.add(resource.getParent());
                     }
                     return true;
                 }
             });
+            IClasspathEntry[] classpath = JavaCore.create(project).getResolvedClasspath(true);
+            for (int i = 0, length = classpath.length; i < length; i++) {
+                IClasspathEntry entry = classpath[i];
+                IPath entryPath = entry.getPath();
+                if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+                    externalJarsPath.add(entryPath);
+                }
+            }
         } catch (CoreException e) {
             throw new YangModelException(e);
         }
@@ -63,7 +79,18 @@ public class YangProject extends YangElement {
                 result.add(new YangFolder(resource, this));
             }
         }
-        info.setChildren((IOpenable[]) result.toArray(new IOpenable[result.size()]));
+
+        for (IPath iPath : externalJarsPath) {
+            try (JarFile jarFile = new JarFile(iPath.toFile())) {
+                ZipEntry entry = jarFile.getEntry("META-INF/yang/");
+                if (entry != null) {
+                    result.add(new YangJarFile(iPath, this));
+                }
+            } catch (IOException e) {
+                YangCorePlugin.log(e);
+            }
+        }
+        info.setChildren(result.toArray(new IOpenable[result.size()]));
         return true;
     }
 

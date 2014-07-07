@@ -12,9 +12,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
-import com.cisco.yangide.core.dom.ASTVisitor;
-import com.cisco.yangide.core.dom.Module;
-import com.cisco.yangide.core.dom.TypeDefinition;
 import com.cisco.yangide.core.model.YangFileInfo;
 
 /**
@@ -30,6 +27,7 @@ public class IndexFileRequest extends IndexRequest {
         this.file = file;
     }
 
+    @Override
     public boolean execute(IProgressMonitor progressMonitor) {
         if (this.isCancelled || progressMonitor != null && progressMonitor.isCanceled()) {
             return true;
@@ -38,34 +36,16 @@ public class IndexFileRequest extends IndexRequest {
             // remove previously indexed file
             manager.remove(file);
 
-            YangFileInfo info = (YangFileInfo) YangCorePlugin.createYangFile(file).getElementInfo(progressMonitor);
-            Module module = info.getModule();
-            if (module != null && module.getNamespace() != null && module.getNamespace().getValue() != null) {
-                final String namespace = module.getNamespace().getValue().toASCIIString();
-
-                module.accept(new ASTVisitor() {
-                    @Override
-                    public boolean visit(Module module) {
-                        manager.addElementIndexInfo(new ElementIndexInfo(module, namespace, ElementIndexType.MODULE,
-                                file));
-                        return true;
-                    }
-
-                    @Override
-                    public boolean visit(TypeDefinition typeDefinition) {
-                        manager.addElementIndexInfo(new ElementIndexInfo(typeDefinition, namespace,
-                                ElementIndexType.TYPE, file));
-                        return true;
-                    }
-                });
-            }
             System.err.println(toString());
+            YangFileInfo info = (YangFileInfo) YangCorePlugin.createYangFile(file).getElementInfo(progressMonitor);
+            manager.addModule(info.getModule(), file.getFullPath(), "");
         } catch (YangModelException e) {
             YangCorePlugin.log(e);
         }
         return true;
     }
 
+    @Override
     public String toString() {
         return "indexing " + file.getFullPath();
     }

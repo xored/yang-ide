@@ -9,21 +9,37 @@ package com.cisco.yangide.core.dom;
 
 /**
  * @author Konstantin Zaitsev
- * @date Jul 2, 2014
+ * @date Jul 4, 2014
  */
-public class TypeDefinition extends ASTNamedNode {
+public class LeafSchemaNode extends ASTNamedNode {
 
-    public TypeDefinition(ASTNode parent) {
+    private QName type;
+
+    public LeafSchemaNode(ASTNode parent) {
         super(parent);
     }
 
     @Override
     public String getNodeName() {
-        return "typedef";
+        return "leaf";
     }
 
     @Override
     public void accept(ASTVisitor visitor) {
         visitor.visit(this);
+    }
+
+    /**
+     * @return the type
+     */
+    public QName getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(QName type) {
+        this.type = type;
     }
 }
