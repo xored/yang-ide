@@ -16,6 +16,6 @@ public interface IYangUIConstants {
     public static final String IMG_TEMPLATE_PROPOSAL = PLUGIN_ID + ".template_obj"; //$NON-NLS-1$
     public static final String IMG_IMPORT_PROPOSAL = PLUGIN_ID + ".import_obj";
     public static final String IMG_KEYWORD_PROPOSAL = PLUGIN_ID + ".keyword_obj";
-    public static final String IMG_TYPE_PROPOSAL = PLUGIN_ID + ".keyword_obj";
+    public static final String IMG_TYPE_PROPOSAL = PLUGIN_ID + ".type_obj";
 
 }

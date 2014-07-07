@@ -714,6 +714,7 @@ public final class YangIndenter {
      * @return the reference statement relative to which <code>offset</code> should be indented, or
      * {@link YangHeuristicScanner#NOT_FOUND}
      */
+
     public int findReferencePosition(int offset, int nextToken) {
         boolean danglingElse = false;
         boolean unindent = false;
@@ -995,19 +996,7 @@ public final class YangIndenter {
             // search to the end of the statement / block before the previous; the token just after
             // that is previous.start
             pos = fPosition;
-            if (isSemicolonPartOfForStatement()) {
-                fIndent = fPrefs.prefContinuationIndent;
-                return fPosition;
-            } else {
-                fPosition = pos;
-                if (isTryWithResources()) {
-                    fIndent = fPrefs.prefContinuationIndent;
-                    return fPosition;
-                } else {
-                    fPosition = pos;
-                    return skipToStatementStart(danglingElse, false);
-                }
-            }
+            return skipToStatementStart(danglingElse, false);
             // scope introduction: special treat who special is
         case Symbols.TokenLPAREN:
         case Symbols.TokenLBRACE:
@@ -1147,54 +1136,6 @@ public final class YangIndenter {
     }
 
     /**
-     * Checks if the semicolon at the current position is part of a for statement.
-     * 
-     * @return returns <code>true</code> if current position is part of for statement
-     * @since 3.7
-     */
-    private boolean isSemicolonPartOfForStatement() {
-        int semiColonCount = 1;
-        while (true) {
-            nextToken();
-            switch (fToken) {
-            case Symbols.TokenFOR:
-                return true;
-            case Symbols.TokenLBRACE:
-                return false;
-            case Symbols.TokenSEMICOLON:
-                semiColonCount++;
-                if (semiColonCount > 2)
-                    return false;
-                break;
-            case Symbols.TokenCOLON:
-                return false;
-            case Symbols.TokenEOF:
-                return false;
-            }
-        }
-    }
-
-    /**
-     * Checks if the semicolon at the current position is part of a try with resources statement.
-     * 
-     * @return returns <code>true</code> if current position is part of try with resources statement
-     * @since 3.7
-     */
-    private boolean isTryWithResources() {
-        while (true) {
-            nextToken();
-            switch (fToken) {
-            case Symbols.TokenTRY:
-                return true;
-            case Symbols.TokenLBRACE:
-                return false;
-            case Symbols.TokenEOF:
-                return false;
-            }
-        }
-    }
-
-    /**
      * Skips to the start of a statement that ends at the current position.
      *
      * @param danglingElse whether to indent aligned with the last <code>if</code>
@@ -1256,6 +1197,8 @@ public final class YangIndenter {
             case Symbols.TokenLBRACE:
             case Symbols.TokenLBRACKET:
             case Symbols.TokenSEMICOLON:
+            //XXX custom case, when comments appear above new block    
+            case Symbols.TokenOTHER:
             case Symbols.TokenEOF:
                 if (isInBlock)
                     fIndent = getBlockIndent(mayBeMethodBody == READ_IDENT, isTypeBody);
@@ -1468,10 +1411,7 @@ public final class YangIndenter {
 
             case Symbols.TokenSEMICOLON:
                 int savedPosition = fPosition;
-                if (isSemicolonPartOfForStatement())
-                    fIndent = fPrefs.prefContinuationIndent;
-                else
-                    fPosition = savedPosition;
+                fPosition = savedPosition;
                 return fPosition;
             case Symbols.TokenQUESTIONMARK:
                 if (fPrefs.prefTernaryDeepAlign) {

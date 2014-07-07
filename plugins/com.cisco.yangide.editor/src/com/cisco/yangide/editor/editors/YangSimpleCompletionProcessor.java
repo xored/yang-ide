@@ -101,9 +101,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     private final static String[] fgKeywordProposals = YangScanner.keywords;
 
-    private final static String[] fgBuildinTypes = new String[] { "binary", "bits", "boolean", "decimal64", "empty",
-            "enumeration", "identityref", "instance-identifier", "int8", "int16", "int32", "int64", "leafref",
-            "string", "uint8", "uint16", "uint32", "uint64", "union" };
+    private final static String[] fgBuiltinTypes = YangScanner.types;
 
     enum CompletionKind {
         None, Keyword, Import, Type
@@ -336,7 +334,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     private TypedProposalsList getTypeProposals(String prefix) {
         List<ICompletionProposal> proposalsList = new ArrayList<ICompletionProposal>();
-        for (String proposal : fgBuildinTypes) {
+        for (String proposal : fgBuiltinTypes) {
             if (proposal.startsWith(prefix))
                 proposalsList.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix.length(),
                         proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_TYPE_PROPOSAL), proposal, null,
