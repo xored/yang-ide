@@ -8,10 +8,13 @@
 package com.cisco.yangide.core;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleContext;
@@ -30,6 +33,9 @@ public class YangCorePlugin extends Plugin {
 
     // The plug-in ID
     public static final String PLUGIN_ID = "com.cisco.yangide.core"; //$NON-NLS-1$
+
+    /** Problem marker ID. */
+    public static final String YANGIDE_PROBLEM_MARKER = "com.cisco.yangide.core.problem";
 
     // The shared instance
     private static YangCorePlugin plugin;
@@ -130,5 +136,40 @@ public class YangCorePlugin extends Plugin {
      */
     public static YangFile createYangFile(IResource resource) {
         return new YangFile((IFile) resource, create(resource.getParent()));
+    }
+
+    /**
+     * Creates YANG problem marker for resource.
+     * 
+     * @param path workspace relative path
+     * @param message text message
+     * @param lineNumber optional line number or <code>-1</code> if no line number
+     */
+    public static void createProblemMarker(String path, String message, int lineNumber) {
+        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
+        if (file.exists()) {
+            createProblemMarker(file, message, lineNumber);
+        }
+    }
+
+    /**
+     * Creates YANG problem marker for resource.
+     *
+     * @param resource resource
+     * @param message text message
+     * @param lineNumber optional line number or <code>-1</code> if no line number
+     */
+    public static void createProblemMarker(IResource resource, String message, int lineNumber) {
+        try {
+            IMarker marker = resource.createMarker(YANGIDE_PROBLEM_MARKER);
+            marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+            marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+            marker.setAttribute(IMarker.MESSAGE, message);
+            if (lineNumber >= 0) {
+                marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+            }
+        } catch (CoreException e) {
+            log(e);
+        }
     }
 }
