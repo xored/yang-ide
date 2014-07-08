@@ -9,25 +9,37 @@ package com.cisco.yangide.core.dom;
 
 /**
  * @author Konstantin Zaitsev
- * @date Jul 4, 2014
+ * @date Jul 8, 2014
  */
-public class LeafSchemaNode extends ASTCompositeNode {
+public class UsesNode extends ASTNamedNode {
+    private QName grouping;
 
-    public LeafSchemaNode(ASTNode parent) {
+    public UsesNode(ASTNode parent) {
         super(parent);
     }
 
     @Override
     public String getNodeName() {
-        return "leaf";
+        return "uses";
+    }
+
+    /**
+     * @return the grouping
+     */
+    public QName getGrouping() {
+        return grouping;
+    }
+
+    /**
+     * @param grouping the grouping to set
+     */
+    public void setGrouping(QName grouping) {
+        this.grouping = grouping;
     }
 
     @Override
     public void accept(ASTVisitor visitor) {
         visitor.preVisit(this);
-        boolean visitChildren = visitor.visit(this);
-        if (visitChildren) {
-            acceptChildren(visitor, getChildren());
-        }
+        visitor.visit(this);
     }
 }

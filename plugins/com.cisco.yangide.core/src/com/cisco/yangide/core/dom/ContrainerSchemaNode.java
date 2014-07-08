@@ -7,14 +7,11 @@
  */
 package com.cisco.yangide.core.dom;
 
-import java.util.List;
-
 /**
  * @author Konstantin Zaitsev
  * @date Jul 4, 2014
  */
-public class ContrainerSchemaNode extends ASTNamedNode {
-    private List<ASTNode> children;
+public class ContrainerSchemaNode extends ASTCompositeNode {
 
     public ContrainerSchemaNode(ASTNode parent) {
         super(parent);
@@ -30,7 +27,7 @@ public class ContrainerSchemaNode extends ASTNamedNode {
         visitor.preVisit(this);
         boolean visitChildren = visitor.visit(this);
         if (visitChildren) {
-            acceptChildren(visitor, children);
+            acceptChildren(visitor, getChildren());
         }
     }
 }

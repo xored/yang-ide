@@ -8,6 +8,7 @@
 package com.cisco.yangide.core.indexing;
 
 import java.io.File;
+import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NavigableSet;
@@ -41,7 +42,7 @@ public class IndexManager extends JobManager {
     /**
      * Keywords index contains the following values:
      * <ul>
-     * <li>namespace</li>
+     * <li>module</li>
      * <li>revision</li>
      * <li>name</li>
      * <li>type</li>
@@ -53,8 +54,8 @@ public class IndexManager extends JobManager {
 
     public IndexManager() {
         File indexFile = YangCorePlugin.getDefault().getStateLocation().append("index.db").toFile();
-        this.db = DBMaker.newFileDB(indexFile).closeOnJvmShutdown().make();
         try {
+            this.db = DBMaker.newFileDB(indexFile).closeOnJvmShutdown().make();
             this.idxKeywords = db.getTreeSet("keywords");
 
             if (!idxKeywords.isEmpty() && !(idxKeywords.first() instanceof Fun.Tuple6)) {
@@ -71,9 +72,22 @@ public class IndexManager extends JobManager {
      * @param indexFile index file
      */
     private void cleanDB(File indexFile) {
-        // delete index db incase if index is broken and reopen with clean state
-        this.db.close();
-        DBMaker.newFileDB(indexFile).deleteFilesAfterClose().make().close();
+        // delete index db in case if index is broken and reopen with clean state
+        if (this.db != null) {
+            this.db.close();
+        }
+        File[] files = indexFile.getParentFile().listFiles(new FilenameFilter() {
+
+            @Override
+            public boolean accept(File dir, String name) {
+                return name.startsWith("index.db");
+            }
+        });
+        if (files != null) {
+            for (File file : files) {
+                file.delete();
+            }
+        }
         this.db = DBMaker.newFileDB(indexFile).closeOnJvmShutdown().make();
         this.idxKeywords = db.getTreeSet("keywords");
         // reindex all projects
@@ -144,36 +158,35 @@ public class IndexManager extends JobManager {
     }
 
     public synchronized void addElementIndexInfo(ElementIndexInfo info) {
-        System.err.println("[I] " + info.getNamespace() + "@" + info.getRevision() + " - " + info.getName() + " - "
+        System.err.println("[I] " + info.getModule() + "@" + info.getRevision() + " - " + info.getName() + " - "
                 + info.getType());
-        idxKeywords.add(Fun.t6(info.getNamespace(), info.getRevision(), info.getName(), info.getType(), info.getPath(),
+        idxKeywords.add(Fun.t6(info.getModule(), info.getRevision(), info.getName(), info.getType(), info.getPath(),
                 info));
         db.commit();
     }
 
     public void addModule(Module module, final IProject project, final IPath path, final String entry) {
-        if (module != null && module.getNamespace() != null && module.getNamespace() != null
-                && module.getRevision() != null && module.getRevision() != null) {
-            final String namespace = module.getNamespace().toASCIIString();
+        if (module != null && module.getRevision() != null && module.getRevision() != null) {
             final String revision = module.getRevision();
+            final String moduleName = module.getName();
             module.accept(new ASTVisitor() {
                 @Override
                 public boolean visit(Module module) {
-                    addElementIndexInfo(new ElementIndexInfo(module, namespace, revision, ElementIndexType.MODULE,
+                    addElementIndexInfo(new ElementIndexInfo(module, moduleName, revision, ElementIndexType.MODULE,
                             project, path, entry));
                     return true;
                 }
 
                 @Override
                 public boolean visit(TypeDefinition typeDefinition) {
-                    addElementIndexInfo(new ElementIndexInfo(typeDefinition, namespace, revision,
+                    addElementIndexInfo(new ElementIndexInfo(typeDefinition, moduleName, revision,
                             ElementIndexType.TYPE, project, path, entry));
                     return true;
                 }
 
                 @Override
                 public boolean visit(GroupingDefinition groupingDefinition) {
-                    addElementIndexInfo(new ElementIndexInfo(groupingDefinition, namespace, revision,
+                    addElementIndexInfo(new ElementIndexInfo(groupingDefinition, moduleName, revision,
                             ElementIndexType.GROUPING, project, path, entry));
                     return true;
                 }
@@ -181,12 +194,12 @@ public class IndexManager extends JobManager {
         }
     }
 
-    public synchronized ElementIndexInfo[] search(String namespace, String revision, String name,
-            ElementIndexType type, IProject project, IPath scope) {
+    public synchronized ElementIndexInfo[] search(String module, String revision, String name, ElementIndexType type,
+            IProject project, IPath scope) {
         ArrayList<ElementIndexInfo> infos = null;
         for (Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo> entry : idxKeywords) {
             boolean add = true;
-            if (namespace != null && namespace.length() > 0 && !namespace.equals(entry.a)) {
+            if (module != null && module.length() > 0 && !module.equals(entry.a)) {
                 add = false;
             }
 

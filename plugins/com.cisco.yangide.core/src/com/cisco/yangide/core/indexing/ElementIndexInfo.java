@@ -16,10 +16,6 @@ import com.cisco.yangide.core.dom.ASTNamedNode;
 
 /**
  * @author Konstantin Zaitsev
- * @date Jul 1, 2014
- */
-/**
- * @author Konstantin Zaitsev
  * @date Jul 8, 2014
  */
 public class ElementIndexInfo implements Serializable, Comparable<ElementIndexInfo> {
@@ -27,7 +23,7 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
     /** Serial version UID. */
     private static final long serialVersionUID = -7971951214450877471L;
 
-    private String namespace;
+    private String module;
     private String revision;
     private String name;
     private ElementIndexType type;
@@ -40,13 +36,9 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
     /** Optional entry in case of Jar Entry. */
     private String entry;
 
-    /**
-     * @param module
-     * @param module2
-     */
-    public ElementIndexInfo(ASTNamedNode node, String namespace, String revision, ElementIndexType type,
-            IProject project, IPath path, String entry) {
-        this.namespace = namespace;
+    public ElementIndexInfo(ASTNamedNode node, String module, String revision, ElementIndexType type, IProject project,
+            IPath path, String entry) {
+        this.module = module;
         this.revision = revision;
         this.name = node.getName();
         this.type = type;
@@ -60,17 +52,17 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
     }
 
     /**
-     * @return the namespace
+     * @return the module
      */
-    public String getNamespace() {
-        return namespace;
+    public String getModule() {
+        return module;
     }
 
     /**
-     * @param namespace the namespace to set
+     * @param module the module to set
      */
-    public void setNamespace(String namespace) {
-        this.namespace = namespace;
+    public void setModule(String module) {
+        this.module = module;
     }
 
     /**
@@ -220,8 +212,8 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
 
     @Override
     public String toString() {
-        return "ElementIndexInfo [namespace=" + namespace + ", revision=" + revision + ", name=" + name + ", type="
-                + type + ", startPosition=" + startPosition + ", length=" + length + ", project=" + project + ", path="
-                + path + ", description=" + description + ", reference=" + reference + ", entry=" + entry + "]";
+        return "ElementIndexInfo [module=" + module + ", revision=" + revision + ", name=" + name + ", type=" + type
+                + ", startPosition=" + startPosition + ", length=" + length + ", project=" + project + ", path=" + path
+                + ", description=" + description + ", reference=" + reference + ", entry=" + entry + "]";
     }
 }

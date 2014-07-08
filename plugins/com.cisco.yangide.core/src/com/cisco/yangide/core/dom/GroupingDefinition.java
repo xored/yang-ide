@@ -7,19 +7,14 @@
  */
 package com.cisco.yangide.core.dom;
 
-import java.util.ArrayList;
-import java.util.List;
-
 /**
  * @author Konstantin Zaitsev
  * @date Jul 4, 2014
  */
-public class GroupingDefinition extends ASTNamedNode {
-    private List<ASTNode> children;
+public class GroupingDefinition extends ASTCompositeNode {
 
     public GroupingDefinition(ASTNode parent) {
         super(parent);
-        this.children = new ArrayList<>();
     }
 
     @Override
@@ -32,14 +27,7 @@ public class GroupingDefinition extends ASTNamedNode {
         visitor.preVisit(this);
         boolean visitChildren = visitor.visit(this);
         if (visitChildren) {
-            acceptChildren(visitor, children);
+            acceptChildren(visitor, getChildren());
         }
-    }
-
-    /**
-     * @return the children
-     */
-    public List<ASTNode> getChildren() {
-        return children;
     }
 }

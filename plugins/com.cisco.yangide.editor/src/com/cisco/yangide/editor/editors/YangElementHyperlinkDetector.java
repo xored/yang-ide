@@ -7,9 +7,13 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.hyperlink.AbstractHyperlinkDetector;
 import org.eclipse.jface.text.hyperlink.IHyperlink;
 
+import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
+import com.cisco.yangide.core.dom.QName;
+import com.cisco.yangide.core.dom.TypeReference;
+import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.core.internal.YangASTParser;
@@ -39,14 +43,28 @@ public class YangElementHyperlinkDetector extends AbstractHyperlinkDetector {
                 return null;
             }
 
+            ElementIndexInfo[] searchResult = null;
+
             if (node instanceof ModuleImport) {
                 ModuleImport importNode = (ModuleImport) node;
-                IRegion elementRegion = new Region(importNode.getNameStartPosition(), importNode.getNameLength());
-                ElementIndexInfo[] searchResult = YangModelManager.search(null, importNode.getRevision(),
-                        importNode.getName(), ElementIndexType.MODULE, null, null);
-                if (searchResult.length > 0) {
-                    return new IHyperlink[] { new YangElementHyperlink(elementRegion, searchResult[0]) };
-                }
+                searchResult = YangModelManager.search(null, importNode.getRevision(), importNode.getName(),
+                        ElementIndexType.MODULE, null, null);
+            } else if (node instanceof TypeReference) {
+                TypeReference ref = (TypeReference) node;
+                QName type = ref.getType();
+                searchResult = YangModelManager.search(type.getModule(), type.getRevision(), type.getName(),
+                        ElementIndexType.TYPE, null, null);
+            } else if (node instanceof UsesNode) {
+                UsesNode usesNode = (UsesNode) node;
+                QName ref = usesNode.getGrouping();
+                searchResult = YangModelManager.search(ref.getModule(), ref.getRevision(), ref.getName(),
+                        ElementIndexType.GROUPING, null, null);
+            }
+
+            if (searchResult != null && searchResult.length > 0) {
+                IRegion elementRegion = new Region(((ASTNamedNode) node).getNameStartPosition(),
+                        ((ASTNamedNode) node).getNameLength());
+                return new IHyperlink[] { new YangElementHyperlink(elementRegion, searchResult[0]) };
             }
         } catch (Exception e) {
             return null;

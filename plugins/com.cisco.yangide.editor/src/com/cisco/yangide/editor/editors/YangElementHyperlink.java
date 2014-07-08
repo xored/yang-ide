@@ -42,7 +42,7 @@ public class YangElementHyperlink implements IHyperlink {
 
     @Override
     public String getHyperlinkText() {
-        return info.getNamespace() + ": " + info.getPath();
+        return info.getModule() + ": " + info.getPath();
     }
 
     @Override

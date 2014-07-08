@@ -209,7 +209,7 @@ public final class YangModelManager implements ISaveParticipant {
         return MANAGER.indexManager;
     }
 
-    public static ElementIndexInfo[] search(String namespace, String revision, String name, ElementIndexType type,
+    public static ElementIndexInfo[] search(String module, String revision, String name, ElementIndexType type,
             IProject project, IPath scope) {
         // FIXME KOS temporary workaround to wait while index finish
         while (YangModelManager.getIndexManager().awaitingJobsCount() > 0) {
@@ -222,7 +222,7 @@ public final class YangModelManager implements ISaveParticipant {
                 }
             }
         }
-        return MANAGER.indexManager.search(namespace, revision, name, type, project, scope);
+        return MANAGER.indexManager.search(module, revision, name, type, project, scope);
     }
 
     protected HashSet<IOpenable> getElementsOutOfSynchWithBuffers() {

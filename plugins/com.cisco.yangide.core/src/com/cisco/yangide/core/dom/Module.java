@@ -15,7 +15,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * @author Konstantin Zaitsev
  * @date Jun 26, 2014
  */
-public class Module extends ASTNamedNode {
+public class Module extends ASTCompositeNode {
     private URI namespace;
     private String revision;
 
@@ -223,6 +223,8 @@ public class Module extends ASTNamedNode {
             acceptChildren(visitor, imports);
             acceptChildren(visitor, typeDefinitions);
             acceptChildren(visitor, groupings);
+
+            acceptChildren(visitor, getChildren());
         }
     }
 
@@ -241,5 +243,18 @@ public class Module extends ASTNamedNode {
             }
         });
         return result.get();
+    }
+
+    /**
+     * @param prefix namespace prefix
+     * @return module import by prefix or <code>null</code> if no import found
+     */
+    public ModuleImport getImport(String prefix) {
+        for (ModuleImport moduleImport : imports) {
+            if (prefix.equals(moduleImport.getPrefix())) {
+                return moduleImport;
+            }
+        }
+        return null;
     }
 }

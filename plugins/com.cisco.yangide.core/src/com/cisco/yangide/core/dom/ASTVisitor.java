@@ -17,7 +17,7 @@ public abstract class ASTVisitor {
         return true;
     }
 
-    public boolean visit(ModuleImport module) {
+    public boolean visit(ModuleImport moduleImport) {
         return true;
     }
 
@@ -38,6 +38,18 @@ public abstract class ASTVisitor {
     }
 
     public boolean visit(LeafSchemaNode leaf) {
+        return true;
+    }
+
+    public boolean visit(UsesNode uses) {
+        return true;
+    }
+
+    public boolean visit(TypeReference typeRef) {
+        return true;
+    }
+
+    public boolean visit(ASTCompositeNode astCompositeNode) {
         return true;
     }
 

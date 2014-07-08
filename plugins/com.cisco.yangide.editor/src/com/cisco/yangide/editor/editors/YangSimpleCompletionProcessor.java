@@ -181,7 +181,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             result[i] = new ContextInformation(MessageFormat.format(
                     "{0} {1}", new Object[] { new Integer(i), new Integer(documentOffset) }), //$NON-NLS-1$
                     MessageFormat
-                            .format("{0} {1}", new Object[] { new Integer(i), new Integer(documentOffset - 5), new Integer(documentOffset + 5) })); //$NON-NLS-1$
+                    .format("{0} {1}", new Object[] { new Integer(i), new Integer(documentOffset - 5), new Integer(documentOffset + 5) })); //$NON-NLS-1$
         }
         return result;
     }
@@ -208,7 +208,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.text.contentassist.ICompletionListener#assistSessionStarted(org.eclipse
      * .jface.text.contentassist.ContentAssistEvent)
@@ -295,8 +295,8 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
      */
     private TypedProposalsList getImportProposals(String prefix) {
         // FIXME KOS: need set current project to get correct proposal
-        ElementIndexInfo[] importModules = YangModelManager.getIndexManager().search(null, null, null,
-                ElementIndexType.MODULE, null, null);
+        ElementIndexInfo[] importModules = YangModelManager.search(null, null, null, ElementIndexType.MODULE, null,
+                null);
 
         List<ICompletionProposal> moduleProposals = new ArrayList<ICompletionProposal>();
 
@@ -513,7 +513,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.text.templates.TemplateCompletionProcessor#extractPrefix(org.eclipse.jface
      * .text.ITextViewer, int)
@@ -537,7 +537,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.text.templates.TemplateCompletionProcessor#getImage(org.eclipse.jface.text
      * .templates.Template)

@@ -11,7 +11,7 @@ package com.cisco.yangide.core.dom;
  * @author Konstantin Zaitsev
  * @date Jul 2, 2014
  */
-public class TypeDefinition extends ASTNamedNode {
+public class TypeDefinition extends ASTCompositeNode {
 
     public TypeDefinition(ASTNode parent) {
         super(parent);
@@ -24,6 +24,10 @@ public class TypeDefinition extends ASTNamedNode {
 
     @Override
     public void accept(ASTVisitor visitor) {
-        visitor.visit(this);
+        visitor.preVisit(this);
+        boolean visitChildren = visitor.visit(this);
+        if (visitChildren) {
+            acceptChildren(visitor, getChildren());
+        }
     }
 }

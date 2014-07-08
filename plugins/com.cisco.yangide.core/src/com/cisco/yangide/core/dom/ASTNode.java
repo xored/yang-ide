@@ -37,6 +37,9 @@ public abstract class ASTNode {
 
     public ASTNode(ASTNode parent) {
         this.parent = parent;
+        if (parent instanceof ASTCompositeNode) {
+            ((ASTCompositeNode) parent).getChildren().add(this);
+        }
     }
 
     /**

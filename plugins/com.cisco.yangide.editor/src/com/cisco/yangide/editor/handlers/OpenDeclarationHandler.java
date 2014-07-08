@@ -10,17 +10,17 @@ package com.cisco.yangide.editor.handlers;
 import org.eclipse.core.commands.AbstractHandler;
 import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
-import org.eclipse.core.resources.IProject;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
+import com.cisco.yangide.core.dom.QName;
+import com.cisco.yangide.core.dom.TypeReference;
+import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.core.internal.YangASTParser;
@@ -43,24 +43,33 @@ public class OpenDeclarationHandler extends AbstractHandler {
         if (editorPart != null && editorPart instanceof YangEditor) {
             YangEditor editor = (YangEditor) editorPart;
             YangASTParser parser = new YangASTParser();
-            IEditorInput input = editor.getEditorInput();
-            IProject project = null;
-            if (input instanceof IFileEditorInput) {
-                project = ((IFileEditorInput) input).getFile().getProject();
-            }
+
             try {
                 ISelection selection = editor.getSelectionProvider().getSelection();
                 Module module = parser.parseYangFile(editor.getDocument().get().toCharArray());
                 ASTNode node = module.getNodeAtPosition(((ITextSelection) selection).getOffset());
+
+                ElementIndexInfo[] searchResult = null;
+
                 if (node instanceof ModuleImport) {
-                    ModuleImport moduleImport = (ModuleImport) node;
-                    ElementIndexInfo[] result = YangModelManager.search(null, moduleImport.getRevision(),
-                            moduleImport.getName(), ElementIndexType.MODULE, project, null);
-                    if (result.length > 0) {
-                        EditorUtility.openInEditor(result[0]);
-                    }
+                    ModuleImport importNode = (ModuleImport) node;
+                    searchResult = YangModelManager.search(null, importNode.getRevision(), importNode.getName(),
+                            ElementIndexType.MODULE, null, null);
+                } else if (node instanceof TypeReference) {
+                    TypeReference ref = (TypeReference) node;
+                    QName type = ref.getType();
+                    searchResult = YangModelManager.search(type.getModule(), type.getRevision(), type.getName(),
+                            ElementIndexType.TYPE, null, null);
+                } else if (node instanceof UsesNode) {
+                    UsesNode usesNode = (UsesNode) node;
+                    QName ref = usesNode.getGrouping();
+                    searchResult = YangModelManager.search(ref.getModule(), ref.getRevision(), ref.getName(),
+                            ElementIndexType.GROUPING, null, null);
                 }
 
+                if (searchResult != null && searchResult.length > 0) {
+                    EditorUtility.openInEditor(searchResult[0]);
+                }
             } catch (Exception e) {
                 YangUIPlugin.log(e);
             }

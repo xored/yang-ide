@@ -37,6 +37,7 @@ import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Submodule_header_s
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Submodule_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Type_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Typedef_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Uses_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Yang_version_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParserBaseListener;
 
@@ -51,6 +52,8 @@ import com.cisco.yangide.core.dom.QName;
 import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.TypeDefinition;
+import com.cisco.yangide.core.dom.TypeReference;
+import com.cisco.yangide.core.dom.UsesNode;
 
 /**
  * @author Konstantin Zaitsev
@@ -64,7 +67,6 @@ public class YangParserModelListener extends YangParserBaseListener {
     private String yangModelPrefix;
     private String revision = SIMPLE_DATE_FORMAT.format(new Date(0L));
     private Stack<ASTNode> stack = new Stack<>();
-    private LeafSchemaNode typeNode = null;
 
     @Override
     public void enterModule_stmt(Module_stmtContext ctx) {
@@ -201,6 +203,12 @@ public class YangParserModelListener extends YangParserBaseListener {
         TypeDefinition typeDefinition = new TypeDefinition(module);
         updateNamedNode(typeDefinition, ctx);
         module.getTypeDefinitions().add(typeDefinition);
+        stack.push(typeDefinition);
+    }
+
+    @Override
+    public void exitTypedef_stmt(Typedef_stmtContext ctx) {
+        stack.pop();
     }
 
     @Override
@@ -231,19 +239,30 @@ public class YangParserModelListener extends YangParserBaseListener {
     @Override
     public void enterLeaf_stmt(Leaf_stmtContext ctx) {
         LeafSchemaNode leaf = new LeafSchemaNode(stack.peek());
-        typeNode = leaf;
+        stack.push(leaf);
+        updateNamedNode(leaf, ctx);
+    }
+
+    @Override
+    public void exitLeaf_stmt(Leaf_stmtContext ctx) {
+        stack.pop();
     }
 
     @Override
     public void enterType_stmt(Type_stmtContext ctx) {
         final String typeName = stringFromNode(ctx);
         final QName typeQName = parseQName(typeName);
-        if (typeNode != null) {
-            typeNode.setType(typeQName);
-        } else {
-            // System.err.println(ctx);
-        }
+        TypeReference typeRef = new TypeReference(stack.peek());
+        updateNamedNode(typeRef, ctx);
+        typeRef.setType(typeQName);
+    }
 
+    @Override
+    public void enterUses_stmt(Uses_stmtContext ctx) {
+        final String groupingPath = stringFromNode(ctx);
+        UsesNode usesNode = new UsesNode(stack.peek());
+        updateNamedNode(usesNode, ctx);
+        usesNode.setGrouping(parseQName(groupingPath));
     }
 
     /**
@@ -259,7 +278,14 @@ public class YangParserModelListener extends YangParserBaseListener {
      * @return
      */
     private QName parseQName(String typeName) {
-        return null;
+        String[] parts = typeName.split(":");
+        if (parts.length == 2) {
+            ModuleImport moduleImport = module.getImport(parts[0]);
+            if (moduleImport != null) {
+                return new QName(moduleImport.getName(), moduleImport.getPrefix(), parts[1], moduleImport.getRevision());
+            }
+        }
+        return new QName(module.getName(), module.getPrefix().getValue(), typeName, revision);
     }
 
     private void updateRevisionForRevisionStatement(final ParseTree treeNode) {
