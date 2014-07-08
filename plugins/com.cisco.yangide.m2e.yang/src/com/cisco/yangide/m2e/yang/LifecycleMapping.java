@@ -64,35 +64,37 @@ public class LifecycleMapping extends AbstractCustomizableLifecycleMapping {
                 List<AbstractBuildParticipant> executionMappings = new ArrayList<AbstractBuildParticipant>();
                 if (executionMetadatas != null) {
                     for (IPluginExecutionMetadata executionMetadata : executionMetadatas) {
-                        switch (executionMetadata.getAction()) {
-                        case ignore:
-                        case execute:
-                            if (mojoExecutionKey.getArtifactId().equals(YangM2EPlugin.YANG_MAVEN_PLUGIN)) {
-                                executionMappings.add(new YangBuildParticipant(projectFacade.getMojoExecution(
-                                        mojoExecutionKey, monitor), true));
-                            } else {
+                        if (mojoExecutionKey.getArtifactId().equals(YangM2EPlugin.YANG_MAVEN_PLUGIN)) {
+                            executionMappings.add(new YangBuildParticipant(projectFacade.getMojoExecution(
+                                    mojoExecutionKey, monitor), true));
+                        } else {
+                            switch (executionMetadata.getAction()) {
+                            case execute:
                                 executionMappings.add(LifecycleMappingFactory.createMojoExecutionBuildParicipant(
                                         projectFacade, projectFacade.getMojoExecution(mojoExecutionKey, monitor),
                                         executionMetadata));
-                            }
-                            break;
-                        case configurator:
-                            String configuratorId = LifecycleMappingFactory.getProjectConfiguratorId(executionMetadata);
-                            AbstractProjectConfigurator configurator = configurators.get(configuratorId);
-                            if (configurator == null) {
                                 break;
+                            case configurator:
+                                String configuratorId = LifecycleMappingFactory
+                                .getProjectConfiguratorId(executionMetadata);
+                                AbstractProjectConfigurator configurator = configurators.get(configuratorId);
+                                if (configurator == null) {
+                                    break;
+                                }
+                                AbstractBuildParticipant buildParticipant = configurator.getBuildParticipant(
+                                        projectFacade, projectFacade.getMojoExecution(mojoExecutionKey, monitor),
+                                        executionMetadata);
+                                if (buildParticipant != null) {
+                                    executionMappings.add(buildParticipant);
+                                }
+                                break;
+                            case ignore:
+                            case error:
+                                break;
+                            default:
+                                throw new IllegalArgumentException("Missing handling for action="
+                                        + executionMetadata.getAction());
                             }
-                            AbstractBuildParticipant buildParticipant = configurator.getBuildParticipant(projectFacade,
-                                    projectFacade.getMojoExecution(mojoExecutionKey, monitor), executionMetadata);
-                            if (buildParticipant != null) {
-                                executionMappings.add(buildParticipant);
-                            }
-                            break;
-                        case error:
-                            break;
-                        default:
-                            throw new IllegalArgumentException("Missing handling for action="
-                                    + executionMetadata.getAction());
                         }
                     }
                 }

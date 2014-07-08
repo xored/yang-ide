@@ -6,7 +6,7 @@ Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: com.cisco.yangide.core.YangCorePlugin
 Bundle-Vendor: Cisco Systems, Inc.
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.jdt.core,
+ org.eclipse.jdt.core;visibility:=reexport,
  org.eclipse.text,
  org.eclipse.core.resources
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7

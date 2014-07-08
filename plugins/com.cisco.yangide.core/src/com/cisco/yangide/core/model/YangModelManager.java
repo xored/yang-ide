@@ -12,6 +12,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
 import org.eclipse.core.resources.ISaveContext;
 import org.eclipse.core.resources.ISaveParticipant;
@@ -23,6 +24,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 
@@ -34,6 +36,7 @@ import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.indexing.DeltaProcessor;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
+import com.cisco.yangide.core.indexing.IJob;
 import com.cisco.yangide.core.indexing.IndexManager;
 
 /**
@@ -72,11 +75,11 @@ public final class YangModelManager implements ISaveParticipant {
             this.deltaProcessor = new DeltaProcessor(this);
             final IWorkspace workspace = ResourcesPlugin.getWorkspace();
             workspace.addResourceChangeListener(deltaProcessor,
-                    /*
-                     * update spec in JavaCore#addPreProcessingResourceChangedListener(...) if adding more
-                     * event types
-                     */
-                    IResourceChangeEvent.PRE_BUILD | IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.POST_CHANGE
+            /*
+             * update spec in JavaCore#addPreProcessingResourceChangedListener(...) if adding more
+             * event types
+             */
+            IResourceChangeEvent.PRE_BUILD | IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.POST_CHANGE
                     | IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.PRE_CLOSE
                     | IResourceChangeEvent.PRE_REFRESH);
 
@@ -206,15 +209,20 @@ public final class YangModelManager implements ISaveParticipant {
         return MANAGER.indexManager;
     }
 
-    public static ElementIndexInfo[] search(String namespace, String name, ElementIndexType type, IPath scope) {
+    public static ElementIndexInfo[] search(String namespace, String revision, String name, ElementIndexType type,
+            IProject project, IPath scope) {
         // FIXME KOS temporary workaround to wait while index finish
         while (YangModelManager.getIndexManager().awaitingJobsCount() > 0) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
+            IJob job = YangModelManager.getIndexManager().currentJob();
+            if (job != null) {
+                try {
+                    Job.getJobManager().join(job.getJobFamily(), null);
+                } catch (OperationCanceledException | InterruptedException e) {
+                    YangCorePlugin.log(e);
+                }
             }
         }
-        return MANAGER.indexManager.search(namespace, name, type, scope);
+        return MANAGER.indexManager.search(namespace, revision, name, type, project, scope);
     }
 
     protected HashSet<IOpenable> getElementsOutOfSynchWithBuffers() {

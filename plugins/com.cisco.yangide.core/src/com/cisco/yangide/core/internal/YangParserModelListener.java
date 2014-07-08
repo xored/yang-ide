@@ -9,7 +9,6 @@ package com.cisco.yangide.core.internal;
 
 import java.net.URI;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Stack;
@@ -63,13 +62,15 @@ public class YangParserModelListener extends YangParserBaseListener {
     private Module module;
     private URI namespace;
     private String yangModelPrefix;
-    private Date revision = new Date(0L);
+    private String revision = SIMPLE_DATE_FORMAT.format(new Date(0L));
     private Stack<ASTNode> stack = new Stack<>();
     private LeafSchemaNode typeNode = null;
 
     @Override
     public void enterModule_stmt(Module_stmtContext ctx) {
         module = new Module();
+        module.setNamespace(URI.create(""));
+        module.setRevision(revision);
         stack.push(module);
         updateNamedNode(module, ctx);
         setNodeDescription(module, ctx);
@@ -78,6 +79,8 @@ public class YangParserModelListener extends YangParserBaseListener {
     @Override
     public void enterSubmodule_stmt(Submodule_stmtContext ctx) {
         module = new SubModule();
+        module.setNamespace(URI.create(""));
+        module.setRevision(revision);
         stack.push(module);
         updateNamedNode(module, ctx);
         setNodeDescription(module, ctx);
@@ -98,7 +101,7 @@ public class YangParserModelListener extends YangParserBaseListener {
                 SimpleNode<URI> astNode = new SimpleNode<URI>(module, ((Namespace_stmtContext) treeNode)
                         .NAMESPACE_KEYWORD().getText(), namespace);
                 updateNodePosition(astNode, treeNode);
-                module.setNamespace(astNode);
+                module.setNamespaceNode(astNode);
             } else if (treeNode instanceof Prefix_stmtContext) {
                 yangModelPrefix = stringFromNode(treeNode);
                 SimpleNode<String> astNode = new SimpleNode<String>(module, ((Prefix_stmtContext) treeNode)
@@ -124,7 +127,7 @@ public class YangParserModelListener extends YangParserBaseListener {
                 SimpleNode<URI> astNode = new SimpleNode<URI>(module, ((Namespace_stmtContext) treeNode)
                         .NAMESPACE_KEYWORD().getText(), namespace);
                 updateNodePosition(astNode, treeNode);
-                module.setNamespace(astNode);
+                module.setNamespaceNode(astNode);
             } else if (treeNode instanceof Prefix_stmtContext) {
                 yangModelPrefix = stringFromNode(treeNode);
                 SimpleNode<String> astNode = new SimpleNode<String>(module, ((Prefix_stmtContext) treeNode)
@@ -177,7 +180,7 @@ public class YangParserModelListener extends YangParserBaseListener {
     @Override
     public void enterImport_stmt(Import_stmtContext ctx) {
         String importPrefix = null;
-        Date importRevision = null;
+        String importRevision = null;
 
         for (int i = 0; i < ctx.getChildCount(); ++i) {
             final ParseTree treeNode = ctx.getChild(i);
@@ -185,12 +188,7 @@ public class YangParserModelListener extends YangParserBaseListener {
                 importPrefix = stringFromNode(treeNode);
             }
             if (treeNode instanceof Revision_date_stmtContext) {
-                String importRevisionStr = stringFromNode(treeNode);
-                try {
-                    importRevision = SIMPLE_DATE_FORMAT.parse(importRevisionStr);
-                } catch (ParseException e) {
-                    // ignore exception
-                }
+                importRevision = stringFromNode(treeNode);
             }
         }
         ModuleImport moduleImport = new ModuleImport(module, importRevision, importPrefix);
@@ -252,6 +250,7 @@ public class YangParserModelListener extends YangParserBaseListener {
      * @return
      */
     public Module getModule() {
+        module.setRevision(revision);
         return module;
     }
 
@@ -264,22 +263,17 @@ public class YangParserModelListener extends YangParserBaseListener {
     }
 
     private void updateRevisionForRevisionStatement(final ParseTree treeNode) {
-        final String revisionDateStr = stringFromNode(treeNode);
-        try {
-            final Date revisionDate = SIMPLE_DATE_FORMAT.parse(revisionDateStr);
-            if ((revisionDate != null) && (this.revision.compareTo(revisionDate) < 0)) {
-                this.revision = revisionDate;
-                SimpleNode<Date> revisionNode = new SimpleNode<Date>(module, "revision", revisionDate);
-                module.setRevision(revisionNode);
-                for (int i = 0; i < treeNode.getChildCount(); ++i) {
-                    ParseTree child = treeNode.getChild(i);
-                    if (child instanceof Reference_stmtContext) {
-                        module.setReference(stringFromNode(child));
-                    }
+        final String revisionDate = stringFromNode(treeNode);
+        if ((revisionDate != null) && (this.revision.compareTo(revisionDate) < 0)) {
+            this.revision = revisionDate;
+            SimpleNode<String> revisionNode = new SimpleNode<String>(module, "revision", revisionDate);
+            module.setRevisionNode(revisionNode);
+            for (int i = 0; i < treeNode.getChildCount(); ++i) {
+                ParseTree child = treeNode.getChild(i);
+                if (child instanceof Reference_stmtContext) {
+                    module.setReference(stringFromNode(child));
                 }
             }
-        } catch (ParseException e) {
-            // ignore exception
         }
     }
 

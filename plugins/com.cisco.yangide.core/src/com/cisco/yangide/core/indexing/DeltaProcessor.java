@@ -8,7 +8,6 @@
 package com.cisco.yangide.core.indexing;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import org.eclipse.core.resources.IContainer;
 import org.eclipse.core.resources.IFile;
@@ -34,7 +33,6 @@ import com.cisco.yangide.core.IYangElementDelta;
 import com.cisco.yangide.core.OpenableElementInfo;
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
-import com.cisco.yangide.core.internal.YangModelUpdater;
 import com.cisco.yangide.core.model.YangElement;
 import com.cisco.yangide.core.model.YangElementType;
 import com.cisco.yangide.core.model.YangModel;
@@ -69,9 +67,7 @@ public class DeltaProcessor implements IResourceChangeListener {
     public int overridenEventType = -1;
     private YangModelManager manager;
     private boolean isFiring;
-    private YangModelUpdater updater;
     public ArrayList<IYangElementDelta> yangModelDeltas = new ArrayList<IYangElementDelta>();
-    private HashMap<?, ?> reconcileDeltas = new HashMap<Object, Object>();
     private YangElementDelta currentDelta;
 
     private final static int IGNORE = 0;
@@ -83,7 +79,6 @@ public class DeltaProcessor implements IResourceChangeListener {
      */
     public DeltaProcessor(YangModelManager manager) {
         this.manager = manager;
-        this.updater = new YangModelUpdater();
     }
 
     /*
@@ -151,6 +146,7 @@ public class DeltaProcessor implements IResourceChangeListener {
         }
     }
 
+    @Override
     public void resourceChanged(IResourceChangeEvent event) {
         try {
             int eventType = this.overridenEventType == -1 ? event.getType() : this.overridenEventType;
@@ -287,7 +283,7 @@ public class DeltaProcessor implements IResourceChangeListener {
         IYangElementDelta deltaToNotify;
         if (customDelta == null) {
             deltaToNotify = null; // TODO KOS: need merge delta for notify
-                                  // mergeDeltas(this.yangModelDeltas);
+            // mergeDeltas(this.yangModelDeltas);
         } else {
             deltaToNotify = customDelta;
         }
@@ -309,7 +305,7 @@ public class DeltaProcessor implements IResourceChangeListener {
         switch (eventType) {
         case ElementChangedEvent.POST_CHANGE:
             firePostChangeDelta(deltaToNotify, listeners, listenerMask, listenerCount);
-            fireReconcileDelta(listeners, listenerMask, listenerCount);
+            // fireReconcileDelta(listeners, listenerMask, listenerCount);
             break;
         }
     }
@@ -327,17 +323,6 @@ public class DeltaProcessor implements IResourceChangeListener {
         }
     }
 
-    private void fireReconcileDelta(IYangElementChangedListener[] listeners, int[] listenerMask, int listenerCount) {
-
-        IYangElementDelta deltaToNotify = null; // TODO KOS need merge deltas like
-                                                // mergeDeltas(this.reconcileDeltas.values());
-        if (deltaToNotify != null) {
-            this.reconcileDeltas = new HashMap<Object, Object>();
-
-            notifyListeners(deltaToNotify, ElementChangedEvent.POST_RECONCILE, listeners, listenerMask, listenerCount);
-        }
-    }
-
     private void notifyListeners(IYangElementDelta deltaToNotify, int eventType,
             IYangElementChangedListener[] listeners, int[] listenerMask, int listenerCount) {
         final ElementChangedEvent extraEvent = new ElementChangedEvent(deltaToNotify, eventType);
@@ -347,11 +332,13 @@ public class DeltaProcessor implements IResourceChangeListener {
                 // wrap callbacks with Safe runnable for subsequent listeners to be called when some
                 // are causing grief
                 SafeRunner.run(new ISafeRunnable() {
+                    @Override
                     public void handleException(Throwable exception) {
                         YangCorePlugin.log(exception,
                                 "Exception occurred in listener of Java element change notification");
                     }
 
+                    @Override
                     public void run() throws Exception {
                         listener.elementChanged(extraEvent);
                     }
@@ -442,7 +429,7 @@ public class DeltaProcessor implements IResourceChangeListener {
                         close(element);
                         removeFromParentInfo(element);
                         this.manager.indexManager.discardJobs(element.getName());
-                        this.manager.indexManager.removeIndexFamily(res.getFullPath());
+                        this.manager.indexManager.removeIndexFamily(res);
 
                     }
                     return false; // when a project is open/closed don't process children
@@ -468,7 +455,7 @@ public class DeltaProcessor implements IResourceChangeListener {
                 indexManager.indexAll(element.getResource().getProject());
                 break;
             case IResourceDelta.REMOVED:
-                indexManager.removeIndexFamily(element.getResource().getFullPath());
+                indexManager.removeIndexFamily(element.getResource().getProject());
                 break;
             }
             break;
@@ -596,6 +583,7 @@ public class DeltaProcessor implements IResourceChangeListener {
             }
             try {
                 rootDelta.accept(new IResourceDeltaVisitor() {
+                    @Override
                     public boolean visit(IResourceDelta delta) /* throws CoreException */{
                         switch (delta.getKind()) {
                         case IResourceDelta.ADDED:
@@ -605,8 +593,8 @@ public class DeltaProcessor implements IResourceChangeListener {
                             // if any flag is set but SYNC or MARKER, this delta should be
                             // considered
                             if (delta.getAffectedChildren().length == 0 // only check leaf delta
-                                                                        // nodes
-                                    && (delta.getFlags() & ~(IResourceDelta.SYNC | IResourceDelta.MARKERS)) != 0) {
+                            // nodes
+                            && (delta.getFlags() & ~(IResourceDelta.SYNC | IResourceDelta.MARKERS)) != 0) {
                                 throw new FoundRelevantDeltaException();
                             }
                         }
@@ -628,7 +616,7 @@ public class DeltaProcessor implements IResourceChangeListener {
                 IPath projectOutput = proj.getOutputLocation();
                 int traverseMode = IGNORE;
                 if (proj.getProject().getFullPath().equals(projectOutput)) { // case of
-                                                                             // proj==bin==src
+                    // proj==bin==src
                     return new OutputsInfo(new IPath[] { projectOutput }, new int[] { SOURCE }, 1);
                 }
                 IClasspathEntry[] classpath = proj.getResolvedClasspath();

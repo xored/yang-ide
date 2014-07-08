@@ -121,8 +121,8 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
                         Matcher m = YANG_ERROR_0_6_1.matcher(parts[i]);
                         if (m.matches()) {
                             String module = m.group(1);
-                            ElementIndexInfo[] result = YangModelManager.search(null, module, ElementIndexType.MODULE,
-                                    null);
+                            ElementIndexInfo[] result = YangModelManager.search(null, null, module,
+                                    ElementIndexType.MODULE, getMavenProjectFacade().getProject(), null);
                             if (result.length > 0) {
                                 YangCorePlugin.createProblemMarker(result[0].getPath(), m.group(3),
                                         Integer.parseInt(m.group(2)));

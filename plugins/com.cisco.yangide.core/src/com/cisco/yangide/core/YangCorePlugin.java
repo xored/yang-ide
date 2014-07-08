@@ -104,8 +104,9 @@ public class YangCorePlugin extends Plugin {
 
     public static boolean isYangProject(IProject project) {
         try {
-            return project.hasNature("org.eclipse.jdt.core.javanature")
-                    || project.hasNature("org.eclipse.m2e.core.maven2Nature");
+            return project.isAccessible()
+                    && (project.hasNature("org.eclipse.jdt.core.javanature") || project
+                            .hasNature("org.eclipse.m2e.core.maven2Nature"));
         } catch (CoreException e) {
             log(e);
             return false;

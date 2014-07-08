@@ -86,7 +86,7 @@ public class IndexAllProject extends IndexRequest {
             try (JarFile jarFile = new JarFile(iPath.toFile())) {
                 ZipEntry entry = jarFile.getEntry("META-INF/yang/");
                 if (entry != null) {
-                    this.manager.addJarFile(iPath);
+                    this.manager.addJarFile(project, iPath);
                 }
             } catch (IOException e) {
                 YangCorePlugin.log(e);

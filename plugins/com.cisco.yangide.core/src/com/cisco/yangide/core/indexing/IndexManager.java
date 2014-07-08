@@ -20,7 +20,7 @@ import org.eclipse.core.runtime.Path;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Fun;
-import org.mapdb.Fun.Tuple5;
+import org.mapdb.Fun.Tuple6;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.dom.ASTVisitor;
@@ -42,30 +42,44 @@ public class IndexManager extends JobManager {
      * Keywords index contains the following values:
      * <ul>
      * <li>namespace</li>
+     * <li>revision</li>
      * <li>name</li>
      * <li>type</li>
-     * <li>file path</li>
+     * <li>file path (scope, for JAR entries path to project)</li>
      * <li>ast info</li>
      * </ul>
      */
-    private NavigableSet<Fun.Tuple5<String, String, ElementIndexType, String, ElementIndexInfo>> idxKeywords;
+    private NavigableSet<Fun.Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo>> idxKeywords;
 
     public IndexManager() {
         File indexFile = YangCorePlugin.getDefault().getStateLocation().append("index.db").toFile();
         this.db = DBMaker.newFileDB(indexFile).closeOnJvmShutdown().make();
         try {
             this.idxKeywords = db.getTreeSet("keywords");
+
+            if (!idxKeywords.isEmpty() && !(idxKeywords.first() instanceof Fun.Tuple6)) {
+                cleanDB(indexFile);
+            }
         } catch (Throwable e) {
-            // delete index db incase if index is broken and reopen with clean state
-            this.db.close();
-            DBMaker.newFileDB(indexFile).deleteFilesAfterClose().make().close();
-            this.db = DBMaker.newFileDB(indexFile).closeOnJvmShutdown().make();
-            this.idxKeywords = db.getTreeSet("keywords");
-            // reindex all projects
-            for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-                if (YangCorePlugin.isYangProject(project)) {
-                    indexAll(project);
-                }
+            cleanDB(indexFile);
+        }
+    }
+
+    /**
+     * Cleans DB by recreate index file.
+     *
+     * @param indexFile index file
+     */
+    private void cleanDB(File indexFile) {
+        // delete index db incase if index is broken and reopen with clean state
+        this.db.close();
+        DBMaker.newFileDB(indexFile).deleteFilesAfterClose().make().close();
+        this.db = DBMaker.newFileDB(indexFile).closeOnJvmShutdown().make();
+        this.idxKeywords = db.getTreeSet("keywords");
+        // reindex all projects
+        for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+            if (YangCorePlugin.isYangProject(project)) {
+                indexAll(project);
             }
         }
     }
@@ -88,8 +102,8 @@ public class IndexManager extends JobManager {
         request(new IndexFileRequest(file, this));
     }
 
-    public void addJarFile(IPath file) {
-        request(new IndexJarFileRequest(file, this));
+    public void addJarFile(IProject project, IPath file) {
+        request(new IndexJarFileRequest(project, file, this));
     }
 
     @Override
@@ -100,8 +114,15 @@ public class IndexManager extends JobManager {
         db.close();
     }
 
-    public synchronized void removeIndexFamily(IPath path) {
-        removeIndex(path);
+    public synchronized void removeIndexFamily(IProject project) {
+        Iterator<Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo>> iterator = idxKeywords
+                .iterator();
+        while (iterator.hasNext()) {
+            Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo> entry = iterator.next();
+            if (project.getFullPath().toString().equals(entry.f.getProject())) {
+                iterator.remove();
+            }
+        }
     }
 
     public synchronized void remove(IFile file) {
@@ -112,72 +133,80 @@ public class IndexManager extends JobManager {
     }
 
     public synchronized void removeIndex(IPath containerPath) {
-        Iterator<Tuple5<String, String, ElementIndexType, String, ElementIndexInfo>> iterator = idxKeywords.iterator();
+        Iterator<Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo>> iterator = idxKeywords
+                .iterator();
         while (iterator.hasNext()) {
-            Tuple5<String, String, ElementIndexType, String, ElementIndexInfo> entry = iterator.next();
-            if (containerPath.isPrefixOf(new Path(entry.d))) {
+            Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo> entry = iterator.next();
+            if (containerPath.isPrefixOf(new Path(entry.e))) {
                 iterator.remove();
             }
         }
     }
 
     public synchronized void addElementIndexInfo(ElementIndexInfo info) {
-        System.err.println("Add element to index - " + info.getNamespace() + " - " + info.getName() + " - "
+        System.err.println("[I] " + info.getNamespace() + "@" + info.getRevision() + " - " + info.getName() + " - "
                 + info.getType());
-        String path = info.getPath();
-        if (info.getEntry() != null && info.getEntry().length() > 0) {
-            path = path + "/" + info.getEntry();
-        }
-
-        idxKeywords.add(Fun.t5(info.getNamespace(), info.getName(), info.getType(), path, info));
+        idxKeywords.add(Fun.t6(info.getNamespace(), info.getRevision(), info.getName(), info.getType(), info.getPath(),
+                info));
         db.commit();
     }
 
-    public void addModule(Module module, final IPath path, final String entry) {
-        if (module != null && module.getNamespace() != null && module.getNamespace().getValue() != null) {
-            final String namespace = module.getNamespace().getValue().toASCIIString();
-
+    public void addModule(Module module, final IProject project, final IPath path, final String entry) {
+        if (module != null && module.getNamespace() != null && module.getNamespace() != null
+                && module.getRevision() != null && module.getRevision() != null) {
+            final String namespace = module.getNamespace().toASCIIString();
+            final String revision = module.getRevision();
             module.accept(new ASTVisitor() {
                 @Override
                 public boolean visit(Module module) {
-                    addElementIndexInfo(new ElementIndexInfo(module, namespace, ElementIndexType.MODULE, path, entry));
+                    addElementIndexInfo(new ElementIndexInfo(module, namespace, revision, ElementIndexType.MODULE,
+                            project, path, entry));
                     return true;
                 }
 
                 @Override
                 public boolean visit(TypeDefinition typeDefinition) {
-                    addElementIndexInfo(new ElementIndexInfo(typeDefinition, namespace, ElementIndexType.TYPE, path,
-                            entry));
+                    addElementIndexInfo(new ElementIndexInfo(typeDefinition, namespace, revision,
+                            ElementIndexType.TYPE, project, path, entry));
                     return true;
                 }
 
                 @Override
                 public boolean visit(GroupingDefinition groupingDefinition) {
-                    addElementIndexInfo(new ElementIndexInfo(groupingDefinition, namespace, ElementIndexType.GROUPING,
-                            path, entry));
+                    addElementIndexInfo(new ElementIndexInfo(groupingDefinition, namespace, revision,
+                            ElementIndexType.GROUPING, project, path, entry));
                     return true;
                 }
             });
         }
     }
 
-    public synchronized ElementIndexInfo[] search(String namespace, String name, ElementIndexType type, IPath scope) {
+    public synchronized ElementIndexInfo[] search(String namespace, String revision, String name,
+            ElementIndexType type, IProject project, IPath scope) {
         ArrayList<ElementIndexInfo> infos = null;
-        for (Tuple5<String, String, ElementIndexType, String, ElementIndexInfo> entry : idxKeywords) {
+        for (Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo> entry : idxKeywords) {
             boolean add = true;
             if (namespace != null && namespace.length() > 0 && !namespace.equals(entry.a)) {
                 add = false;
             }
 
-            if (type != null && type != entry.c) {
+            if (revision != null && revision.length() > 0 && !revision.equals(entry.b)) {
                 add = false;
             }
 
-            if (name != null && name.length() > 0 && !entry.b.startsWith(name)) {
+            if (type != null && type != entry.d) {
                 add = false;
             }
 
-            if (scope != null && !scope.isPrefixOf(new Path(entry.d))) {
+            if (name != null && name.length() > 0 && !entry.c.startsWith(name)) {
+                add = false;
+            }
+
+            if (project != null && !entry.f.getProject().equals(project.getFullPath().toString())) {
+                add = false;
+            }
+
+            if (scope != null && !scope.isPrefixOf(new Path(entry.e))) {
                 add = false;
             }
 
@@ -185,7 +214,7 @@ public class IndexManager extends JobManager {
                 if (infos == null) {
                     infos = new ArrayList<ElementIndexInfo>();
                 }
-                infos.add(entry.e);
+                infos.add(entry.f);
             }
         }
 

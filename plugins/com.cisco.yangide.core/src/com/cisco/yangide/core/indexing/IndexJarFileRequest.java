@@ -12,6 +12,7 @@ import java.util.Enumeration;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 
@@ -28,9 +29,11 @@ import com.cisco.yangide.core.model.YangJarEntry;
 public class IndexJarFileRequest extends IndexRequest {
 
     private IPath path;
+    private IProject project;
 
-    public IndexJarFileRequest(IPath path, IndexManager manager) {
+    public IndexJarFileRequest(IProject project, IPath path, IndexManager manager) {
         super(path, manager);
+        this.project = project;
         this.path = path;
     }
 
@@ -49,7 +52,7 @@ public class IndexJarFileRequest extends IndexRequest {
                     manager.removeIndex(jarEntryPath);
                     YangJarEntry element = YangCorePlugin.createJarEntry(path, entry.getName());
                     YangFileInfo info = (YangFileInfo) element.getElementInfo(progressMonitor);
-                    manager.addModule(info.getModule(), path, entry.getName());
+                    manager.addModule(info.getModule(), project, path, entry.getName());
                 }
             }
         } catch (IOException e) {

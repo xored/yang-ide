@@ -8,11 +8,13 @@
 package com.cisco.yangide.editor;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.internal.ui.javaeditor.JarEntryEditorInput;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.TextSelection;
@@ -28,6 +30,7 @@ import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
+import com.cisco.yangide.core.YangJarFileEntryResource;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.ui.YangUIPlugin;
 
@@ -138,7 +141,8 @@ public class EditorUtility {
     public static void openInEditor(ElementIndexInfo info) {
         IStorage storage = null;
         if (info.getEntry() != null && info.getEntry().length() > 0) {
-            storage = new JarFileEntryStorage(new Path(info.getPath()), info.getEntry());
+            IProject project = YangUIPlugin.getWorkspace().getRoot().getProject(info.getProject());
+            storage = new YangJarFileEntryResource(JavaCore.create(project), new Path(info.getPath()), info.getEntry());
         } else {
             storage = YangUIPlugin.getWorkspace().getRoot().getFile(new Path(info.getPath()));
         }

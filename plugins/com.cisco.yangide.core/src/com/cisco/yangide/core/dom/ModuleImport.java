@@ -7,7 +7,6 @@
  */
 package com.cisco.yangide.core.dom;
 
-import java.util.Date;
 
 /**
  * @author Konstantin Zaitsev
@@ -16,12 +15,12 @@ import java.util.Date;
 public class ModuleImport extends ASTNamedNode {
 
     /** Module revision in date format. */
-    private Date revision;
+    private String revision;
 
     /** Module namespace prefix. */
     private String prefix;
 
-    public ModuleImport(ASTNode parent, Date revision, String prefix) {
+    public ModuleImport(ASTNode parent, String revision, String prefix) {
         super(parent);
         this.revision = revision;
         this.prefix = prefix;
@@ -35,7 +34,7 @@ public class ModuleImport extends ASTNamedNode {
     /**
      * @return the revision
      */
-    public Date getRevision() {
+    public String getRevision() {
         return revision;
     }
 

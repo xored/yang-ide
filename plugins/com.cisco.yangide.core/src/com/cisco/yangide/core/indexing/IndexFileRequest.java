@@ -38,7 +38,7 @@ public class IndexFileRequest extends IndexRequest {
 
             System.err.println(toString());
             YangFileInfo info = (YangFileInfo) YangCorePlugin.createYangFile(file).getElementInfo(progressMonitor);
-            manager.addModule(info.getModule(), file.getFullPath(), "");
+            manager.addModule(info.getModule(), file.getProject(), file.getFullPath(), "");
         } catch (YangModelException e) {
             YangCorePlugin.log(e);
         }

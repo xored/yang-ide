@@ -8,7 +8,6 @@
 package com.cisco.yangide.editor.editors;
 
 import java.io.IOException;
-import java.nio.channels.SelectableChannel;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,6 +72,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         /*
          * @see IContextInformationValidator#isContextInformationValid(int)
          */
+        @Override
         public boolean isContextInformationValid(int offset) {
             return Math.abs(fInstallOffset - offset) < 5;
         }
@@ -80,12 +80,14 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         /*
          * @see IContextInformationValidator#install(IContextInformation, ITextViewer, int)
          */
+        @Override
         public void install(IContextInformation info, ITextViewer viewer, int offset) {
             fInstallOffset = offset;
         }
     };
 
     private Comparator<ICompletionProposal> proposalComparator = new Comparator<ICompletionProposal>() {
+        @Override
         public int compare(ICompletionProposal o1, ICompletionProposal o2) {
 
             String string1 = o1.getDisplayString();
@@ -123,7 +125,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     /**
      * The proposal mode for the current content assist
-     * 
+     *
      * @see #determineProposalMode(IDocument, int, String)
      */
     private CompletionKind currentProposalMode = CompletionKind.None;
@@ -131,6 +133,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
      */
+    @Override
     public ICompletionProposal[] computeCompletionProposals(ITextViewer viewer, int documentOffset) {
 
         this.viewer = viewer;
@@ -170,29 +173,35 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor XXX will be used later
      */
+    @Override
     public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
 
         IContextInformation[] result = new IContextInformation[5];
-        for (int i = 0; i < result.length; i++)
+        for (int i = 0; i < result.length; i++) {
             result[i] = new ContextInformation(MessageFormat.format(
                     "{0} {1}", new Object[] { new Integer(i), new Integer(documentOffset) }), //$NON-NLS-1$
                     MessageFormat
                             .format("{0} {1}", new Object[] { new Integer(i), new Integer(documentOffset - 5), new Integer(documentOffset + 5) })); //$NON-NLS-1$
+        }
         return result;
     }
 
+    @Override
     public char[] getCompletionProposalAutoActivationCharacters() {
         return new char[] { ':' };
     }
 
+    @Override
     public char[] getContextInformationAutoActivationCharacters() {
         return new char[] { '#' };
     }
 
+    @Override
     public IContextInformationValidator getContextInformationValidator() {
         return fValidator;
     }
 
+    @Override
     public String getErrorMessage() {
         return null;
     }
@@ -285,9 +294,9 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
      * @return importable module names
      */
     private TypedProposalsList getImportProposals(String prefix) {
-
-        ElementIndexInfo[] importModules = YangModelManager.getIndexManager().search(null, null,
-                ElementIndexType.MODULE, null);
+        // FIXME KOS: need set current project to get correct proposal
+        ElementIndexInfo[] importModules = YangModelManager.getIndexManager().search(null, null, null,
+                ElementIndexType.MODULE, null, null);
 
         List<ICompletionProposal> moduleProposals = new ArrayList<ICompletionProposal>();
 
@@ -296,12 +305,13 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             ElementIndexInfo info = importModules[i];
             if (addedImport.add(info.getName())) {
                 String proposal = info.getName();
-                if (prefix.length() == 0 || proposal.startsWith(prefix))
+                if (prefix.length() == 0 || proposal.startsWith(prefix)) {
                     // moduleProposals.add(new CompletionProposal(proposal, cursorPosition -
                     // prefix.length(), prefix.length(), proposal.length()));
                     moduleProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix
                             .length(), proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL),
                             proposal, null, null));
+                }
             }
         }
 
@@ -320,10 +330,11 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         // ICompletionProposal[] proposals = getProposalsFromDocument(doc, prefix);
         List<ICompletionProposal> proposalsList = new ArrayList<ICompletionProposal>();
         for (String proposal : fgKeywordProposals) {
-            if (proposal.startsWith(prefix))
+            if (proposal.startsWith(prefix)) {
                 proposalsList.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix.length(),
                         proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_KEYWORD_PROPOSAL), proposal,
                         null, null));
+            }
         }
 
         TypedProposalsList result = new TypedProposalsList();
@@ -335,10 +346,11 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     private TypedProposalsList getTypeProposals(String prefix) {
         List<ICompletionProposal> proposalsList = new ArrayList<ICompletionProposal>();
         for (String proposal : fgBuiltinTypes) {
-            if (proposal.startsWith(prefix))
+            if (proposal.startsWith(prefix)) {
                 proposalsList.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix.length(),
                         proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_TYPE_PROPOSAL), proposal, null,
                         null));
+            }
         }
 
         TypedProposalsList result = new TypedProposalsList();
@@ -369,8 +381,9 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             ASTNode nodeAtPos = module.getNodeAtPosition(cursorPosition);
 
             if (nodeAtPos instanceof ModuleImport
-                    && cursorPosition > nodeAtPos.getStartPosition() + nodeAtPos.getNodeName().length())
+                    && cursorPosition > nodeAtPos.getStartPosition() + nodeAtPos.getNodeName().length()) {
                 return CompletionKind.Import;
+            }
         }
 
         // Dirty previous word based determination
@@ -434,14 +447,16 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     private List<ICompletionProposal> determineTemplateProposalsForContext(int offset) {
         ITextSelection selection = (ITextSelection) viewer.getSelectionProvider().getSelection();
         // adjust offset to end of normalized selection
-        if (selection.getOffset() == offset)
+        if (selection.getOffset() == offset) {
             offset = selection.getOffset() + selection.getLength();
+        }
 
         String prefix = extractPrefix(viewer, offset);
         Region region = new Region(offset - prefix.length(), prefix.length());
         TemplateContext context = createContext(viewer, region);
-        if (context == null)
+        if (context == null) {
             return null;
+        }
 
         context.setVariable("selection", selection.getText()); // name of the selection variables {line, word_selection //$NON-NLS-1$
 
@@ -455,8 +470,9 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             } catch (TemplateException e) {
                 continue;
             }
-            if ((template.getName().startsWith(prefix) && template.matches(prefix, context.getContextType().getId())))
+            if ((template.getName().startsWith(prefix) && template.matches(prefix, context.getContextType().getId()))) {
                 matches.add(createProposal(template, context, (IRegion) region, getRelevance(template, prefix)));
+            }
         }
         return matches;
     }
@@ -502,15 +518,18 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
      * org.eclipse.jface.text.templates.TemplateCompletionProcessor#extractPrefix(org.eclipse.jface
      * .text.ITextViewer, int)
      */
+    @Override
     protected String extractPrefix(ITextViewer textViewer, int offset) {
         return getPrefixFromDocument(textViewer.getDocument().get(), offset);
     }
 
+    @Override
     protected Template[] getTemplates(String contextTypeId) {
         YangTemplateAccess access = YangTemplateAccess.getDefault();
         return access.getTemplateStore().getTemplates();
     }
 
+    @Override
     protected TemplateContextType getContextType(ITextViewer viewer, IRegion region) {
         YangTemplateAccess access = YangTemplateAccess.getDefault();
         return access.getContextTypeRegistry().getContextType(GeneralContextType.CONTEXT_TYPE);

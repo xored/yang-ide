@@ -42,8 +42,8 @@ public class YangElementHyperlinkDetector extends AbstractHyperlinkDetector {
             if (node instanceof ModuleImport) {
                 ModuleImport importNode = (ModuleImport) node;
                 IRegion elementRegion = new Region(importNode.getNameStartPosition(), importNode.getNameLength());
-                ElementIndexInfo[] searchResult = YangModelManager.search(null, importNode.getName(),
-                        ElementIndexType.MODULE, null);
+                ElementIndexInfo[] searchResult = YangModelManager.search(null, importNode.getRevision(),
+                        importNode.getName(), ElementIndexType.MODULE, null, null);
                 if (searchResult.length > 0) {
                     return new IHyperlink[] { new YangElementHyperlink(elementRegion, searchResult[0]) };
                 }

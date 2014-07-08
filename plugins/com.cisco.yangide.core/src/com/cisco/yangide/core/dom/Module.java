@@ -9,7 +9,6 @@ package com.cisco.yangide.core.dom;
 
 import java.net.URI;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -17,9 +16,12 @@ import java.util.concurrent.atomic.AtomicReference;
  * @date Jun 26, 2014
  */
 public class Module extends ASTNamedNode {
-    private SimpleNode<URI> namespace;
+    private URI namespace;
+    private String revision;
+
+    private SimpleNode<URI> namespaceNode;
+    private SimpleNode<String> revisionNode;
     private SimpleNode<String> sourcePath;
-    private SimpleNode<Date> revision;
     private SimpleNode<String> prefix;
     private SimpleNode<String> yangVersion;
     private SimpleNode<String> organization;
@@ -59,15 +61,44 @@ public class Module extends ASTNamedNode {
     /**
      * @return the namespace
      */
-    public SimpleNode<URI> getNamespace() {
+    public URI getNamespace() {
         return namespace;
     }
 
     /**
      * @param namespace the namespace to set
      */
-    public void setNamespace(SimpleNode<URI> namespace) {
+    public void setNamespace(URI namespace) {
         this.namespace = namespace;
+    }
+
+    /**
+     * @return the revision
+     */
+    public String getRevision() {
+        return revision;
+    }
+
+    /**
+     * @param revision the revision to set
+     */
+    public void setRevision(String revision) {
+        this.revision = revision;
+    }
+
+    /**
+     * @return the namespaceNode
+     */
+    public SimpleNode<URI> getNamespaceNode() {
+        return namespaceNode;
+    }
+
+    /**
+     * @param namespace the namespace to set
+     */
+    public void setNamespaceNode(SimpleNode<URI> namespaceNode) {
+        this.namespaceNode = namespaceNode;
+        this.namespace = namespaceNode.getValue();
     }
 
     /**
@@ -87,15 +118,16 @@ public class Module extends ASTNamedNode {
     /**
      * @return the revision
      */
-    public SimpleNode<Date> getRevision() {
-        return revision;
+    public SimpleNode<String> getRevisionNode() {
+        return revisionNode;
     }
 
     /**
      * @param revision the revision to set
      */
-    public void setRevision(SimpleNode<Date> revision) {
-        this.revision = revision;
+    public void setRevisionNode(SimpleNode<String> revisionNode) {
+        this.revisionNode = revisionNode;
+        this.revision = revisionNode.getValue();
     }
 
     /**
@@ -180,9 +212,9 @@ public class Module extends ASTNamedNode {
         visitor.preVisit(this);
         boolean visitChildren = visitor.visit(this);
         if (visitChildren) {
-            acceptChild(visitor, namespace);
+            acceptChild(visitor, namespaceNode);
             acceptChild(visitor, sourcePath);
-            acceptChild(visitor, revision);
+            acceptChild(visitor, revisionNode);
             acceptChild(visitor, prefix);
             acceptChild(visitor, yangVersion);
             acceptChild(visitor, organization);

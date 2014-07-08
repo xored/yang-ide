@@ -44,14 +44,17 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
         this.commentScanner = new YangCommentScanner(colorManager, preferencesStore);
     }
 
+    @Override
     public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
         return new String[] { IDocument.DEFAULT_CONTENT_TYPE, YangPartitionScanner.YANG_COMMENT,
                 YangPartitionScanner.YANG_STRING };
     }
 
+    @Override
     public ITextDoubleClickStrategy getDoubleClickStrategy(ISourceViewer sourceViewer, String contentType) {
-        if (doubleClickStrategy == null)
+        if (doubleClickStrategy == null) {
             doubleClickStrategy = new YangDoubleClickStrategy();
+        }
         return doubleClickStrategy;
     }
 
@@ -63,8 +66,9 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
     }
 
     protected YangStringScanner getYangStringScanner() {
-        if (stringScanner == null)
+        if (stringScanner == null) {
             stringScanner = new YangStringScanner(colorManager, preferencesStore);
+        }
         return stringScanner;
     }
 
@@ -72,11 +76,13 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
      * @return the commentScanner
      */
     public YangCommentScanner getYangCommentScanner() {
-        if (commentScanner == null)
+        if (commentScanner == null) {
             commentScanner = new YangCommentScanner(colorManager, preferencesStore);
+        }
         return commentScanner;
     }
 
+    @Override
     public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 
         /**
@@ -105,11 +111,12 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.text.source.SourceViewerConfiguration#getConfiguredDocumentPartitioning
      * (org.eclipse.jface.text.source.ISourceViewer)
      */
+    @Override
     public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
         return YangDocumentSetupParticipant.YANG_PARTITIONING;
     }
@@ -141,21 +148,24 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
      */
     public void handlePropertyChangeEvent(PropertyChangeEvent event) {
         // Assert.isTrue(isNewSetup());
-        if (scanner.affectsBehavior(event))
+        if (scanner.affectsBehavior(event)) {
             scanner.adaptToPreferenceChange(event);
-        if (stringScanner.affectsBehavior(event))
+        }
+        if (stringScanner.affectsBehavior(event)) {
             stringScanner.adaptToPreferenceChange(event);
-        if (commentScanner.affectsBehavior(event))
+        }
+        if (commentScanner.affectsBehavior(event)) {
             commentScanner.adaptToPreferenceChange(event);
-        // if (fJavaDoubleClickSelector != null &&
-        // JavaCore.COMPILER_SOURCE.equals(event.getProperty()))
-        // if (event.getNewValue() instanceof String)
-        // fJavaDoubleClickSelector.setSourceVersion((String) event.getNewValue());
+            // if (fJavaDoubleClickSelector != null &&
+            // JavaCore.COMPILER_SOURCE.equals(event.getProperty()))
+            // if (event.getNewValue() instanceof String)
+            // fJavaDoubleClickSelector.setSourceVersion((String) event.getNewValue());
+        }
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies(org.eclipse
      * .jface.text.source.ISourceViewer, java.lang.String)
@@ -167,8 +177,8 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
         // if (YangPartitionScanner.YANG_COMMENT.equals(contentType))
 
         return new IAutoEditStrategy[] { new YangAutoIndentStrategy(partitioning, sourceViewer) }; // usefull
-                                                                                                   // new
-                                                                                                   // SmartSemicolonAutoEditStrategy(partitioning),
+        // new
+        // SmartSemicolonAutoEditStrategy(partitioning),
 
     }
 
@@ -177,15 +187,17 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
      * org.eclipse.jface.text.source.SourceViewerConfiguration#getTabWidth(org.eclipse.jface.text
      * .source.ISourceViewer)
      */
+    @Override
     public int getTabWidth(ISourceViewer sourceViewer) {
-        if (preferencesStore == null)
+        if (preferencesStore == null) {
             return super.getTabWidth(sourceViewer);
+        }
         return preferencesStore.getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.text.source.SourceViewerConfiguration#getContentAssistant(org.eclipse.jface
      * .text.source.ISourceViewer)

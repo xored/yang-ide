@@ -9,6 +9,7 @@ package com.cisco.yangide.core.indexing;
 
 import java.io.Serializable;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 
 import com.cisco.yangide.core.dom.ASTNamedNode;
@@ -17,16 +18,22 @@ import com.cisco.yangide.core.dom.ASTNamedNode;
  * @author Konstantin Zaitsev
  * @date Jul 1, 2014
  */
+/**
+ * @author Konstantin Zaitsev
+ * @date Jul 8, 2014
+ */
 public class ElementIndexInfo implements Serializable, Comparable<ElementIndexInfo> {
 
     /** Serial version UID. */
     private static final long serialVersionUID = -7971951214450877471L;
 
     private String namespace;
+    private String revision;
     private String name;
     private ElementIndexType type;
     private int startPosition = -1;
     private int length = 0;
+    private String project;
     private String path;
     private String description;
     private String reference;
@@ -37,14 +44,17 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
      * @param module
      * @param module2
      */
-    public ElementIndexInfo(ASTNamedNode node, String namespace, ElementIndexType type, IPath path, String entry) {
+    public ElementIndexInfo(ASTNamedNode node, String namespace, String revision, ElementIndexType type,
+            IProject project, IPath path, String entry) {
         this.namespace = namespace;
+        this.revision = revision;
         this.name = node.getName();
         this.type = type;
         this.startPosition = node.getNameStartPosition();
         this.length = node.getNameLength();
         this.description = node.getDescription();
         this.reference = node.getReference();
+        this.project = project.getName();
         this.path = path.toString();
         this.entry = entry;
     }
@@ -175,15 +185,43 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
         this.entry = entry;
     }
 
-    @Override
-    public String toString() {
-        return "ElementIndexInfo [namespace=" + namespace + ", name=" + name + ", type=" + type + ", startPosition="
-                + startPosition + ", length=" + length + ", path=" + path + ", description=" + description
-                + ", reference=" + reference + ", entry=" + entry + "]";
+    /**
+     * @return the project
+     */
+    public String getProject() {
+        return project;
+    }
+
+    /**
+     * @param project the project to set
+     */
+    public void setProject(String project) {
+        this.project = project;
+    }
+
+    /**
+     * @return the revision
+     */
+    public String getRevision() {
+        return revision;
+    }
+
+    /**
+     * @param revision the revision to set
+     */
+    public void setRevision(String revision) {
+        this.revision = revision;
     }
 
     @Override
     public int compareTo(ElementIndexInfo o) {
         return o.toString().compareTo(this.toString());
+    }
+
+    @Override
+    public String toString() {
+        return "ElementIndexInfo [namespace=" + namespace + ", revision=" + revision + ", name=" + name + ", type="
+                + type + ", startPosition=" + startPosition + ", length=" + length + ", project=" + project + ", path="
+                + path + ", description=" + description + ", reference=" + reference + ", entry=" + entry + "]";
     }
 }
