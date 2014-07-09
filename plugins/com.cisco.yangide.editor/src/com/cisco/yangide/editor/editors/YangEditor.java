@@ -2,10 +2,12 @@ package com.cisco.yangide.editor.editors;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.CoreException;
 //import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.jdt.ui.text.IColorManager;
+import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
@@ -13,6 +15,7 @@ import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
+import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.ui.IEditorInput;
@@ -21,9 +24,14 @@ import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.ITextEditorHelpContextIds;
 import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
+import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.editor.actions.AddBlockCommentAction;
+import com.cisco.yangide.editor.actions.IYangEditorActionDefinitionIds;
+import com.cisco.yangide.editor.actions.RemoveBlockCommentAction;
+import com.cisco.yangide.editor.actions.ToggleCommentAction;
 import com.cisco.yangide.ui.YangUIPlugin;
 import com.cisco.yangide.ui.preferences.IYangColorConstants;
 
@@ -188,4 +196,53 @@ public class YangEditor extends TextEditor {
     public IDocument getDocument() {
         return getSourceViewer().getDocument();
     }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.editors.text.TextEditor#createActions()
+     */
+    @Override
+    protected void createActions() {
+
+        super.createActions();
+        
+        IAction action = getAction(ITextEditorActionConstants.CONTENT_ASSIST_CONTEXT_INFORMATION);
+        
+        action = new ToggleCommentAction(ResourceBundle.getBundle(YangEditorMessages.getBundleName()), "ToggleComment.", this); //$NON-NLS-1$
+        //action.setActionDefinitionId(IJavaEditorActionDefinitionIds.TOGGLE_COMMENT);
+        action.setActionDefinitionId(IYangEditorActionDefinitionIds.TOGGLE_COMMENT);
+        setAction("ToggleComment", action); //$NON-NLS-1$
+        markAsStateDependentAction("ToggleComment", true); //$NON-NLS-1$
+        //TODO
+        //PlatformUI.getWorkbench().getHelpSystem().setHelp(action, IJavaHelpContextIds.TOGGLE_COMMENT_ACTION);
+        configureToggleCommentAction();
+        
+        
+        action= new AddBlockCommentAction(ResourceBundle.getBundle(YangEditorMessages.getBundleName()), "AddBlockComment.", this);  //$NON-NLS-1$
+        action.setActionDefinitionId(IYangEditorActionDefinitionIds.ADD_BLOCK_COMMENT);
+        setAction("AddBlockComment", action); //$NON-NLS-1$
+        markAsStateDependentAction("AddBlockComment", true); //$NON-NLS-1$
+        markAsSelectionDependentAction("AddBlockComment", true); //$NON-NLS-1$
+        //PlatformUI.getWorkbench().getHelpSystem().setHelp(action, IJavaHelpContextIds.ADD_BLOCK_COMMENT_ACTION);        
+        
+        action= new RemoveBlockCommentAction(ResourceBundle.getBundle(YangEditorMessages.getBundleName()), "RemoveBlockComment.", this);  //$NON-NLS-1$
+        action.setActionDefinitionId(IYangEditorActionDefinitionIds.REMOVE_BLOCK_COMMENT);
+        setAction("RemoveBlockComment", action); //$NON-NLS-1$
+        markAsStateDependentAction("RemoveBlockComment", true); //$NON-NLS-1$
+        markAsSelectionDependentAction("RemoveBlockComment", true); //$NON-NLS-1$
+        //PlatformUI.getWorkbench().getHelpSystem().setHelp(action, IJavaHelpContextIds.REMOVE_BLOCK_COMMENT_ACTION);        
+    }
+
+    /**
+     * Configures the toggle comment action
+     *
+     * @since 3.0
+     */
+    private void configureToggleCommentAction() {
+        IAction action = getAction("ToggleComment"); //$NON-NLS-1$
+        if (action instanceof ToggleCommentAction) {
+            ISourceViewer sourceViewer= getSourceViewer();
+            SourceViewerConfiguration configuration = getSourceViewerConfiguration();
+            ((ToggleCommentAction)action).configure(sourceViewer, configuration);
+        }
+    }    
 }

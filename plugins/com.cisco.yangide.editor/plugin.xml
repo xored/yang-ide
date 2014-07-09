@@ -4,12 +4,12 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            name="YANG Editor"
+            class="com.cisco.yangide.editor.editors.YangEditor"
+            contributorClass="com.cisco.yangide.editor.editors.YangEditorActionContributor"
             extensions="yang"
             icon="icons/yang_file.png"
-            contributorClass="org.eclipse.ui.texteditor.BasicTextEditorActionContributor"
-            class="com.cisco.yangide.editor.editors.YangEditor"
-            id="com.cisco.yangide.editor.editors.YANGEditor">
+            id="com.cisco.yangide.editor.editors.YANGEditor"
+            name="YANG Editor">
       </editor>
    </extension>
    <extension
@@ -66,6 +66,21 @@
            categoryId="com.cisco.yangide.category.navigate" 
            defaultHandler="com.cisco.yangide.editor.handlers.OpenDeclarationHandler" 
            id="com.cisco.yangide.navigate.open.declaration" />
+      <command
+            categoryId="com.cisco.yangide.category.source"
+            id="com.cisco.yangide.actions.toggle.comment"
+            name="Toggle comment">
+      </command>
+      <command
+            categoryId="com.cisco.yangide.category.source"
+            id="com.cisco.yangide.actions.add.block.comment"
+            name="Add Block comment">
+      </command>
+      <command
+            categoryId="com.cisco.yangide.category.source"
+            id="com.cisco.yangide.actions.remove.block.comment"
+            name="Remove Block comment">
+      </command>
    </extension>
     
     <extension point="org.eclipse.ui.bindings">
@@ -74,6 +89,30 @@
            contextId="com.cisco.yangide.ui.Context"
            commandId="com.cisco.yangide.navigate.open.declaration"
            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+       <key
+             commandId="com.cisco.yangide.actions.toggle.comment"
+             contextId="com.cisco.yangide.ui.Context"
+             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+             sequence="M1+/">
+       </key>
+       <key
+             commandId="com.cisco.yangide.actions.toggle.comment"
+             contextId="com.cisco.yangide.ui.Context"
+             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+             sequence="M1+M2+C">
+       </key>
+       <key
+             commandId="com.cisco.yangide.actions.add.block.comment"
+             contextId="com.cisco.yangide.ui.Context"
+             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+             sequence="M1+M2+/">
+       </key>
+       <key
+             commandId="com.cisco.yangide.actions.remove.block.comment"
+             contextId="com.cisco.yangide.ui.Context"
+             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+             sequence="M1+M2+\">
+       </key>
     </extension>
     
     <extension point="org.eclipse.ui.menus">
@@ -89,6 +128,54 @@
                     </with>
                 </visibleWhen>
                 </command>
+                <command
+                      commandId="com.cisco.yangide.actions.toggle.comment"
+                      label="Toggle Comment"
+                      style="toggle">
+                </command>
         </menuContribution>
-    </extension>      
+    </extension>
+
+    <extension
+          point="org.eclipse.ui.actionSets">
+       <actionSet
+             description="CodingActionSet Description"
+             id="com.cisco.yangide.editor.CodingActionSet"
+             label="CodingActionSet"
+             visible="true">
+          <menu
+                id="com.cisco.yangide.editor.source.menu"
+                label="Source"
+                path="edit">
+             <separator
+                   name="commentGroup">
+             </separator>
+          </menu>
+          <action
+                allowLabelUpdate="true"
+                definitionId="com.cisco.yangide.actions.remove.block.comment"
+                id="com.cisco.yangide.editor.actions.RemoveBlockComment"
+                label="Remove Block Comment"
+                menubarPath="com.cisco.yangide.editor.source.menu/commentGroup"
+                retarget="true">
+          </action>
+          <action
+                allowLabelUpdate="true"
+                definitionId="com.cisco.yangide.actions.add.block.comment"
+                id="com.cisco.yangide.editor.actions.AddBlockComment"
+                label="Add Block Comment"
+                menubarPath="com.cisco.yangide.editor.source.menu/commentGroup"
+                retarget="true">
+          </action>
+          <action
+                allowLabelUpdate="true"
+                definitionId="com.cisco.yangide.actions.toggle.comment"
+                id="com.cisco.yangide.editor.actions.ToggleComment"
+                label="Toggle Comment"
+                menubarPath="com.cisco.yangide.editor.source.menu/commentGroup"
+                retarget="true">
+          </action>
+       </actionSet>
+    </extension>
+
 </plugin>

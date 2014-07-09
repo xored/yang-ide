@@ -240,4 +240,13 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
         result[detectors.length] = new YangElementHyperlinkDetector();
         return result;
     }
+    
+    /*
+     * @see SourceViewerConfiguration#getDefaultPrefixes(ISourceViewer, String)
+     * @since 2.0
+     */
+    @Override
+    public String[] getDefaultPrefixes(ISourceViewer sourceViewer, String contentType) {
+        return new String[] { "//", "" }; //$NON-NLS-1$ //$NON-NLS-2$
+    }    
 }
