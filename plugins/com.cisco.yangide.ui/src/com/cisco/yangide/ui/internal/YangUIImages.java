@@ -46,6 +46,8 @@ public class YangUIImages {
         declareRegistryImage(IYangUIConstants.IMG_IMPORT_PROPOSAL, OBJECT + "import_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_KEYWORD_PROPOSAL, OBJECT + "keyword_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_TYPE_PROPOSAL, OBJECT + "type_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_CUSTOM_TYPE_PROPOSAL, OBJECT + "custom_type_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_GROUPING_PROPOSAL, OBJECT + "grouping_obj.gif"); //$NON-NLS-1$
     }
 
     /**

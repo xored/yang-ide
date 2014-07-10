@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.internal.ui.preferences.formatter.ProfileManager.BuiltInProfile;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -106,7 +107,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     private final static String[] fgBuiltinTypes = YangScanner.types;
 
     enum CompletionKind {
-        None, Keyword, Import, Type
+        None, Keyword, Import, Type, Uses, Include
     }
 
     protected IContextInformationValidator fValidator = new Validator();
@@ -166,7 +167,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             combinedProposals.addAll(b);
         }
 
-        Collections.sort(combinedProposals, proposalComparator);
+        //Collections.sort(combinedProposals, proposalComparator);
         return combinedProposals.toArray(new ICompletionProposal[0]);
     }
 
@@ -280,12 +281,19 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         case Type:
             proposals = getTypeProposals(prefix);
             break;
+        case Uses:
+            proposals = getUsesProposals(prefix);
+            break;
+        case Include:
+            proposals = getIncludeProposals(prefix);
+            break;            
+            
         case Keyword:
         default:
             proposals = getKeywordProposals(prefix);
             break;
         }
-
+        
         return proposals;
     }
 
@@ -305,15 +313,25 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             ElementIndexInfo info = importModules[i];
             if (addedImport.add(info.getName())) {
                 String proposal = info.getName();
+                String revision = info.getRevision();
+                String displayString = proposal;
+                String replacementString = proposal;
+                if(revision != null && !revision.isEmpty()){
+                    replacementString = proposal + " { prefix " + proposal + "; revision-date " + revision + "; }";
+                    displayString = proposal += " (" + revision + ")";
+                }
+                    
                 if (prefix.length() == 0 || proposal.startsWith(prefix)) {
                     // moduleProposals.add(new CompletionProposal(proposal, cursorPosition -
                     // prefix.length(), prefix.length(), proposal.length()));
-                    moduleProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix
+                    moduleProposals.add(new CompletionProposal(replacementString, cursorPosition - prefix.length(), prefix
                             .length(), proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL),
-                            proposal, null, null));
+                            displayString, null, null));
                 }
             }
         }
+
+        Collections.sort(moduleProposals, proposalComparator);
 
         TypedProposalsList result = new TypedProposalsList();
         result.proposals = moduleProposals;
@@ -337,6 +355,8 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             }
         }
 
+        Collections.sort(proposalsList, proposalComparator);
+        
         TypedProposalsList result = new TypedProposalsList();
         result.proposals = proposalsList;
         result.type = CompletionKind.Keyword;
@@ -344,20 +364,109 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     }
 
     private TypedProposalsList getTypeProposals(String prefix) {
-        List<ICompletionProposal> proposalsList = new ArrayList<ICompletionProposal>();
+        //bult-in types
+        List<ICompletionProposal> bltInTypesProposals = new ArrayList<ICompletionProposal>();
         for (String proposal : fgBuiltinTypes) {
             if (proposal.startsWith(prefix)) {
-                proposalsList.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix.length(),
+                bltInTypesProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix.length(),
                         proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_TYPE_PROPOSAL), proposal, null,
                         null));
             }
         }
+        Collections.sort(bltInTypesProposals, proposalComparator);
+        
+        //custom defined by user in typedef types
+        ElementIndexInfo[] customTypes = YangModelManager.search(null, null, null, ElementIndexType.TYPE, null, null);
+
+        List<ICompletionProposal> customTypesProposals = new ArrayList<ICompletionProposal>();
+
+        Set<String> addedCustomType = new HashSet<>();
+        for (int i = 0; i < customTypes.length; i++) {
+            ElementIndexInfo info = customTypes[i];
+            if (addedCustomType.add(info.getName())) {
+                String proposal = info.getName();
+                if (prefix.length() == 0 || proposal.startsWith(prefix)) {
+                    customTypesProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix
+                            .length(), proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_CUSTOM_TYPE_PROPOSAL),
+                            proposal, null, null));
+                }
+            }
+        }
+        Collections.sort(customTypesProposals, proposalComparator);
+        
 
         TypedProposalsList result = new TypedProposalsList();
-        result.proposals = proposalsList;
+        result.proposals = new ArrayList<ICompletionProposal>(bltInTypesProposals.size() + customTypesProposals.size());
+        result.proposals.addAll(bltInTypesProposals);
+        result.proposals.addAll(customTypesProposals);
+        
         result.type = CompletionKind.Type;
         return result;
     }
+    
+
+    /**
+     * @param prefix
+     * @return
+     */
+    private TypedProposalsList getUsesProposals(String prefix) {
+        ElementIndexInfo[] groupings = YangModelManager.search(null, null, null, ElementIndexType.GROUPING, null, null);
+
+        List<ICompletionProposal> groupingProposals = new ArrayList<ICompletionProposal>();
+
+        Set<String> addedCustomType = new HashSet<>();
+        for (int i = 0; i < groupings.length; i++) {
+            ElementIndexInfo info = groupings[i];
+            if (addedCustomType.add(info.getName())) {
+                String proposal = info.getName();
+                if (prefix.length() == 0 || proposal.startsWith(prefix)) {
+                    groupingProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix
+                            .length(), proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_GROUPING_PROPOSAL),
+                            proposal, null, null));
+                }
+            }
+        }
+        Collections.sort(groupingProposals, proposalComparator);
+        
+
+        TypedProposalsList result = new TypedProposalsList();
+        result.proposals = groupingProposals;
+        
+        result.type = CompletionKind.Uses;
+        return result;
+    }
+    
+    /**
+     * @param prefix
+     * @return
+     */
+    private TypedProposalsList getIncludeProposals(String prefix) {
+        ElementIndexInfo[] submodules = YangModelManager.search(null, null, null, ElementIndexType.SUBMODULE, null, null);
+
+        List<ICompletionProposal> submoduleProposals = new ArrayList<ICompletionProposal>();
+
+        Set<String> addedCustomType = new HashSet<>();
+        for (int i = 0; i < submodules.length; i++) {
+            ElementIndexInfo info = submodules[i];
+            if (addedCustomType.add(info.getName())) {
+                String proposal = info.getName();
+                if (prefix.length() == 0 || proposal.startsWith(prefix)) {
+                    submoduleProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix
+                            .length(), proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_GROUPING_PROPOSAL),
+                            proposal, null, null));
+                }
+            }
+        }
+        Collections.sort(submoduleProposals, proposalComparator);
+        
+
+        TypedProposalsList result = new TypedProposalsList();
+        result.proposals = submoduleProposals;
+        
+        result.type = CompletionKind.Include;
+        return result;
+    }    
+    
 
     /**
      * @param document
@@ -393,6 +502,13 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         if ("type".equalsIgnoreCase(previousWord)) {
             return CompletionKind.Type;
         }
+        if ("uses".equalsIgnoreCase(previousWord)) {
+            return CompletionKind.Uses;
+        }
+        //TODO check if only current module
+        if ("include".equalsIgnoreCase(previousWord) || "belongs-to".equalsIgnoreCase(previousWord)) {
+            return CompletionKind.Include;
+        }        
 
         return CompletionKind.Keyword;
 
@@ -474,6 +590,9 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 matches.add(createProposal(template, context, (IRegion) region, getRelevance(template, prefix)));
             }
         }
+        
+        Collections.sort(matches, proposalComparator);
+        
         return matches;
     }
 

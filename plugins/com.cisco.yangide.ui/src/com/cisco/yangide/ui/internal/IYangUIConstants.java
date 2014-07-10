@@ -17,5 +17,7 @@ public interface IYangUIConstants {
     public static final String IMG_IMPORT_PROPOSAL = PLUGIN_ID + ".import_obj";
     public static final String IMG_KEYWORD_PROPOSAL = PLUGIN_ID + ".keyword_obj";
     public static final String IMG_TYPE_PROPOSAL = PLUGIN_ID + ".type_obj";
+    public static final String IMG_CUSTOM_TYPE_PROPOSAL = PLUGIN_ID + ".custom_type_obj";
+    public static final String IMG_GROUPING_PROPOSAL = PLUGIN_ID + ".grouping_obj";
 
 }

@@ -141,11 +141,10 @@
        <actionSet
              description="CodingActionSet Description"
              id="com.cisco.yangide.editor.CodingActionSet"
-             label="CodingActionSet"
-             visible="true">
+             label="CodingActionSet">
           <menu
                 id="com.cisco.yangide.editor.source.menu"
-                label="Source"
+                label="&amp;Source"
                 path="edit">
              <separator
                    name="commentGroup">
@@ -176,6 +175,15 @@
                 retarget="true">
           </action>
        </actionSet>
+    </extension>
+    <extension
+          point="org.eclipse.ui.actionSetPartAssociations">
+       <actionSetPartAssociation
+             targetID="com.cisco.yangide.editor.CodingActionSet">
+          <part
+                id="com.cisco.yangide.editor.editors.YANGEditor">
+          </part>
+       </actionSetPartAssociation>
     </extension>
 
 </plugin>
