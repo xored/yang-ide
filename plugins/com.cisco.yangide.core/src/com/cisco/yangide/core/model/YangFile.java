@@ -13,7 +13,6 @@ import java.util.Map;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -26,7 +25,7 @@ import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.buffer.BufferManager;
 import com.cisco.yangide.core.buffer.IBuffer;
 import com.cisco.yangide.core.dom.Module;
-import com.cisco.yangide.core.internal.YangASTParser;
+import com.cisco.yangide.core.internal.YangParserUtil;
 
 /**
  * @author Konstantin Zaitsev
@@ -58,15 +57,9 @@ public class YangFile extends YangElement {
             buffer = openBuffer(pm, info);
         }
 
-        try {
-            Module module = new YangASTParser().parseYangFile(buffer.getCharacters());
-            ((YangFileInfo) info).setModule(module);
-            info.setIsStructureKnown(true);
-        } catch (IOException e) {
-            throw new YangModelException(e, 0);
-        } catch (CoreException e) {
-            throw new YangModelException(e);
-        }
+        Module module = YangParserUtil.parseYangFile(buffer.getCharacters(), null);
+        ((YangFileInfo) info).setModule(module);
+        info.setIsStructureKnown(true);
         return true;
     }
 
@@ -96,8 +89,9 @@ public class YangFile extends YangElement {
 
         synchronized (bufManager) {
             IBuffer existingBuffer = bufManager.getBuffer(this);
-            if (existingBuffer != null)
+            if (existingBuffer != null) {
                 return existingBuffer;
+            }
 
             // set the buffer source
             if (buffer.getCharacters() == null) {

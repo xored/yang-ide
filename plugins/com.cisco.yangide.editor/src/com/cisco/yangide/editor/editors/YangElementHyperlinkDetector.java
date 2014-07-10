@@ -16,7 +16,7 @@ import com.cisco.yangide.core.dom.TypeReference;
 import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
-import com.cisco.yangide.core.internal.YangASTParser;
+import com.cisco.yangide.core.internal.YangParserUtil;
 import com.cisco.yangide.core.model.YangModelManager;
 
 public class YangElementHyperlinkDetector extends AbstractHyperlinkDetector {
@@ -36,7 +36,7 @@ public class YangElementHyperlinkDetector extends AbstractHyperlinkDetector {
         }
 
         try {
-            Module module = new YangASTParser().parseYangFile(document.get().toCharArray());
+            Module module = YangParserUtil.parseYangFile(document.get().toCharArray(), null);
             ASTNode node = module.getNodeAtPosition(offset);
 
             if (node == null) {

@@ -212,19 +212,7 @@ public class Module extends ASTCompositeNode {
         visitor.preVisit(this);
         boolean visitChildren = visitor.visit(this);
         if (visitChildren) {
-            acceptChild(visitor, namespaceNode);
-            acceptChild(visitor, sourcePath);
-            acceptChild(visitor, revisionNode);
-            acceptChild(visitor, prefix);
-            acceptChild(visitor, yangVersion);
-            acceptChild(visitor, organization);
-            acceptChild(visitor, contact);
-
-            acceptChildren(visitor, imports);
-            acceptChildren(visitor, typeDefinitions);
-            acceptChildren(visitor, groupings);
-
-            acceptChildren(visitor, getChildren());
+            visitChildren(visitor);
         }
     }
 
@@ -256,5 +244,21 @@ public class Module extends ASTCompositeNode {
             }
         }
         return null;
+    }
+
+    protected void visitChildren(ASTVisitor visitor) {
+        acceptChild(visitor, namespaceNode);
+        acceptChild(visitor, sourcePath);
+        acceptChild(visitor, revisionNode);
+        acceptChild(visitor, prefix);
+        acceptChild(visitor, yangVersion);
+        acceptChild(visitor, organization);
+        acceptChild(visitor, contact);
+
+        acceptChildren(visitor, imports);
+        acceptChildren(visitor, typeDefinitions);
+        acceptChildren(visitor, groupings);
+
+        acceptChildren(visitor, getChildren());
     }
 }

@@ -7,6 +7,9 @@
  */
 package com.cisco.yangide.core;
 
+import java.io.File;
+
+import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IMarker;
 import org.eclipse.core.resources.IProject;
@@ -142,6 +145,15 @@ public class YangCorePlugin extends Plugin {
         return new YangFile((IFile) resource, create(resource.getParent()));
     }
 
+    public static IFile getIFileFromFile(File file) {
+        IFile[] files = ResourcesPlugin.getWorkspace().getRoot()
+                .findFilesForLocationURI(URIUtil.toURI(file.getAbsolutePath()));
+        if (files != null && files.length > 0) {
+            return files[0];
+        }
+        return null;
+    }
+
     /**
      * Creates YANG problem marker for resource.
      *
@@ -172,6 +184,28 @@ public class YangCorePlugin extends Plugin {
             if (lineNumber >= 0) {
                 marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
             }
+        } catch (CoreException e) {
+            log(e);
+        }
+    }
+
+    /**
+     * Creates YANG problem marker for resource.
+     *
+     * @param resource resource
+     * @param message text message
+     * @param lineNumber optional line number or <code>-1</code> if no line number
+     */
+    public static void createProblemMarker(IResource resource, String message, int lineNumber, int charStart,
+            int charEnd) {
+        try {
+            IMarker marker = resource.createMarker(YANGIDE_PROBLEM_MARKER);// "com.cisco.yangide.core.syntaxproblem");
+            marker.setAttribute(IMarker.SEVERITY, IMarker.SEVERITY_ERROR);
+            marker.setAttribute(IMarker.PRIORITY, IMarker.PRIORITY_HIGH);
+            marker.setAttribute(IMarker.MESSAGE, message.trim());
+            marker.setAttribute(IMarker.LINE_NUMBER, lineNumber);
+            marker.setAttribute(IMarker.CHAR_START, charStart);
+            marker.setAttribute(IMarker.CHAR_END, charEnd);
         } catch (CoreException e) {
             log(e);
         }

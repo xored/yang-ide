@@ -7,12 +7,13 @@
  */
 package com.cisco.yangide.core.model;
 
+import java.io.CharArrayWriter;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.jar.JarFile;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -22,7 +23,7 @@ import com.cisco.yangide.core.IOpenable;
 import com.cisco.yangide.core.OpenableElementInfo;
 import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.Module;
-import com.cisco.yangide.core.internal.YangASTParser;
+import com.cisco.yangide.core.internal.YangParserUtil;
 
 /**
  * @author Konstantin Zaitsev
@@ -39,15 +40,10 @@ public class YangJarEntry extends YangElement {
     @Override
     protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm,
             Map<IOpenable, OpenableElementInfo> newElements, IResource underlyingResource) throws YangModelException {
-        try (JarFile file = new JarFile(getParent().getPath().toFile())) {
-            Module module = new YangASTParser().parseYangFile(file.getInputStream(file.getEntry(path.toString())));
-            ((YangFileInfo) info).setModule(module);
-            info.setIsStructureKnown(true);
-        } catch (IOException e) {
-            throw new YangModelException(e, 0);
-        } catch (CoreException e) {
-            throw new YangModelException(e);
-        }
+        char[] content = getContent();
+        Module module = YangParserUtil.parseYangFile(content, null);
+        ((YangFileInfo) info).setModule(module);
+        info.setIsStructureKnown(true);
         return true;
     }
 
@@ -73,5 +69,20 @@ public class YangJarEntry extends YangElement {
     @Override
     public YangElementType getElementType() {
         return YangElementType.YANG_JAR_ENTRY;
+    }
+
+    private char[] getContent() throws YangModelException {
+        try (JarFile file = new JarFile(getParent().getPath().toFile())) {
+            InputStreamReader in = new InputStreamReader(file.getInputStream(file.getEntry(path.toString())), "UTF-8");
+            CharArrayWriter out = new CharArrayWriter();
+            char[] buff = new char[1024];
+            int len = 0;
+            while ((len = in.read(buff)) > 0) {
+                out.write(buff, 0, len);
+            }
+            return out.toCharArray();
+        } catch (IOException e) {
+            throw new YangModelException(e, 0);
+        }
     }
 }

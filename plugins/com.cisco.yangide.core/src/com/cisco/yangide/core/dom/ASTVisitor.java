@@ -17,6 +17,10 @@ public abstract class ASTVisitor {
         return true;
     }
 
+    public boolean visit(SubModule module) {
+        return true;
+    }
+
     public boolean visit(ModuleImport moduleImport) {
         return true;
     }

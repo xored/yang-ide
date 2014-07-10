@@ -14,31 +14,36 @@ import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
+import org.eclipse.jface.text.reconciler.IReconciler;
+import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
+import org.eclipse.jface.text.reconciler.MonoReconciler;
 import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
 
-import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.editor.editors.text.CompositeReconcilingStrategy;
+import com.cisco.yangide.editor.editors.text.YangReconcilingStrategy;
 import com.cisco.yangide.editor.preferences.YangDocumentSetupParticipant;
 
-public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
+public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration {
     private YangDoubleClickStrategy doubleClickStrategy;
     private YangStringScanner stringScanner;
     private YangCommentScanner commentScanner;
     private YangScanner scanner;
     private IColorManager colorManager;
-    private IPreferenceStore preferencesStore = YangEditorPlugin.getDefault().getCombinedPreferenceStore();
+    private IPreferenceStore preferencesStore;
+    private ITextEditor editor;
 
-    public YangSourceViewerConfiguration() {
-        super();
-    }
-
-    public YangSourceViewerConfiguration(IColorManager colorManager) {
+    public YangSourceViewerConfiguration(IPreferenceStore preferencesStore, IColorManager colorManager,
+            ITextEditor editor) {
+        super(preferencesStore);
+        this.preferencesStore = preferencesStore;
         this.colorManager = colorManager;
+        this.editor = editor;
         this.scanner = new YangScanner(colorManager, preferencesStore);
         this.stringScanner = new YangStringScanner(colorManager, preferencesStore);
         this.commentScanner = new YangCommentScanner(colorManager, preferencesStore);
@@ -240,13 +245,36 @@ public class YangSourceViewerConfiguration extends SourceViewerConfiguration {
         result[detectors.length] = new YangElementHyperlinkDetector();
         return result;
     }
-    
-    /*
-     * @see SourceViewerConfiguration#getDefaultPrefixes(ISourceViewer, String)
-     * @since 2.0
-     */
+
     @Override
     public String[] getDefaultPrefixes(ISourceViewer sourceViewer, String contentType) {
         return new String[] { "//", "" }; //$NON-NLS-1$ //$NON-NLS-2$
-    }    
+    }
+
+    @Override
+    public IReconciler getReconciler(ISourceViewer sourceViewer) {
+        final ITextEditor editor = getEditor();
+        if (editor != null && editor.isEditable()) {
+            CompositeReconcilingStrategy strategy = new CompositeReconcilingStrategy();
+            strategy.setReconcilingStrategies(new IReconcilingStrategy[] {
+            // yang syntax reconcile
+            new YangReconcilingStrategy(sourceViewer, getEditor()),
+            // standard spelling
+            // new SpellingReconcileStrategy(sourceViewer, EditorsUI.getSpellingService())
+            });
+            MonoReconciler reconciler = new MonoReconciler(strategy, false);
+            reconciler.setIsAllowedToModifyDocument(false);
+            reconciler.setDelay(500);
+
+            return reconciler;
+        }
+        return null;
+    }
+
+    /**
+     * @return the editor
+     */
+    protected ITextEditor getEditor() {
+        return editor;
+    }
 }

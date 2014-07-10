@@ -27,6 +27,7 @@ import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.dom.ASTVisitor;
 import com.cisco.yangide.core.dom.GroupingDefinition;
 import com.cisco.yangide.core.dom.Module;
+import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.TypeDefinition;
 
 /**
@@ -173,6 +174,13 @@ public class IndexManager extends JobManager {
                 @Override
                 public boolean visit(Module module) {
                     addElementIndexInfo(new ElementIndexInfo(module, moduleName, revision, ElementIndexType.MODULE,
+                            project, path, entry));
+                    return true;
+                }
+
+                @Override
+                public boolean visit(SubModule module) {
+                    addElementIndexInfo(new ElementIndexInfo(module, moduleName, revision, ElementIndexType.SUBMODULE,
                             project, path, entry));
                     return true;
                 }

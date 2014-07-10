@@ -17,4 +17,13 @@ public class SubModule extends Module {
     public String getNodeName() {
         return "submodule";
     }
+
+    @Override
+    public void accept(ASTVisitor visitor) {
+        visitor.preVisit(this);
+        boolean visitChildren = visitor.visit(this);
+        if (visitChildren) {
+            visitChildren(visitor);
+        }
+    }
 }

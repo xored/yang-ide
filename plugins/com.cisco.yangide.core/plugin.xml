@@ -1,19 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
+   <extension point="org.eclipse.core.resources.markers"
          id="problem"
-         name="YANG Problem"
-         point="org.eclipse.core.resources.markers">
-      <persistent
-            value="true">
-      </persistent>
-      <super
-            type="org.eclipse.core.resources.problemmarker">
-      </super>
-      <super
-            type="org.eclipse.core.resources.textmarker">
-      </super>
+         name="YANG Problem">
+      <persistent value="true"/>
+      <super type="org.eclipse.core.resources.problemmarker"/>
+      <super type="org.eclipse.core.resources.textmarker"/>
    </extension>
 
+   <extension point="org.eclipse.core.resources.markers"
+         id="syntaxproblem"
+         name="YANG Syntax Problem">
+      <super type="org.eclipse.core.resources.textmarker"/>
+   </extension>
+   
+    <extension
+      point="org.eclipse.ui.editors.markerAnnotationSpecification">
+      
+        <specification
+            annotationType="com.cisco.yangide.core.error"
+            symbolicIcon="error"
+            includeOnPreferencePage="true"
+            label="YANG Problem"
+            colorPreferenceKey="com.cisco.yangide.core.error.color"
+            colorPreferenceValue="192,255,192"
+            overviewRulerPreferenceKey="com.cisco.yangide.core.error.overview"
+            textPreferenceKey="com.cisco.yangide.core.error.text"
+            >
+        </specification>
+    </extension>
+    
+    <extension
+          point="org.eclipse.ui.editors.annotationTypes">
+        <type
+            name="com.cisco.yangide.core.error"
+            super="org.eclipse.ui.workbench.texteditor.error"
+            markerType="com.cisco.yangide.core.problem"
+            markerSeverity="2">
+        </type>
+      <type
+            name="com.cisco.yangide.core.syntax"
+            super="org.eclipse.ui.workbench.texteditor.error"
+            markerType="com.cisco.yangide.core.syntaxproblem"
+            markerSeverity="2">
+      </type>
+    </extension>
 </plugin>

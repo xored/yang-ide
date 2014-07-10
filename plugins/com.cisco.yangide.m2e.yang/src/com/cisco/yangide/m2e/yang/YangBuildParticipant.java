@@ -10,13 +10,12 @@ package com.cisco.yangide.m2e.yang;
 import java.io.File;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import org.apache.maven.plugin.MojoExecution;
 import org.codehaus.plexus.util.Scanner;
 import org.eclipse.core.filesystem.URIUtil;
 import org.eclipse.core.resources.IContainer;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
@@ -27,9 +26,8 @@ import org.eclipse.m2e.core.project.configurator.MojoExecutionBuildParticipant;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
 import com.cisco.yangide.core.YangCorePlugin;
-import com.cisco.yangide.core.indexing.ElementIndexInfo;
-import com.cisco.yangide.core.indexing.ElementIndexType;
-import com.cisco.yangide.core.model.YangModelManager;
+import com.cisco.yangide.core.internal.IYangValidationListener;
+import com.cisco.yangide.core.internal.YangParserUtil;
 import com.cisco.yangide.ui.YangUIPlugin;
 import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
 
@@ -37,7 +35,6 @@ import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
  * @author Konstantin Zaitsev
  */
 public class YangBuildParticipant extends MojoExecutionBuildParticipant {
-    private static Pattern YANG_ERROR_0_6_1 = Pattern.compile("Error in module '([^']+)' at line (\\d+): (.+)");
 
     public YangBuildParticipant(MojoExecution execution, boolean runOnIncremental) {
         super(execution, runOnIncremental);
@@ -64,6 +61,24 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
             return null;
         }
 
+        for (String path : includedFiles) {
+            final IFile ifile = YangCorePlugin.getIFileFromFile(new File(ds.getBasedir(), path));
+            if (ifile != null) {
+                YangParserUtil.validateYangFile(YangCorePlugin.createYangFile(ifile).getBuffer().getContents()
+                        .toCharArray(), new IYangValidationListener() {
+
+                    @Override
+                    public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
+                        YangCorePlugin.createProblemMarker(ifile, msg, lineNumber, charStart, charEnd);
+                    }
+
+                    @Override
+                    public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
+                        YangCorePlugin.createProblemMarker(ifile, msg, lineNumber, charStart, charEnd);
+                    }
+                });
+            }
+        }
         Set<File> outputDirs = new HashSet<>();
         YangGeneratorConfiguration[] confs = maven.getMojoParameterValue(getSession().getCurrentProject(),
                 getMojoExecution(), YangM2EPlugin.YANG_CODE_GENERATORS, YangGeneratorConfiguration[].class, monitor);
@@ -91,7 +106,7 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
         Set<IProject> result = super.build(kind, monitor);
 
         for (Throwable ex : getSession().getResult().getExceptions()) {
-            createMarker(getMavenProjectFacade().getProject(), ex);
+            YangCorePlugin.log(ex);
         }
 
         for (File outputDir : outputDirs) {
@@ -99,41 +114,5 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
         }
 
         return result;
-    }
-
-    /**
-     * @param ex
-     */
-    private void createMarker(IProject project, Throwable ex) {
-        Throwable exception = ex.getCause();
-        String className = exception.getClass().getName();
-        if (className.equals("org.opendaylight.yangtools.yang.parser.util.YangParseException")) {
-            Throwable cause = exception.getCause();
-            if (cause.getClass().getName()
-                    .equals("org.opendaylight.yangtools.yang.model.parser.api.YangSyntaxErrorException")) {
-                YangCorePlugin.createProblemMarker(project, cause.getMessage(), -1);
-            } else {
-                // handle 0.6.1 version
-                String[] parts = exception.toString().split("\n");
-                if (parts.length > 1) {
-                    for (int i = 1; i < parts.length; i++) {
-                        System.out.println(parts[i]);
-                        Matcher m = YANG_ERROR_0_6_1.matcher(parts[i]);
-                        if (m.matches()) {
-                            String module = m.group(1);
-                            ElementIndexInfo[] result = YangModelManager.search(null, null, module,
-                                    ElementIndexType.MODULE, getMavenProjectFacade().getProject(), null);
-                            if (result.length > 0) {
-                                YangCorePlugin.createProblemMarker(result[0].getPath(), m.group(3),
-                                        Integer.parseInt(m.group(2)));
-                            }
-                        }
-                    }
-                }
-            }
-        } else if (className.equals("org.opendaylight.yangtools.yang.parser.util.YangValidationException")) {
-            YangCorePlugin.createProblemMarker(project, exception.getMessage(), -1);
-
-        }
     }
 }

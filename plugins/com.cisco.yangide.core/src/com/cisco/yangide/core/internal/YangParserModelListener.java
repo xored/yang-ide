@@ -269,7 +269,6 @@ public class YangParserModelListener extends YangParserBaseListener {
      * @return
      */
     public Module getModule() {
-        module.setRevision(revision);
         return module;
     }
 

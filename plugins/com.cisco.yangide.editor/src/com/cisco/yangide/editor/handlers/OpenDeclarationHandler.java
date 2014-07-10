@@ -23,7 +23,7 @@ import com.cisco.yangide.core.dom.TypeReference;
 import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
-import com.cisco.yangide.core.internal.YangASTParser;
+import com.cisco.yangide.core.internal.YangParserUtil;
 import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.editor.EditorUtility;
 import com.cisco.yangide.editor.editors.YangEditor;
@@ -42,11 +42,10 @@ public class OpenDeclarationHandler extends AbstractHandler {
         IEditorPart editorPart = HandlerUtil.getActiveEditor(event);
         if (editorPart != null && editorPart instanceof YangEditor) {
             YangEditor editor = (YangEditor) editorPart;
-            YangASTParser parser = new YangASTParser();
 
             try {
                 ISelection selection = editor.getSelectionProvider().getSelection();
-                Module module = parser.parseYangFile(editor.getDocument().get().toCharArray());
+                Module module = YangParserUtil.parseYangFile(editor.getDocument().get().toCharArray(), null);
                 ASTNode node = module.getNodeAtPosition(((ITextSelection) selection).getOffset());
 
                 ElementIndexInfo[] searchResult = null;
