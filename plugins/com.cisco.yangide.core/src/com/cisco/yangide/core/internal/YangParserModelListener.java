@@ -63,7 +63,7 @@ public class YangParserModelListener extends YangParserBaseListener {
     public final static DateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     private Module module;
-    private URI namespace;
+    private URI namespace = URI.create("none");
     private String yangModelPrefix;
     private String revision = SIMPLE_DATE_FORMAT.format(new Date(0L));
     private Stack<ASTNode> stack = new Stack<>();
@@ -99,7 +99,11 @@ public class YangParserModelListener extends YangParserBaseListener {
             final ParseTree treeNode = ctx.getChild(i);
             if (treeNode instanceof Namespace_stmtContext) {
                 final String namespaceStr = stringFromNode(treeNode);
-                namespace = URI.create(namespaceStr);
+                try {
+                    namespace = URI.create(namespaceStr);
+                } catch (Exception e) {
+                    // ignore exception
+                }
                 SimpleNode<URI> astNode = new SimpleNode<URI>(module, ((Namespace_stmtContext) treeNode)
                         .NAMESPACE_KEYWORD().getText(), namespace);
                 updateNodePosition(astNode, treeNode);

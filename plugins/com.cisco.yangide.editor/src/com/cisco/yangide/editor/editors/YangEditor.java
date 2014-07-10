@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 //import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.jdt.ui.text.IColorManager;
@@ -19,6 +20,7 @@ import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.ITextEditorHelpContextIds;
@@ -27,6 +29,9 @@ import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
+import com.cisco.yangide.core.YangCorePlugin;
+import com.cisco.yangide.core.YangModelException;
+import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.actions.AddBlockCommentAction;
 import com.cisco.yangide.editor.actions.IYangEditorActionDefinitionIds;
@@ -75,6 +80,19 @@ public class YangEditor extends TextEditor {
     public void dispose() {
         colorManager.dispose();
         super.dispose();
+        IEditorInput input = getEditorInput();
+        // revert index to file content instead of editor
+        if (input != null && input instanceof IFileEditorInput) {
+            IFile file = ((IFileEditorInput) input).getFile();
+            if (file != null) {
+                try {
+                    YangModelManager.getYangModelManager().removeInfoAndChildren(YangCorePlugin.createYangFile(file));
+                    YangModelManager.getIndexManager().addSource(file);
+                } catch (YangModelException e) {
+                    // ignore exception
+                }
+            }
+        }
     }
 
     /*
@@ -204,7 +222,7 @@ public class YangEditor extends TextEditor {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.editors.text.TextEditor#createActions()
      */
     @Override

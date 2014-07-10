@@ -9,6 +9,7 @@ package com.cisco.yangide.editor.editors.text;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -26,7 +27,6 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cisco.yangide.core.YangCorePlugin;
-import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.internal.IYangValidationListener;
 import com.cisco.yangide.core.internal.YangParserUtil;
@@ -86,28 +86,34 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
             annotationModel.removeAnnotation(annotation);
         }
         YangFile yangFile = YangCorePlugin.createYangFile(file);
-        Module module = YangParserUtil.parseYangFile(document.get().toCharArray(), new IYangValidationListener() {
-
-            @Override
-            public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
-                annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart, charEnd
-                        - charStart));
-            }
-
-            @Override
-            public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
-                annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart, charEnd
-                        - charStart));
-            }
-        });
         try {
-            YangFileInfo fileInfo = (YangFileInfo) yangFile.getElementInfo(monitor);
-            fileInfo.setModule(module);
-            fileInfo.setIsStructureKnown(true);
-            // reindex content
-            YangModelManager.getIndexManager().addSource(file);
-        } catch (YangModelException e) {
-            // ignore this exception on reconcile
+            final AtomicBoolean errors = new AtomicBoolean(false);
+            Module module = YangParserUtil.parseYangFile(document.get().toCharArray(), new IYangValidationListener() {
+
+                @Override
+                public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
+                    errors.set(true);
+                    annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart, charEnd
+                            - charStart));
+                }
+
+                @Override
+                public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
+                    errors.set(true);
+                    annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart, charEnd
+                            - charStart));
+                }
+            });
+            // reindex if no errors found
+            if (!errors.get()) {
+                YangFileInfo fileInfo = (YangFileInfo) yangFile.getElementInfo(monitor);
+                fileInfo.setModule(module);
+                fileInfo.setIsStructureKnown(true);
+                // reindex content
+                YangModelManager.getIndexManager().addSource(file);
+            }
+        } catch (Exception e) {
+            // ignore any exception on reconcile
         }
     }
 
