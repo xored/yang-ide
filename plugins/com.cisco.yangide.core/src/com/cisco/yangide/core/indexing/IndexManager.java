@@ -163,7 +163,6 @@ public class IndexManager extends JobManager {
                 + info.getType());
         idxKeywords.add(Fun.t6(info.getModule(), info.getRevision(), info.getName(), info.getType(), info.getPath(),
                 info));
-        db.commit();
     }
 
     public void addModule(Module module, final IProject project, final IPath path, final String entry) {
@@ -199,6 +198,7 @@ public class IndexManager extends JobManager {
                     return true;
                 }
             });
+            db.commit();
         }
     }
 

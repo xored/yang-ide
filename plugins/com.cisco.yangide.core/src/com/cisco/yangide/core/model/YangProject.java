@@ -23,6 +23,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.JavaCore;
 
 import com.cisco.yangide.core.CoreUtil;
@@ -52,6 +53,7 @@ public class YangProject extends YangElement {
             Map<IOpenable, OpenableElementInfo> newElements, IResource underlyingResource) throws YangModelException {
         final HashSet<IResource> resources = new HashSet<IResource>();
         final HashSet<IPath> externalJarsPath = new HashSet<IPath>();
+        IJavaProject javaProject = JavaCore.create(project);
         try {
             project.accept(new IResourceVisitor() {
                 @Override
@@ -62,12 +64,17 @@ public class YangProject extends YangElement {
                     return true;
                 }
             });
-            IClasspathEntry[] classpath = JavaCore.create(project).getResolvedClasspath(true);
-            for (int i = 0, length = classpath.length; i < length; i++) {
-                IClasspathEntry entry = classpath[i];
-                IPath entryPath = entry.getPath();
-                if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-                    externalJarsPath.add(entryPath);
+
+            if (javaProject.isOpen()) {
+                ((YangProjectInfo) info).setClasspath(javaProject.getRawClasspath());
+
+                IClasspathEntry[] classpath = javaProject.getResolvedClasspath(true);
+                for (int i = 0, length = classpath.length; i < length; i++) {
+                    IClasspathEntry entry = classpath[i];
+                    IPath entryPath = entry.getPath();
+                    if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
+                        externalJarsPath.add(entryPath);
+                    }
                 }
             }
         } catch (CoreException e) {
@@ -91,7 +98,12 @@ public class YangProject extends YangElement {
             }
         }
         info.setChildren(result.toArray(new IOpenable[result.size()]));
-        return true;
+        return javaProject.isOpen();
+    }
+
+    @Override
+    public void makeConsistent(IProgressMonitor progress) throws YangModelException {
+        YangModelManager.getYangModelManager().removeInfoAndChildren(this);
     }
 
     @Override
@@ -116,5 +128,19 @@ public class YangProject extends YangElement {
             return new Status(Status.ERROR, YangCorePlugin.PLUGIN_ID, "Does not exist");
         }
         return Status.OK_STATUS;
+    }
+
+    /**
+     * @param classpath
+     * @return
+     * @throws YangModelException
+     */
+    public boolean isClasspathChanged(IClasspathEntry[] classpath) throws YangModelException {
+        return !((YangProjectInfo) getElementInfo(null)).isClasspathEquals(classpath);
+    }
+
+    @Override
+    protected OpenableElementInfo createElementInfo() {
+        return new YangProjectInfo();
     }
 }

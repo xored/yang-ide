@@ -39,6 +39,7 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
         this.parent = parent;
     }
 
+    @Override
     public void bufferChanged(BufferChangedEvent event) {
         if (event.getBuffer().isClosed()) {
             YangModelManager.getYangModelManager().getElementsOutOfSynchWithBuffers().remove(this);
@@ -48,6 +49,7 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
         }
     }
 
+    @Override
     public IBuffer getBuffer() throws YangModelException {
         if (hasBuffer()) {
             // ensure element is open
@@ -74,6 +76,7 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
         }
     }
 
+    @Override
     public boolean exists() {
         try {
             getElementInfo(null);
@@ -84,6 +87,7 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
         return false;
     }
 
+    @Override
     public String toStringWithAncestors() {
         StringBuffer sb = new StringBuffer(getName());
         IOpenable p = getParent();
@@ -93,26 +97,32 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
         return sb.toString();
     }
 
+    @Override
     public IOpenable getParent() {
         return this.parent;
     }
 
+    @Override
     public IPath getPath() {
         return null;
     }
 
+    @Override
     public IOpenable getPrimaryElement() {
         return null;
     }
 
+    @Override
     public IResource getResource() {
         return null;
     }
 
+    @Override
     public boolean isReadOnly() {
         return false;
     }
 
+    @Override
     public boolean isStructureKnown() throws YangModelException {
         return false;
     }
@@ -125,6 +135,7 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
         return !buffer.hasUnsavedChanges();
     }
 
+    @Override
     public void close() throws YangModelException {
         if (hasBuffer()) {
             IBuffer buffer = getBufferManager().getBuffer(this);
@@ -137,27 +148,32 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
 
     }
 
+    @Override
     public boolean hasUnsavedChanges() throws YangModelException {
         // TODO Auto-generated method stub
         return false;
     }
 
+    @Override
     public boolean isConsistent() throws YangModelException {
         return !YangModelManager.getYangModelManager().getElementsOutOfSynchWithBuffers().contains(this);
     }
 
+    @Override
     public boolean isOpen() {
         return YangModelManager.getYangModelManager().getInfo(this) != null;
     }
 
+    @Override
     public void makeConsistent(IProgressMonitor progress) throws YangModelException {
-        // TODO Auto-generated method stub
     }
 
+    @Override
     public void open(IProgressMonitor progress) throws YangModelException {
         getElementInfo(progress);
     }
 
+    @Override
     public void save(IProgressMonitor progress, boolean force) throws YangModelException {
         if (isReadOnly()) {
             throw new YangModelException("Resource is read-only");
@@ -187,6 +203,7 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
         }
     }
 
+    @Override
     public String getName() {
         return getPath().toString();
     }
@@ -199,6 +216,7 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
         return CoreUtil.combineHashCodes(getName().hashCode(), this.parent.hashCode());
     }
 
+    @Override
     public boolean equals(Object o) {
 
         if (this == o) {
@@ -225,7 +243,11 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
         IResource underlResource = getResource();
         IStatus status = validateExistence(underlResource);
         if (!status.isOK()) {
-            throw new YangModelException(status.getException(), status.getCode());
+            if (status.getException() != null) {
+                throw new YangModelException(status.getException(), status.getCode());
+            } else {
+                throw new YangModelException(status.getMessage());
+            }
         }
 
         if (monitor != null && monitor.isCanceled()) {
@@ -239,7 +261,7 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
 
         // build the structure of the openable (this will open the buffer if needed)
         try {
-            OpenableElementInfo openableElementInfo = (OpenableElementInfo) info;
+            OpenableElementInfo openableElementInfo = info;
             boolean isStructureKnown = buildStructure(openableElementInfo, monitor, newElements, underlResource);
             openableElementInfo.setIsStructureKnown(isStructureKnown);
         } catch (YangModelException e) {

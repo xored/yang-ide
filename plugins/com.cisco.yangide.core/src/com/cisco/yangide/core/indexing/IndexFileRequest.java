@@ -40,7 +40,7 @@ public class IndexFileRequest extends IndexRequest {
             YangFileInfo info = (YangFileInfo) YangCorePlugin.createYangFile(file).getElementInfo(progressMonitor);
             manager.addModule(info.getModule(), file.getProject(), file.getFullPath(), "");
         } catch (YangModelException e) {
-            YangCorePlugin.log(e);
+            // ignore exception
         }
         return true;
     }
