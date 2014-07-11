@@ -21,6 +21,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.core.JavaProject;
@@ -69,12 +70,17 @@ public class IndexAllProject extends IndexRequest {
                 for (int i = 0, length = classpath.length; i < length; i++) {
                     IClasspathEntry entry = classpath[i];
                     IPath entryPath = entry.getPath();
-                    if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
-                        externalJarsPath.add(entryPath);
-                    }
                     IPath output = entry.getOutputLocation();
                     if (output != null && !entryPath.equals(output)) {
                         ignoredPath.add(output);
+                    }
+                }
+                IPackageFragmentRoot[] roots = proj.getAllPackageFragmentRoots();
+                for (int i = 0, length = roots.length; i < length; i++) {
+                    IPath entryPath = roots[i].getPath();
+                    if (entryPath != null && entryPath.toFile().exists()
+                            && entryPath.lastSegment().toLowerCase().endsWith(".jar")) {
+                        externalJarsPath.add(entryPath);
                     }
                 }
             }

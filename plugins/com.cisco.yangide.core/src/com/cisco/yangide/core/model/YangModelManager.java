@@ -27,6 +27,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jdt.core.JavaCore;
 
 import com.cisco.yangide.core.IOpenable;
 import com.cisco.yangide.core.OpenableElementCache;
@@ -82,6 +83,9 @@ public final class YangModelManager implements ISaveParticipant {
             IResourceChangeEvent.PRE_BUILD | IResourceChangeEvent.POST_BUILD | IResourceChangeEvent.POST_CHANGE
                     | IResourceChangeEvent.PRE_DELETE | IResourceChangeEvent.PRE_CLOSE
                     | IResourceChangeEvent.PRE_REFRESH);
+
+            // Register for JDT Class path changes.
+            JavaCore.addElementChangedListener(deltaProcessor);
 
             // start indexing
             if (this.indexManager != null) {

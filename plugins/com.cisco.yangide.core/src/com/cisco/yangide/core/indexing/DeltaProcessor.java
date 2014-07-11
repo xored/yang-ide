@@ -22,7 +22,11 @@ import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.ISafeRunnable;
 import org.eclipse.core.runtime.SafeRunner;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IElementChangedListener;
+import org.eclipse.jdt.core.IJavaElement;
+import org.eclipse.jdt.core.IJavaElementDelta;
 import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.jdt.internal.core.JavaProject;
@@ -45,7 +49,7 @@ import com.cisco.yangide.core.model.YangProject;
  * @date Jun 25, 2014
  */
 @SuppressWarnings("restriction")
-public class DeltaProcessor implements IResourceChangeListener {
+public class DeltaProcessor implements IResourceChangeListener, IElementChangedListener {
     static class OutputsInfo {
         int outputCount;
         IPath[] paths;
@@ -608,8 +612,8 @@ public class DeltaProcessor implements IResourceChangeListener {
                             // if any flag is set but SYNC or MARKER, this delta should be
                             // considered
                             if (delta.getAffectedChildren().length == 0 // only check leaf delta
-                            // nodes
-                            && (delta.getFlags() & ~(IResourceDelta.SYNC | IResourceDelta.MARKERS)) != 0) {
+                                    // nodes
+                                    && (delta.getFlags() & ~(IResourceDelta.SYNC | IResourceDelta.MARKERS)) != 0) {
                                 throw new FoundRelevantDeltaException();
                             }
                         }
@@ -683,5 +687,42 @@ public class DeltaProcessor implements IResourceChangeListener {
             }
         }
         return false;
+    }
+
+    @Override
+    public void elementChanged(org.eclipse.jdt.core.ElementChangedEvent event) {
+        IJavaElementDelta delta = event.getDelta();
+        processJavaDeltas(delta.getAffectedChildren());
+    }
+
+    private boolean processJavaDeltas(IJavaElementDelta[] affectedChildren) {
+        for (IJavaElementDelta d : affectedChildren) {
+            IJavaElement element = d.getElement();
+            if (element instanceof IPackageFragmentRoot) {
+                IClasspathEntry entry;
+                try {
+                    entry = ((IPackageFragmentRoot) element).getResolvedClasspathEntry();
+                    IPath path = entry.getPath();
+                    if (path != null && path.toFile().exists() && path.lastSegment().toLowerCase().endsWith(".jar")) {
+
+                        switch (d.getKind()) {
+                        case IJavaElementDelta.ADDED:
+                        case IJavaElementDelta.CHANGED:
+                            this.manager.indexManager.addJarFile(element.getJavaProject().getProject(), path);
+                            break;
+                        case IJavaElementDelta.REMOVED:
+                            this.manager.indexManager.indexAll(element.getJavaProject().getProject());
+                            return false;
+                        }
+                    }
+                } catch (JavaModelException e) {
+                    YangCorePlugin.log(e);
+                }
+            }
+            if (!processJavaDeltas(d.getAffectedChildren())) {
+                return false;
+            }
+        }
+        return true;
     }
 }
