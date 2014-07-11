@@ -12,10 +12,40 @@ package com.cisco.yangide.core.dom;
  * @date Jul 4, 2014
  */
 public class SubModule extends Module {
+    private String parentModule;
+    private String parentPrefix;
 
     @Override
     public String getNodeName() {
         return "submodule";
+    }
+
+    /**
+     * @return the parentModule
+     */
+    public String getParentModule() {
+        return parentModule;
+    }
+
+    /**
+     * @param parentModule the parentModule to set
+     */
+    public void setParentModule(String parentModule) {
+        this.parentModule = parentModule;
+    }
+
+    /**
+     * @return the parentPrefix
+     */
+    public String getParentPrefix() {
+        return parentPrefix;
+    }
+
+    /**
+     * @param parentPrefix the parentPrefix to set
+     */
+    public void setParentPrefix(String parentPrefix) {
+        this.parentPrefix = parentPrefix;
     }
 
     @Override

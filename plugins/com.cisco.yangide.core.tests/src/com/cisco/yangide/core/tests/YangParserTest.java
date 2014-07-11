@@ -12,6 +12,7 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 
 import com.cisco.yangide.core.dom.Module;
+import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.internal.YangParserUtil;
 
 public class YangParserTest extends TestCase {
@@ -33,7 +34,7 @@ public class YangParserTest extends TestCase {
 
             Module module = YangParserUtil.parseYangFile(getContent(in), null);
             assertEquals(module, module.getNodeAtPosition(1));
-            assertEquals(module.getImports().get(0), module.getNodeAtPosition(100));
+            assertEquals(module.getImports().get("crypto-base"), module.getNodeAtPosition(100));
         }
     }
 
@@ -44,7 +45,17 @@ public class YangParserTest extends TestCase {
             Module module = YangParserUtil.parseYangFile(getContent(in), null);
             assertNotNull(module);
             assertEquals(1, module.getImports().size());
-            assertNotNull(module.getImports().get(0));
+        }
+    }
+
+    public void testSubmoduleParse() throws Exception {
+        try (InputStream in = FileLocator.openStream(Platform.getBundle("com.cisco.yangide.core.tests"), new Path(
+                "yang/acme-types.yang"), false)) {
+
+            SubModule module = (SubModule) YangParserUtil.parseYangFile(getContent(in), null);
+            assertNotNull(module);
+            assertEquals("acme-system", module.getParentModule());
+            assertEquals("acme", module.getParentPrefix());
         }
     }
 

@@ -104,6 +104,7 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
                             - charStart));
                 }
             });
+            System.out.println(module.getIncludeByName("sub-test"));
             // reindex if no errors found
             if (!errors.get()) {
                 YangFileInfo fileInfo = (YangFileInfo) yangFile.getElementInfo(monitor);

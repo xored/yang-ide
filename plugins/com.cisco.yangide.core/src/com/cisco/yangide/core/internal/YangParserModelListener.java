@@ -17,6 +17,7 @@ import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Belongs_to_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Contact_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Container_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Description_stmtContext;
@@ -88,6 +89,22 @@ public class YangParserModelListener extends YangParserBaseListener {
         stack.push(module);
         updateNamedNode(module, ctx);
         setNodeDescription(module, ctx);
+    }
+
+    @Override
+    public void enterBelongs_to_stmt(Belongs_to_stmtContext ctx) {
+        if (module instanceof SubModule) {
+            String moduleName = stringFromNode(ctx);
+            String prefix = null;
+            for (int i = 0; i < ctx.getChildCount(); ++i) {
+                final ParseTree treeNode = ctx.getChild(i);
+                if (treeNode instanceof Prefix_stmtContext) {
+                    prefix = stringFromNode(treeNode);
+                }
+            }
+            ((SubModule) module).setParentModule(moduleName);
+            ((SubModule) module).setParentPrefix(prefix);
+        }
     }
 
     @Override
@@ -304,8 +321,17 @@ public class YangParserModelListener extends YangParserBaseListener {
             if (moduleImport != null) {
                 return new QName(moduleImport.getName(), moduleImport.getPrefix(), parts[1], moduleImport.getRevision());
             }
+
+            if (module instanceof SubModule) {
+                SubModule subModule = (SubModule) module;
+                if (parts[0].equals(subModule.getParentPrefix())) {
+                    return new QName(subModule.getParentModule(), parts[0], typeName, revision);
+                }
+            }
         }
-        return new QName(module.getName(), module.getPrefix().getValue(), typeName, revision);
+
+        String prefix = module.getPrefix() != null ? module.getPrefix().getValue() : null;
+        return new QName(module.getName(), prefix, typeName, revision);
     }
 
     private void updateRevisionForRevisionStatement(final ParseTree treeNode) {
