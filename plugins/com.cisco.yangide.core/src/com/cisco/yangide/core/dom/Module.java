@@ -9,6 +9,8 @@ package com.cisco.yangide.core.dom;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -27,7 +29,11 @@ public class Module extends ASTCompositeNode {
     private SimpleNode<String> organization;
     private SimpleNode<String> contact;
 
-    private ArrayList<ModuleImport> imports = new ArrayList<ModuleImport>();
+    private Map<String, ModuleImport> imports = new HashMap<>();
+    private Map<String, ModuleImport> importPrefixes = new HashMap<>();
+
+    /** Contains name and submodule. */
+    private Map<String, SubModuleInclude> includes = new HashMap<>();
 
     // private final Set<FeatureDefinition> features = new TreeSet<>(Comparators.SCHEMA_NODE_COMP);
     private ArrayList<TypeDefinition> typeDefinitions = new ArrayList<TypeDefinition>();
@@ -189,8 +195,15 @@ public class Module extends ASTCompositeNode {
     /**
      * @return the imports
      */
-    public ArrayList<ModuleImport> getImports() {
+    public Map<String, ModuleImport> getImports() {
         return imports;
+    }
+
+    /**
+     * @return the includes
+     */
+    public Map<String, SubModuleInclude> getIncludes() {
+        return includes;
     }
 
     /**
@@ -205,6 +218,13 @@ public class Module extends ASTCompositeNode {
      */
     public ArrayList<GroupingDefinition> getGroupings() {
         return groupings;
+    }
+
+    public void addImport(ModuleImport moduleImport) {
+        this.imports.put(moduleImport.getName(), moduleImport);
+        if (moduleImport.getPrefix() != null) {
+            this.importPrefixes.put(moduleImport.getPrefix(), moduleImport);
+        }
     }
 
     @Override
@@ -237,11 +257,31 @@ public class Module extends ASTCompositeNode {
      * @param prefix namespace prefix
      * @return module import by prefix or <code>null</code> if no import found
      */
-    public ModuleImport getImport(String prefix) {
-        for (ModuleImport moduleImport : imports) {
-            if (prefix.equals(moduleImport.getPrefix())) {
-                return moduleImport;
-            }
+    public ModuleImport getImportByPrefix(String prefix) {
+        if (importPrefixes.containsKey(prefix)) {
+            return importPrefixes.get(prefix);
+        }
+        return null;
+    }
+
+    /**
+     * @param name module name
+     * @return import statement by name or <code>null</code> if import not found
+     */
+    public ModuleImport getImportByName(String name) {
+        if (imports.containsKey(name)) {
+            return imports.get(name);
+        }
+        return null;
+    }
+
+    /**
+     * @param name submodule name
+     * @return submodule or <code>null</code> if this submodule not included
+     */
+    public SubModuleInclude getIncludeByName(String name) {
+        if (includes.containsKey(name)) {
+            return includes.get(name);
         }
         return null;
     }
@@ -255,7 +295,8 @@ public class Module extends ASTCompositeNode {
         acceptChild(visitor, organization);
         acceptChild(visitor, contact);
 
-        acceptChildren(visitor, imports);
+        acceptChildren(visitor, imports.values());
+        acceptChildren(visitor, includes.values());
         acceptChildren(visitor, typeDefinitions);
         acceptChildren(visitor, groupings);
 

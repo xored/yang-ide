@@ -25,6 +25,10 @@ public abstract class ASTVisitor {
         return true;
     }
 
+    public boolean visit(SubModuleInclude subModuleInclude) {
+        return true;
+    }
+
     public boolean visit(TypeDefinition typeDefinition) {
         return true;
     }
@@ -60,4 +64,5 @@ public abstract class ASTVisitor {
     public void preVisit(ASTNode node) {
 
     }
+
 }

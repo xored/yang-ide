@@ -9,25 +9,21 @@ package com.cisco.yangide.core.dom;
 
 /**
  * @author Konstantin Zaitsev
- * @date Jun 26, 2014
+ * @date Jul 11, 2014
  */
-public class ModuleImport extends ASTNamedNode {
+public class SubModuleInclude extends ASTNamedNode {
 
-    /** Module revision in date format. */
+    /** SubModule revision in date format. */
     private String revision;
 
-    /** Module namespace prefix. */
-    private String prefix;
-
-    public ModuleImport(ASTNode parent, String revision, String prefix) {
+    public SubModuleInclude(ASTNode parent, String revision) {
         super(parent);
         this.revision = revision;
-        this.prefix = prefix;
     }
 
     @Override
     public String getNodeName() {
-        return "import";
+        return "include";
     }
 
     /**
@@ -35,13 +31,6 @@ public class ModuleImport extends ASTNamedNode {
      */
     public String getRevision() {
         return revision;
-    }
-
-    /**
-     * @return the prefix
-     */
-    public String getPrefix() {
-        return prefix;
     }
 
     @Override

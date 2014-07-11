@@ -22,6 +22,7 @@ import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Container_stmtCont
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Description_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Grouping_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Import_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Include_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Leaf_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Module_header_stmtsContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Module_stmtContext;
@@ -51,6 +52,7 @@ import com.cisco.yangide.core.dom.ModuleImport;
 import com.cisco.yangide.core.dom.QName;
 import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
+import com.cisco.yangide.core.dom.SubModuleInclude;
 import com.cisco.yangide.core.dom.TypeDefinition;
 import com.cisco.yangide.core.dom.TypeReference;
 import com.cisco.yangide.core.dom.UsesNode;
@@ -199,7 +201,22 @@ public class YangParserModelListener extends YangParserBaseListener {
         }
         ModuleImport moduleImport = new ModuleImport(module, importRevision, importPrefix);
         updateNamedNode(moduleImport, ctx);
-        module.getImports().add(moduleImport);
+        module.addImport(moduleImport);
+    }
+
+    @Override
+    public void enterInclude_stmt(Include_stmtContext ctx) {
+        String includeRevision = null;
+
+        for (int i = 0; i < ctx.getChildCount(); ++i) {
+            final ParseTree treeNode = ctx.getChild(i);
+            if (treeNode instanceof Revision_date_stmtContext) {
+                includeRevision = stringFromNode(treeNode);
+            }
+        }
+        SubModuleInclude subModuleInclude = new SubModuleInclude(module, includeRevision);
+        updateNamedNode(subModuleInclude, ctx);
+        module.getIncludes().put(subModuleInclude.getName(), subModuleInclude);
     }
 
     @Override
@@ -283,7 +300,7 @@ public class YangParserModelListener extends YangParserBaseListener {
     private QName parseQName(String typeName) {
         String[] parts = typeName.split(":");
         if (parts.length == 2) {
-            ModuleImport moduleImport = module.getImport(parts[0]);
+            ModuleImport moduleImport = module.getImportByPrefix(parts[0]);
             if (moduleImport != null) {
                 return new QName(moduleImport.getName(), moduleImport.getPrefix(), parts[1], moduleImport.getRevision());
             }

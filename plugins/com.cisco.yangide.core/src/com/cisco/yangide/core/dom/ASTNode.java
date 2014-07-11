@@ -7,7 +7,7 @@
  */
 package com.cisco.yangide.core.dom;
 
-import java.util.List;
+import java.util.Collection;
 
 /**
  * @author Konstantin Zaitsev
@@ -124,7 +124,7 @@ public abstract class ASTNode {
         child.accept(visitor);
     }
 
-    final void acceptChildren(ASTVisitor visitor, List<? extends ASTNode> children) {
+    final void acceptChildren(ASTVisitor visitor, Collection<? extends ASTNode> children) {
         // TODO KOS: rewrite to concurrent invocation
         for (ASTNode child : children) {
             visitor.preVisit(child);
