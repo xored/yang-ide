@@ -43,6 +43,7 @@ import org.eclipse.swt.graphics.Image;
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
+import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.SubModuleInclude;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
@@ -168,9 +169,6 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
      */
     private static Map<String, List> createKeywordHierarchyMap() {
         Map<String, List> keywordHierarchyMap = new HashMap<String, List>();
-
-        keywordHierarchyMap.put("", Arrays.asList(new String[] 
-                {}));
         
         keywordHierarchyMap.put("module", Arrays.asList(new String[] 
                 {"anyxml", "augment", "choice", "contact", "container", "description", "deviation", "extension", "feature", "grouping", "identity", "import", "include", "leaf", "leaf-list", "list", "namespace", "notification", "organization", "prefix", "reference", "revision", "rpc", "typedef", "uses", "yang-version"}));
@@ -620,28 +618,31 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
      * @param elementIndexInfo
      * @return
      */
-    protected String computeProposalForElement(ElementIndexInfo elementIndexInfo){
+    protected String computeProposalForElement(ElementIndexInfo elementIndexInfo) {
         String result = null;
-        
+
         if (module != null) {
             if (module.getName().equals(elementIndexInfo.getModule()))
                 result = elementIndexInfo.getName();
-            else {
+            else if (module instanceof SubModule) {
+                if (((SubModule) module).getParentModule().equals(elementIndexInfo.getModule()))
+                    result = ((SubModule) module).getParentPrefix() + ":" + elementIndexInfo.getName();
+            } else {
 
-                SubModuleInclude submoduleInclude = module.getIncludeByName(elementIndexInfo.getModule());
-                if (submoduleInclude != null)
+                SubModuleInclude includedSubmodule = module.getIncludeByName(elementIndexInfo.getModule());
+                if (includedSubmodule != null)
                     result = elementIndexInfo.getName();
-                else{
+                else {
 
-                    ModuleImport moduleImport = module.getImportByName(elementIndexInfo.getModule());
+                    ModuleImport importedModule = module.getImportByName(elementIndexInfo.getModule());
 
-                    if (moduleImport != null)
-                        result = moduleImport.getPrefix() + ":" + elementIndexInfo.getName();
+                    if (importedModule != null)
+                        result = importedModule.getPrefix() + ":" + elementIndexInfo.getName();
                 }
             }
         }
         return result;
-    }    
+    }
     
     /**
      * @param document
