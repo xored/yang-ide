@@ -9,10 +9,13 @@ package com.cisco.yangide.editor.editors;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.jface.text.BadLocationException;
@@ -40,11 +43,13 @@ import org.eclipse.swt.graphics.Image;
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
+import com.cisco.yangide.core.dom.SubModuleInclude;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.core.internal.YangParserUtil;
 import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.editor.editors.text.Symbols;
 import com.cisco.yangide.editor.editors.text.YangHeuristicScanner;
 import com.cisco.yangide.editor.editors.text.YangIndenter;
 import com.cisco.yangide.editor.templates.GeneralContextType;
@@ -102,9 +107,11 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     private final static String[] fgKeywordProposals = YangScanner.keywords;
 
     private final static String[] fgBuiltinTypes = YangScanner.types;
+    
+    private final static Map<String, List> keywordHierarchyMap = createKeywordHierarchyMap();
 
     enum CompletionKind {
-        None, Keyword, Import, Type, Uses, Include
+        None, Keyword, Import, Type, Uses, Include, BelongsTo
     }
 
     protected IContextInformationValidator fValidator = new Validator();
@@ -127,6 +134,8 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
      * @see #determineProposalMode(IDocument, int, String)
      */
     private CompletionKind currentProposalMode = CompletionKind.None;
+
+    private Module module = null;
 
     /*
      * (non-Javadoc) Method declared on IContentAssistProcessor
@@ -152,6 +161,92 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             return result.proposals.toArray(new ICompletionProposal[0]);
         }
 
+    }
+
+    /**
+     * @return
+     */
+    private static Map<String, List> createKeywordHierarchyMap() {
+        Map<String, List> keywordHierarchyMap = new HashMap<String, List>();
+
+        keywordHierarchyMap.put("", Arrays.asList(new String[] 
+                {}));
+        
+        keywordHierarchyMap.put("module", Arrays.asList(new String[] 
+                {"anyxml", "augment", "choice", "contact", "container", "description", "deviation", "extension", "feature", "grouping", "identity", "import", "include", "leaf", "leaf-list", "list", "namespace", "notification", "organization", "prefix", "reference", "revision", "rpc", "typedef", "uses", "yang-version"}));
+        keywordHierarchyMap.put("import", Arrays.asList(new String[] 
+                {"prefix, revision-date"}));
+        keywordHierarchyMap.put("include", Arrays.asList(new String[] 
+                {"revision-date"}));
+        keywordHierarchyMap.put("revision", Arrays.asList(new String[] 
+                {"description", "reference"}));
+        keywordHierarchyMap.put("submodule", Arrays.asList(new String[] 
+                {"anyxml", "augment", "belongs-to", "choice", "contact", "container", "description", "deviation", "extension", "feature", "grouping", "identity", "import", "include", "leaf", "leaf-list", "list", "notification", "organization", "reference", "revision", "rpc", "typedef", "uses", "yang-version"}));
+        keywordHierarchyMap.put("belongs-to", Arrays.asList(new String[] 
+                {"prefix"}));
+        keywordHierarchyMap.put("typedef", Arrays.asList(new String[] 
+                {"default", "description", "reference", "status", "type", "units"}));
+        keywordHierarchyMap.put("type", Arrays.asList(new String[] 
+                {"bit", "enum", "length", "path", "pattern", "range", "require", "instance", "type"}));
+        keywordHierarchyMap.put("container", Arrays.asList(new String[] 
+                {"anyxml", "choice", "config", "container", "description", "grouping", "if-feature", "leaf", "leaf-list", "list", "must", "presence", "reference", "status", "typedef", "uses", "when"}));
+        keywordHierarchyMap.put("must", Arrays.asList(new String[] 
+                {"description", "error-app-tag", "error-message", "reference"}));
+        keywordHierarchyMap.put("leaf", Arrays.asList(new String[] 
+                {"config", "default", "description", "if-feature", "mandatory", "must", "reference", "status", "type", "units", "when"}));
+        keywordHierarchyMap.put("leaf-list", Arrays.asList(new String[] 
+                {"config", "description", "if-feature", "max-elements", "min-elements", "must", "ordered", "by", "reference", "status", "type", "units", "when"}));
+        keywordHierarchyMap.put("list", Arrays.asList(new String[] 
+                {"anyxml", "choice", "config", "container", "description", "grouping", "if-feature", "key", "leaf", "leaf-list", "list", "max-elements", "min-elements", "must", "ordered", "by", "reference", "status", "typedef", "unique", "uses", "when"}));
+        keywordHierarchyMap.put("choice", Arrays.asList(new String[] 
+                {"anyxml", "case", "config", "container", "default", "description", "if-feature", "leaf", "leaf-list", "list", "mandatory", "reference", "status", "when"}));
+        keywordHierarchyMap.put("case", Arrays.asList(new String[] 
+                {"anyxml", "choice", "container", "description", "if-feature", "leaf", "leaf-list", "list", "reference", "status", "uses", "when"}));
+        keywordHierarchyMap.put("anyxml", Arrays.asList(new String[] 
+                {"config", "description", "if-feature", "mandatory", "must", "reference", "status", "when"}));
+        keywordHierarchyMap.put("grouping", Arrays.asList(new String[] 
+                {"anyxml", "choice", "container", "description", "grouping", "leaf", "leaf-list", "list", "reference", "status", "typedef", "uses"}));
+        keywordHierarchyMap.put("uses", Arrays.asList(new String[] 
+                {"augment", "description", "if-feature", "refine", "reference", "status", "when"}));
+        keywordHierarchyMap.put("rpc", Arrays.asList(new String[] 
+                {"description", "grouping", "if-feature", "input", "output", "reference", "status", "typedef"}));
+        keywordHierarchyMap.put("input", Arrays.asList(new String[] 
+                {"anyxml", "choice", "container", "grouping", "leaf", "leaf-list", "list", "typedef", "uses"}));
+        keywordHierarchyMap.put("output", Arrays.asList(new String[] 
+                {"anyxml", "choice", "container", "grouping", "leaf", "leaf-list", "list", "typedef", "uses"}));
+        keywordHierarchyMap.put("notification", Arrays.asList(new String[] 
+                {"anyxml", "choice", "container", "description", "grouping", "if-feature", "leaf", "leaf-list", "list", "reference", "status", "typedef", "uses"}));
+        keywordHierarchyMap.put("notification", Arrays.asList(new String[] 
+                {"anyxml", "choice", "container", "description", "grouping", "if-feature", "leaf", "leaf-list", "list", "reference", "status", "typedef", "uses"}));
+        keywordHierarchyMap.put("augment", Arrays.asList(new String[] 
+                {"anyxml", "case", "choice", "container", "description", "if-feature", "leaf", "leaf-list", "list", "reference", "status", "uses", "when"}));
+        keywordHierarchyMap.put("identity", Arrays.asList(new String[] 
+                {"base", "description", "reference", "status"}));
+        keywordHierarchyMap.put("extension", Arrays.asList(new String[] 
+                {"argument", "description", "reference", "status"}));
+        keywordHierarchyMap.put("argument", Arrays.asList(new String[] 
+                {"yin-element"}));
+        keywordHierarchyMap.put("feature", Arrays.asList(new String[] 
+                {"description", "if-feature", "status", "reference"}));
+        keywordHierarchyMap.put("deviation", Arrays.asList(new String[] 
+                {"description", "deviate", "n", "reference"}));
+        keywordHierarchyMap.put("deviate", Arrays.asList(new String[] 
+                {"config", "default", "mandatory", "max-elements", "min-elements", "must", "type", "unique", "units"}));
+        keywordHierarchyMap.put("range", Arrays.asList(new String[] 
+                {"description", "error-app-tag", "error-message", "reference"}));
+        keywordHierarchyMap.put("length", Arrays.asList(new String[] 
+                {"description", "error-app-tag", "error-message", "reference"}));
+        keywordHierarchyMap.put("pattern", Arrays.asList(new String[] 
+                {"description", "error-app-tag", "error-message", "reference"}));
+        keywordHierarchyMap.put("enum", Arrays.asList(new String[] 
+                {"description", "reference", "status", "value"}));
+        keywordHierarchyMap.put("bit", Arrays.asList(new String[] 
+                {"description", "reference", "status", "position"}));
+
+        
+        
+        
+        return keywordHierarchyMap;
     }
 
     private ICompletionProposal[] mergeProposals(List<ICompletionProposal> a, List<ICompletionProposal> b) {
@@ -262,6 +357,36 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             return "";
         }
     }
+    
+    /**
+     * dirty
+     */
+    private String determineProposalScopeKeyword(IDocument doc, int offset) {
+        try {
+            YangHeuristicScanner yangHeuristicScanner = new YangHeuristicScanner(doc);
+            
+            //int blockStartPosition = yangHeuristicScanner.scanBackward(offset, YangHeuristicScanner.UNBOUND, '{');
+            int blockStartPosition = yangHeuristicScanner.findOpeningPeer(offset, '{', '}');
+            
+            int curPos = yangHeuristicScanner.findNonWhitespaceBackward(blockStartPosition - 1, YangHeuristicScanner.UNBOUND);
+            
+            int currentToken = yangHeuristicScanner.previousToken(curPos, YangHeuristicScanner.UNBOUND);
+            int keywordEndPos = yangHeuristicScanner.getPosition();
+            int keywordStartPos = keywordEndPos;
+            
+            if(currentToken == Symbols.TokenIDENT){
+                yangHeuristicScanner.previousToken(keywordEndPos, YangHeuristicScanner.UNBOUND);
+                keywordStartPos = yangHeuristicScanner.getPosition();
+            }
+            
+            String keyword = doc.get(keywordStartPos, keywordEndPos - keywordStartPos).trim();
+            
+            return keyword;
+            
+        } catch (Exception e) {
+            return "";
+        }
+    }
 
     /**
      * @param document
@@ -273,7 +398,10 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         currentProposalMode = determineProposalMode(document, cursorPosition, prefix, previousWord);
         switch (currentProposalMode) {
         case Import:
-            proposals = getImportProposals(prefix);
+            proposals = getImportProposals(prefix, true);
+            break;
+        case BelongsTo:
+            proposals = getImportProposals(prefix, false);
             break;
         case Type:
             proposals = getTypeProposals(prefix);
@@ -296,9 +424,10 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     /**
      * @param prefix
+     * @param addModuleRevision TODO
      * @return importable module names
      */
-    private TypedProposalsList getImportProposals(String prefix) {
+    private TypedProposalsList getImportProposals(String prefix, boolean addModuleRevision) {
         // FIXME KOS: need set current project to get correct proposal
         ElementIndexInfo[] importModules = YangModelManager.search(null, null, null, ElementIndexType.MODULE, null,
                 null);
@@ -314,7 +443,10 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 String displayString = proposal;
                 String replacementString = proposal;
                 if (revision != null && !revision.isEmpty()) {
-                    replacementString = proposal + " { prefix " + proposal + "; revision-date " + revision + "; }";
+                    String moduleRevision = "";
+                    if(addModuleRevision)
+                        moduleRevision = "revision-date " + revision + "; ";
+                    replacementString = proposal + " { prefix " + proposal + "; " + moduleRevision + "}";
                     displayString = proposal += " (" + revision + ")";
                 }
 
@@ -342,9 +474,16 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
      * @return general keyword proposals
      */
     private TypedProposalsList getKeywordProposals(String prefix) {
-        // ICompletionProposal[] proposals = getProposalsFromDocument(doc, prefix);
+
+        String scopeKeyword = determineProposalScopeKeyword(viewer.getDocument(), cursorPosition);
+        
+        List<String> keywordProposals = YangSimpleCompletionProcessor.keywordHierarchyMap.get(scopeKeyword);
+        
+        if(keywordProposals == null)
+            keywordProposals = Arrays.asList(fgKeywordProposals);
+        
         List<ICompletionProposal> proposalsList = new ArrayList<ICompletionProposal>();
-        for (String proposal : fgKeywordProposals) {
+        for (String proposal : keywordProposals) {
             if (proposal.startsWith(prefix)) {
                 proposalsList.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix.length(),
                         proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_KEYWORD_PROPOSAL), proposal,
@@ -380,9 +519,11 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         Set<String> addedCustomType = new HashSet<>();
         for (int i = 0; i < customTypes.length; i++) {
             ElementIndexInfo info = customTypes[i];
+            
             if (addedCustomType.add(info.getName())) {
-                String proposal = info.getName();
-                if (prefix.length() == 0 || proposal.startsWith(prefix)) {
+
+                String proposal = computeProposalForElement(info);
+                if (proposal != null && (prefix.length() == 0 || proposal.startsWith(prefix))) {
                     customTypesProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix
                             .length(), proposal.length(), YangUIImages
                             .getImage(IYangUIConstants.IMG_CUSTOM_TYPE_PROPOSAL), proposal, null, null));
@@ -413,8 +554,9 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         for (int i = 0; i < groupings.length; i++) {
             ElementIndexInfo info = groupings[i];
             if (addedCustomType.add(info.getName())) {
-                String proposal = info.getName();
-                if (prefix.length() == 0 || proposal.startsWith(prefix)) {
+
+                String proposal = computeProposalForElement(info);
+                if (proposal != null && (prefix.length() == 0 || proposal.startsWith(prefix))) {
                     groupingProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix
                             .length(), proposal.length(),
                             YangUIImages.getImage(IYangUIConstants.IMG_GROUPING_PROPOSAL), proposal, null, null));
@@ -445,10 +587,19 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             ElementIndexInfo info = submodules[i];
             if (addedCustomType.add(info.getName())) {
                 String proposal = info.getName();
+                
+                String revision = info.getRevision();
+                String displayString = proposal;
+                String replacementString = proposal;
+                if (revision != null && !revision.isEmpty()) {
+                    replacementString = proposal + " { revision-date " + revision + "; }";
+                    displayString = proposal += " (" + revision + ")";
+                }                
+                
                 if (prefix.length() == 0 || proposal.startsWith(prefix)) {
-                    submoduleProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix
+                    submoduleProposals.add(new CompletionProposal(replacementString, cursorPosition - prefix.length(), prefix
                             .length(), proposal.length(),
-                            YangUIImages.getImage(IYangUIConstants.IMG_GROUPING_PROPOSAL), proposal, null, null));
+                            YangUIImages.getImage(IYangUIConstants.IMG_GROUPING_PROPOSAL), displayString, null, null));
                 }
             }
         }
@@ -461,6 +612,37 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         return result;
     }
 
+    
+    /**
+     * Generate proposals for types, groupings, etc.
+     * If element defined in other module, which is imported, adds respective prefix 
+     * If element is neither imported nor local, returns null 
+     * @param elementIndexInfo
+     * @return
+     */
+    protected String computeProposalForElement(ElementIndexInfo elementIndexInfo){
+        String result = null;
+        
+        if (module != null) {
+            if (module.getName().equals(elementIndexInfo.getModule()))
+                result = elementIndexInfo.getName();
+            else {
+
+                SubModuleInclude submoduleInclude = module.getIncludeByName(elementIndexInfo.getModule());
+                if (submoduleInclude != null)
+                    result = elementIndexInfo.getName();
+                else{
+
+                    ModuleImport moduleImport = module.getImportByName(elementIndexInfo.getModule());
+
+                    if (moduleImport != null)
+                        result = moduleImport.getPrefix() + ":" + elementIndexInfo.getName();
+                }
+            }
+        }
+        return result;
+    }    
+    
     /**
      * @param document
      * @param cursorPosition
@@ -471,7 +653,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     protected CompletionKind determineProposalMode(IDocument document, int cursorPosition, String prefix,
             String previousWord) {
 
-        Module module = YangParserUtil.parseYangFile(viewer.getDocument().get().toCharArray(), null);
+        module = YangParserUtil.parseYangFile(viewer.getDocument().get().toCharArray(), null);
 
         if (module != null) {
             ASTNode nodeAtPos = module.getNodeAtPosition(cursorPosition);
@@ -482,9 +664,13 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             }
         }
 
-        // Dirty previous word based determination
+        // Dirty previous word based determination        
+
         if ("import".equalsIgnoreCase(previousWord)) {
             return CompletionKind.Import;
+        }
+        if ("belongs-to".equalsIgnoreCase(previousWord)) {
+            return CompletionKind.BelongsTo;
         }
         if ("type".equalsIgnoreCase(previousWord)) {
             return CompletionKind.Type;
@@ -493,7 +679,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             return CompletionKind.Uses;
         }
         // TODO check if only current module
-        if ("include".equalsIgnoreCase(previousWord) || "belongs-to".equalsIgnoreCase(previousWord)) {
+        if ("include".equalsIgnoreCase(previousWord)) {
             return CompletionKind.Include;
         }
 

@@ -158,7 +158,7 @@ public final class YangHeuristicScanner implements Symbols {
          */
         @Override
         public boolean stop(char ch, int position, boolean forward) {
-            return !Character.isJavaIdentifierPart(ch);
+            return !isYangIdentifierPart(ch);
         }
     }
 
@@ -370,7 +370,7 @@ public final class YangHeuristicScanner implements Symbols {
         }
 
         // else
-        if (Character.isJavaIdentifierPart(fChar)) {
+        if (isYangIdentifierPart(fChar)) {
             // assume an identifier or keyword
             int from = pos, to;
             pos = scanForward(pos + 1, bound, fNonIdent);
@@ -445,7 +445,7 @@ public final class YangHeuristicScanner implements Symbols {
         }
 
         // else
-        if (Character.isJavaIdentifierPart(fChar)) {
+        if (isYangIdentifierPart(fChar)) {
             // assume an ident or keyword
             int from, to = pos + 1;
             pos = scanBackward(pos - 1, bound, fNonIdent);
@@ -468,6 +468,15 @@ public final class YangHeuristicScanner implements Symbols {
             return TokenOTHER;
         }
 
+    }
+
+    /**
+     * @param fChar2
+     * @return
+     */
+    public static boolean isYangIdentifierPart(char fChar2) {
+
+        return Character.isJavaIdentifierPart(fChar2) || fChar2 == '-'; 
     }
 
     /**

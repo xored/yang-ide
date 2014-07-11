@@ -5,7 +5,7 @@ import org.eclipse.jface.text.rules.IWordDetector;
 public class YangWordDetector implements IWordDetector {
 
     public boolean isWordPart(char character) {
-        return Character.isJavaIdentifierPart(character);
+        return Character.isJavaIdentifierPart(character) || character == '-';
     }
 
     public boolean isWordStart(char character) {

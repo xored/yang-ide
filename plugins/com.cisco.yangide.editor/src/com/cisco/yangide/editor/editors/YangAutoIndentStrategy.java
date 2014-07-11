@@ -160,29 +160,41 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         return endOffset;
     }
 
-    /*
-     * private void smartIndentAfterClosingBracket(IDocument d, DocumentCommand c) { if (c.offset ==
-     * -1 || d.getLength() == 0) return;
-     * 
-     * try {
-     * 
-     * int p = (c.offset == d.getLength() ? c.offset - 1 : c.offset); int line =
-     * d.getLineOfOffset(p); int start = d.getLineOffset(line); int whiteend =
-     * findEndOfWhiteSpace(d, start, c.offset);
-     * 
-     * YangHeuristicScanner scanner = new YangHeuristicScanner(d); YangIndenter indenter = new
-     * YangIndenter(d, scanner);
-     * 
-     * // shift only when line does not contain any text up to the closing bracket if (whiteend ==
-     * c.offset) { // evaluate the line with the opening bracket that matches out closing bracket
-     * int reference = indenter.findReferencePosition(c.offset, false, true, false, false); int
-     * indLine = d.getLineOfOffset(reference); if (indLine != -1 && indLine != line) { // take the
-     * indent of the found line StringBuffer replaceText = new StringBuffer(getIndentOfLine(d,
-     * indLine)); // add the rest of the current line including the just added close bracket
-     * replaceText.append(d.get(whiteend, c.offset - whiteend)); replaceText.append(c.text); //
-     * modify document command c.length += c.offset - start; c.offset = start; c.text =
-     * replaceText.toString(); } } } catch (BadLocationException e) { YangEditorPlugin.log(e); } }
-     */private void smartIndentAfterOpeningBracket(IDocument d, DocumentCommand c) {
+    private void smartIndentAfterClosingBracket(IDocument d, DocumentCommand c) {
+        if (c.offset == -1 || d.getLength() == 0)
+            return;
+
+        try {
+
+            int p = (c.offset == d.getLength() ? c.offset - 1 : c.offset);
+            int line = d.getLineOfOffset(p);
+            int start = d.getLineOffset(line);
+            int whiteend = findEndOfWhiteSpace(d, start, c.offset);
+
+            YangHeuristicScanner scanner = new YangHeuristicScanner(d);
+            YangIndenter indenter = new YangIndenter(d, scanner);
+
+            // shift only when line does not contain any text up to the closing bracket
+            if (whiteend == c.offset) { // evaluate the line with the opening bracket that matches out closing bracket
+ 
+                int reference = indenter.findReferencePosition(c.offset, false, true, false, false);
+                int indLine = d.getLineOfOffset(reference);
+                if (indLine != -1 && indLine != line) { // take the indent of the found line
+                    StringBuffer replaceText = new StringBuffer(getIndentOfLine(d, indLine));
+                    // add the rest of the current line including the just added close bracket
+                    replaceText.append(d.get(whiteend, c.offset - whiteend));
+                    replaceText.append(c.text); // modify document command
+                    c.length += c.offset - start;
+                    c.offset = start;
+                    c.text = replaceText.toString();
+                }
+            }
+        } catch (BadLocationException e) {
+            YangEditorPlugin.log(e);
+        }
+    }
+    
+     private void smartIndentAfterOpeningBracket(IDocument d, DocumentCommand c) {
         if (c.offset < 1 || d.getLength() == 0)
             return;
 
@@ -798,12 +810,12 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
     private void smartIndentOnKeypress(IDocument document, DocumentCommand command) {
         switch (command.text.charAt(0)) {
-        // case '}':
-        // smartIndentAfterClosingBracket(document, command);
-        // break;
-        // case '{':
-        // smartIndentAfterOpeningBracket(document, command);
-        // break;
+        case '}':
+            smartIndentAfterClosingBracket(document, command);
+            break;
+        case '{':
+            smartIndentAfterOpeningBracket(document, command);
+            break;
         }
     }
 
