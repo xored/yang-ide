@@ -26,8 +26,7 @@ public class YangColorManager implements IColorManager, IColorManagerExtension {
     protected Map<Display, Map<RGB, Color>> fDisplayTable = new HashMap<Display, Map<RGB, Color>>(2);
 
     /**
-     * Flag which tells if the colors are automatically disposed when the current display gets
-     * disposed.
+     * Flag which tells if the colors are automatically disposed when the current display gets disposed.
      */
     private boolean fAutoDisposeOnDisplayDispose;
 

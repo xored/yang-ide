@@ -40,6 +40,14 @@ public class YangScanner extends AbstractYangScanner {
     static String[] types = { "binary", "bits", "boolean", "decimal64", "empty", "enumeration", "identityref",
             "instance-identifier", "int8", "int16", "int32", "int64", "leafref", "string", "uint8", "uint16", "uint32",
             "uint64", "union" };
+    
+    public static String[] getKeywords(){
+        return keywords;
+    }
+
+    public static String[] getTypes() {
+        return types;
+    }
 
     /**
      * @param manager
@@ -88,8 +96,8 @@ public class YangScanner extends AbstractYangScanner {
             wordRule.addWord(word, keyword);
         }
 
-        for (int i = 0; i < types.length; i++) {
-            String word = types[i];
+        for (int i = 0; i < getTypes().length; i++) {
+            String word = getTypes()[i];
             wordRule.addWord(word, type);
         }
 

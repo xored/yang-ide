@@ -13,7 +13,6 @@ import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
-//import org.eclipse.jdt.internal.ui.javaeditor.JavaSourceViewer;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -143,8 +142,6 @@ public class YangEditor extends TextEditor {
     /**
      * Creates and returns the preference store for this YANG editor with the given input.
      *
-     * @param input The editor input for which to create the preference store
-     * @return the preference store for this editor
      */
     private IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
         List<IPreferenceStore> stores = new ArrayList<IPreferenceStore>(3);
@@ -240,9 +237,6 @@ public class YangEditor extends TextEditor {
         markAsSelectionDependentAction("RemoveBlockComment", true); //$NON-NLS-1$
     }
 
-    /**
-     * Configures the toggle comment action
-     */
     private void configureToggleCommentAction() {
         IAction action = getAction("ToggleComment"); //$NON-NLS-1$
         if (action instanceof ToggleCommentAction) {

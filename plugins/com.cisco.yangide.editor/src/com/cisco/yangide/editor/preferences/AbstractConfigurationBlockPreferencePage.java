@@ -21,10 +21,8 @@ import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
 
 /**
- * Abstract preference page which is used to wrap a
- * {@link com.cisco.yangide.editor.preferences.IPreferenceConfigurationBlock}.
- *
  * @author Alexey Kholupko
+ * 
  */
 public abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {

@@ -50,22 +50,14 @@ public abstract class BlockCommentAction extends TextEditorAction {
     }
 
     /**
-     * An edit is a kind of <code>DocumentEvent</code>, in this case an edit instruction, that is
-     * affiliated with a <code>Position</code> on a document. The offset of the document event is
-     * not stored statically, but taken from the affiliated <code>Position</code>, which gets
-     * updated when other edits occur.
+     * An edit is a kind of <code>DocumentEvent</code>, an edit instruction, that is
+     * affiliated with a position on a document. 
      */
     static class Edit extends DocumentEvent {
 
         /**
          * Factory for edits which manages the creation, installation and destruction of position
-         * categories, position updaters etc. on a certain document. Once a factory has been
-         * obtained, <code>Edit</code> objects can be obtained from it which will be linked to the
-         * document by positions of one position category.
-         * <p>
-         * Clients are required to call <code>release</code> once the <code>Edit</code>s are not
-         * used any more, so the positions can be discarded.
-         * </p>
+         * categories, position updaters etc. on a certain document. 
          */
         public static class EditFactory {
 
@@ -240,12 +232,8 @@ public abstract class BlockCommentAction extends TextEditorAction {
     }
 
     /**
-     * Ensures that the editor is modifyable. If the editor is an instance of
-     * <code>ITextEditorExtension2</code>, its <code>validateEditorInputState</code> method is
-     * called, otherwise, the result of <code>isEditable</code> is returned.
+     * Ensures that the editor is modifyable. 
      * 
-     * @param editor the editor to be checked
-     * @return <code>true</code> if the editor is editable, <code>false</code> otherwise
      */
     protected boolean ensureEditable(ITextEditor editor) {
         Assert.isNotNull(editor);

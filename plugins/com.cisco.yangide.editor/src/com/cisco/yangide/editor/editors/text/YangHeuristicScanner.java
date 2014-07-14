@@ -10,7 +10,6 @@ package com.cisco.yangide.editor.editors.text;
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jdt.ui.text.IJavaPartitions;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
@@ -19,24 +18,22 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.TypedRegion;
 
+import com.cisco.yangide.editor.editors.YangScanner;
+import com.cisco.yangide.editor.preferences.YangDocumentSetupParticipant;
+
 /**
  * Utility methods for heuristic based YANG manipulations in an incomplete YANG source file.
- * <p>
- * An instance holds some internal position in the document and is therefore not threadsafe.
- * </p>
  *
  * @author Alexey Kholupko
  */
 public final class YangHeuristicScanner implements Symbols {
     /**
-     * Returned by all methods when the requested position could not be found, or if a
-     * {@link BadLocationException} was thrown while scanning.
+     * Returned by all methods when the requested position could not be found
      */
     public static final int NOT_FOUND = -1;
 
     /**
-     * Special bound parameter that means either -1 (backward scanning) or
-     * <code>fDocument.getLength()</code> (forward scanning).
+     * Special bound parameter that means either -1 (backward scanning) or <code>fDocument.getLength()</code> (forward scanning).
      */
     public static final int UNBOUND = -2;
 
@@ -288,20 +285,17 @@ public final class YangHeuristicScanner implements Symbols {
     }
 
     /**
-     * Calls
-     * <code>this(document, IJavaPartitions.JAVA_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE)</code>
-     * .
+     * Calls <code>this(document, YangDocumentSetupParticipant.YANG_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE)</code>
      *
      * @param document the document to scan.
      */
     public YangHeuristicScanner(IDocument document) {
-        this(document, IJavaPartitions.JAVA_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE);
+        this(document, YangDocumentSetupParticipant.YANG_PARTITIONING, IDocument.DEFAULT_CONTENT_TYPE);
     }
 
     /**
      * Returns the most recent internal scan position.
      *
-     * @return the most recent internal scan position.
      */
     public int getPosition() {
         return fPos;
@@ -313,9 +307,6 @@ public final class YangHeuristicScanner implements Symbols {
      * in {@link Symbols}. After a call, {@link #getPosition()} will return the position just after
      * the scanned token (i.e. the next position that will be scanned).
      *
-     * @param start the first character position in the document to consider
-     * @param bound the first position not to consider any more
-     * @return a constant from {@link Symbols} describing the next token
      */
     public int nextToken(int start, int bound) {
         int pos = scanForward(start, bound, fNonWSDefaultPart);
@@ -386,9 +377,6 @@ public final class YangHeuristicScanner implements Symbols {
      * in {@link Symbols}. After a call, {@link #getPosition()} will return the position just before
      * the scanned token starts (i.e. the next position that will be scanned).
      *
-     * @param start the first character position in the document to consider
-     * @param bound the first position not to consider any more
-     * @return a constant from {@link Symbols} describing the previous token
      */
     public int previousToken(int start, int bound) {
         int pos = scanBackward(start, bound, fNonWSDefaultPart);
@@ -474,66 +462,10 @@ public final class YangHeuristicScanner implements Symbols {
     private int getToken(String s) {
         Assert.isNotNull(s);
 
-        switch (s.length()) {
-        case 2:
-            if ("if".equals(s)) //$NON-NLS-1$
-                return TokenIF;
-            if ("do".equals(s)) //$NON-NLS-1$
-                return TokenDO;
-            break;
-        case 3:
-            if ("for".equals(s)) //$NON-NLS-1$
-                return TokenFOR;
-            if ("try".equals(s)) //$NON-NLS-1$
-                return TokenTRY;
-            if ("new".equals(s)) //$NON-NLS-1$
-                return TokenNEW;
-            break;
-        case 4:
-            if ("case".equals(s)) //$NON-NLS-1$
-                return TokenCASE;
-            if ("else".equals(s)) //$NON-NLS-1$
-                return TokenELSE;
-            if ("enum".equals(s)) //$NON-NLS-1$
-                return TokenENUM;
-            if ("goto".equals(s)) //$NON-NLS-1$
-                return TokenGOTO;
-            break;
-        case 5:
-            if ("break".equals(s)) //$NON-NLS-1$
-                return TokenBREAK;
-            if ("catch".equals(s)) //$NON-NLS-1$
-                return TokenCATCH;
-            if ("class".equals(s)) //$NON-NLS-1$
-                return TokenCLASS;
-            if ("while".equals(s)) //$NON-NLS-1$
-                return TokenWHILE;
-            break;
-        case 6:
-            if ("return".equals(s)) //$NON-NLS-1$
-                return TokenRETURN;
-            if ("static".equals(s)) //$NON-NLS-1$
-                return TokenSTATIC;
-            if ("switch".equals(s)) //$NON-NLS-1$
-                return TokenSWITCH;
-            if ("throws".equals(s)) //$NON-NLS-1$
-                return TokenTHROWS;
-            break;
-        case 7:
-            if ("default".equals(s)) //$NON-NLS-1$
-                return TokenDEFAULT;
-            if ("finally".equals(s)) //$NON-NLS-1$
-                return TokenFINALLY;
-            break;
-        case 9:
-            if ("interface".equals(s)) //$NON-NLS-1$
-                return TokenINTERFACE;
-            break;
-        case 12:
-            if ("synchronized".equals(s)) //$NON-NLS-1$
-                return TokenSYNCHRONIZED;
-            break;
-        }
+        //TODO types are separate tokens
+        if(Arrays.asList(YangScanner.getKeywords()).contains(s) || Arrays.asList(YangScanner.getTypes()).contains(s))
+            return TokenKEYWORD;
+
         return TokenIDENT;
     }
 
@@ -541,33 +473,14 @@ public final class YangHeuristicScanner implements Symbols {
      * Returns the position of the closing peer character (forward search). Any scopes introduced by
      * opening peers are skipped. All peers accounted for must reside in the default partition.
      * <p>
-     * Note that <code>start</code> must not point to the opening peer, but to the first character
-     * being searched.
+     * <code>start</code> must not point to the opening peer, but to the first character being searched.
      * </p>
      *
-     * @param start the start position
-     * @param openingPeer the opening peer character (e.g. '{')
-     * @param closingPeer the closing peer character (e.g. '}')
-     * @return the matching peer character position, or <code>NOT_FOUND</code>
      */
     public int findClosingPeer(int start, final char openingPeer, final char closingPeer) {
         return findClosingPeer(start, UNBOUND, openingPeer, closingPeer);
     }
 
-    /**
-     * Returns the position of the closing peer character (forward search). Any scopes introduced by
-     * opening peers are skipped. All peers accounted for must reside in the default partition.
-     * <p>
-     * Note that <code>start</code> must not point to the opening peer, but to the first character
-     * being searched.
-     * </p>
-     *
-     * @param start the start position
-     * @param bound the bound
-     * @param openingPeer the opening peer character (e.g. '{')
-     * @param closingPeer the closing peer character (e.g. '}')
-     * @return the matching peer character position, or <code>NOT_FOUND</code>
-     */
     public int findClosingPeer(int start, int bound, final char openingPeer, final char closingPeer) {
         Assert.isLegal(start >= 0);
 
@@ -598,33 +511,14 @@ public final class YangHeuristicScanner implements Symbols {
      * Returns the position of the opening peer character (backward search). Any scopes introduced
      * by closing peers are skipped. All peers accounted for must reside in the default partition.
      * <p>
-     * Note that <code>start</code> must not point to the closing peer, but to the first character
-     * being searched.
+     * <code>start</code> must not point to the closing peer, but to the first character being searched.
      * </p>
      *
-     * @param start the start position
-     * @param openingPeer the opening peer character (e.g. '{')
-     * @param closingPeer the closing peer character (e.g. '}')
-     * @return the matching peer character position, or <code>NOT_FOUND</code>
      */
     public int findOpeningPeer(int start, char openingPeer, char closingPeer) {
         return findOpeningPeer(start, UNBOUND, openingPeer, closingPeer);
     }
 
-    /**
-     * Returns the position of the opening peer character (backward search). Any scopes introduced
-     * by closing peers are skipped. All peers accounted for must reside in the default partition.
-     * <p>
-     * Note that <code>start</code> must not point to the closing peer, but to the first character
-     * being searched.
-     * </p>
-     *
-     * @param start the start position
-     * @param bound the bound
-     * @param openingPeer the opening peer character (e.g. '{')
-     * @param closingPeer the closing peer character (e.g. '}')
-     * @return the matching peer character position, or <code>NOT_FOUND</code>
-     */
     public int findOpeningPeer(int start, int bound, char openingPeer, char closingPeer) {
         Assert.isLegal(start < fDocument.getLength());
 
@@ -656,8 +550,6 @@ public final class YangHeuristicScanner implements Symbols {
      * beginning of <code>offset</code>, i.e. an opening brace at <code>offset</code> will not be
      * part of the surrounding block, but a closing brace will.
      *
-     * @param offset the offset for which the surrounding block is computed
-     * @return a region describing the surrounding block, or <code>null</code> if none can be found
      */
     public IRegion findSurroundingBlock(int offset) {
         if (offset < 1 || offset >= fDocument.getLength())
@@ -675,29 +567,12 @@ public final class YangHeuristicScanner implements Symbols {
      * <code>position</code> and &lt; <code>bound</code> and
      * <code>Character.isWhitespace(fDocument.getChar(pos))</code> evaluates to <code>false</code>
      * and the position is in the default partition.
-     *
-     * @param position the first character position in <code>fDocument</code> to be considered
-     * @param bound the first position in <code>fDocument</code> to not consider any more, with
-     * <code>bound</code> &gt; <code>position</code>, or <code>UNBOUND</code>
-     * @return the smallest position of a non-whitespace character in [<code>position</code>,
-     * <code>bound</code>) that resides in a Java partition, or <code>NOT_FOUND</code> if none can
-     * be found
+     * 
      */
     public int findNonWhitespaceForward(int position, int bound) {
         return scanForward(position, bound, fNonWSDefaultPart);
     }
 
-    /**
-     * Finds the smallest position in <code>fDocument</code> such that the position is &gt;=
-     * <code>position</code> and &lt; <code>bound</code> and
-     * <code>Character.isWhitespace(fDocument.getChar(pos))</code> evaluates to <code>false</code>.
-     *
-     * @param position the first character position in <code>fDocument</code> to be considered
-     * @param bound the first position in <code>fDocument</code> to not consider any more, with
-     * <code>bound</code> &gt; <code>position</code>, or <code>UNBOUND</code>
-     * @return the smallest position of a non-whitespace character in [<code>position</code>,
-     * <code>bound</code>), or <code>NOT_FOUND</code> if none can be found
-     */
     public int findNonWhitespaceForwardInAnyPartition(int position, int bound) {
         return scanForward(position, bound, fNonWS);
     }
@@ -708,30 +583,11 @@ public final class YangHeuristicScanner implements Symbols {
      * <code>Character.isWhitespace(fDocument.getChar(pos))</code> evaluates to <code>false</code>
      * and the position is in the default partition.
      *
-     * @param position the first character position in <code>fDocument</code> to be considered
-     * @param bound the first position in <code>fDocument</code> to not consider any more, with
-     * <code>bound</code> &lt; <code>position</code>, or <code>UNBOUND</code>
-     * @return the highest position of a non-whitespace character in (<code>bound</code>,
-     * <code>position</code>] that resides in a Java partition, or <code>NOT_FOUND</code> if none
-     * can be found
      */
     public int findNonWhitespaceBackward(int position, int bound) {
         return scanBackward(position, bound, fNonWSDefaultPart);
     }
 
-    /**
-     * Finds the highest position in <code>fDocument</code> such that the position is &lt;=
-     * <code>position</code> and &gt; <code>bound</code> and
-     * <code>Character.isWhitespace(fDocument.getChar(pos))</code> evaluates to <code>false</code>
-     * and the position can be in any partition.
-     * 
-     * @param position the first character position in <code>fDocument</code> to be considered
-     * @param bound the first position in <code>fDocument</code> to not consider any more, with
-     * <code>bound</code> &lt; <code>position</code>, or <code>UNBOUND</code>
-     * @return the highest position of a non-whitespace character in (<code>bound</code>,
-     * <code>position</code>] that resides in a Java partition, or <code>NOT_FOUND</code> if none
-     * can be found
-     */
     public int findNonWhitespaceBackwardInAnyPartition(int position, int bound) {
         return scanBackward(position, bound, fNonWS);
     }
@@ -741,12 +597,6 @@ public final class YangHeuristicScanner implements Symbols {
      * <code>start</code> &lt;= p &lt; <code>bound</code> and
      * <code>condition.stop(fDocument.getChar(p), p)</code> evaluates to <code>true</code>.
      * 
-     * @param start the first character position in <code>fDocument</code> to be considered
-     * @param bound the first position in <code>fDocument</code> to not consider any more, with
-     * <code>bound</code> &gt; <code>start</code>, or <code>UNBOUND</code>
-     * @param condition the <code>StopCondition</code> to check
-     * @return the lowest position in [<code>start</code>, <code>bound</code>) for which
-     * <code>condition</code> holds, or <code>NOT_FOUND</code> if none can be found
      */
     public int scanForward(int start, int bound, StopCondition condition) {
         Assert.isLegal(start >= 0);
@@ -771,53 +621,14 @@ public final class YangHeuristicScanner implements Symbols {
         return NOT_FOUND;
     }
 
-    /**
-     * Finds the lowest position in <code>fDocument</code> such that the position is &gt;=
-     * <code>position</code> and &lt; <code>bound</code> and
-     * <code>fDocument.getChar(position) == ch</code> evaluates to <code>true</code> and the
-     * position is in the default partition.
-     *
-     * @param position the first character position in <code>fDocument</code> to be considered
-     * @param bound the first position in <code>fDocument</code> to not consider any more, with
-     * <code>bound</code> &gt; <code>position</code>, or <code>UNBOUND</code>
-     * @param ch the <code>char</code> to search for
-     * @return the lowest position of <code>ch</code> in (<code>bound</code>, <code>position</code>]
-     * that resides in a Java partition, or <code>NOT_FOUND</code> if none can be found
-     */
     public int scanForward(int position, int bound, char ch) {
         return scanForward(position, bound, new CharacterMatch(ch));
     }
 
-    /**
-     * Finds the lowest position in <code>fDocument</code> such that the position is &gt;=
-     * <code>position</code> and &lt; <code>bound</code> and
-     * <code>fDocument.getChar(position) == ch</code> evaluates to <code>true</code> for at least
-     * one ch in <code>chars</code> and the position is in the default partition.
-     *
-     * @param position the first character position in <code>fDocument</code> to be considered
-     * @param bound the first position in <code>fDocument</code> to not consider any more, with
-     * <code>bound</code> &gt; <code>position</code>, or <code>UNBOUND</code>
-     * @param chars an array of <code>char</code> to search for
-     * @return the lowest position of a non-whitespace character in [<code>position</code>,
-     * <code>bound</code>) that resides in a Java partition, or <code>NOT_FOUND</code> if none can
-     * be found
-     */
     public int scanForward(int position, int bound, char[] chars) {
         return scanForward(position, bound, new CharacterMatch(chars));
     }
 
-    /**
-     * Finds the highest position <code>p</code> in <code>fDocument</code> such that
-     * <code>bound</code> &lt; <code>p</code> &lt;= <code>start</code> and
-     * <code>condition.stop(fDocument.getChar(p), p)</code> evaluates to <code>true</code>.
-     *
-     * @param start the first character position in <code>fDocument</code> to be considered
-     * @param bound the first position in <code>fDocument</code> to not consider any more, with
-     * <code>bound</code> &lt; <code>start</code>, or <code>UNBOUND</code>
-     * @param condition the <code>StopCondition</code> to check
-     * @return the highest position in (<code>bound</code>, <code>start</code> for which
-     * <code>condition</code> holds, or <code>NOT_FOUND</code> if none can be found
-     */
     public int scanBackward(int start, int bound, StopCondition condition) {
         if (bound == UNBOUND)
             bound = -1;
@@ -840,49 +651,17 @@ public final class YangHeuristicScanner implements Symbols {
         return NOT_FOUND;
     }
 
-    /**
-     * Finds the highest position in <code>fDocument</code> such that the position is &lt;=
-     * <code>position</code> and &gt; <code>bound</code> and
-     * <code>fDocument.getChar(position) == ch</code> evaluates to <code>true</code> for at least
-     * one ch in <code>chars</code> and the position is in the default partition.
-     *
-     * @param position the first character position in <code>fDocument</code> to be considered
-     * @param bound the first position in <code>fDocument</code> to not consider any more, with
-     * <code>bound</code> &lt; <code>position</code>, or <code>UNBOUND</code>
-     * @param ch the <code>char</code> to search for
-     * @return the highest position of one element in <code>chars</code> in (<code>bound</code>,
-     * <code>position</code>] that resides in a Java partition, or <code>NOT_FOUND</code> if none
-     * can be found
-     */
     public int scanBackward(int position, int bound, char ch) {
         return scanBackward(position, bound, new CharacterMatch(ch));
     }
 
-    /**
-     * Finds the highest position in <code>fDocument</code> such that the position is &lt;=
-     * <code>position</code> and &gt; <code>bound</code> and
-     * <code>fDocument.getChar(position) == ch</code> evaluates to <code>true</code> for at least
-     * one ch in <code>chars</code> and the position is in the default partition.
-     *
-     * @param position the first character position in <code>fDocument</code> to be considered
-     * @param bound the first position in <code>fDocument</code> to not consider any more, with
-     * <code>bound</code> &lt; <code>position</code>, or <code>UNBOUND</code>
-     * @param chars an array of <code>char</code> to search for
-     * @return the highest position of one element in <code>chars</code> in (<code>bound</code>,
-     * <code>position</code>] that resides in a Java partition, or <code>NOT_FOUND</code> if none
-     * can be found
-     */
     public int scanBackward(int position, int bound, char[] chars) {
         return scanBackward(position, bound, new CharacterMatch(chars));
     }
 
     /**
-     * Checks whether <code>position</code> resides in a default (Java) partition of
-     * <code>fDocument</code>.
+     * Checks whether <code>position</code> resides in a default (YANG) partition of <code>fDocument</code>.
      *
-     * @param position the position to be checked
-     * @return <code>true</code> if <code>position</code> is in the default partition of
-     * <code>fDocument</code>, <code>false</code> otherwise
      */
     public boolean isDefaultPartition(int position) {
         return fPartition.equals(getPartition(position).getType());
@@ -891,9 +670,6 @@ public final class YangHeuristicScanner implements Symbols {
     /**
      * Returns the partition at <code>position</code>.
      *
-     * @param position the position to get the partition for
-     * @return the partition at <code>position</code> or a dummy zero-length partition if accessing
-     * the document fails
      */
     private ITypedRegion getPartition(int position) {
         if (!contains(fCachedPartition, position)) {
@@ -913,9 +689,6 @@ public final class YangHeuristicScanner implements Symbols {
     /**
      * Returns <code>true</code> if <code>region</code> contains <code>position</code>.
      *
-     * @param region a region
-     * @param position an offset
-     * @return <code>true</code> if <code>region</code> contains <code>position</code>
      */
     private boolean contains(IRegion region, int position) {
         int offset = region.getOffset();
@@ -923,41 +696,19 @@ public final class YangHeuristicScanner implements Symbols {
     }
 
     /**
-     * Checks if the line seems to be an open condition not followed by a block (i.e. an if, while,
-     * or for statement with just one following statement, see example below).
+     * Checks if the line seems to be an open condition not followed by a block (i.e. statement with just one following statement).
      *
-     * <pre>
-     * if (condition)
-     *     doStuff();
-     * </pre>
-     * <p>
-     * Algorithm: if the last non-WS, non-Comment code on the line is an if (condition), while
-     * (condition), for( expression), do, else, and there is no statement after that
-     * </p>
-     *
-     * @param position the insert position of the new character
-     * @param bound the lowest position to consider
-     * @return <code>true</code> if the code is a conditional statement or loop without a block,
-     * <code>false</code> otherwise
      */
     public boolean isBracelessBlockStart(int position, int bound) {
         if (position < 1)
             return false;
 
         switch (previousToken(position, bound)) {
-        case TokenDO:
-        case TokenELSE:
+        // for example:
+        // description
+        //     "This is..."
+        case TokenKEYWORD:
             return true;
-        case TokenRPAREN:
-            position = findOpeningPeer(fPos, LPAREN, RPAREN);
-            if (position > 0) {
-                switch (previousToken(position - 1, bound)) {
-                case TokenIF:
-                case TokenFOR:
-                case TokenWHILE:
-                    return true;
-                }
-            }
         }
 
         return false;

@@ -29,28 +29,13 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * Initialized with a color manager and a preference store, its subclasses are only responsible for
- * providing a list of preference keys for based on which tokens are generated and to use this
- * tokens to define the rules controlling this scanner.
+ * Initialized with a color manager and a preference store
  * <p>
- * This scanner stores the color defined by the color preference key into the color manager under
- * the same key.
+ * This scanner stores the color defined by the color preference key into the color manager under the same key.
  * </p>
  * <p>
- * Preference color key + {@link PreferenceConstants#EDITOR_BOLD_SUFFIX} are used to retrieve
- * whether the token is rendered in bold.
- * </p>
- * <p>
- * Preference color key + {@link PreferenceConstants#EDITOR_ITALIC_SUFFIX} are used to retrieve
- * whether the token is rendered in italic.
- * </p>
- * <p>
- * Preference color key + {@link PreferenceConstants#EDITOR_STRIKETHROUGH_SUFFIX} are used to
- * retrieve whether the token is rendered in strikethrough.
- * </p>
- * <p>
- * Preference color key + {@link PreferenceConstants#EDITOR_UNDERLINE_SUFFIX} are used to retrieve
- * whether the token is rendered in underline.
+ * Preference color key + PreferenceConstants#EDITOR_<X>_SUFFIX} are used to retrieve
+ * whether the token is rendered in bold, italic, strikethrough or underline
  * </p>
  * 
  * @author Alexey Kholupko
@@ -62,62 +47,20 @@ public abstract class AbstractYangScanner extends BufferedRuleBasedScanner {
 
     private Map<String, Token> fTokenMap = new HashMap<String, Token>();
     private String[] fPropertyNamesColor;
-    /**
-     * Preference keys for boolean preferences which are <code>true</code>, iff the corresponding
-     * token should be rendered bold.
-     */
+
     private String[] fPropertyNamesBold;
-    /**
-     * Preference keys for boolean preferences which are <code>true</code>, iff the corresponding
-     * token should be rendered italic.
-     */
+
     private String[] fPropertyNamesItalic;
-    /**
-     * Preference keys for boolean preferences which are <code>true</code>, iff the corresponding
-     * token should be rendered strikethrough.
-     */
+
     private String[] fPropertyNamesStrikethrough;
-    /**
-     * Preference keys for boolean preferences which are <code>true</code>, iff the corresponding
-     * token should be rendered underline.
-     */
+
     private String[] fPropertyNamesUnderline;
 
     private boolean fNeedsLazyColorLoading;
 
-    /**
-     * Returns an array of preference keys which define the tokens used in the rules of this
-     * scanner.
-     * <p>
-     * The preference key is used access the color in the preference store and in the color manager.
-     * </p>
-     * <p>
-     * Preference key + {@link PreferenceConstants#EDITOR_BOLD_SUFFIX} is used to retrieve whether
-     * the token is rendered in bold.
-     * </p>
-     * <p>
-     * Preference key + {@link PreferenceConstants#EDITOR_ITALIC_SUFFIX} is used to retrieve whether
-     * the token is rendered in italic.
-     * </p>
-     * <p>
-     * Preference key + {@link PreferenceConstants#EDITOR_UNDERLINE_SUFFIX} is used to retrieve
-     * whether the token is rendered underlined.
-     * </p>
-     * <p>
-     * Preference key + {@link PreferenceConstants#EDITOR_STRIKETHROUGH_SUFFIX} is used to retrieve
-     * whether the token is rendered stricken out.
-     * </p>
-     */
     abstract protected String[] getTokenProperties();
-
-    /**
-     * Creates the list of rules controlling this scanner.
-     */
     abstract protected List<IRule> createRules();
 
-    /**
-     * Creates an abstract Java scanner.
-     */
     public AbstractYangScanner(IColorManager manager, IPreferenceStore store) {
         super();
         fColorManager = manager;
@@ -221,12 +164,6 @@ public abstract class AbstractYangScanner extends BufferedRuleBasedScanner {
      * Create a text attribute based on the given color, bold, italic, strikethrough and underline
      * preference keys.
      *
-     * @param colorKey the color preference key
-     * @param boldKey the bold preference key
-     * @param italicKey the italic preference key
-     * @param strikethroughKey the strikethrough preference key
-     * @param underlineKey the italic preference key
-     * @return the created text attribute
      */
     private TextAttribute createTextAttribute(String colorKey, String boldKey, String italicKey,
             String strikethroughKey, String underlineKey) {

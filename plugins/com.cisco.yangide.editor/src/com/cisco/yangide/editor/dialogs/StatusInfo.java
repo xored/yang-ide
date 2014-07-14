@@ -9,13 +9,15 @@ package com.cisco.yangide.editor.dialogs;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.jdt.ui.JavaUI;
+
+import com.cisco.yangide.editor.YangEditorPlugin;
 
 /**
  * A settable IStatus. Can be an error, warning, info or ok. For error, info and warning states, a
  * message describes the problem.
  * 
  * @author Alexey Kholupko
+ * 
  */
 public class StatusInfo implements IStatus {
 
@@ -34,7 +36,7 @@ public class StatusInfo implements IStatus {
     /**
      * Creates a status .
      * 
-     * @param severity The status severity: ERROR, WARNING, INFO and OK.
+     * @param severity: ERROR, WARNING, INFO and OK.
      * @param message The message of the status. Applies only for ERROR, WARNING and INFO.
      */
     public StatusInfo(int severity, String message) {
@@ -42,30 +44,17 @@ public class StatusInfo implements IStatus {
         fSeverity = severity;
     }
 
-    /**
-     * Returns if the status' severity is OK.
-     */
     public boolean isOK() {
         return fSeverity == IStatus.OK;
     }
 
-    /**
-     * Returns if the status' severity is WARNING.
-     */
     public boolean isWarning() {
         return fSeverity == IStatus.WARNING;
     }
 
-    /**
-     * Returns if the status' severity is INFO.
-     */
     public boolean isInfo() {
         return fSeverity == IStatus.INFO;
     }
-
-    /**
-     * Returns if the status' severity is ERROR.
-     */
     public boolean isError() {
         return fSeverity == IStatus.ERROR;
     }
@@ -77,42 +66,24 @@ public class StatusInfo implements IStatus {
         return fStatusMessage;
     }
 
-    /**
-     * Sets the status to ERROR.
-     * 
-     * @param errorMessage The error message (can be empty, but not null)
-     */
     public void setError(String errorMessage) {
         Assert.isNotNull(errorMessage);
         fStatusMessage = errorMessage;
         fSeverity = IStatus.ERROR;
     }
 
-    /**
-     * Sets the status to WARNING.
-     * 
-     * @param warningMessage The warning message (can be empty, but not null)
-     */
     public void setWarning(String warningMessage) {
         Assert.isNotNull(warningMessage);
         fStatusMessage = warningMessage;
         fSeverity = IStatus.WARNING;
     }
 
-    /**
-     * Sets the status to INFO.
-     * 
-     * @param infoMessage The info message (can be empty, but not null)
-     */
     public void setInfo(String infoMessage) {
         Assert.isNotNull(infoMessage);
         fStatusMessage = infoMessage;
         fSeverity = IStatus.INFO;
     }
 
-    /**
-     * Sets the status to OK.
-     */
     public void setOK() {
         fStatusMessage = null;
         fSeverity = IStatus.OK;
@@ -145,7 +116,7 @@ public class StatusInfo implements IStatus {
      * @see IStatus#getPlugin()
      */
     public String getPlugin() {
-        return JavaUI.ID_PLUGIN;
+        return YangEditorPlugin.PLUGIN_ID;
     }
 
     /**
@@ -175,26 +146,23 @@ public class StatusInfo implements IStatus {
         return new IStatus[0];
     }
 
-    /**
-     * Returns a string representation of the status, suitable for debugging purposes only.
-     */
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append("StatusInfo "); //$NON-NLS-1$
+        buf.append("StatusInfo "); 
         if (fSeverity == OK) {
-            buf.append("OK"); //$NON-NLS-1$
+            buf.append("OK");
         } else if (fSeverity == ERROR) {
-            buf.append("ERROR"); //$NON-NLS-1$
+            buf.append("ERROR");
         } else if (fSeverity == WARNING) {
-            buf.append("WARNING"); //$NON-NLS-1$
+            buf.append("WARNING");
         } else if (fSeverity == INFO) {
-            buf.append("INFO"); //$NON-NLS-1$
+            buf.append("INFO"); 
         } else {
-            buf.append("severity="); //$NON-NLS-1$
+            buf.append("severity=");
             buf.append(fSeverity);
         }
-        buf.append(": "); //$NON-NLS-1$
+        buf.append(": "); 
         buf.append(fStatusMessage);
         return buf.toString();
     }

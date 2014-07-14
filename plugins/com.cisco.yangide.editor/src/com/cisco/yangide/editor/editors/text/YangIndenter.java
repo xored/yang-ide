@@ -20,9 +20,6 @@ import com.cisco.yangide.ui.YangUIPlugin;
 /**
  * Uses the {@link org.eclipse.jdt.internal.ui.text.YangHeuristicScanner} to get the indentation
  * level for a certain position in a document.
- * <p>
- * An instance holds some internal position in the document and is therefore not threadsafe.
- * </p>
  *
  * @author Alexey Kholupko
  */
@@ -120,8 +117,7 @@ public final class YangIndenter {
     /** The indentation accumulated by <code>findReferencePosition</code>. */
     private int fIndent;
     /**
-     * The absolute (character-counted) indentation offset for special cases (method defs, array
-     * initializers)
+     * The absolute (character-counted) indentation offset for special cases (method defs, array initializers)
      */
     private int fAlign;
     /** The stateful scanposition for the indentation methods. */
@@ -133,8 +129,7 @@ public final class YangIndenter {
     /** The line of <code>fPosition</code>. */
     private int fLine;
     /**
-     * The scanner we will use to scan the document. It has to be installed on the same document as
-     * the one we get.
+     * The scanner we will use to scan the document. It has to be installed on the same document as the one we get.
      */
     private final YangHeuristicScanner fScanner;
     /**
@@ -146,7 +141,7 @@ public final class YangIndenter {
      * Creates a new instance.
      *
      * @param document the document to scan
-     * @param scanner the {@link YangHeuristicScanner} to be used for scanning the document. It must
+     * @param scanner the {@link YangHeuristicScanner} to be used for scanning the document. Must
      * be installed on the same <code>IDocument</code>.
      */
     public YangIndenter(IDocument document, YangHeuristicScanner scanner) {
@@ -160,22 +155,11 @@ public final class YangIndenter {
     /**
      * Computes the indentation at the reference point of <code>position</code>.
      *
-     * @param offset the offset in the document
-     * @return a String which reflects the indentation at the line in which the reference position
-     * to <code>offset</code> resides, or <code>null</code> if it cannot be determined
      */
     public StringBuffer getReferenceIndentation(int offset) {
         return getReferenceIndentation(offset, false);
     }
 
-    /**
-     * Computes the indentation at the reference point of <code>position</code>.
-     *
-     * @param offset the offset in the document
-     * @param assumeOpeningBrace <code>true</code> if an opening brace should be assumed
-     * @return a String which reflects the indentation at the line in which the reference position
-     * to <code>offset</code> resides, or <code>null</code> if it cannot be determined
-     */
     private StringBuffer getReferenceIndentation(int offset, boolean assumeOpeningBrace) {
 
         int unit;
@@ -195,22 +179,11 @@ public final class YangIndenter {
     /**
      * Computes the indentation at <code>offset</code>.
      *
-     * @param offset the offset in the document
-     * @return a String which reflects the correct indentation for the line in which offset resides,
-     * or <code>null</code> if it cannot be determined
      */
     public StringBuffer computeIndentation(int offset) {
         return computeIndentation(offset, false);
     }
 
-    /**
-     * Computes the indentation at <code>offset</code>.
-     *
-     * @param offset the offset in the document
-     * @param assumeOpeningBrace <code>true</code> if an opening brace should be assumed
-     * @return a String which reflects the correct indentation for the line in which offset resides,
-     * or <code>null</code> if it cannot be determined
-     */
     public StringBuffer computeIndentation(int offset, boolean assumeOpeningBrace) {
 
         StringBuffer reference = getReferenceIndentation(offset, assumeOpeningBrace);
@@ -238,8 +211,6 @@ public final class YangIndenter {
      * Computes the length of a <code>CharacterSequence</code>, counting a tab character as the size
      * until the next tab stop and every other character as one.
      *
-     * @param indent the string to measure
-     * @return the visual length in characters
      */
     private int computeVisualLength(CharSequence indent) {
         final int tabSize = fPrefs.prefTabSize;
@@ -265,9 +236,6 @@ public final class YangIndenter {
      * Strips any characters off the end of <code>reference</code> that exceed
      * <code>indentLength</code>.
      *
-     * @param reference the string to measure
-     * @param indentLength the maximum visual indentation length
-     * @return the stripped <code>reference</code>
      */
     private StringBuffer stripExceedingChars(StringBuffer reference, int indentLength) {
         final int tabSize = fPrefs.prefTabSize;
@@ -297,9 +265,6 @@ public final class YangIndenter {
      * Returns the indentation of the line at <code>offset</code> as a <code>StringBuffer</code>. If
      * the offset is not valid, the empty string is returned.
      *
-     * @param offset the offset in the document
-     * @return the indentation (leading whitespace) of the line in which <code>offset</code> is
-     * located
      */
     private StringBuffer getLeadingWhitespace(int offset) {
         StringBuffer indent = new StringBuffer();
@@ -324,11 +289,6 @@ public final class YangIndenter {
      * takes place, but tabs in the original range are still copied verbatim.
      * </p>
      *
-     * @param start the start of the document region to copy the indent from
-     * @param indent the exclusive end of the document region to copy the indent from
-     * @param convertSpaceRunsToTabs whether to convert consecutive runs of spaces to tabs
-     * @return the indentation corresponding to the document content specified by <code>start</code>
-     * and <code>indent</code>
      */
     private StringBuffer createIndent(int start, final int indent, final boolean convertSpaceRunsToTabs) {
         final boolean convertTabs = fPrefs.prefUseTabs && convertSpaceRunsToTabs;
@@ -365,10 +325,8 @@ public final class YangIndenter {
     }
 
     /**
-     * Creates a string with a visual length of the given <code>indentationSize</code>.
+     * Creates a string with a visual length of the given <code>additional</code> indentation units.
      *
-     * @param buffer the original indent to reuse if possible
-     * @param additional the additional indentation units to add or subtract to reference
      * @return the modified <code>buffer</code> reflecting the indentation adapted to
      * <code>additional</code>
      */
@@ -417,9 +375,6 @@ public final class YangIndenter {
      * findReferencePosition(offset, nextChar)} where <code>nextChar</code> is the next character
      * after <code>offset</code>.
      *
-     * @param offset the offset for which the reference is computed
-     * @return the reference statement relative to which <code>offset</code> should be indented, or
-     * {@link YangHeuristicScanner#NOT_FOUND}
      */
     public int findReferencePosition(int offset) {
         return findReferencePosition(offset, peekChar(offset));
@@ -429,8 +384,6 @@ public final class YangIndenter {
      * Peeks the next char in the document that comes after <code>offset</code> on the same line as
      * <code>offset</code>.
      *
-     * @param offset the offset into document
-     * @return the token symbol of the next element, or TokenEOF if there is none
      */
     private int peekChar(int offset) {
         if (offset < fDocument.getLength()) {
@@ -446,29 +399,8 @@ public final class YangIndenter {
     }
 
     /**
-     * Returns the reference position regarding to indentation for <code>position</code>, or
-     * <code>NOT_FOUND</code>.
-     * <p>
-     * If <code>peekNextChar</code> is <code>true</code>, the next token after <code>offset</code>
-     * is read and taken into account when computing the indentation. Currently, if the next token
-     * is the first token on the line (i.e. only preceded by whitespace), the following tokens are
-     * specially handled:
-     * <ul>
-     * <li><code>switch</code> labels are indented relative to the switch block</li>
-     * <li>opening curly braces are aligned correctly with the introducing code</li>
-     * <li>closing curly braces are aligned properly with the introducing code of the matching
-     * opening brace</li>
-     * <li>closing parenthesis' are aligned with their opening peer</li>
-     * <li>the <code>else</code> keyword is aligned with its <code>if</code>, anything else is
-     * aligned normally (i.e. with the base of any introducing statements).</li>
-     * <li>if there is no token on the same line after <code>offset</code>, the indentation is the
-     * same as for an <code>else</code> keyword</li>
-     * </ul>
-     *
-     * @param offset the offset for which the reference is computed
-     * @param nextToken the next token to assume in the document
-     * @return the reference statement relative to which <code>offset</code> should be indented, or
-     * {@link YangHeuristicScanner#NOT_FOUND}
+     * Returns the reference position regarding to indentation for <code>position</code>, or <code>NOT_FOUND</code>.
+     * 
      */
 
     public int findReferencePosition(int offset, int nextToken) {
@@ -484,7 +416,6 @@ public final class YangIndenter {
         // if they are on a line by themselves, the indentation gets adjusted
         // accordingly
         //
-        // also account for a dangling else
         if (offset < fDocument.getLength()) {
             try {
                 IRegion line = fDocument.getLineInformationOfOffset(offset);
@@ -495,14 +426,6 @@ public final class YangIndenter {
                 boolean bracelessBlockStart = fScanner.isBracelessBlockStart(prevPos, YangHeuristicScanner.UNBOUND);
 
                 switch (nextToken) {
-                case Symbols.TokenELSE:
-                    danglingElse = true;
-                    break;
-                case Symbols.TokenCASE:
-                case Symbols.TokenDEFAULT:
-                    if (isFirstTokenOnLine)
-                        matchCase = true;
-                    break;
                 case Symbols.TokenLBRACE: // for opening-brace-on-new-line style
                     if (bracelessBlockStart && !fPrefs.prefIndentBracesForBlocks)
                         unindent = true;
@@ -519,9 +442,6 @@ public final class YangIndenter {
                 case Symbols.TokenRPAREN:
                     if (isFirstTokenOnLine)
                         matchParen = true;
-                    break;
-                case Symbols.TokenTHROWS:
-                    throwsClause = true;
                     break;
                 case Symbols.TokenPLUS:
                     if (isStringContinuation(offset)) {
@@ -555,9 +475,6 @@ public final class YangIndenter {
     /**
      * Tells whether the given string is a continuation expression.
      * 
-     * @param offset the offset for which the check is done
-     * @return <code>true</code> if the offset is part of a string continuation, <code>false</code>
-     * otherwise
      */
     private boolean isStringContinuation(int offset) {
         int nextNonWSCharPosition = fScanner.findNonWhitespaceBackwardInAnyPartition(offset - 1,
@@ -576,9 +493,6 @@ public final class YangIndenter {
     /**
      * Checks if extra indentation for second line of string continuation is required.
      * 
-     * @param offset the offset for which the check is done
-     * @return returns <code>true</code> if extra indentation for second line of string continuation
-     * is required
      */
     private boolean isSecondLineOfStringContinuation(int offset) {
         try {
@@ -628,54 +542,11 @@ public final class YangIndenter {
         }
     }
 
-    /**
-     * Returns the reference position regarding to indentation for <code>position</code>, or
-     * <code>NOT_FOUND</code>.<code>fIndent</code> will contain the relative indentation (in
-     * indentation units, not characters) after the call. If there is a special alignment (e.g. for
-     * a method declaration where parameters should be aligned), <code>fAlign</code> will contain
-     * the absolute position of the alignment reference in <code>fDocument</code>, otherwise
-     * <code>fAlign</code> is set to <code>YangHeuristicScanner.NOT_FOUND</code>. This method calls
-     * {@link #findReferencePosition(int, boolean, boolean, boolean, boolean, boolean)
-     * findReferencePosition(offset, danglingElse, matchBrace, matchParen, matchCase, throwsClause)}
-     * where <code>throwsClause</code> indicates whether a throws clause was found at
-     * <code>position</code>.
-     * 
-     * @param offset the offset for which the reference is computed
-     * @param danglingElse whether a dangling else should be assumed at <code>position</code>
-     * @param matchBrace whether the position of the matching brace should be returned instead of
-     * doing code analysis
-     * @param matchParen whether the position of the matching parenthesis should be returned instead
-     * of doing code analysis
-     * @param matchCase whether the position of a switch statement reference should be returned
-     * (either an earlier case statement or the switch block brace)
-     * @return the reference statement relative to which <code>position</code> should be indented,
-     * or {@link YangHeuristicScanner#NOT_FOUND}
-     */
     public int findReferencePosition(int offset, boolean danglingElse, boolean matchBrace, boolean matchParen,
             boolean matchCase) {
         return findReferencePosition(offset, danglingElse, matchBrace, matchParen, matchCase, false);
     }
 
-    /**
-     * Returns the reference position regarding to indentation for <code>position</code>, or
-     * <code>NOT_FOUND</code>.<code>fIndent</code> will contain the relative indentation (in
-     * indentation units, not characters) after the call. If there is a special alignment (e.g. for
-     * a method declaration where parameters should be aligned), <code>fAlign</code> will contain
-     * the absolute position of the alignment reference in <code>fDocument</code>, otherwise
-     * <code>fAlign</code> is set to <code>YangHeuristicScanner.NOT_FOUND</code>.
-     * 
-     * @param offset the offset for which the reference is computed
-     * @param danglingElse whether a dangling else should be assumed at <code>position</code>
-     * @param matchBrace whether the position of the matching brace should be returned instead of
-     * doing code analysis
-     * @param matchParen whether the position of the matching parenthesis should be returned instead
-     * of doing code analysis
-     * @param matchCase whether the position of a switch statement reference should be returned
-     * (either an earlier case statement or the switch block brace)
-     * @param throwsClause whether a throws clause was found at <code>position</code>
-     * @return the reference statement relative to which <code>position</code> should be indented,
-     * or {@link YangHeuristicScanner#NOT_FOUND}
-     */
     public int findReferencePosition(int offset, boolean danglingElse, boolean matchBrace, boolean matchParen,
             boolean matchCase, boolean throwsClause) {
         fIndent = 0; // the indentation modification
@@ -725,13 +596,6 @@ public final class YangIndenter {
             }
         }
 
-        // the only reliable way to get case labels aligned (due to many different styles of using
-        // braces in a block)
-        // is to go for another case statement, or the scope opening brace
-        if (matchCase) {
-            return matchCaseAlignment();
-        }
-
         nextToken();
         switch (fToken) {
         case Symbols.TokenGREATERTHAN:
@@ -778,14 +642,9 @@ public final class YangIndenter {
             }
 
             // indentation for blockless introducers:
-        case Symbols.TokenDO:
-        case Symbols.TokenWHILE:
-        case Symbols.TokenELSE:
+        case Symbols.TokenKEYWORD:
             fIndent = fPrefs.prefSimpleIndent;
             return fPosition;
-
-        case Symbols.TokenTRY:
-            return skipToStatementStart(danglingElse, false);
 
         case Symbols.TokenRBRACKET:
             fIndent = fPrefs.prefContinuationIndent;
@@ -800,19 +659,8 @@ public final class YangIndenter {
             if (skipScope(Symbols.TokenLPAREN, Symbols.TokenRPAREN)) {
                 int scope = fPosition;
                 nextToken();
-                if (fToken == Symbols.TokenIF || fToken == Symbols.TokenWHILE || fToken == Symbols.TokenFOR) {
-                    fIndent = fPrefs.prefSimpleIndent;
-                    return fPosition;
-                }
                 fPosition = scope;
                 if (looksLikeMethodDecl()) {
-                    return skipToStatementStart(danglingElse, false);
-                }
-                if (fToken == Symbols.TokenCATCH) {
-                    return skipToStatementStart(danglingElse, false);
-                }
-                fPosition = scope;
-                if (looksLikeAnonymousTypeDecl()) {
                     return skipToStatementStart(danglingElse, false);
                 }
                 fPosition = scope;
@@ -825,9 +673,6 @@ public final class YangIndenter {
             fLine = line;
 
             return skipToPreviousListItemOrListStart();
-        case Symbols.TokenRETURN:
-            fIndent = fPrefs.prefContinuationIndent;
-            return fPosition;
         case Symbols.TokenPLUS:
             if (isStringContinuation(fPosition)) {
                 try {
@@ -906,35 +751,7 @@ public final class YangIndenter {
             if (isInBlock) {
                 switch (fToken) {
                 // exit on all block introducers
-                case Symbols.TokenIF:
-                case Symbols.TokenELSE:
-                case Symbols.TokenCATCH:
-                case Symbols.TokenDO:
-                case Symbols.TokenWHILE:
-                case Symbols.TokenFINALLY:
-                case Symbols.TokenFOR:
-                case Symbols.TokenTRY:
-                    return fPosition;
-
-                case Symbols.TokenSTATIC:
-                    mayBeMethodBody = READ_IDENT; // treat static blocks like methods
-                    break;
-
-                case Symbols.TokenSYNCHRONIZED:
-                    // if inside a method declaration, use body indentation
-                    // else use block indentation.
-                    if (mayBeMethodBody != READ_IDENT)
-                        return fPosition;
-                    break;
-
-                case Symbols.TokenCLASS:
-                case Symbols.TokenINTERFACE:
-                case Symbols.TokenENUM:
-                    isTypeBody = true;
-                    break;
-
-                case Symbols.TokenSWITCH:
-                    fIndent = fPrefs.prefCaseIndent;
+                case Symbols.TokenKEYWORD:
                     return fPosition;
                 }
             }
@@ -987,46 +804,11 @@ public final class YangIndenter {
                 else
                     return pos;
 
-                // IF / ELSE: align the position after the conditional block with the if
-                // so we are ready for an else, except if danglingElse is false
-                // in order for this to work, we must skip an else to its if
-            case Symbols.TokenIF:
-                if (danglingElse)
-                    return fPosition;
-                else
-                    break;
-            case Symbols.TokenELSE:
-                // skip behind the next if, as we have that one covered
-                pos = fPosition;
-                if (skipNextIF())
-                    break;
-                else
-                    return pos;
 
-            case Symbols.TokenCATCH:
-            case Symbols.TokenFINALLY:
-                pos = fPosition;
-                if (skipNextTRY())
-                    break;
-                else
-                    return pos;
-
-            case Symbols.TokenDO:
+            case Symbols.TokenKEYWORD:
                 // align the WHILE position with its do
                 return fPosition;
 
-            case Symbols.TokenWHILE:
-                // this one is tricky: while can be the start of a while loop
-                // or the end of a do - while
-                pos = fPosition;
-                if (hasMatchingDo()) {
-                    // continue searching from the DO on
-                    break;
-                } else {
-                    // continue searching from the WHILE on
-                    fPosition = pos;
-                    break;
-                }
             case Symbols.TokenIDENT:
                 if (mayBeMethodBody == READ_PARENS)
                     mayBeMethodBody = READ_IDENT;
@@ -1038,6 +820,7 @@ public final class YangIndenter {
             }
 
         }
+            
     }
 
     private int getBlockIndent(boolean isMethodBody, boolean isTypeBody) {
@@ -1064,9 +847,6 @@ public final class YangIndenter {
             case Symbols.TokenIDENT:
             case Symbols.TokenOTHER: // dots for qualified constants
                 continue;
-            case Symbols.TokenCASE:
-            case Symbols.TokenDEFAULT:
-                return false;
             default:
                 return true;
             }
@@ -1074,57 +854,9 @@ public final class YangIndenter {
     }
 
     /**
-     * Returns as a reference any previous <code>switch</code> labels (<code>case</code> or
-     * <code>default</code>) or the offset of the brace that scopes the switch statement. Sets
-     * <code>fIndent</code> to <code>prefCaseIndent</code> upon a match.
-     *
-     * @return the reference offset for a <code>switch</code> label
-     */
-    private int matchCaseAlignment() {
-        while (true) {
-            nextToken();
-            switch (fToken) {
-            // invalid cases: another case label or an LBRACE must come before a case
-            // -> bail out with the current position
-            case Symbols.TokenLPAREN:
-            case Symbols.TokenLBRACKET:
-            case Symbols.TokenEOF:
-                return fPosition;
-            case Symbols.TokenLBRACE:
-                // opening brace of switch statement
-                fIndent = fPrefs.prefCaseIndent;
-                return fPosition;
-            case Symbols.TokenCASE:
-            case Symbols.TokenDEFAULT:
-                // align with previous label
-                fIndent = 0;
-                return fPosition;
-
-                // scopes: skip them
-            case Symbols.TokenRPAREN:
-            case Symbols.TokenRBRACKET:
-            case Symbols.TokenRBRACE:
-            case Symbols.TokenGREATERTHAN:
-                skipScope();
-                break;
-
-            default:
-                // keep searching
-                continue;
-
-            }
-        }
-    }
-
-    /**
-     * Returns the reference position for a list element. The algorithm tries to match any previous
-     * indentation on the same list. If there is none, the reference position returned is determined
-     * depending on the type of list: The indentation will either match the list scope introducer
-     * (e.g. for method declarations), so called deep indents, or simply increase the indentation by
-     * a number of standard indents. See also {@link #handleScopeIntroduction(int)}.
-     *
-     * @return the reference position for a list item: either a previous list item that has its own
+     * Returns the reference position for a list element: either a previous list item that has its own
      * indentation, or the list introduction start.
+     *
      */
     private int skipToPreviousListItemOrListStart() {
         int startLine = fLine;
@@ -1173,9 +905,6 @@ public final class YangIndenter {
                     fIndent = fPrefs.prefTernaryIndent;
                     return fPosition;
                 }
-            case Symbols.TokenRETURN:
-                fIndent = fPrefs.prefContinuationIndent;
-                return fPosition;
             case Symbols.TokenEQUAL:
                 return handleEqual();
             case Symbols.TokenEOF:
@@ -1231,14 +960,7 @@ public final class YangIndenter {
      * <code>Symbols.TokenLPAREN</code>, <code>Symbols.TokenLBRACE</code>, and
      * <code>Symbols.TokenLBRACKET</code>. Returns as the reference position either the token
      * introducing the scope or - if available - the first YANG token after that.
-     * <p>
-     * Depending on the type of scope introduction, the indentation will align (deep indenting) with
-     * the reference position (<code>fAlign</code> will be set to the reference position) or
-     * <code>fIndent</code> will be set to the number of indentation units.
-     * </p>
-     *
-     * @param bound the bound for the search for the first token after the scope introduction.
-     * @return the indent
+     * 
      */
     private int handleScopeIntroduction(int bound) {
         switch (fToken) {
@@ -1343,106 +1065,7 @@ public final class YangIndenter {
         return false;
     }
 
-    /**
-     * Skips over the next <code>if</code> keyword. The current token when calling this method must
-     * be an <code>else</code> keyword. Returns <code>true</code> if a matching <code>if</code>
-     * could be found, <code>false</code> otherwise. The cursor (<code>fPosition</code>) is set to
-     * the offset of the <code>if</code> token.
-     *
-     * @return <code>true</code> if a matching <code>if</code> token was found, <code>false</code>
-     * otherwise
-     */
-    private boolean skipNextIF() {
-        Assert.isTrue(fToken == Symbols.TokenELSE);
-
-        while (true) {
-            nextToken();
-            switch (fToken) {
-            // scopes: skip them
-            case Symbols.TokenRPAREN:
-            case Symbols.TokenRBRACKET:
-            case Symbols.TokenRBRACE:
-            case Symbols.TokenGREATERTHAN:
-                skipScope();
-                break;
-
-            case Symbols.TokenIF:
-                // found it, return
-                return true;
-            case Symbols.TokenELSE:
-                // recursively skip else-if blocks
-                skipNextIF();
-                break;
-
-            // shortcut scope starts
-            case Symbols.TokenLPAREN:
-            case Symbols.TokenLBRACE:
-            case Symbols.TokenLBRACKET:
-            case Symbols.TokenEOF:
-                return false;
-            }
-        }
-    }
-
-    /**
-     * Skips over the next <code>try</code> keyword. The current token when calling this method must
-     * be a <code>catch</code> or <code>finally</code> keyword. Returns <code>true</code> if a
-     * matching <code>try</code> could be found, <code>false</code> otherwise. The cursor (
-     * <code>fPosition</code>) is set to the offset of the <code>try</code> token.
-     * 
-     * @return <code>true</code> if a matching <code>try</code> token was found, <code>false</code>
-     * otherwise
-     */
-    private boolean skipNextTRY() {
-        Assert.isTrue(fToken == Symbols.TokenCATCH || fToken == Symbols.TokenFINALLY);
-
-        while (true) {
-            nextToken();
-            switch (fToken) {
-            // scopes: skip them
-            case Symbols.TokenRPAREN:
-            case Symbols.TokenRBRACKET:
-            case Symbols.TokenRBRACE:
-            case Symbols.TokenGREATERTHAN:
-                skipScope();
-                break;
-
-            case Symbols.TokenTRY:
-                // found it
-                return true;
-
-                // shortcut scope starts
-            case Symbols.TokenLPAREN:
-            case Symbols.TokenLBRACE:
-            case Symbols.TokenLBRACKET:
-            case Symbols.TokenEOF:
-                return false;
-            }
-        }
-    }
-
-    /**
-     * while(condition); is ambiguous when parsed backwardly, as it is a valid statement by its own,
-     * so we have to check whether there is a matching do. A <code>do</code> can either be separated
-     * from the while by a block, or by a single statement, which limits our search distance.
-     *
-     * @return <code>true</code> if the <code>while</code> currently in <code>fToken</code> has a
-     * matching <code>do</code>.
-     */
-    private boolean hasMatchingDo() {
-        Assert.isTrue(fToken == Symbols.TokenWHILE);
-        nextToken();
-        switch (fToken) {
-        case Symbols.TokenRBRACE:
-            skipScope();
-            //$FALL-THROUGH$
-        case Symbols.TokenSEMICOLON:
-            skipToStatementStart(false, false);
-            return fToken == Symbols.TokenDO;
-        }
-        return false;
-    }
-
+   
     /**
      * Skips brackets if the current token is a RBRACKET. There can be nothing but whitespace in
      * between, this is only to be used for <code>[]</code> elements.
@@ -1532,31 +1155,6 @@ public final class YangIndenter {
                 nextToken();
             }
             return fToken == Symbols.TokenAT;
-        }
-        return false;
-    }
-
-    /**
-     * Returns <code>true</code> if the current tokens look like an anonymous type declaration
-     * header (i.e. a type name (potentially qualified) and a new keyword). The heuristic calls
-     * <code>nextToken</code> and expects a possibly qualified identifier (type name) and a new
-     * keyword
-     *
-     * @return <code>true</code> if the current position looks like a anonymous type declaration
-     * header.
-     */
-    private boolean looksLikeAnonymousTypeDecl() {
-
-        nextToken();
-        if (fToken == Symbols.TokenIDENT) { // type name
-            nextToken();
-            while (fToken == Symbols.TokenOTHER) { // dot of qualification
-                nextToken();
-                if (fToken != Symbols.TokenIDENT) // qualifying name
-                    return false;
-                nextToken();
-            }
-            return fToken == Symbols.TokenNEW;
         }
         return false;
     }

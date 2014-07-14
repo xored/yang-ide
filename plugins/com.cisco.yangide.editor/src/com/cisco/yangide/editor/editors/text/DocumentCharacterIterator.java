@@ -20,11 +20,9 @@ import org.eclipse.jface.text.IDocument;
 
 /**
  * An <code>IDocument</code> based implementation of <code>CharacterIterator</code> and
- * <code>CharSequence</code>. Note that the supplied document is not copied; if the document is
+ * <code>CharSequence</code>. Supplied document is not copied; if the document is
  * modified during the lifetime of a <code>DocumentCharacterIterator</code>, the methods returning
- * document content may not always return the same values. Also, if accessing the document fails
- * with a {@link BadLocationException}, any of <code>CharacterIterator</code> methods as well as
- * <code>charAt</code>may return {@link CharacterIterator#DONE}.
+ * document content may not always return the same values. 
  */
 public class DocumentCharacterIterator implements CharacterIterator, CharSequence {
 
@@ -41,8 +39,6 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
     /**
      * Creates an iterator for the entire document.
      * 
-     * @param document the document backing this iterator
-     * @throws BadLocationException if the indices are out of bounds
      */
     public DocumentCharacterIterator(IDocument document) throws BadLocationException {
         this(document, 0);
@@ -51,9 +47,6 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
     /**
      * Creates an iterator, starting at offset <code>first</code>.
      * 
-     * @param document the document backing this iterator
-     * @param first the first character to consider
-     * @throws BadLocationException if the indices are out of bounds
      */
     public DocumentCharacterIterator(IDocument document, int first) throws BadLocationException {
         this(document, first, document.getLength());
@@ -63,10 +56,6 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
      * Creates an iterator for the document contents from <code>first</code> (inclusive) to
      * <code>last</code> (exclusive).
      * 
-     * @param document the document backing this iterator
-     * @param first the first character to consider
-     * @param last the last character index to consider
-     * @throws BadLocationException if the indices are out of bounds
      */
     public DocumentCharacterIterator(IDocument document, int first, int last) throws BadLocationException {
         if (document == null)
@@ -184,17 +173,11 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
         return getEndIndex() - getBeginIndex();
     }
 
-    /**
-     * {@inheritDoc}
-     * <p>
-     * Note that, if the document is modified concurrently, this method may return
-     * {@link CharacterIterator#DONE} if a {@link BadLocationException} was thrown when accessing
-     * the backing document.
-     * </p>
-     *
-     * @param index {@inheritDoc}
-     * @return {@inheritDoc}
+
+    /* (non-Javadoc)
+     * @see java.lang.CharSequence#charAt(int)
      */
+    @Override
     public char charAt(int index) {
         if (index >= 0 && index < length())
             try {

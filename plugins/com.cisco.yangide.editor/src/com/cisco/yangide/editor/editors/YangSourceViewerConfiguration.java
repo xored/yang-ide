@@ -109,9 +109,6 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
         reconciler.setDamager(dr, IDocument.DEFAULT_CONTENT_TYPE);
         reconciler.setRepairer(dr, IDocument.DEFAULT_CONTENT_TYPE);
 
-        /**
-         * may need to be used @see org.eclipse.ant.internal.ui.editor.text.MultilineDamagerRepairer
-         */
         dr = new DefaultDamagerRepairer(getYangCommentScanner());
         reconciler.setDamager(dr, YangPartitionScanner.YANG_COMMENT);
         reconciler.setRepairer(dr, YangPartitionScanner.YANG_COMMENT);
@@ -139,8 +136,6 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
      * Determines whether the preference change encoded by the given event changes the behavior of
      * one of its contained components.
      *
-     * @param event the event to be investigated
-     * @return <code>true</code> if event causes a behavioral change
      */
     public boolean affectsTextPresentation(PropertyChangeEvent event) {
         return scanner.affectsBehavior(event) || stringScanner.affectsBehavior(event)
@@ -150,11 +145,7 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
 
     /**
      * Adapts the behavior of the contained components to the change encoded in the given event.
-     * <p>
-     * Clients are not allowed to call this method if the old setup with text tools is in use.
-     * </p>
      *
-     * @param event the event to which to adapt
      */
     public void handlePropertyChangeEvent(PropertyChangeEvent event) {
 

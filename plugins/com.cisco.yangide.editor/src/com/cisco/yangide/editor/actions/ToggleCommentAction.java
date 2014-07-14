@@ -52,8 +52,7 @@ public final class ToggleCommentAction extends TextEditorAction {
      * visual representation from the given resource bundle.
      * 
      * @param bundle the resource bundle
-     * @param prefix a prefix to be prepended to the various resource keys (described in
-     * <code>ResourceAction</code> constructor), or <code>null</code> if none
+     * @param prefix a prefix to be prepended to the various resource keys, or <code>null</code> if none
      * @param editor the text editor
      * @see ResourceAction#ResourceAction(ResourceBundle, String, int)
      */
@@ -62,8 +61,7 @@ public final class ToggleCommentAction extends TextEditorAction {
     }
 
     /**
-     * Implementation of the <code>IAction</code> prototype. Checks if the selected lines are all
-     * commented or not and uncomments/comments them respectively.
+     * Checks if the selected lines are all commented or not and uncomments/comments them respectively.
      */
     @Override
     public void run() {
@@ -103,10 +101,8 @@ public final class ToggleCommentAction extends TextEditorAction {
     }
 
     /**
-     * Is the given selection single-line commented?
+     * Is the given selection single-line commented
      * 
-     * @param selection Selection to check
-     * @return <code>true</code> iff all selected lines are commented
      */
     private boolean isSelectionCommented(ISelection selection) {
         if (!(selection instanceof ITextSelection))
@@ -159,9 +155,6 @@ public final class ToggleCommentAction extends TextEditorAction {
      * Creates a region describing the text block (something that starts at the beginning of a line)
      * completely containing the current selection.
      * 
-     * @param selection The selection to use
-     * @param document The document
-     * @return the region describing the text block comprising the given selection
      */
     private IRegion getTextBlockFromSelection(ITextSelection selection, IDocument document) {
 
@@ -182,9 +175,6 @@ public final class ToggleCommentAction extends TextEditorAction {
     /**
      * Returns the index of the first line whose start offset is in the given text range.
      * 
-     * @param region the text range in characters where to find the line
-     * @param document The document
-     * @return the first line whose start index is in the given range, -1 if there is no such line
      */
     private int getFirstCompleteLineOfRegion(IRegion region, IDocument document) {
 
@@ -214,13 +204,7 @@ public final class ToggleCommentAction extends TextEditorAction {
     /**
      * Determines whether each line is prefixed by one of the prefixes.
      * 
-     * @param startLine Start line in document
-     * @param endLine End line in document
      * @param prefixes Possible comment prefixes
-     * @param document The document
-     * @return <code>true</code> iff each line from <code>startLine</code> to and including
-     * <code>endLine</code> is prepended by one of the <code>prefixes</code>, ignoring whitespace at
-     * the begin of line
      */
     private boolean isBlockCommented(int startLine, int endLine, String[] prefixes, IDocument document) {
 
@@ -256,11 +240,7 @@ public final class ToggleCommentAction extends TextEditorAction {
         return false;
     }
 
-    /**
-     * Implementation of the <code>IUpdate</code> prototype method discovers the operation through
-     * the current editor's <code>ITextOperationTarget</code> adapter, and sets the enabled state
-     * accordingly.
-     */
+
     @Override
     public void update() {
         super.update();

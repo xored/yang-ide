@@ -40,7 +40,7 @@ public class YangEditorColoringPreferencePage extends AbstractConfigurationBlock
      * (non-Javadoc)
      * 
      * @see
-     * com.cisco.yangide.editor.preferences.JavaEditorColoringPreferencePage#createConfigurationBlock
+     * com.cisco.yangide.editor.preferences.YangEditorColoringPreferencePage#createConfigurationBlock
      * (com.cisco.yangide.editor.preferences.OverlayPreferenceStore)
      */
     @Override

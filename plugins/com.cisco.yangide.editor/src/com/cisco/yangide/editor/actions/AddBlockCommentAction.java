@@ -99,21 +99,13 @@ public class AddBlockCommentAction extends BlockCommentAction {
      * Handles partition boundaries within the selection. The end of the current partition and the
      * start of the next partition are examined for whether they contain comment tokens that
      * interfere with the created comment.
-     * <p>
      * Comment tokens are removed from interior multi-line comments.
-     * </p>
-     * <p>
-     * The next partition is returned.
-     * </p>
      * 
      * @param partition the current partition
      * @param edits the list of edits to add to
      * @param factory the edit factory
      * @param docExtension the document to get the partitions from
      * @return the next partition after the current
-     * @throws BadLocationException if accessing the document fails - this can only happen if the
-     * document gets modified concurrently
-     * @throws BadPartitioningException if the document does not have a Yang partitioning
      */
     private ITypedRegion handleInteriorPartition(ITypedRegion partition, List<Edit> edits, Edit.EditFactory factory,
             IDocumentExtension3 docExtension) throws BadPartitioningException, BadLocationException {

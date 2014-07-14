@@ -30,26 +30,6 @@ public interface Symbols {
     int TokenGREATERTHAN = 14;
     int TokenPLUS = 15;
     int TokenAT = 16;
-    int TokenIF = 109;
-    int TokenDO = 1010;
-    int TokenFOR = 1011;
-    int TokenTRY = 1012;
-    int TokenCASE = 1013;
-    int TokenELSE = 1014;
-    int TokenBREAK = 1015;
-    int TokenCATCH = 1016;
-    int TokenWHILE = 1017;
-    int TokenRETURN = 1018;
-    int TokenSTATIC = 1019;
-    int TokenSWITCH = 1020;
-    int TokenFINALLY = 1021;
-    int TokenSYNCHRONIZED = 1022;
-    int TokenGOTO = 1023;
-    int TokenDEFAULT = 1024;
-    int TokenNEW = 1025;
-    int TokenCLASS = 1026;
-    int TokenINTERFACE = 1027;
-    int TokenENUM = 1028;
-    int TokenTHROWS = 1029;
+    int TokenKEYWORD = 1000;
     int TokenIDENT = 2000;
 }

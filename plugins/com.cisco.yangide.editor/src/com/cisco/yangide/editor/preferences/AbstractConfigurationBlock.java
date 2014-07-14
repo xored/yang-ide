@@ -5,16 +5,6 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-/*******************************************************************************
- * Copyright (c) 2000, 2013 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
 package com.cisco.yangide.editor.preferences;
 
 import java.util.ArrayList;
@@ -62,22 +52,7 @@ import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
  */
 abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlock {
 
-    /**
-     * Use as follows:
-     *
-     * <pre>
-     * SectionManager manager= new SectionManager();
-     * Composite composite= manager.createSectionComposite(parent);
-     * 
-     * Composite xSection= manager.createSection("section X"));
-     * xSection.setLayout(new FillLayout());
-     * new Button(xSection, SWT.PUSH); // add controls to section..
-     * 
-     * [...]
-     * 
-     * return composite; // return main composite
-     * </pre>
-     */
+
     protected final class SectionManager {
         /** The preference setting for keeping no section open. */
         private static final String __NONE = "__none"; //$NON-NLS-1$
@@ -147,20 +122,6 @@ abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlo
             makeScrollableCompositeAware(section);
         }
 
-        /**
-         * Creates a new composite that can contain a set of expandable sections. A
-         * <code>ScrolledPageComposite</code> is created and a new composite within that, to ensure
-         * that expanding the sections will always have enough space, unless there already is a
-         * <code>ScrolledComposite</code> along the parent chain of <code>parent</code>, in which
-         * case a normal <code>Composite</code> is created.
-         * <p>
-         * The receiver keeps a reference to the inner body composite, so that new sections can be
-         * added via <code>createSection</code>.
-         * </p>
-         *
-         * @param parent the parent composite
-         * @return the newly created composite
-         */
         public Composite createSectionComposite(Composite parent) {
             Assert.isTrue(fBody == null);
             boolean isNested = isNestedInScrolledComposite(parent);
@@ -178,14 +139,6 @@ abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlo
             return composite;
         }
 
-        /**
-         * Creates an expandable section within the parent created previously by calling
-         * <code>createSectionComposite</code>. Controls can be added directly to the returned
-         * composite, which has no layout initially.
-         *
-         * @param label the display name of the section
-         * @return a composite within the expandable section
-         */
         public Composite createSection(String label) {
             Assert.isNotNull(fBody);
             final ExpandableComposite excomposite = new ExpandableComposite(fBody, SWT.NONE,
@@ -362,13 +315,6 @@ abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlo
      * of type <code>Text</code> Use <code>getLabelControl</code> and <code>getTextControl</code> to
      * get the 2 controls.
      *
-     * @param composite the parent composite
-     * @param label the text field's label
-     * @param key the preference key
-     * @param textLimit the text limit
-     * @param indentation the field's indentation
-     * @param isNumber <code>true</code> iff this text field is used to e4dit a number
-     * @return the controls added
      */
     protected Control[] addLabelledTextField(Composite composite, String label, String key, int textLimit,
             int indentation, boolean isNumber) {

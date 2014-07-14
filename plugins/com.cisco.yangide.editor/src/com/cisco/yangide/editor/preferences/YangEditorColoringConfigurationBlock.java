@@ -93,12 +93,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         /**
          * Initialize the item with the given values.
          *
-         * @param displayName the display name
-         * @param colorKey the color preference key
-         * @param boldKey the bold preference key
-         * @param italicKey the italic preference key
-         * @param strikethroughKey the strikethrough preference key
-         * @param underlineKey the underline preference key
          */
         public HighlightingColorListItem(String displayName, String colorKey, String boldKey, String italicKey,
                 String strikethroughKey, String underlineKey) {
@@ -117,37 +111,22 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
             return fBoldKey;
         }
 
-        /**
-         * @return the bold preference key
-         */
         public String getItalicKey() {
             return fItalicKey;
         }
 
-        /**
-         * @return the strikethrough preference key
-         */
         public String getStrikethroughKey() {
             return fStrikethroughKey;
         }
 
-        /**
-         * @return the underline preference key
-         */
         public String getUnderlineKey() {
             return fUnderlineKey;
         }
 
-        /**
-         * @return the color preference key
-         */
         public String getColorKey() {
             return fColorKey;
         }
 
-        /**
-         * @return the display name
-         */
         public String getDisplayName() {
             return fDisplayName;
         }
@@ -193,18 +172,15 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     }
 
+    /**
+     * Preference key suffix for bold preferences.
+     */
     private static final String BOLD = PreferenceConstants.EDITOR_BOLD_SUFFIX;
-    /**
-     * Preference key suffix for italic preferences.
-     */
+
     private static final String ITALIC = PreferenceConstants.EDITOR_ITALIC_SUFFIX;
-    /**
-     * Preference key suffix for strikethrough preferences.
-     */
+
     private static final String STRIKETHROUGH = PreferenceConstants.EDITOR_STRIKETHROUGH_SUFFIX;
-    /**
-     * Preference key suffix for underline preferences.
-     */
+
     private static final String UNDERLINE = PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
 
     /**
@@ -221,38 +197,28 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     private ColorSelector fSyntaxForegroundColorEditor;
     private Label fColorEditorLabel;
+
+    /**
+     * Check box for bold preference.
+     */ 
     private Button fBoldCheckBox;
-    /**
-     * Check box for italic preference.
-     */
+
     private Button fItalicCheckBox;
-    /**
-     * Check box for strikethrough preference.
-     */
+
     private Button fStrikethroughCheckBox;
-    /**
-     * Check box for underline preference.
-     */
+
     private Button fUnderlineCheckBox;
     /**
      * Highlighting color list
      */
     private final java.util.List<HighlightingColorListItem> fListModel = new ArrayList<HighlightingColorListItem>();
-    /**
-     * Highlighting color tree viewer
-     */
+
     private TableViewer fHighlightingColorListViewer;
-    /**
-     * The previewer.
-     */
+
     private SourceViewer fPreviewViewer;
-    /**
-     * The color manager.
-     */
+
     private IColorManager fColorManager;
-    /**
-     * The font metrics.
-     */
+
     private FontMetrics fFontMetrics;
 
     public YangEditorColoringConfigurationBlock(OverlayPreferenceStore store) {
@@ -290,12 +256,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         return keys;
     }
 
-    /**
-     * Creates page for hover preferences.
-     *
-     * @param parent the parent composite
-     * @return the control for the preference page
-     */
     @Override
     public Control createControl(Composite parent) {
         initializeDialogUnits(parent);
@@ -315,15 +275,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     /**
      * Returns the number of pixels corresponding to the width of the given number of characters.
-     * <p>
      * This method may only be called after <code>initializeDialogUnits</code> has been called.
-     * </p>
-     * <p>
-     * Clients may call this framework method, but should not override it.
-     * </p>
-     *
-     * @param chars the number of characters
-     * @return the number of pixels
      */
     private int convertWidthInCharsToPixels(int chars) {
         // test for failure to initialize for backward compatibility
@@ -333,18 +285,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         return Dialog.convertWidthInCharsToPixels(fFontMetrics, chars);
     }
 
-    /**
-     * Returns the number of pixels corresponding to the height of the given number of characters.
-     * <p>
-     * This method may only be called after <code>initializeDialogUnits</code> has been called.
-     * </p>
-     * <p>
-     * Clients may call this framework method, but should not override it.
-     * </p>
-     *
-     * @param chars the number of characters
-     * @return the number of pixels
-     */
     private int convertHeightInCharsToPixels(int chars) {
         // test for failure to initialize for backward compatibility
         if (fFontMetrics == null) {
@@ -633,7 +573,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
         new YangPreviewerUpdater(fPreviewViewer, configuration, store);
 
-        String content = loadPreviewContentFromFile("ColorSettingPreviewCode.txt"); //$NON-NLS-1$
+        String content = loadPreviewContentFromFile("/resources/ColorSettingPreviewCode.txt"); //$NON-NLS-1$
         IDocument document = new Document(content);
         new YangDocumentSetupParticipant().setup(document);
         fPreviewViewer.setDocument(document);
