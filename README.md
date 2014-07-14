@@ -1,11 +1,7 @@
 yang-ide
 ========
 
+YANG IDE is a Yang - http://www.yang-central.org language editor project.
+It is licensed with [Eclipse Public License v1.0](http://www.eclipse.org/legal/epl-v10.html)
 
-Yang-IDE Requirements
--------------
-* Java 1.7
-* Eclipse 3.7-4.4
-* Requirements M2E 1.4-1.5
-
-Documentation are at: [Wiki](https://github.com/xored/yang-ide/wiki)
+More documentation are at project [Wiki](https://github.com/xored/yang-ide/wiki)
