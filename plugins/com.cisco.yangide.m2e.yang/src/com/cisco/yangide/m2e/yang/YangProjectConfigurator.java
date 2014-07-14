@@ -29,6 +29,7 @@ import org.eclipse.m2e.jdt.AbstractSourcesGenerationProjectConfigurator;
 
 /**
  * @author Konstantin Zaitsev
+ * @date Jul 2, 2014
  */
 @SuppressWarnings("restriction")
 public class YangProjectConfigurator extends AbstractSourcesGenerationProjectConfigurator {

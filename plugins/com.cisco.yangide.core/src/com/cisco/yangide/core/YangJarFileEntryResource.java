@@ -25,6 +25,8 @@ import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 
 /**
+ * Custom implementation of {@link IJarEntryResource} to open correct jar file from JDT perspective.
+ * 
  * @author Konstantin Zaitsev
  * @date Jul 7, 2014
  */

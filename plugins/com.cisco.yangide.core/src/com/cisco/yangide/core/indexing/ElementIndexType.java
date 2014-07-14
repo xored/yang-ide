@@ -7,10 +7,27 @@
  */
 package com.cisco.yangide.core.indexing;
 
+import com.cisco.yangide.core.model.YangModelManager;
+
 /**
+ * Enumeration of available indexed types of Yang elements.
+ *
+ * @see YangModelManager#search(String, String, String, ElementIndexType,
+ * org.eclipse.core.resources.IProject, org.eclipse.core.runtime.IPath)
  * @author Konstantin Zaitsev
  * @date Jul 1, 2014
  */
 public enum ElementIndexType {
-    MODULE, SUBMODULE, TYPE, GROUPING;
+
+    /** Yang Module <code>module</code> */
+    MODULE,
+
+    /** Yang SubModule <code>submodule</code> */
+    SUBMODULE,
+
+    /** Custom defined type declaration <code>typedef</code> */
+    TYPE,
+
+    /** Yang Grouping <code>grouping</code> */
+    GROUPING;
 }

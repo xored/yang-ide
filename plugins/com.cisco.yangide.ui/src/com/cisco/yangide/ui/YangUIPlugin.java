@@ -114,15 +114,15 @@ public class YangUIPlugin extends AbstractUIPlugin {
 
     /**
      * Configurable option value: {@value} .
-     * 
+     *
      * @category OptionValue
      */
     public static final String TAB = "tab"; //$NON-NLS-1$
     /**
      * Configurable option value: {@value} .
-     * 
+     *
      * @category OptionValue
      */
-    public static final String SPACE = "space"; //$NON-NLS-1$    
+    public static final String SPACE = "space"; //$NON-NLS-1$
 
 }

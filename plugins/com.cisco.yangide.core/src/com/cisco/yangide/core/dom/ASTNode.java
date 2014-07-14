@@ -125,7 +125,6 @@ public abstract class ASTNode {
     }
 
     final void acceptChildren(ASTVisitor visitor, Collection<? extends ASTNode> children) {
-        // TODO KOS: rewrite to concurrent invocation
         for (ASTNode child : children) {
             visitor.preVisit(child);
             child.accept(visitor);

@@ -33,6 +33,7 @@ import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
 
 /**
  * @author Konstantin Zaitsev
+ * @date Jul 2, 2014
  */
 public class YangBuildParticipant extends MojoExecutionBuildParticipant {
 

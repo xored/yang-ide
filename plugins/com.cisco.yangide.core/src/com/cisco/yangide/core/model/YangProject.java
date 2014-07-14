@@ -66,8 +66,6 @@ public class YangProject extends YangElement {
             });
 
             if (javaProject.isOpen()) {
-                ((YangProjectInfo) info).setClasspath(javaProject.getRawClasspath());
-
                 IClasspathEntry[] classpath = javaProject.getResolvedClasspath(true);
                 for (int i = 0, length = classpath.length; i < length; i++) {
                     IClasspathEntry entry = classpath[i];
@@ -128,19 +126,5 @@ public class YangProject extends YangElement {
             return new Status(Status.ERROR, YangCorePlugin.PLUGIN_ID, "Does not exist");
         }
         return Status.OK_STATUS;
-    }
-
-    /**
-     * @param classpath
-     * @return
-     * @throws YangModelException
-     */
-    public boolean isClasspathChanged(IClasspathEntry[] classpath) throws YangModelException {
-        return !((YangProjectInfo) getElementInfo(null)).isClasspathEquals(classpath);
-    }
-
-    @Override
-    protected OpenableElementInfo createElementInfo() {
-        return new YangProjectInfo();
     }
 }

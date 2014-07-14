@@ -8,7 +8,6 @@
 package com.cisco.yangide.ui.internal;
 
 import java.util.HashMap;
-import java.util.Iterator;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -19,10 +18,13 @@ import com.cisco.yangide.ui.YangUIPlugin;
 
 /**
  * A registry that maps <code>ImageDescriptors</code> to <code>Image</code>.
+ *
+ * @author Konstantin Zaitsev
+ * @date Jul 14, 2014
  */
 public class ImageDescriptorRegistry {
 
-    private HashMap fRegistry = new HashMap(10);
+    private HashMap<ImageDescriptor, Image> fRegistry = new HashMap<>(10);
     private Display fDisplay;
 
     /**
@@ -35,7 +37,7 @@ public class ImageDescriptorRegistry {
     /**
      * Creates a new image descriptor registry for the given display. All images managed by this
      * registry will be disposed when the display gets disposed.
-     * 
+     *
      * @param display the display the images managed by this registry are allocated for
      */
     public ImageDescriptorRegistry(Display display) {
@@ -46,23 +48,26 @@ public class ImageDescriptorRegistry {
 
     /**
      * Returns the image associated with the given image descriptor.
-     * 
+     *
      * @param descriptor the image descriptor for which the registry manages an image
      * @return the image associated with the image descriptor or <code>null</code> if the image
      * descriptor can't create the requested image.
      */
     public Image get(ImageDescriptor descriptor) {
-        if (descriptor == null)
+        if (descriptor == null) {
             descriptor = ImageDescriptor.getMissingImageDescriptor();
+        }
 
-        Image result = (Image) fRegistry.get(descriptor);
-        if (result != null)
+        Image result = fRegistry.get(descriptor);
+        if (result != null) {
             return result;
+        }
 
         Assert.isTrue(fDisplay == YangUIPlugin.getStandardDisplay());
         result = descriptor.createImage();
-        if (result != null)
+        if (result != null) {
             fRegistry.put(descriptor, result);
+        }
         return result;
     }
 
@@ -70,8 +75,7 @@ public class ImageDescriptorRegistry {
      * Disposes all images managed by this registry.
      */
     public void dispose() {
-        for (Iterator iter = fRegistry.values().iterator(); iter.hasNext();) {
-            Image image = (Image) iter.next();
+        for (Image image : fRegistry.values()) {
             image.dispose();
         }
         fRegistry.clear();
@@ -79,6 +83,7 @@ public class ImageDescriptorRegistry {
 
     private void hookDisplay() {
         fDisplay.disposeExec(new Runnable() {
+            @Override
             public void run() {
                 dispose();
             }

@@ -9,8 +9,6 @@ package com.cisco.yangide.core.buffer;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.IJavaModelStatusConstants;
-import org.eclipse.jdt.core.JavaModelException;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.text.edits.UndoEdit;
 
@@ -40,12 +38,7 @@ public interface IBuffer {
          * @param monitor the progress monitor to use or <code>null</code> if no progress should be
          * reported
          * @return the undo edit
-         * @throws JavaModelException if this edit can not be applied to the buffer. Reasons
-         * include:
-         * <ul>
-         * <li>The provided edit can not be applied as there is a problem with the text edit
-         * locations ({@link IJavaModelStatusConstants#BAD_TEXT_EDIT_LOCATION})}.</li>
-         * </ul>
+         * @throws YangModelException if this edit can not be applied to the buffer.
          */
         public UndoEdit applyTextEdit(TextEdit edit, IProgressMonitor monitor) throws YangModelException;
     }
@@ -172,7 +165,7 @@ public interface IBuffer {
      * some memory back. If the associated element needs to be reopened later on, its buffer factory
      * will be requested to create a new buffer.
      * </p>
-     * 
+     *
      * @return a <code>boolean</code> indicating presence of unsaved changes (in the absence of any
      * underlying resource, it will always return <code>true</code>).
      */
@@ -246,7 +239,7 @@ public interface IBuffer {
      * @param progress the progress monitor to notify
      * @param force a <code> boolean </code> flag indicating how to deal with resource
      * inconsistencies.
-     * @exception JavaModelException if an error occurs writing the buffer to the underlying
+     * @exception YangModelException if an error occurs writing the buffer to the underlying
      * resource
      * @see org.eclipse.core.resources.IFile#setContents(java.io.InputStream, boolean, boolean,
      * org.eclipse.core.runtime.IProgressMonitor)

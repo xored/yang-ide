@@ -10,7 +10,6 @@ package com.cisco.yangide.core;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jdt.core.JavaModelException;
 
 import com.cisco.yangide.core.buffer.IBuffer;
 
@@ -25,7 +24,7 @@ public interface IOpenable {
      * effect.
      * <p>
      * Note: although {@link #close} is exposed in the API, clients are not expected to open and
-     * close elements - the Java model does this automatically as elements are accessed.
+     * close elements - the Yang model does this automatically as elements are accessed.
      *
      * @exception YangModelException if an error occurs closing this element
      */
@@ -72,7 +71,7 @@ public interface IOpenable {
      * <code>true</code> when it knows about all of its compilation units present in its underlying
      * folder. However, one or more of the compilation units could be inconsistent.
      *
-     * @exception JavaModelException if this element does not exist or if an exception occurs while
+     * @exception YangModelException if this element does not exist or if an exception occurs while
      * accessing its corresponding resource.
      * @return true if the element is consistent with its underlying resource or buffer, false
      * otherwise.
@@ -82,7 +81,7 @@ public interface IOpenable {
 
     /**
      * Returns whether this openable is open. This is a handle-only method.
-     * 
+     *
      * @return true if this openable is open, false otherwise
      */
     boolean isOpen();
@@ -90,13 +89,10 @@ public interface IOpenable {
     /**
      * Makes this element consistent with its underlying resource or buffer by updating the
      * element's structure and properties as necessary.
-     * 
+     *
      * @param progress the given progress monitor
      * @exception YangModelException if the element is unable to access the contents of its
-     * underlying resource. Reasons include:
-     * <ul>
-     * <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
-     * </ul>
+     * underlying resource.
      * @see IOpenable#isConsistent()
      */
     void makeConsistent(IProgressMonitor progress) throws YangModelException;
@@ -106,14 +102,11 @@ public interface IOpenable {
      * a buffer is opened on the contents of the underlying resource.
      * <p>
      * Note: although {@link #open} is exposed in the API, clients are not expected to open and
-     * close elements - the Java model does this automatically as elements are accessed.
+     * close elements - the Yang model does this automatically as elements are accessed.
      *
      * @param progress the given progress monitor
      * @exception YangModelException if an error occurs accessing the contents of its underlying
-     * resource. Reasons include:
-     * <ul>
-     * <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li>
-     * </ul>
+     * resource.
      */
     public void open(IProgressMonitor progress) throws YangModelException;
 
@@ -138,30 +131,26 @@ public interface IOpenable {
      * @param force it controls how this method deals with cases where the workbench is not
      * completely in sync with the local file system
      * @exception YangModelException if an error occurs accessing the contents of its underlying
-     * resource. Reasons include:
-     * <ul>
-     * <li>This Java element does not exist (ELEMENT_DOES_NOT_EXIST)</li> <li>This Java element is
-     * read-only (READ_ONLY)</li>
-     * </ul>
+     * resource.
      */
     public void save(IProgressMonitor progress, boolean force) throws YangModelException;
 
     /**
-     * Returns whether this Java element exists in the model.
+     * Returns whether this Yang element exists in the model.
      * <p>
-     * Java elements are handle objects that may or may not be backed by an actual element. Java
-     * elements that are backed by an actual element are said to "exist", and this method returns
-     * <code>true</code>. For Java elements that are not working copies, it is always the case that
-     * if the element exists, then its parent also exists (provided it has one) and includes the
-     * element as one of its children. It is therefore possible to navigated to any existing Java
-     * element from the root of the Java model along a chain of existing Java elements. On the other
-     * hand, working copies are said to exist until they are destroyed (with
-     * <code>IWorkingCopy.destroy</code>). Unlike regular Java elements, a working copy never shows
-     * up among the children of its parent element (which may or may not exist).
+     * elements are handle objects that may or may not be backed by an actual element. elements that
+     * are backed by an actual element are said to "exist", and this method returns
+     * <code>true</code>. For elements that are not working copies, it is always the case that if
+     * the element exists, then its parent also exists (provided it has one) and includes the
+     * element as one of its children. It is therefore possible to navigated to any existing element
+     * from the root of the model along a chain of existing elements. On the other hand, working
+     * copies are said to exist until they are destroyed (with <code>IWorkingCopy.destroy</code>).
+     * Unlike regular elements, a working copy never shows up among the children of its parent
+     * element (which may or may not exist).
      * </p>
      *
-     * @return <code>true</code> if this element exists in the Java model, and <code>false</code> if
-     * this element does not exist
+     * @return <code>true</code> if this element exists in the model, and <code>false</code> if this
+     * element does not exist
      */
     boolean exists();
 
@@ -207,12 +196,12 @@ public interface IOpenable {
     IResource getResource();
 
     /**
-     * Returns whether this Java element is read-only. An element is read-only if its structure
-     * cannot be modified by the java model.
+     * Returns whether this element is read-only. An element is read-only if its structure cannot be
+     * modified by the model.
      * <p>
      * Note this is different from IResource.isReadOnly(). For example, .jar files are read-only as
-     * the java model doesn't know how to add/remove elements in this file, but the underlying IFile
-     * can be writable.
+     * the model doesn't know how to add/remove elements in this file, but the underlying IFile can
+     * be writable.
      * <p>
      * This is a handle-only method.
      *
@@ -232,12 +221,18 @@ public interface IOpenable {
      * </p>
      *
      * @return <code>true</code> if the structure of this element is known
-     * @exception JavaModelException if this element does not exist or if an exception occurs while
+     * @exception ModelException if this element does not exist or if an exception occurs while
      * accessing its corresponding resource
      */
     boolean isStructureKnown() throws YangModelException;
 
+    /**
+     * @return name of element (file path for example)
+     */
     String getName();
 
+    /**
+     * @return string representation element with all parent hierarchy.
+     */
     String toStringWithAncestors();
 }

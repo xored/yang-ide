@@ -12,6 +12,7 @@ import java.util.Map;
 
 /**
  * @author Konstantin Zaitsev
+ * @date Jul 2, 2014
  */
 public class YangGeneratorConfiguration {
     private String codeGeneratorClass;

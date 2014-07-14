@@ -9,8 +9,8 @@ package com.cisco.yangide.core;
 
 /**
  * An element changed listener receives notification of changes to Yang elements maintained by the
- * Java model.
- * 
+ * Yang model.
+ *
  * @author Konstantin Zaitsev
  * @date Jun 30, 2014
  */

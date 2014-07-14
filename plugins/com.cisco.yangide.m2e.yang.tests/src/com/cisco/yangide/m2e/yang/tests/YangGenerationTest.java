@@ -18,6 +18,10 @@ import org.eclipse.m2e.core.project.ResolverConfiguration;
 import org.eclipse.m2e.tests.common.AbstractMavenProjectTestCase;
 import org.eclipse.m2e.tests.common.ClasspathHelpers;
 
+/**
+ * @author Konstantin Zaitsev
+ * @date Jul 14, 2014
+ */
 @SuppressWarnings("restriction")
 public class YangGenerationTest extends AbstractMavenProjectTestCase {
     public void test_p001_simple() throws Exception {

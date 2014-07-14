@@ -25,7 +25,6 @@ import org.eclipse.jdt.core.IClasspathEntry;
 import org.eclipse.jdt.core.IElementChangedListener;
 import org.eclipse.jdt.core.IJavaElement;
 import org.eclipse.jdt.core.IJavaElementDelta;
-import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
@@ -438,20 +437,6 @@ public class DeltaProcessor implements IResourceChangeListener, IElementChangedL
 
                     }
                     return false; // when a project is open/closed don't process children
-                } else {
-                    IJavaProject javaProject = JavaCore.create((IProject) delta.getResource());
-                    if (javaProject.isOpen()) {
-                        try {
-                            IClasspathEntry[] classpath = javaProject.getRawClasspath();
-                            YangProject yangProject = (YangProject) YangCorePlugin.create(delta.getResource());
-                            if (yangProject.isClasspathChanged(classpath)) {
-                                yangProject.makeConsistent(null);
-                                this.manager.indexManager.indexAll((IProject) delta.getResource());
-                            }
-                        } catch (YangModelException | JavaModelException e) {
-                            YangCorePlugin.log(e);
-                        }
-                    }
                 }
             }
             return true;

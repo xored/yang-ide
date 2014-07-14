@@ -11,11 +11,13 @@ import java.text.NumberFormat;
 import java.util.Enumeration;
 import java.util.Hashtable;
 
+import com.cisco.yangide.core.model.YangElement;
+
 /**
  * @author Konstantin Zaitsev
  * @date Jun 24, 2014
  */
-@SuppressWarnings({ "restriction", "rawtypes", "unchecked" })
+@SuppressWarnings({ "rawtypes", "unchecked" })
 public class LRUCache implements Cloneable {
 
     /**
@@ -69,6 +71,7 @@ public class LRUCache implements Cloneable {
         /**
          * Returns a String that represents the value of this object.
          */
+        @Override
         public String toString() {
 
             return "LRUCacheEntry [" + this.key + "-->" + this.value + "]"; //$NON-NLS-3$ //$NON-NLS-1$ //$NON-NLS-2$
@@ -82,8 +85,9 @@ public class LRUCache implements Cloneable {
 
         private void add(int counter) {
             for (int i = 0; i <= this.counterIndex; i++) {
-                if (this.counters[i] == counter)
+                if (this.counters[i] == counter) {
                     return;
+                }
             }
             int length = this.counters.length;
             if (++this.counterIndex == length) {
@@ -96,8 +100,9 @@ public class LRUCache implements Cloneable {
         }
 
         private String getAverageAge(long totalTime, int numberOfElements, long currentTime) {
-            if (numberOfElements == 0)
+            if (numberOfElements == 0) {
                 return "N/A"; //$NON-NLS-1$
+            }
             long time = totalTime / numberOfElements;
             long age = currentTime - time;
             long ageInSeconds = age / 1000;
@@ -144,8 +149,9 @@ public class LRUCache implements Cloneable {
 
         private long getTimestamps(int counter) {
             for (int i = 0; i <= this.counterIndex; i++) {
-                if (this.counters[i] >= counter)
+                if (this.counters[i] >= counter) {
                     return this.timestamps[i];
+                }
             }
             return -1;
         }
@@ -275,7 +281,7 @@ public class LRUCache implements Cloneable {
 
     /**
      * Creates a new cache.
-     * 
+     *
      * @param size Size of Cache
      */
     public LRUCache(int size) {
@@ -291,6 +297,7 @@ public class LRUCache implements Cloneable {
      *
      * @return New copy of object.
      */
+    @Override
     public Object clone() {
 
         LRUCache newCache = newInstance(this.spaceLimit);
@@ -335,8 +342,9 @@ public class LRUCache implements Cloneable {
         entry = (LRUCacheEntry) this.entryTable.get(key);
 
         /* If entry does not exist, return */
-        if (entry == null)
+        if (entry == null) {
             return;
+        }
 
         privateRemoveEntry(entry, false);
     }
@@ -423,15 +431,18 @@ public class LRUCache implements Cloneable {
             Enumeration values = LRUCache.this.entryTable.elements();
             LRUCacheEntry entry;
 
+            @Override
             public boolean hasMoreElements() {
                 return this.values.hasMoreElements();
             }
 
+            @Override
             public Object nextElement() {
                 this.entry = (LRUCacheEntry) this.values.nextElement();
                 return this.entry.key;
             }
 
+            @Override
             public Object getValue() {
                 if (this.entry == null) {
                     throw new java.util.NoSuchElementException();
@@ -503,7 +514,7 @@ public class LRUCache implements Cloneable {
 
     /**
      * Adds the given entry from the receiver.
-     * 
+     *
      * @param shuffle Indicates whether we are just shuffling the queue (in which case, the entry
      * table is not modified).
      */
@@ -530,7 +541,7 @@ public class LRUCache implements Cloneable {
 
     /**
      * Removes the entry from the entry queue.
-     * 
+     *
      * @param shuffle indicates whether we are just shuffling the queue (in which case, the entry
      * table is not modified).
      */
@@ -647,6 +658,7 @@ public class LRUCache implements Cloneable {
      * Returns a String that represents the value of this object. This method is for debugging
      * purposes only.
      */
+    @Override
     public String toString() {
         return toStringFillingRation("LRUCache") + //$NON-NLS-1$
                 toStringContents();
@@ -665,8 +677,7 @@ public class LRUCache implements Cloneable {
         for (int i = 0; i < length; i++) {
             Object key = e.nextElement();
             unsortedKeys[i] = key;
-            unsortedToStrings[i] = (key instanceof org.eclipse.jdt.internal.core.JavaElement) ? ((org.eclipse.jdt.internal.core.JavaElement) key)
-                    .getElementName() : key.toString();
+            unsortedToStrings[i] = (key instanceof YangElement) ? ((YangElement) key).getName() : key.toString();
         }
         ToStringSorter sorter = new ToStringSorter();
         sorter.sort(unsortedKeys, unsortedToStrings);

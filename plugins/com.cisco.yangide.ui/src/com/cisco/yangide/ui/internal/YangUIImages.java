@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.cisco.yangide.ui.internal;
 
 import java.net.URL;
@@ -15,6 +22,9 @@ import com.cisco.yangide.ui.YangUIPlugin;
 
 /**
  * The images provided by the external tools plugin.
+ *
+ * @author Konstantin Zaitsev
+ * @date Jul 14, 2014
  */
 public class YangUIImages {
 
@@ -31,10 +41,14 @@ public class YangUIImages {
     private static String ICONS_PATH = "$nl$/icons/full/"; //$NON-NLS-1$
 
     // Use IPath and toOSString to build the names to ensure they have the slashes correct
+    @SuppressWarnings("unused")
     private final static String LOCALTOOL = ICONS_PATH + "elcl16/"; //basic colors - size 16x16 //$NON-NLS-1$
     private final static String OBJECT = ICONS_PATH + "obj16/"; //basic colors - size 16x16 //$NON-NLS-1$
+    @SuppressWarnings("unused")
     private final static String OVR = ICONS_PATH + "ovr16/"; //basic colors - size 7x8 //$NON-NLS-1$
+    @SuppressWarnings("unused")
     private final static String WIZ = ICONS_PATH + "wizban/"; //$NON-NLS-1$
+    @SuppressWarnings("unused")
     private static final String T_ETOOL = ICONS_PATH + "etool16"; //$NON-NLS-1$
 
     /**
@@ -52,7 +66,7 @@ public class YangUIImages {
 
     /**
      * Declare an Image in the registry table.
-     * 
+     *
      * @param key The key to use when registering the image
      * @param path The path where the image can be found. This path is relative to where this plugin
      * class is found (i.e. typically the packages directory)
@@ -89,7 +103,7 @@ public class YangUIImages {
      * as this plugin class. This may mean the same package directory as the package holding this
      * class. The images are declared using this.getClass() to ensure they are looked up via this
      * plugin class.
-     * 
+     *
      * @see org.eclipse.jface.resource.ImageRegistry
      */
     public static ImageRegistry initializeImageRegistry() {
@@ -132,7 +146,7 @@ public class YangUIImages {
 
     /**
      * Returns whether the images have been initialized.
-     * 
+     *
      * @return whether the images have been initialized
      */
     public synchronized static boolean isInitialized() {

@@ -37,20 +37,14 @@ import com.cisco.yangide.core.model.YangProject;
  */
 public class YangCorePlugin extends Plugin {
 
-    // The plug-in ID
+    /** The plug-in ID */
     public static final String PLUGIN_ID = "com.cisco.yangide.core"; //$NON-NLS-1$
 
     /** Problem marker ID. */
     public static final String YANGIDE_PROBLEM_MARKER = "com.cisco.yangide.core.problem";
 
-    // The shared instance
+    /** The shared instance */
     private static YangCorePlugin plugin;
-
-    /**
-     * The constructor
-     */
-    public YangCorePlugin() {
-    }
 
     @Override
     public void start(BundleContext context) throws Exception {
@@ -78,10 +72,19 @@ public class YangCorePlugin extends Plugin {
         return plugin;
     }
 
+    /**
+     * @return global YangModel instance
+     */
     public static YangModel getYangModel() {
         return YangModelManager.getYangModelManager().getYangModel();
     }
 
+    /**
+     * Reports log to Error Log view.
+     *
+     * @param statusErrorID plugin related error ID
+     * @param message error message
+     */
     public static void log(Throwable e, String message) {
         Throwable nestedException;
         if (e instanceof YangModelException && (nestedException = ((YangModelException) e).getException()) != null) {
@@ -90,21 +93,38 @@ public class YangCorePlugin extends Plugin {
         log(new Status(IStatus.ERROR, PLUGIN_ID, IStatus.ERROR, message, e));
     }
 
+    /**
+     * Reports log to Error Log view.
+     *
+     * @param statusErrorID plugin related error ID
+     * @param message error message
+     */
     public static void log(int statusErrorID, String message) {
         log(new Status(statusErrorID, PLUGIN_ID, message));
     }
 
-    /*
-     * Add a log entry
+    /**
+     * Reports log to Error Log view.
+     *
+     * @param status status
      */
     public static void log(IStatus status) {
         getDefault().getLog().log(status);
     }
 
+    /**
+     * Reports exception to Error Log view.
+     *
+     * @param e exception
+     */
     public static void log(Throwable e) {
         log(new Status(IStatus.ERROR, PLUGIN_ID, e.getMessage(), e));
     }
 
+    /**
+     * @param project project to check
+     * @return <code>true</code> if project is Yang project
+     */
     public static boolean isYangProject(IProject project) {
         try {
             return project.isAccessible()

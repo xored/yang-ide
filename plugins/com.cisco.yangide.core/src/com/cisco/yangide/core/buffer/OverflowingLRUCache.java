@@ -32,7 +32,7 @@ public abstract class OverflowingLRUCache extends LRUCache {
 
     /**
      * Creates a OverflowingLRUCache.
-     * 
+     *
      * @param size Size limit of cache.
      */
     public OverflowingLRUCache(int size) {
@@ -41,7 +41,7 @@ public abstract class OverflowingLRUCache extends LRUCache {
 
     /**
      * Creates a OverflowingLRUCache.
-     * 
+     *
      * @param size Size limit of cache.
      * @param overflow Size of the overflow.
      */
@@ -55,6 +55,7 @@ public abstract class OverflowingLRUCache extends LRUCache {
      *
      * @return New copy of this object.
      */
+    @Override
     public Object clone() {
 
         OverflowingLRUCache newCache = (OverflowingLRUCache) newInstance(this.spaceLimit, this.overflow);
@@ -81,8 +82,9 @@ public abstract class OverflowingLRUCache extends LRUCache {
      * Returns an enumerator of the values in the cache with the most recently used first.
      */
     public Enumeration<?> elements() {
-        if (this.entryQueue == null)
+        if (this.entryQueue == null) {
             return new LRUCacheEnumerator(null);
+        }
         LRUCacheEnumerator.LRUEnumeratorElement head = new LRUCacheEnumerator.LRUEnumeratorElement(
                 this.entryQueue.value);
         LRUCacheEntry currentEntry = this.entryQueue.next;
@@ -96,6 +98,7 @@ public abstract class OverflowingLRUCache extends LRUCache {
         return new LRUCacheEnumerator(head);
     }
 
+    @Override
     public double fillingRatio() {
         return (this.currentSpace + this.overflow) * 100.0 / this.spaceLimit;
     }
@@ -112,7 +115,7 @@ public abstract class OverflowingLRUCache extends LRUCache {
     /**
      * Returns the load factor for the cache. The load factor determines how much space is reclaimed
      * when the cache exceeds its space limit.
-     * 
+     *
      * @return double
      */
     public double getLoadFactor() {
@@ -133,6 +136,7 @@ public abstract class OverflowingLRUCache extends LRUCache {
      *
      * @param space Amount of space to free up
      */
+    @Override
     protected boolean makeSpace(int space) {
 
         int limit = this.spaceLimit;
@@ -206,6 +210,7 @@ public abstract class OverflowingLRUCache extends LRUCache {
                 this.count = 1;
             }
 
+            @Override
             public String toString() {
                 return "Class: " + this.clazz + " has " + this.count + " entries."; //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-1$
             }
@@ -234,6 +239,7 @@ public abstract class OverflowingLRUCache extends LRUCache {
      * @param shuffle indicates whether we are just shuffling the queue (in which case, the entry
      * table is not modified).
      */
+    @Override
     protected void privateRemoveEntry(LRUCacheEntry entry, boolean shuffle) {
         privateRemoveEntry(entry, shuffle, true);
     }
@@ -254,8 +260,9 @@ public abstract class OverflowingLRUCache extends LRUCache {
                 this.entryTable.remove(entry.key);
                 this.currentSpace -= entry.space;
             } else {
-                if (!close(entry))
+                if (!close(entry)) {
                     return;
+                }
                 // buffer close will recursively call #privateRemoveEntry with external==true
                 // thus entry will already be removed if reaching this point.
                 if (this.entryTable.get(entry.key) == null) {
@@ -291,10 +298,12 @@ public abstract class OverflowingLRUCache extends LRUCache {
      * @param value Value of object to add.
      * @return added value.
      */
+    @Override
     public Object put(Object key, Object value) {
         /* attempt to rid ourselves of the overflow, if there is any */
-        if (this.overflow > 0)
+        if (this.overflow > 0) {
             shrink();
+        }
 
         /* Check whether there's an entry in the cache */
         int newSpace = spaceFor(value);
@@ -344,15 +353,16 @@ public abstract class OverflowingLRUCache extends LRUCache {
     /**
      * Sets the load factor for the cache. The load factor determines how much space is reclaimed
      * when the cache exceeds its space limit.
-     * 
+     *
      * @param newLoadFactor double
      * @throws IllegalArgumentException when the new load factor is not in (0.0, 1.0]
      */
     public void setLoadFactor(double newLoadFactor) throws IllegalArgumentException {
-        if (newLoadFactor <= 1.0 && newLoadFactor > 0.0)
+        if (newLoadFactor <= 1.0 && newLoadFactor > 0.0) {
             this.loadFactor = newLoadFactor;
-        else
+        } else {
             throw new IllegalArgumentException("Invalid load factor");
+        }
     }
 
     /**
@@ -360,6 +370,7 @@ public abstract class OverflowingLRUCache extends LRUCache {
      *
      * @param limit Number of units of cache space
      */
+    @Override
     public void setSpaceLimit(int limit) {
         if (limit < this.spaceLimit) {
             makeSpace(this.spaceLimit - limit);
@@ -372,8 +383,9 @@ public abstract class OverflowingLRUCache extends LRUCache {
      * than or equal to <code>fSpaceLimit</code>.
      */
     public boolean shrink() {
-        if (this.overflow > 0)
+        if (this.overflow > 0) {
             return makeSpace(0);
+        }
         return true;
     }
 
@@ -381,6 +393,7 @@ public abstract class OverflowingLRUCache extends LRUCache {
      * Returns a String that represents the value of this object. This method is for debugging
      * purposes only.
      */
+    @Override
     public String toString() {
         return toStringFillingRation("OverflowingLRUCache ") + //$NON-NLS-1$
                 toStringContents();
@@ -392,6 +405,7 @@ public abstract class OverflowingLRUCache extends LRUCache {
      * <p>
      * This method will do nothing if timestamps have been disabled.
      */
+    @Override
     protected void updateTimestamp(LRUCacheEntry entry) {
         if (this.timestampsOn) {
             entry.timestamp = this.timestampCounter++;

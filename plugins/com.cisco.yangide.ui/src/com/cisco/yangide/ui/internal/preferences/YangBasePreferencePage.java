@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.cisco.yangide.ui.internal.preferences;
 
 import org.eclipse.jface.dialogs.Dialog;
@@ -15,6 +22,10 @@ import com.cisco.yangide.ui.YangUIPlugin;
 import com.cisco.yangide.ui.nls.Messages;
 import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
 
+/**
+ * @author Konstantin Zaitsev
+ * @date Jul 14, 2014
+ */
 public class YangBasePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
     private Button cleanBtn;

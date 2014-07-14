@@ -15,6 +15,10 @@ import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.internal.YangParserUtil;
 
+/**
+ * @author Konstantin Zaitsev
+ * @date Jul 14, 2014
+ */
 public class YangParserTest extends TestCase {
     public void testSimpleParser() throws Exception {
         try (InputStream in = FileLocator.openStream(Platform.getBundle("com.cisco.yangide.core.tests"), new Path(
