@@ -15,7 +15,6 @@ import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
 
 /**
  * @author Alexey Kholupko
- *
  */
 public class YangEditorColoringPreferencePage extends AbstractConfigurationBlockPreferencePage implements
         IWorkbenchPreferencePage {
@@ -57,7 +56,7 @@ public class YangEditorColoringPreferencePage extends AbstractConfigurationBlock
      */
     @Override
     protected String getHelpId() {
-        //TODO
+        // TODO
         return YangEditorColoringPreferencePage.YANG_EDITOR_PREFERENCE_PAGE;
     }
 

@@ -26,7 +26,6 @@ import org.eclipse.jface.text.TypedRegion;
  * </p>
  *
  * @author Alexey Kholupko
- * 
  */
 public final class YangHeuristicScanner implements Symbols {
     /**
@@ -463,7 +462,7 @@ public final class YangHeuristicScanner implements Symbols {
      */
     public static boolean isYangIdentifierPart(char fChar2) {
 
-        return Character.isJavaIdentifierPart(fChar2) || fChar2 == '-'; 
+        return Character.isJavaIdentifierPart(fChar2) || fChar2 == '-';
     }
 
     /**

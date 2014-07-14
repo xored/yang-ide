@@ -14,6 +14,7 @@ import org.eclipse.jdt.ui.JavaUI;
 /**
  * A settable IStatus. Can be an error, warning, info or ok. For error, info and warning states, a
  * message describes the problem.
+ * 
  * @author Alexey Kholupko
  */
 public class StatusInfo implements IStatus {

@@ -462,7 +462,6 @@ abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlo
 
     /*
      * @see com.cisco.yangide.editor.preferences.IPreferenceConfigurationBlock#dispose()
-     * 
      */
     public void dispose() {
     }

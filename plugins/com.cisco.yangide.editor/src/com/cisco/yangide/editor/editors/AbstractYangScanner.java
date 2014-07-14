@@ -70,19 +70,16 @@ public abstract class AbstractYangScanner extends BufferedRuleBasedScanner {
     /**
      * Preference keys for boolean preferences which are <code>true</code>, iff the corresponding
      * token should be rendered italic.
-     *
      */
     private String[] fPropertyNamesItalic;
     /**
      * Preference keys for boolean preferences which are <code>true</code>, iff the corresponding
      * token should be rendered strikethrough.
-     *
      */
     private String[] fPropertyNamesStrikethrough;
     /**
      * Preference keys for boolean preferences which are <code>true</code>, iff the corresponding
      * token should be rendered underline.
-     *
      */
     private String[] fPropertyNamesUnderline;
 
@@ -348,7 +345,6 @@ public abstract class AbstractYangScanner extends BufferedRuleBasedScanner {
     }
 
     /**
-     *
      * @return the preference store.
      */
     protected IPreferenceStore getPreferenceStore() {

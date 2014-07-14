@@ -25,7 +25,6 @@ import org.eclipse.jface.text.IDocument;
  * document content may not always return the same values. Also, if accessing the document fails
  * with a {@link BadLocationException}, any of <code>CharacterIterator</code> methods as well as
  * <code>charAt</code>may return {@link CharacterIterator#DONE}.
- *
  */
 public class DocumentCharacterIterator implements CharacterIterator, CharSequence {
 

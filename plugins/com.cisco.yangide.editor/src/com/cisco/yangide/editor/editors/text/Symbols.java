@@ -9,8 +9,8 @@ package com.cisco.yangide.editor.editors.text;
 
 /**
  * Symbols for the heuristic YANG scanner.
+ * 
  * @author Alexey Kholupko
- *
  */
 public interface Symbols {
     int TokenEOF = -1;

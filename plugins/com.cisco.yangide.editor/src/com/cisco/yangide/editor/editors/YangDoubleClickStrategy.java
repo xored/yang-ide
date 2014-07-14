@@ -14,7 +14,6 @@ import org.eclipse.jface.text.ITextViewer;
 
 /**
  * @author Alexey Kholupko
- *
  */
 public class YangDoubleClickStrategy implements ITextDoubleClickStrategy {
     protected ITextViewer fText;

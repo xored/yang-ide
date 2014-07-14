@@ -37,7 +37,6 @@ import com.cisco.yangide.editor.preferences.YangDocumentSetupParticipant;
 
 /**
  * @author Alexey Kholupko
- *
  */
 public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration {
     private YangDoubleClickStrategy doubleClickStrategy;
@@ -126,7 +125,7 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see
      * org.eclipse.jface.text.source.SourceViewerConfiguration#getConfiguredDocumentPartitioning
      * (org.eclipse.jface.text.source.ISourceViewer)
@@ -173,7 +172,7 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see
      * org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies(org.eclipse
      * .jface.text.source.ISourceViewer, java.lang.String)
@@ -199,7 +198,7 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see
      * org.eclipse.jface.text.source.SourceViewerConfiguration#getContentAssistant(org.eclipse.jface
      * .text.source.ISourceViewer)
@@ -254,7 +253,7 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
             CompositeReconcilingStrategy strategy = new CompositeReconcilingStrategy();
             strategy.setReconcilingStrategies(new IReconcilingStrategy[] {
             // yang syntax reconcile
-            new YangReconcilingStrategy(sourceViewer, getEditor())});
+            new YangReconcilingStrategy(sourceViewer, getEditor()) });
             MonoReconciler reconciler = new MonoReconciler(strategy, false);
             reconciler.setIsAllowedToModifyDocument(false);
             reconciler.setDelay(500);

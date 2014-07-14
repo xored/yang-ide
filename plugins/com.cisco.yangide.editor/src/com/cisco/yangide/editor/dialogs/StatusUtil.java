@@ -13,6 +13,7 @@ import org.eclipse.jface.dialogs.IMessageProvider;
 
 /**
  * A utility class to work with IStatus.
+ * 
  * @author Alexey Kholupko
  */
 public class StatusUtil {

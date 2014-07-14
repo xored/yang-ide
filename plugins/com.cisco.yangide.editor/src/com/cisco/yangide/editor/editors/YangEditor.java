@@ -49,12 +49,12 @@ import com.cisco.yangide.ui.preferences.IYangColorConstants;
 
 /**
  * Editor class
+ * 
  * @author Alexey Kholupko
- *
  */
 public class YangEditor extends TextEditor {
 
-    // TODO extract logic to separate classes 
+    // TODO extract logic to separate classes
     public final static String EDITOR_MATCHING_BRACKETS = "matchingBrackets";
 
     private IColorManager colorManager;
@@ -70,7 +70,7 @@ public class YangEditor extends TextEditor {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.ui.editors.text.TextEditor#initializeEditor() Called from TextEditor.<init>
      */
     @Override
@@ -131,7 +131,6 @@ public class YangEditor extends TextEditor {
         internalDoSetInput(input);
     }
 
-
     private void internalDoSetInput(IEditorInput input) throws CoreException {
 
         super.doSetInput(input);
@@ -177,8 +176,10 @@ public class YangEditor extends TextEditor {
 
     /*
      * (non-Javadoc)
-     *
-     * @see org.eclipse.ui.editors.text.TextEditor#handlePreferenceStoreChanged(org.eclipse.jface.util.PropertyChangeEvent)
+     * 
+     * @see
+     * org.eclipse.ui.editors.text.TextEditor#handlePreferenceStoreChanged(org.eclipse.jface.util
+     * .PropertyChangeEvent)
      */
     @Override
     protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
@@ -206,7 +207,7 @@ public class YangEditor extends TextEditor {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.ui.editors.text.TextEditor#createActions()
      */
     @Override
@@ -216,7 +217,8 @@ public class YangEditor extends TextEditor {
 
         IAction action = getAction(ITextEditorActionConstants.CONTENT_ASSIST_CONTEXT_INFORMATION);
 
-        action = new ToggleCommentAction(ResourceBundle.getBundle(YangEditorMessages.getBundleName()), "ToggleComment.", this); //$NON-NLS-1$
+        action = new ToggleCommentAction(ResourceBundle.getBundle(YangEditorMessages.getBundleName()),
+                "ToggleComment.", this); //$NON-NLS-1$
 
         action.setActionDefinitionId(IYangEditorActionDefinitionIds.TOGGLE_COMMENT);
         setAction("ToggleComment", action); //$NON-NLS-1$
@@ -240,7 +242,6 @@ public class YangEditor extends TextEditor {
 
     /**
      * Configures the toggle comment action
-     *
      */
     private void configureToggleCommentAction() {
         IAction action = getAction("ToggleComment"); //$NON-NLS-1$

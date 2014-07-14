@@ -41,7 +41,10 @@ public class RemoveBlockCommentAction extends BlockCommentAction {
     }
 
     /*
-     * @see com.cisco.yangide.editor.actions.AddBlockCommentAction#runInternal(org.eclipse.jface.text.ITextSelection, org.eclipse.jface.text.IDocumentExtension3, org.eclipse.jdt.internal.ui.actions.AddBlockCommentAction.Edit.EditFactory)
+     * @see
+     * com.cisco.yangide.editor.actions.AddBlockCommentAction#runInternal(org.eclipse.jface.text
+     * .ITextSelection, org.eclipse.jface.text.IDocumentExtension3,
+     * org.eclipse.jdt.internal.ui.actions.AddBlockCommentAction.Edit.EditFactory)
      */
     @Override
     protected void runInternal(ITextSelection selection, IDocumentExtension3 docExtension, Edit.EditFactory factory)
@@ -78,7 +81,9 @@ public class RemoveBlockCommentAction extends BlockCommentAction {
     }
 
     /*
-     * @see com.cisco.yangide.editor.actions.AddBlockCommentAction#validSelection(org.eclipse.jface.text.ITextSelection)
+     * @see
+     * com.cisco.yangide.editor.actions.AddBlockCommentAction#validSelection(org.eclipse.jface.text
+     * .ITextSelection)
      */
     @Override
     protected boolean isValidSelection(ITextSelection selection) {

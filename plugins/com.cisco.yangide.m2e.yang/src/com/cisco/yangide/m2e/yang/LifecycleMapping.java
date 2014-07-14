@@ -76,7 +76,7 @@ public class LifecycleMapping extends AbstractCustomizableLifecycleMapping {
                                 break;
                             case configurator:
                                 String configuratorId = LifecycleMappingFactory
-                                .getProjectConfiguratorId(executionMetadata);
+                                        .getProjectConfiguratorId(executionMetadata);
                                 AbstractProjectConfigurator configurator = configurators.get(configuratorId);
                                 if (configurator == null) {
                                     break;

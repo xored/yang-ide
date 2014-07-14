@@ -173,8 +173,9 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             YangIndenter indenter = new YangIndenter(d, scanner);
 
             // shift only when line does not contain any text up to the closing bracket
-            if (whiteend == c.offset) { // evaluate the line with the opening bracket that matches out closing bracket
- 
+            if (whiteend == c.offset) { // evaluate the line with the opening bracket that matches
+                                        // out closing bracket
+
                 int reference = indenter.findReferencePosition(c.offset, false, true, false, false);
                 int indLine = d.getLineOfOffset(reference);
                 if (indLine != -1 && indLine != line) { // take the indent of the found line
@@ -191,8 +192,8 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             YangEditorPlugin.log(e);
         }
     }
-    
-     private void smartIndentAfterOpeningBracket(IDocument d, DocumentCommand c) {
+
+    private void smartIndentAfterOpeningBracket(IDocument d, DocumentCommand c) {
         if (c.offset < 1 || d.getLength() == 0)
             return;
 
@@ -321,7 +322,7 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         return getBlockBalance(document, offset, fPartitioning) <= 0;
 
     }
-    
+
     private void smartPaste(IDocument document, DocumentCommand command) {
         int newOffset = command.offset;
         int newLength = command.length;
@@ -441,11 +442,11 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         }
 
     }
-     
+
     private void installYangStuff(Document temp) {
         YangDocumentSetupParticipant setupParticipant = new YangDocumentSetupParticipant();
-        setupParticipant.setup(temp);        
-        
+        setupParticipant.setup(temp);
+
     }
 
     /**
@@ -456,11 +457,10 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     private static void removeYangStuff(Document document) {
         document.setDocumentPartitioner(YangDocumentSetupParticipant.YANG_PARTITIONING, null);
     }
-    
-    
+
     /**
      * Returns the indentation of the line <code>line</code> in <code>document</code>. The returned
-     * string may contain pairs of leading slashes that are considered part of the indentation. 
+     * string may contain pairs of leading slashes that are considered part of the indentation.
      * 
      * @param document the document
      * @param line the line
@@ -486,7 +486,8 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
         // don't count the space before javadoc like, asterisk-style comment lines
         if (to > from && to < endOffset - 1 && document.get(to - 1, 2).equals(" *")) { //$NON-NLS-1$
-            String type = TextUtilities.getContentType(document, YangDocumentSetupParticipant.YANG_PARTITIONING, to, true);
+            String type = TextUtilities.getContentType(document, YangDocumentSetupParticipant.YANG_PARTITIONING, to,
+                    true);
             if (type.equals(YangPartitionScanner.YANG_COMMENT))
                 to--;
         }
@@ -557,7 +558,8 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             }
 
             // TODO
-            if (whitespaceCount != 0)// && whitespaceCount >= CodeFormatterUtil.getIndentWidth(fProject))
+            if (whitespaceCount != 0)// && whitespaceCount >=
+                                     // CodeFormatterUtil.getIndentWidth(fProject))
                 insert = newInsert;
         }
 
@@ -667,7 +669,9 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     }
 
     /*
-     * @see org.eclipse.jface.text.IAutoIndentStrategy#customizeDocumentCommand(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.DocumentCommand)
+     * @see
+     * org.eclipse.jface.text.IAutoIndentStrategy#customizeDocumentCommand(org.eclipse.jface.text
+     * .IDocument, org.eclipse.jface.text.DocumentCommand)
      */
     @Override
     public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
@@ -685,7 +689,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             if (fViewer == null || fViewer.getTextWidget() == null || !fViewer.getTextWidget().getBlockSelection())
                 smartPaste(d, c); // no smart backspace for paste
     }
-
 
     private static IPreferenceStore getPreferenceStore() {
         return YangUIPlugin.getDefault().getPreferenceStore();
@@ -832,7 +835,7 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             }
         }
     }
-    
+
     /**
      * Skips the scope opened by <code>token</code>.
      *

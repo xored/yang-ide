@@ -25,13 +25,11 @@ import com.cisco.yangide.ui.YangUIPlugin;
  * </p>
  *
  * @author Alexey Kholupko
- * 
  */
 public final class YangIndenter {
 
     /**
      * Core preferences.
-     * 
      */
     private final class CorePrefs {
 
@@ -64,8 +62,7 @@ public final class YangIndenter {
         final boolean prefHasGenerics;
         final String prefTabChar;
 
-
-        CorePrefs() {            
+        CorePrefs() {
 
             prefUseTabs = YangEditorPlugin.getDefault().getCombinedPreferenceStore()
                     .getBoolean(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS);
@@ -142,7 +139,6 @@ public final class YangIndenter {
     private final YangHeuristicScanner fScanner;
     /**
      * Core preferences.
-     * 
      */
     private final CorePrefs fPrefs;
 
@@ -391,7 +387,7 @@ public final class YangIndenter {
         stripExceedingChars(buffer, maxCopyLength);
 
         final String MIXED = "mixed"; //$NON-NLS-1$
-        
+
         // add additional indent
         int missing = totalLength - maxCopyLength;
         final int tabs, spaces;
@@ -686,8 +682,10 @@ public final class YangIndenter {
         fAlign = YangHeuristicScanner.NOT_FOUND;
         fPosition = offset;
 
-        // forward cases an unindentation happens sometimes if the next token is special, namely on braces, parens
-        // and case labels align braces, but handle the case where we align with the method declaration start
+        // forward cases an unindentation happens sometimes if the next token is special, namely on
+        // braces, parens
+        // and case labels align braces, but handle the case where we align with the method
+        // declaration start
         // instead of the opening brace.
         if (matchBrace) {
             if (skipScope(Symbols.TokenLBRACE, Symbols.TokenRBRACE)) {
@@ -950,7 +948,7 @@ public final class YangIndenter {
             case Symbols.TokenLBRACE:
             case Symbols.TokenLBRACKET:
             case Symbols.TokenSEMICOLON:
-            //XXX custom case, when comments appear above new block    
+                // XXX custom case, when comments appear above new block
             case Symbols.TokenOTHER:
             case Symbols.TokenEOF:
                 if (isInBlock)
@@ -1136,15 +1134,15 @@ public final class YangIndenter {
 
             // if any line item comes with its own indentation, adapt to it
             if (fLine < startLine) {
-// TODO
-//                try {
-//                    
-//                    int lineOffset = fDocument.getLineOffset(startLine);
-//                    int bound = Math.min(fDocument.getLength(), startPosition + 1);
-//                    fAlign= fScanner.findNonWhitespaceForwardInAnyPartition(lineOffset, bound);
-//                } catch (BadLocationException e) {
-//                    // ignore and return just the position
-//                }
+                // TODO
+                // try {
+                //
+                // int lineOffset = fDocument.getLineOffset(startLine);
+                // int bound = Math.min(fDocument.getLength(), startPosition + 1);
+                // fAlign= fScanner.findNonWhitespaceForwardInAnyPartition(lineOffset, bound);
+                // } catch (BadLocationException e) {
+                // // ignore and return just the position
+                // }
                 return startPosition;
             }
 

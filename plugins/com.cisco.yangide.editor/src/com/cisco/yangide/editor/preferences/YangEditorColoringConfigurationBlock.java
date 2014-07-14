@@ -71,7 +71,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     /**
      * Item in the highlighting color list.
-     *
      */
     private static class HighlightingColorListItem {
         /** Display name */
@@ -84,12 +83,10 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         private String fItalicKey;
         /**
          * Strikethrough preference key.
-         *
          */
         private String fStrikethroughKey;
         /**
          * Underline preference key.
-         *
          */
         private String fUnderlineKey;
 
@@ -158,7 +155,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     /**
      * Color list label provider.
-     *
      */
     private class ColorListLabelProvider extends LabelProvider {
         /*
@@ -175,7 +171,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     /**
      * Color list content provider.
-     *
      */
     private class ColorListContentProvider implements IStructuredContentProvider {
 
@@ -201,17 +196,14 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
     private static final String BOLD = PreferenceConstants.EDITOR_BOLD_SUFFIX;
     /**
      * Preference key suffix for italic preferences.
-     *
      */
     private static final String ITALIC = PreferenceConstants.EDITOR_ITALIC_SUFFIX;
     /**
      * Preference key suffix for strikethrough preferences.
-     *
      */
     private static final String STRIKETHROUGH = PreferenceConstants.EDITOR_STRIKETHROUGH_SUFFIX;
     /**
      * Preference key suffix for underline preferences.
-     *
      */
     private static final String UNDERLINE = PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
 
@@ -232,42 +224,34 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
     private Button fBoldCheckBox;
     /**
      * Check box for italic preference.
-     *
      */
     private Button fItalicCheckBox;
     /**
      * Check box for strikethrough preference.
-     *
      */
     private Button fStrikethroughCheckBox;
     /**
      * Check box for underline preference.
-     *
      */
     private Button fUnderlineCheckBox;
     /**
      * Highlighting color list
-     *
      */
     private final java.util.List<HighlightingColorListItem> fListModel = new ArrayList<HighlightingColorListItem>();
     /**
      * Highlighting color tree viewer
-     *
      */
     private TableViewer fHighlightingColorListViewer;
     /**
      * The previewer.
-     *
      */
     private SourceViewer fPreviewViewer;
     /**
      * The color manager.
-     *
      */
     private IColorManager fColorManager;
     /**
      * The font metrics.
-     *
      */
     private FontMetrics fFontMetrics;
 
@@ -495,7 +479,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         layout.numColumns = 2;
         stylesComposite.setLayout(layout);
         stylesComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
-
 
         fColorEditorLabel = new Label(stylesComposite, SWT.LEFT);
         fColorEditorLabel.setText(YangPreferencesMessages.YANGEditorPreferencePage_color);

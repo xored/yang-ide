@@ -17,7 +17,6 @@ import com.cisco.yangide.editor.editors.YangPartitionScanner;
 
 /**
  * @author Alexey Kholupko
- *
  */
 public class YangDocumentSetupParticipant implements IDocumentSetupParticipant {
 
@@ -44,8 +43,8 @@ public class YangDocumentSetupParticipant implements IDocumentSetupParticipant {
 
     private IDocumentPartitioner createDocumentPartitioner() {
         return new FastPartitioner(new YangPartitionScanner(), new String[] {
-                // XXX    undetermined behaviour
-                // IDocument.DEFAULT_CONTENT_TYPE, 
+                // XXX undetermined behaviour
+                // IDocument.DEFAULT_CONTENT_TYPE,
                 YangPartitionScanner.YANG_COMMENT, YangPartitionScanner.YANG_STRING });
     }
 }

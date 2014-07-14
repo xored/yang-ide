@@ -14,21 +14,18 @@ public interface IYangEditorActionDefinitionIds {
     /**
      * Action definition ID of the source -> toggle comment action (value
      * <code>"com.cisco.yangide.actions.toggle.comment"</code>).
-     * 
      */
     public static final String TOGGLE_COMMENT = "com.cisco.yangide.actions.toggle.comment"; //$NON-NLS-1$
 
     /**
      * Action definition ID of the source -> add block comment action (value
      * <code>"com.cisco.yangide.actions.add.block.comment"</code>).
-     * 
      */
     public static final String ADD_BLOCK_COMMENT = "com.cisco.yangide.actions.add.block.comment"; //$NON-NLS-1$
 
     /**
      * Action definition ID of the source -> remove block comment action (value
      * <code>"com.cisco.yangide.actions.remove.block.comment"</code>).
-     * 
      */
     public static final String REMOVE_BLOCK_COMMENT = "com.cisco.yangide.actions.remove.block.comment"; //$NON-NLS-1$
 

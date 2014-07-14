@@ -16,33 +16,34 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
 /**
  * @author Alexey Kholupko
- *
  */
-public class YangEditorActionContributor extends BasicTextEditorActionContributor{
+public class YangEditorActionContributor extends BasicTextEditorActionContributor {
 
-	public YangEditorActionContributor() {
-		super();
-	}
+    public YangEditorActionContributor() {
+        super();
+    }
 
+    /*
+     * @see IEditorActionBarContributor#setActiveEditor(IEditorPart)
+     */
+    @Override
+    public void setActiveEditor(IEditorPart part) {
+        super.setActiveEditor(part);
 
-	/*
-	 * @see IEditorActionBarContributor#setActiveEditor(IEditorPart)
-	 */
-	@Override
-	public void setActiveEditor(IEditorPart part) {
-		super.setActiveEditor(part);
+        ITextEditor textEditor = null;
+        if (part instanceof ITextEditor)
+            textEditor = (ITextEditor) part;
 
-		ITextEditor textEditor= null;
-		if (part instanceof ITextEditor)
-			textEditor= (ITextEditor) part;
+        // Source menu.
+        IActionBars bars = getActionBars();
+        bars.setGlobalActionHandler(
+                "com.cisco.yangide.editor.actions.ToggleComment", getAction(textEditor, "ToggleComment")); //$NON-NLS-1$
+        bars.setGlobalActionHandler(
+                "com.cisco.yangide.editor.actions.AddBlockComment", getAction(textEditor, "AddBlockComment")); //$NON-NLS-1$
+        bars.setGlobalActionHandler(
+                "com.cisco.yangide.editor.actions.RemoveBlockComment", getAction(textEditor, "RemoveBlockComment")); //$NON-NLS-1$
 
-		// Source menu.
-		IActionBars bars= getActionBars();
-		bars.setGlobalActionHandler("com.cisco.yangide.editor.actions.ToggleComment", getAction(textEditor, "ToggleComment")); //$NON-NLS-1$
-		bars.setGlobalActionHandler("com.cisco.yangide.editor.actions.AddBlockComment", getAction(textEditor, "AddBlockComment")); //$NON-NLS-1$
-		bars.setGlobalActionHandler("com.cisco.yangide.editor.actions.RemoveBlockComment", getAction(textEditor, "RemoveBlockComment")); //$NON-NLS-1$
-
-		IAction action= getAction(textEditor, ITextEditorActionConstants.REFRESH);
-		bars.setGlobalActionHandler(ITextEditorActionConstants.REFRESH, action);
-	}
+        IAction action = getAction(textEditor, ITextEditorActionConstants.REFRESH);
+        bars.setGlobalActionHandler(ITextEditorActionConstants.REFRESH, action);
+    }
 }

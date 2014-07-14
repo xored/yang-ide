@@ -19,7 +19,6 @@ import com.cisco.yangide.ui.preferences.IYangColorConstants;
 
 /**
  * @author Alexey Kholupko
- * 
  */
 public class YangStringScanner extends AbstractYangScanner {
 

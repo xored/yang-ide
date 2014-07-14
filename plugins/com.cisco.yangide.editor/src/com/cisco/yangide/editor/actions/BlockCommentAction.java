@@ -12,10 +12,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.runtime.Assert;
-
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.ISelectionProvider;
-
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.BadPartitioningException;
 import org.eclipse.jface.text.BadPositionCategoryException;
@@ -27,9 +23,9 @@ import org.eclipse.jface.text.IPositionUpdater;
 import org.eclipse.jface.text.IRewriteTarget;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.Position;
-
+import org.eclipse.jface.viewers.ISelection;
+import org.eclipse.jface.viewers.ISelectionProvider;
 import org.eclipse.ui.IEditorInput;
-
 import org.eclipse.ui.texteditor.IDocumentProvider;
 import org.eclipse.ui.texteditor.ITextEditor;
 import org.eclipse.ui.texteditor.ITextEditorExtension2;
@@ -315,7 +311,6 @@ public abstract class BlockCommentAction extends TextEditorAction {
     protected abstract boolean isValidSelection(ITextSelection selection);
 
     /**
-     * 
      * @return the text to be inserted at the selection start
      */
     protected String getCommentStart() {
@@ -324,7 +319,6 @@ public abstract class BlockCommentAction extends TextEditorAction {
     }
 
     /**
-     * 
      * @return the text to be inserted at the selection end
      */
     protected String getCommentEnd() {

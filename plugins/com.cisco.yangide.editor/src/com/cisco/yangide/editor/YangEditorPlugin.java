@@ -22,6 +22,7 @@ import com.cisco.yangide.ui.YangUIPlugin;
 
 /**
  * The activator class controls the plug-in life cycle
+ * 
  * @author Alexey Kholupko
  */
 public class YangEditorPlugin extends AbstractUIPlugin {

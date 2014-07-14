@@ -11,7 +11,6 @@ import org.eclipse.jface.text.rules.IWordDetector;
 
 /**
  * @author Alexey Kholupko
- *
  */
 public class YangWordDetector implements IWordDetector {
 

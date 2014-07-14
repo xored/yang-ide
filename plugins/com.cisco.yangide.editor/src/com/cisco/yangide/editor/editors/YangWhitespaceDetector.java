@@ -11,7 +11,6 @@ import org.eclipse.jface.text.rules.IWhitespaceDetector;
 
 /**
  * @author Alexey Kholupko
- *
  */
 public class YangWhitespaceDetector implements IWhitespaceDetector {
 
