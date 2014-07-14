@@ -9,7 +9,6 @@ package com.cisco.yangide.editor.editors;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.ui.PreferenceConstants;
-import org.eclipse.jdt.ui.text.IJavaPartitions;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.DefaultIndentLineAutoEditStrategy;
@@ -19,7 +18,6 @@ import org.eclipse.jface.text.DocumentRewriteSession;
 import org.eclipse.jface.text.DocumentRewriteSessionType;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITypedRegion;
 import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IEditorPart;
@@ -35,7 +33,9 @@ import com.cisco.yangide.ui.YangUIPlugin;
 import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
 
 /**
- * @author Alexey Kholupko Auto indent strategy sensitive to brackets.
+ * Auto indent strategy sensitive to brackets.
+ * 
+ * @author Alexey Kholupko
  */
 public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
@@ -53,8 +53,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     private String fPartitioning;
     /**
      * The viewer.
-     * 
-     * @since 3.5
      */
     private final ISourceViewer fViewer;
 
@@ -262,18 +260,13 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             c.length = Math.max(contentStart - c.offset, 0);
 
             int start = reg.getOffset();
-            ITypedRegion region = TextUtilities.getPartition(d, fPartitioning, start, true);
-            // if (IJavaPartitions.JAVA_DOC.equals(region.getType()))
-            // start = d.getLineInformationOfOffset(region.getOffset()).getOffset();
 
             // insert closing brace on new line after an unclosed opening brace
-            // TODO
             if (getBracketCount(d, start, c.offset, true) > 0 && closeBrace() && !isClosed(d, c.offset, c.length)) {
                 c.caretOffset = c.offset + buf.length();
                 c.shiftsCaret = false;
 
                 // copy old content of line behind insertion point to new line
-                // unless we think we are inserting an anonymous type definition
 
                 if (c.offset == 0) {
                     if (lineEnd - contentStart > 0) {
@@ -320,133 +313,7 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         }
     }
 
-    /**
-     * Computes an insert position for an opening brace if <code>offset</code> maps to a position in
-     * <code>document</code> with a expression in parenthesis that will take a block after the
-     * closing parenthesis.
-     * 
-     * @param document the document being modified
-     * @param offset the offset of the caret position, relative to the line start.
-     * @param partitioning the document partitioning
-     * @param max the max position
-     * @return an insert position relative to the line start if <code>line</code> contains a
-     * parenthesized expression that can be followed by a block, -1 otherwise
-     */
     /*
-     * private static int computeAnonymousPosition(IDocument document, int offset, String
-     * partitioning, int max) { // find the opening parenthesis for every closing parenthesis on the
-     * current line after // offset // return the position behind the closing parenthesis if it
-     * looks like a method declaration // or an expression for an if, while, for, catch statement
-     * 
-     * YangHeuristicScanner scanner = new YangHeuristicScanner(document); int pos = offset; int
-     * length = max; int scanTo = scanner.scanForward(pos, length, '}'); if (scanTo == -1) scanTo =
-     * length;
-     * 
-     * int closingParen = findClosingParenToLeft(scanner, pos) - 1; boolean hasNewToken =
-     * looksLikeAnonymousClassDef(document, partitioning, scanner, pos); int openingParen = -1;
-     * while (true) { int startScan = closingParen + 1; closingParen =
-     * scanner.scanForward(startScan, scanTo, ')'); if (closingParen == -1) { if (hasNewToken &&
-     * openingParen != -1) return openingParen + 1; break; }
-     * 
-     * openingParen = scanner.findOpeningPeer(closingParen - 1, '(', ')');
-     * 
-     * // no way an expression at the beginning of the document can mean anything if (openingParen <
-     * 1) break;
-     * 
-     * // only select insert positions for parenthesis currently embracing the caret if
-     * (openingParen > pos) continue;
-     * 
-     * if (looksLikeAnonymousClassDef(document, partitioning, scanner, openingParen - 1)) return
-     * closingParen + 1;
-     * 
-     * }
-     * 
-     * return -1; }
-     */
-    /**
-     * Finds a closing parenthesis to the left of <code>position</code> in document, where that
-     * parenthesis is only separated by whitespace from <code>position</code>. If no such
-     * parenthesis can be found, <code>position</code> is returned.
-     * 
-     * @param scanner the java heuristic scanner set up on the document
-     * @param position the first character position in <code>document</code> to be considered
-     * @return the position of a closing parenthesis left to <code>position</code> separated only by
-     * whitespace, or <code>position</code> if no parenthesis can be found
-     */
-    /*
-     * private static int findClosingParenToLeft(YangHeuristicScanner scanner, int position) { if
-     * (position < 1) return position;
-     * 
-     * if (scanner.previousToken(position - 1, YangHeuristicScanner.UNBOUND) == Symbols.TokenRPAREN)
-     * return scanner.getPosition() + 1; return position; }
-     */
-
-    /**
-     * Checks whether the content of <code>document</code> in the range (<code>offset</code>,
-     * <code>length</code>) contains the <code>new</code> keyword.
-     * 
-     * @param document the document being modified
-     * @param offset the first character position in <code>document</code> to be considered
-     * @param length the length of the character range to be considered
-     * @param partitioning the document partitioning
-     * @return <code>true</code> if the specified character range contains a <code>new</code>
-     * keyword, <code>false</code> otherwise.
-     */
-    private static boolean isNewMatch(IDocument document, int offset, int length, String partitioning) {
-        Assert.isTrue(length >= 0);
-        Assert.isTrue(offset >= 0);
-        Assert.isTrue(offset + length < document.getLength() + 1);
-
-        try {
-            String text = document.get(offset, length);
-            int pos = text.indexOf("new"); //$NON-NLS-1$
-
-            while (pos != -1 && !isDefaultPartition(document, pos + offset, partitioning))
-                pos = text.indexOf("new", pos + 2); //$NON-NLS-1$
-
-            if (pos < 0)
-                return false;
-
-            if (pos != 0 && Character.isJavaIdentifierPart(text.charAt(pos - 1)))
-                return false;
-
-            if (pos + 3 < length && Character.isJavaIdentifierPart(text.charAt(pos + 3)))
-                return false;
-
-            return true;
-
-        } catch (BadLocationException e) {
-        }
-        return false;
-    }
-
-    /**
-     * Checks whether <code>position</code> resides in a default (Java) partition of
-     * <code>document</code>.
-     * 
-     * @param document the document being modified
-     * @param position the position to be checked
-     * @param partitioning the document partitioning
-     * @return <code>true</code> if <code>position</code> is in the default partition of
-     * <code>document</code>, <code>false</code> otherwise
-     */
-    private static boolean isDefaultPartition(IDocument document, int position, String partitioning) {
-        Assert.isTrue(position >= 0);
-        Assert.isTrue(position <= document.getLength());
-
-        try {
-            ITypedRegion region = TextUtilities.getPartition(document, partitioning, position, false);
-            return region.getType().equals(IDocument.DEFAULT_CONTENT_TYPE);
-
-        } catch (BadLocationException e) {
-        }
-
-        return false;
-    }
-
-    /*
-     * TODO
-     * 
      * @see org.eclipse.jdt.internal.ui.text.java.JavaAutoIndentStrategy#isClosed
      */
     private boolean isClosed(IDocument document, int offset, int length) {
@@ -575,16 +442,11 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
     }
      
-
-    /**
-     * @param temp
-     */
     private void installYangStuff(Document temp) {
         YangDocumentSetupParticipant setupParticipant = new YangDocumentSetupParticipant();
         setupParticipant.setup(temp);        
         
     }
-
 
     /**
      * Installs a java partitioner with <code>document</code>.
@@ -598,9 +460,7 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     
     /**
      * Returns the indentation of the line <code>line</code> in <code>document</code>. The returned
-     * string may contain pairs of leading slashes that are considered part of the indentation. The
-     * space before the asterisk in a javadoc-like comment is not considered part of the
-     * indentation.
+     * string may contain pairs of leading slashes that are considered part of the indentation. 
      * 
      * @param document the document
      * @param line the line
@@ -626,8 +486,8 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
         // don't count the space before javadoc like, asterisk-style comment lines
         if (to > from && to < endOffset - 1 && document.get(to - 1, 2).equals(" *")) { //$NON-NLS-1$
-            String type = TextUtilities.getContentType(document, IJavaPartitions.JAVA_PARTITIONING, to, true);
-            if (type.equals(IJavaPartitions.JAVA_DOC) || type.equals(IJavaPartitions.JAVA_MULTI_LINE_COMMENT))
+            String type = TextUtilities.getContentType(document, YangDocumentSetupParticipant.YANG_PARTITIONING, to, true);
+            if (type.equals(YangPartitionScanner.YANG_COMMENT))
                 to--;
         }
 
@@ -697,8 +557,7 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             }
 
             // TODO
-            if (whitespaceCount != 0)// && whitespaceCount >=
-                                     // CodeFormatterUtil.getIndentWidth(fProject))
+            if (whitespaceCount != 0)// && whitespaceCount >= CodeFormatterUtil.getIndentWidth(fProject))
                 insert = newInsert;
         }
 
@@ -789,18 +648,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
         return DEFAULT_TAB_WIDTH;
     }
 
-    /**
-     * The preference setting that tells whether to insert spaces when pressing the Tab key.
-     * 
-     * @return <code>true</code> if spaces are inserted when pressing the Tab key
-     * @since 3.5
-     */
-    private boolean isInsertingSpacesForTab() {
-        // return JavaCore.SPACE.equals(getCoreOption(fProject,
-        // DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR));
-        return DEFAULT_SPACES_FOR_TAB;
-    }
-
     private boolean isLineDelimiter(IDocument document, String text) {
         String[] delimiters = document.getLegalLineDelimiters();
         if (delimiters != null)
@@ -820,9 +667,7 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     }
 
     /*
-     * @see
-     * org.eclipse.jface.text.IAutoIndentStrategy#customizeDocumentCommand(org.eclipse.jface.text
-     * .IDocument, org.eclipse.jface.text.DocumentCommand)
+     * @see org.eclipse.jface.text.IAutoIndentStrategy#customizeDocumentCommand(org.eclipse.jface.text.IDocument, org.eclipse.jface.text.DocumentCommand)
      */
     @Override
     public void customizeDocumentCommand(IDocument d, DocumentCommand c) {
@@ -831,19 +676,9 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
         clearCachedValues();
 
-        // if (!fIsSmartMode) {
-        // super.customizeDocumentCommand(d, c);
-        // return;
-        // }
-        //
-        // if (!fIsSmartTab && isRepresentingTab(c.text))
-        // return;
-
         if (c.length == 0 && c.text != null && isLineDelimiter(d, c.text)) {
             if (fIsSmartIndentAfterNewline)
                 smartIndentAfterNewLine(d, c);
-            // else
-            // super.customizeDocumentCommand(d, c);
         } else if (c.text.length() == 1)
             smartIndentOnKeypress(d, c);
         else if (c.text.length() > 1 && getPreferenceStore().getBoolean(PreferenceConstants.EDITOR_SMART_PASTE))
@@ -851,28 +686,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
                 smartPaste(d, c); // no smart backspace for paste
     }
 
-    /**
-     * Tells whether the given inserted string represents hitting the Tab key.
-     * 
-     * @param text the text to check
-     * @return <code>true</code> if the text represents hitting the Tab key
-     * @since 3.5
-     */
-    private boolean isRepresentingTab(String text) {
-        if (text == null)
-            return false;
-
-        if (isInsertingSpacesForTab()) {
-            if (text.length() == 0 || text.length() > getVisualTabLengthPreference())
-                return false;
-            for (int i = 0; i < text.length(); i++) {
-                if (text.charAt(i) != ' ')
-                    return false;
-            }
-            return true;
-        } else
-            return text.length() == 1 && text.charAt(0) == '\t';
-    }
 
     private static IPreferenceStore getPreferenceStore() {
         return YangUIPlugin.getDefault().getPreferenceStore();
@@ -1064,35 +877,5 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
             }
         }
     }
-    
-    // private static IRegion createRegion(ASTNode node, int delta) {
-    // return node == null ? null : new Region(node.getStartPosition() + delta, node.getLength());
-    // }
-    //
-    // private static IRegion getToken(IDocument document, IRegion scanRegion, int tokenId) {
-    //
-    // try {
-    //
-    // final String source= document.get(scanRegion.getOffset(), scanRegion.getLength());
-    //
-    // fgScanner.setSource(source.toCharArray());
-    //
-    // int id= fgScanner.getNextToken();
-    // while (id != ITerminalSymbols.TokenNameEOF && id != tokenId)
-    // id= fgScanner.getNextToken();
-    //
-    // if (id == ITerminalSymbols.TokenNameEOF)
-    // return null;
-    //
-    // int tokenOffset= fgScanner.getCurrentTokenStartPosition();
-    // int tokenLength= fgScanner.getCurrentTokenEndPosition() + 1 - tokenOffset; // inclusive end
-    // return new Region(tokenOffset + scanRegion.getOffset(), tokenLength);
-    //
-    // } catch (InvalidInputException x) {
-    // return null;
-    // } catch (BadLocationException x) {
-    // return null;
-    // }
-    // }
 
 }

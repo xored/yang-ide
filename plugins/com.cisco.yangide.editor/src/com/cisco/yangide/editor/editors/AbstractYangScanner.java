@@ -52,6 +52,8 @@ import org.eclipse.swt.widgets.Display;
  * Preference color key + {@link PreferenceConstants#EDITOR_UNDERLINE_SUFFIX} are used to retrieve
  * whether the token is rendered in underline.
  * </p>
+ * 
+ * @author Alexey Kholupko
  */
 public abstract class AbstractYangScanner extends BufferedRuleBasedScanner {
 
@@ -69,21 +71,18 @@ public abstract class AbstractYangScanner extends BufferedRuleBasedScanner {
      * Preference keys for boolean preferences which are <code>true</code>, iff the corresponding
      * token should be rendered italic.
      *
-     * @since 3.0
      */
     private String[] fPropertyNamesItalic;
     /**
      * Preference keys for boolean preferences which are <code>true</code>, iff the corresponding
      * token should be rendered strikethrough.
      *
-     * @since 3.1
      */
     private String[] fPropertyNamesStrikethrough;
     /**
      * Preference keys for boolean preferences which are <code>true</code>, iff the corresponding
      * token should be rendered underline.
      *
-     * @since 3.1
      */
     private String[] fPropertyNamesUnderline;
 
@@ -231,7 +230,6 @@ public abstract class AbstractYangScanner extends BufferedRuleBasedScanner {
      * @param strikethroughKey the strikethrough preference key
      * @param underlineKey the italic preference key
      * @return the created text attribute
-     * @since 3.0
      */
     private TextAttribute createTextAttribute(String colorKey, String boldKey, String italicKey,
             String strikethroughKey, String underlineKey) {
@@ -350,10 +348,8 @@ public abstract class AbstractYangScanner extends BufferedRuleBasedScanner {
     }
 
     /**
-     * Returns the preference store.
      *
      * @return the preference store.
-     * @since 3.0
      */
     protected IPreferenceStore getPreferenceStore() {
         return fPreferenceStore;

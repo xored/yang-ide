@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.cisco.yangide.editor.editors.text;
 
 import org.eclipse.core.runtime.Assert;
@@ -8,7 +15,6 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
-import com.cisco.yangide.editor.formatter.DefaultCodeFormatterConstants;
 import com.cisco.yangide.ui.YangUIPlugin;
 
 /**
@@ -18,17 +24,17 @@ import com.cisco.yangide.ui.YangUIPlugin;
  * An instance holds some internal position in the document and is therefore not threadsafe.
  * </p>
  *
- * @since 3.0
+ * @author Alexey Kholupko
+ * 
  */
 public final class YangIndenter {
 
     /**
-     * The JDT Core preferences.
+     * Core preferences.
      * 
-     * @since 3.2
      */
     private final class CorePrefs {
-        private static final int DEFAULT_INDENT_WIDTH_TEMPORARILY = 4;
+
         final boolean prefUseTabs;
         final int prefTabSize;
         final int prefIndentationSize;
@@ -58,86 +64,42 @@ public final class YangIndenter {
         final boolean prefHasGenerics;
         final String prefTabChar;
 
-        /**
-         * Returns <code>true</code> if the class is used outside the workbench, <code>false</code>
-         * in normal mode
-         *
-         * @return <code>true</code> if the plug-ins are not available
-         */
-        private boolean isStandalone() {
-            return YangEditorPlugin.getDefault() == null;
-        }
 
-        /**
-         * Returns the possibly project-specific core preference defined under <code>key</code>.
-         *
-         * @param key the key of the preference
-         * @return the value of the preference
-         * @since 3.1
-         */
-        private String getCoreFormatterOption(String key) {
-            // TODO
-            // return JavaCore.getOption(key);
-            return null;
-        }
+        CorePrefs() {            
 
-        CorePrefs() {
-            /* if (isStandalone()) */{
-                // useless, cause only invocation in createIndent(), which also invoked once with
-                // false parameter
-                prefUseTabs = YangEditorPlugin.getDefault().getCombinedPreferenceStore()
-                        .getBoolean(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS);// false;//
-                                                                                                           // true;
-                prefTabSize = prefTabSize();// 2;// 4;
-                // XXX
-                prefIndentationSize = prefTabSize();// 2;// 4;
-                prefArrayDimensionsDeepIndent = true;
-                // XXX
-                prefContinuationIndent = prefTabSize();// 2;
-                prefBlockIndent = 1;
-                prefArrayIndent = prefContinuationIndent;
-                prefArrayDeepIndent = true;
-                prefTernaryDeepAlign = false;
-                prefTernaryIndent = prefContinuationIndent;
-                prefCaseIndent = 0;
-                prefCaseBlockIndent = prefBlockIndent;
-                prefIndentBracesForBlocks = false;
-                prefSimpleIndent = (prefIndentBracesForBlocks && prefBlockIndent == 0) ? 1 : prefBlockIndent;
-                prefBracketIndent = prefBlockIndent;
-                prefMethodDeclDeepIndent = true;
-                prefMethodDeclIndent = 1;
-                prefMethodCallDeepIndent = false;
-                prefMethodCallIndent = 1;
-                prefParenthesisDeepIndent = false;
-                prefParenthesisIndent = prefContinuationIndent;
-                prefMethodBodyIndent = 1;
-                prefTypeIndent = 1;
-                prefIndentBracesForArrays = false;
-                prefIndentBracesForMethods = false;
-                prefIndentBracesForTypes = false;
-                prefHasGenerics = false;
-                prefTabChar = getPrefTabChar(); // YangCore.TAB;
-            } /*
-               * else { prefUseTabs= prefUseTabs(); prefTabSize= prefTabSize(); prefIndentationSize=
-               * prefIndentationSize(); prefArrayDimensionsDeepIndent=
-               * prefArrayDimensionsDeepIndent(); prefContinuationIndent= prefContinuationIndent();
-               * prefBlockIndent= prefBlockIndent(); prefArrayIndent= prefArrayIndent();
-               * prefArrayDeepIndent= prefArrayDeepIndent(); prefTernaryDeepAlign=
-               * prefTernaryDeepAlign(); prefTernaryIndent= prefTernaryIndent(); prefCaseIndent=
-               * prefCaseIndent(); prefCaseBlockIndent= prefCaseBlockIndent();
-               * prefIndentBracesForBlocks= prefIndentBracesForBlocks(); prefSimpleIndent=
-               * prefSimpleIndent(); prefBracketIndent= prefBracketIndent();
-               * prefMethodDeclDeepIndent= prefMethodDeclDeepIndent(); prefMethodDeclIndent=
-               * prefMethodDeclIndent(); prefMethodCallDeepIndent= prefMethodCallDeepIndent();
-               * prefMethodCallIndent= prefMethodCallIndent(); prefParenthesisDeepIndent=
-               * prefParenthesisDeepIndent(); prefParenthesisIndent= prefParenthesisIndent();
-               * prefMethodBodyIndent= prefMethodBodyIndent(); prefTypeIndent= prefTypeIndent();
-               * prefIndentBracesForArrays= prefIndentBracesForArrays(); prefIndentBracesForMethods=
-               * prefIndentBracesForMethods(); prefIndentBracesForTypes= prefIndentBracesForTypes();
-               * prefHasGenerics= hasGenerics(); prefTabChar=
-               * YangCore.TAB;//getCoreFormatterOption(DefaultCodeFormatterConstants
-               * .FORMATTER_TAB_CHAR); }
-               */
+            prefUseTabs = YangEditorPlugin.getDefault().getCombinedPreferenceStore()
+                    .getBoolean(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS);
+
+            prefTabSize = prefTabSize();// 2;// 4;
+
+            prefIndentationSize = prefTabSize();// 2;// 4;
+            prefArrayDimensionsDeepIndent = true;
+
+            prefContinuationIndent = prefTabSize();// 2;
+            prefBlockIndent = 1;
+            prefArrayIndent = prefContinuationIndent;
+            prefArrayDeepIndent = true;
+            prefTernaryDeepAlign = false;
+            prefTernaryIndent = prefContinuationIndent;
+            prefCaseIndent = 0;
+            prefCaseBlockIndent = prefBlockIndent;
+            prefIndentBracesForBlocks = false;
+            prefSimpleIndent = (prefIndentBracesForBlocks && prefBlockIndent == 0) ? 1 : prefBlockIndent;
+            prefBracketIndent = prefBlockIndent;
+            prefMethodDeclDeepIndent = true;
+            prefMethodDeclIndent = 1;
+            prefMethodCallDeepIndent = false;
+            prefMethodCallIndent = 1;
+            prefParenthesisDeepIndent = false;
+            prefParenthesisIndent = prefContinuationIndent;
+            prefMethodBodyIndent = 1;
+            prefTypeIndent = 1;
+            prefIndentBracesForArrays = false;
+            prefIndentBracesForMethods = false;
+            prefIndentBracesForTypes = false;
+            prefHasGenerics = false;
+            prefTabChar = getPrefTabChar(); // YangCore.TAB;
+
         }
 
         private String getPrefTabChar() {
@@ -148,215 +110,12 @@ public final class YangIndenter {
 
         }
 
-        private boolean prefUseTabs() {
-            return !YangUIPlugin.SPACE.equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_TAB_CHAR));
-        }
-
         private int prefTabSize() {
-            // return CodeFormatterUtil.getTabWidth(fProject);
-            // return DEFAULT_INDENT_WIDTH_TEMPORARILY;
+
             return YangEditorPlugin.getDefault().getCombinedPreferenceStore()
                     .getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
         }
 
-        private int prefIndentationSize() {
-            // return CodeFormatterUtil.getIndentWidth(fProject);
-            return DEFAULT_INDENT_WIDTH_TEMPORARILY;
-        }
-
-        private boolean prefArrayDimensionsDeepIndent() {
-            return true; // sensible default, no formatter setting
-        }
-
-        private int prefArrayIndent() {
-            String option = getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_EXPRESSIONS_IN_ARRAY_INITIALIZER);
-            try {
-                if (DefaultCodeFormatterConstants.getIndentStyle(option) == DefaultCodeFormatterConstants.INDENT_BY_ONE)
-                    return 1;
-            } catch (IllegalArgumentException e) {
-                // ignore and return default
-            }
-
-            return prefContinuationIndent(); // default
-        }
-
-        private boolean prefArrayDeepIndent() {
-            String option = getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_EXPRESSIONS_IN_ARRAY_INITIALIZER);
-            try {
-                return DefaultCodeFormatterConstants.getIndentStyle(option) == DefaultCodeFormatterConstants.INDENT_ON_COLUMN;
-            } catch (IllegalArgumentException e) {
-                // ignore and return default
-            }
-
-            return true;
-        }
-
-        private boolean prefTernaryDeepAlign() {
-            String option = getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_CONDITIONAL_EXPRESSION);
-            try {
-                return DefaultCodeFormatterConstants.getIndentStyle(option) == DefaultCodeFormatterConstants.INDENT_ON_COLUMN;
-            } catch (IllegalArgumentException e) {
-                // ignore and return default
-            }
-            return false;
-        }
-
-        private int prefTernaryIndent() {
-            String option = getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_CONDITIONAL_EXPRESSION);
-            try {
-                if (DefaultCodeFormatterConstants.getIndentStyle(option) == DefaultCodeFormatterConstants.INDENT_BY_ONE)
-                    return 1;
-                else
-                    return prefContinuationIndent();
-            } catch (IllegalArgumentException e) {
-                // ignore and return default
-            }
-
-            return prefContinuationIndent();
-        }
-
-        private int prefCaseIndent() {
-            if (DefaultCodeFormatterConstants.TRUE
-                    .equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_INDENT_SWITCHSTATEMENTS_COMPARE_TO_SWITCH)))
-                return prefBlockIndent();
-            else
-                return 0;
-        }
-
-        private int prefCaseBlockIndent() {
-            if (DefaultCodeFormatterConstants.TRUE
-                    .equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_INDENT_SWITCHSTATEMENTS_COMPARE_TO_CASES)))
-                return prefBlockIndent();
-            else
-                return 0;
-        }
-
-        private int prefSimpleIndent() {
-            if (prefIndentBracesForBlocks() && prefBlockIndent() == 0)
-                return 1;
-            else
-                return prefBlockIndent();
-        }
-
-        private int prefBracketIndent() {
-            return prefBlockIndent();
-        }
-
-        private boolean prefMethodDeclDeepIndent() {
-            String option = getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_PARAMETERS_IN_METHOD_DECLARATION);
-            try {
-                return DefaultCodeFormatterConstants.getIndentStyle(option) == DefaultCodeFormatterConstants.INDENT_ON_COLUMN;
-            } catch (IllegalArgumentException e) {
-                // ignore and return default
-            }
-
-            return true;
-        }
-
-        private int prefMethodDeclIndent() {
-            String option = getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_PARAMETERS_IN_METHOD_DECLARATION);
-            try {
-                if (DefaultCodeFormatterConstants.getIndentStyle(option) == DefaultCodeFormatterConstants.INDENT_BY_ONE)
-                    return 1;
-                else
-                    return prefContinuationIndent();
-            } catch (IllegalArgumentException e) {
-                // ignore and return default
-            }
-            return 1;
-        }
-
-        private boolean prefMethodCallDeepIndent() {
-            String option = getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_METHOD_INVOCATION);
-            try {
-                return DefaultCodeFormatterConstants.getIndentStyle(option) == DefaultCodeFormatterConstants.INDENT_ON_COLUMN;
-            } catch (IllegalArgumentException e) {
-                // ignore and return default
-            }
-            return false; // sensible default
-        }
-
-        private int prefMethodCallIndent() {
-            String option = getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_ALIGNMENT_FOR_ARGUMENTS_IN_METHOD_INVOCATION);
-            try {
-                if (DefaultCodeFormatterConstants.getIndentStyle(option) == DefaultCodeFormatterConstants.INDENT_BY_ONE)
-                    return 1;
-                else
-                    return prefContinuationIndent();
-            } catch (IllegalArgumentException e) {
-                // ignore and return default
-            }
-
-            return 1; // sensible default
-        }
-
-        private boolean prefParenthesisDeepIndent() {
-            return false; // don't do parenthesis deep indentation (check rev. 1.60 for experimental
-                          // code)
-        }
-
-        private int prefParenthesisIndent() {
-            return prefContinuationIndent();
-        }
-
-        private int prefBlockIndent() {
-            String option = getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_INDENT_STATEMENTS_COMPARE_TO_BLOCK);
-            if (DefaultCodeFormatterConstants.FALSE.equals(option))
-                return 0;
-
-            return 1; // sensible default
-        }
-
-        private int prefMethodBodyIndent() {
-            if (DefaultCodeFormatterConstants.FALSE
-                    .equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_INDENT_STATEMENTS_COMPARE_TO_BODY)))
-                return 0;
-
-            return 1; // sensible default
-        }
-
-        private int prefTypeIndent() {
-            String option = getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_INDENT_BODY_DECLARATIONS_COMPARE_TO_TYPE_HEADER);
-            if (DefaultCodeFormatterConstants.FALSE.equals(option))
-                return 0;
-
-            return 1; // sensible default
-        }
-
-        private boolean prefIndentBracesForBlocks() {
-            return DefaultCodeFormatterConstants.NEXT_LINE_SHIFTED
-                    .equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_BLOCK));
-        }
-
-        private boolean prefIndentBracesForArrays() {
-            return DefaultCodeFormatterConstants.NEXT_LINE_SHIFTED
-                    .equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_ARRAY_INITIALIZER));
-        }
-
-        private boolean prefIndentBracesForMethods() {
-            return DefaultCodeFormatterConstants.NEXT_LINE_SHIFTED
-                    .equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_METHOD_DECLARATION));
-        }
-
-        private boolean prefIndentBracesForTypes() {
-            return DefaultCodeFormatterConstants.NEXT_LINE_SHIFTED
-                    .equals(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_BRACE_POSITION_FOR_TYPE_DECLARATION));
-        }
-
-        private int prefContinuationIndent() {
-            try {
-                return Integer
-                        .parseInt(getCoreFormatterOption(DefaultCodeFormatterConstants.FORMATTER_CONTINUATION_INDENTATION));
-            } catch (NumberFormatException e) {
-                // ignore and return default
-            }
-
-            return 2; // sensible default
-        }
-
-        private boolean hasGenerics() {
-            return false;
-        }
     }
 
     /** The document being scanned. */
@@ -382,9 +141,8 @@ public final class YangIndenter {
      */
     private final YangHeuristicScanner fScanner;
     /**
-     * The JDT Core preferences.
+     * Core preferences.
      * 
-     * @since 3.2
      */
     private final CorePrefs fPrefs;
 
@@ -632,6 +390,8 @@ public final class YangIndenter {
                                                                                        // copy
         stripExceedingChars(buffer, maxCopyLength);
 
+        final String MIXED = "mixed"; //$NON-NLS-1$
+        
         // add additional indent
         int missing = totalLength - maxCopyLength;
         final int tabs, spaces;
@@ -641,7 +401,7 @@ public final class YangIndenter {
         } else if (YangUIPlugin.TAB.equals(fPrefs.prefTabChar)) {
             tabs = tabSize > 0 ? missing / tabSize : 0;
             spaces = tabSize > 0 ? missing % tabSize : missing;
-        } else if (DefaultCodeFormatterConstants.MIXED.equals(fPrefs.prefTabChar)) {
+        } else if (MIXED.equals(fPrefs.prefTabChar)) {
             tabs = tabSize > 0 ? missing / tabSize : 0;
             spaces = tabSize > 0 ? missing % tabSize : missing;
         } else {
@@ -802,7 +562,6 @@ public final class YangIndenter {
      * @param offset the offset for which the check is done
      * @return <code>true</code> if the offset is part of a string continuation, <code>false</code>
      * otherwise
-     * @since 3.7
      */
     private boolean isStringContinuation(int offset) {
         int nextNonWSCharPosition = fScanner.findNonWhitespaceBackwardInAnyPartition(offset - 1,
@@ -824,7 +583,6 @@ public final class YangIndenter {
      * @param offset the offset for which the check is done
      * @return returns <code>true</code> if extra indentation for second line of string continuation
      * is required
-     * @since 3.7
      */
     private boolean isSecondLineOfStringContinuation(int offset) {
         try {
@@ -921,7 +679,6 @@ public final class YangIndenter {
      * @param throwsClause whether a throws clause was found at <code>position</code>
      * @return the reference statement relative to which <code>position</code> should be indented,
      * or {@link YangHeuristicScanner#NOT_FOUND}
-     * @since 3.7
      */
     public int findReferencePosition(int offset, boolean danglingElse, boolean matchBrace, boolean matchParen,
             boolean matchCase, boolean throwsClause) {
@@ -929,12 +686,9 @@ public final class YangIndenter {
         fAlign = YangHeuristicScanner.NOT_FOUND;
         fPosition = offset;
 
-        // forward cases
-        // an unindentation happens sometimes if the next token is special, namely on braces, parens
-        // and case labels
-        // align braces, but handle the case where we align with the method declaration start
-        // instead of
-        // the opening brace.
+        // forward cases an unindentation happens sometimes if the next token is special, namely on braces, parens
+        // and case labels align braces, but handle the case where we align with the method declaration start
+        // instead of the opening brace.
         if (matchBrace) {
             if (skipScope(Symbols.TokenLBRACE, Symbols.TokenRBRACE)) {
                 try {
@@ -1114,7 +868,6 @@ public final class YangIndenter {
      * indentation to Continuation Indent.
      * 
      * @return the position of the token
-     * @since 3.7
      */
     private int handleEqual() {
         try {
@@ -1383,14 +1136,15 @@ public final class YangIndenter {
 
             // if any line item comes with its own indentation, adapt to it
             if (fLine < startLine) {
-                try {
-                    int lineOffset = fDocument.getLineOffset(startLine);
-                    int bound = Math.min(fDocument.getLength(), startPosition + 1);
-                    // XXX
-                    // fAlign= fScanner.findNonWhitespaceForwardInAnyPartition(lineOffset, bound);
-                } catch (BadLocationException e) {
-                    // ignore and return just the position
-                }
+// TODO
+//                try {
+//                    
+//                    int lineOffset = fDocument.getLineOffset(startLine);
+//                    int bound = Math.min(fDocument.getLength(), startPosition + 1);
+//                    fAlign= fScanner.findNonWhitespaceForwardInAnyPartition(lineOffset, bound);
+//                } catch (BadLocationException e) {
+//                    // ignore and return just the position
+//                }
                 return startPosition;
             }
 
@@ -1457,14 +1211,6 @@ public final class YangIndenter {
             nextToken();
             switch (fToken) {
             case Symbols.TokenIDENT:
-                boolean isGenericStarter;
-                try {
-                    isGenericStarter = !YangHeuristicScanner.isGenericStarter(getTokenContent());
-                } catch (BadLocationException e) {
-                    return false;
-                }
-                if (isGenericStarter)
-                    break;
                 //$FALL-THROUGH$
             case Symbols.TokenQUESTIONMARK:
             case Symbols.TokenGREATERTHAN:
@@ -1483,21 +1229,10 @@ public final class YangIndenter {
     }
 
     /**
-     * Returns the contents of the current token.
-     * 
-     * @return the contents of the current token
-     * @throws BadLocationException if the indices are out of bounds
-     * @since 3.1
-     */
-    private CharSequence getTokenContent() throws BadLocationException {
-        return new DocumentCharacterIterator(fDocument, fPosition, fPreviousPos);
-    }
-
-    /**
      * Handles the introduction of a new scope. The current token must be one out of
      * <code>Symbols.TokenLPAREN</code>, <code>Symbols.TokenLBRACE</code>, and
      * <code>Symbols.TokenLBRACKET</code>. Returns as the reference position either the token
-     * introducing the scope or - if available - the first java token after that.
+     * introducing the scope or - if available - the first YANG token after that.
      * <p>
      * Depending on the type of scope introduction, the indentation will align (deep indenting) with
      * the reference position (<code>fAlign</code> will be set to the reference position) or
@@ -1580,7 +1315,7 @@ public final class YangIndenter {
 
     /**
      * Sets the deep indent offset (<code>fAlign</code>) to either the offset right after
-     * <code>scopeIntroducerOffset</code> or - if available - the first Java token after
+     * <code>scopeIntroducerOffset</code> or - if available - the first YANG token after
      * <code>scopeIntroducerOffset</code>, but before <code>bound</code>.
      *
      * @param scopeIntroducerOffset the offset of the scope introducer
@@ -1659,7 +1394,6 @@ public final class YangIndenter {
      * 
      * @return <code>true</code> if a matching <code>try</code> token was found, <code>false</code>
      * otherwise
-     * @since 3.7
      */
     private boolean skipNextTRY() {
         Assert.isTrue(fToken == Symbols.TokenCATCH || fToken == Symbols.TokenFINALLY);
@@ -1787,7 +1521,6 @@ public final class YangIndenter {
      * name (potentially qualified) preceded by an at-sign).
      * 
      * @return <code>true</code> if the current position looks like an annotation.
-     * @since 3.7
      */
 
     private boolean looksLikeAnnotation() {
@@ -1839,8 +1572,6 @@ public final class YangIndenter {
      * @return <code>true</code> if the current position looks like a method call header.
      */
     private boolean looksLikeMethodCall() {
-        // TODO [5.0] add awareness for constructor calls with generic types: new
-        // ArrayList<String>()
         nextToken();
         return fToken == Symbols.TokenIDENT; // method name
     }

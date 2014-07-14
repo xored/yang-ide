@@ -13,25 +13,22 @@ package com.cisco.yangide.editor.actions;
 public interface IYangEditorActionDefinitionIds {
     /**
      * Action definition ID of the source -> toggle comment action (value
-     * <code>"org.eclipse.jdt.ui.edit.text.java.toggle.comment"</code>).
+     * <code>"com.cisco.yangide.actions.toggle.comment"</code>).
      * 
-     * @since 3.0
      */
     public static final String TOGGLE_COMMENT = "com.cisco.yangide.actions.toggle.comment"; //$NON-NLS-1$
 
     /**
      * Action definition ID of the source -> add block comment action (value
-     * <code>"org.eclipse.jdt.ui.edit.text.java.add.block.comment"</code>).
+     * <code>"com.cisco.yangide.actions.add.block.comment"</code>).
      * 
-     * @since 3.0
      */
     public static final String ADD_BLOCK_COMMENT = "com.cisco.yangide.actions.add.block.comment"; //$NON-NLS-1$
 
     /**
      * Action definition ID of the source -> remove block comment action (value
-     * <code>"org.eclipse.jdt.ui.edit.text.java.remove.block.comment"</code>).
+     * <code>"com.cisco.yangide.actions.remove.block.comment"</code>).
      * 
-     * @since 3.0
      */
     public static final String REMOVE_BLOCK_COMMENT = "com.cisco.yangide.actions.remove.block.comment"; //$NON-NLS-1$
 

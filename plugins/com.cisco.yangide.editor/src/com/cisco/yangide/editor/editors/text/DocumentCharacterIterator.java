@@ -26,7 +26,6 @@ import org.eclipse.jface.text.IDocument;
  * with a {@link BadLocationException}, any of <code>CharacterIterator</code> methods as well as
  * <code>charAt</code>may return {@link CharacterIterator#DONE}.
  *
- * @since 3.0
  */
 public class DocumentCharacterIterator implements CharacterIterator, CharSequence {
 

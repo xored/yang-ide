@@ -1,7 +1,13 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.cisco.yangide.editor.editors;
 
 import org.eclipse.jdt.ui.text.IColorManager;
-import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.JFaceResources;
@@ -29,6 +35,10 @@ import com.cisco.yangide.editor.editors.text.CompositeReconcilingStrategy;
 import com.cisco.yangide.editor.editors.text.YangReconcilingStrategy;
 import com.cisco.yangide.editor.preferences.YangDocumentSetupParticipant;
 
+/**
+ * @author Alexey Kholupko
+ *
+ */
 public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration {
     private YangDoubleClickStrategy doubleClickStrategy;
     private YangStringScanner stringScanner;
@@ -132,7 +142,6 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
      *
      * @param event the event to be investigated
      * @return <code>true</code> if event causes a behavioral change
-     * @since 3.0
      */
     public boolean affectsTextPresentation(PropertyChangeEvent event) {
         return scanner.affectsBehavior(event) || stringScanner.affectsBehavior(event)
@@ -147,12 +156,9 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
      * </p>
      *
      * @param event the event to which to adapt
-     * @see JavaSourceViewerConfiguration#JavaSourceViewerConfiguration(IColorManager,
-     * IPreferenceStore, ITextEditor, String)
-     * @since 3.0
      */
     public void handlePropertyChangeEvent(PropertyChangeEvent event) {
-        // Assert.isTrue(isNewSetup());
+
         if (scanner.affectsBehavior(event)) {
             scanner.adaptToPreferenceChange(event);
         }
@@ -161,10 +167,7 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
         }
         if (commentScanner.affectsBehavior(event)) {
             commentScanner.adaptToPreferenceChange(event);
-            // if (fJavaDoubleClickSelector != null &&
-            // JavaCore.COMPILER_SOURCE.equals(event.getProperty()))
-            // if (event.getNewValue() instanceof String)
-            // fJavaDoubleClickSelector.setSourceVersion((String) event.getNewValue());
+
         }
     }
 
@@ -178,13 +181,7 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
     @Override
     public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
         String partitioning = getConfiguredDocumentPartitioning(sourceViewer);
-        // TODO
-        // if (YangPartitionScanner.YANG_COMMENT.equals(contentType))
-
         return new IAutoEditStrategy[] { new YangAutoIndentStrategy(partitioning, sourceViewer) }; // usefull
-        // new
-        // SmartSemicolonAutoEditStrategy(partitioning),
-
     }
 
     /*
@@ -229,9 +226,8 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
         assistant.setContextInformationPopupForeground(foreground);
         assistant.setContextSelectorForeground(foreground);
 
-        // assistant.setRepeatedInvocationMode(true);
         assistant.setStatusLineVisible(true);
-        // assistant.setShowEmptyList(true);
+
         assistant.enableAutoInsert(true);
 
         return assistant;
@@ -258,10 +254,7 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
             CompositeReconcilingStrategy strategy = new CompositeReconcilingStrategy();
             strategy.setReconcilingStrategies(new IReconcilingStrategy[] {
             // yang syntax reconcile
-            new YangReconcilingStrategy(sourceViewer, getEditor()),
-            // standard spelling
-            // new SpellingReconcileStrategy(sourceViewer, EditorsUI.getSpellingService())
-            });
+            new YangReconcilingStrategy(sourceViewer, getEditor())});
             MonoReconciler reconciler = new MonoReconciler(strategy, false);
             reconciler.setIsAllowedToModifyDocument(false);
             reconciler.setDelay(500);

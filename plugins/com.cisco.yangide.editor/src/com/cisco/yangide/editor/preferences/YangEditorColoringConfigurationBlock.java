@@ -63,21 +63,15 @@ import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
 import com.cisco.yangide.ui.preferences.OverlayPreferenceStore.OverlayKey;
 
 /**
- * @author Alexey Kholupko
- * Overlay?
- */
-
-/**
- * Configures Java Editor hover preferences.
+ * Configures YANG Editor hover preferences.
  *
- * @since 2.1
+ * @author Alexey Kholupko
  */
 class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     /**
      * Item in the highlighting color list.
      *
-     * @since 3.0
      */
     private static class HighlightingColorListItem {
         /** Display name */
@@ -91,13 +85,11 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         /**
          * Strikethrough preference key.
          *
-         * @since 3.1
          */
         private String fStrikethroughKey;
         /**
          * Underline preference key.
          *
-         * @since 3.1
          */
         private String fUnderlineKey;
 
@@ -137,7 +129,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
         /**
          * @return the strikethrough preference key
-         * @since 3.1
          */
         public String getStrikethroughKey() {
             return fStrikethroughKey;
@@ -145,7 +136,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
         /**
          * @return the underline preference key
-         * @since 3.1
          */
         public String getUnderlineKey() {
             return fUnderlineKey;
@@ -169,7 +159,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
     /**
      * Color list label provider.
      *
-     * @since 3.0
      */
     private class ColorListLabelProvider extends LabelProvider {
         /*
@@ -187,7 +176,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
     /**
      * Color list content provider.
      *
-     * @since 3.0
      */
     private class ColorListContentProvider implements IStructuredContentProvider {
 
@@ -197,7 +185,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         @Override
         @SuppressWarnings("rawtypes")
         public Object[] getElements(Object inputElement) {
-            // return new String[] {fJavaCategory, fJavadocCategory, fCommentsCategory};
             return ((java.util.List) inputElement).toArray();
         }
 
@@ -215,19 +202,16 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
     /**
      * Preference key suffix for italic preferences.
      *
-     * @since 3.0
      */
     private static final String ITALIC = PreferenceConstants.EDITOR_ITALIC_SUFFIX;
     /**
      * Preference key suffix for strikethrough preferences.
      *
-     * @since 3.1
      */
     private static final String STRIKETHROUGH = PreferenceConstants.EDITOR_STRIKETHROUGH_SUFFIX;
     /**
      * Preference key suffix for underline preferences.
      *
-     * @since 3.1
      */
     private static final String UNDERLINE = PreferenceConstants.EDITOR_UNDERLINE_SUFFIX;
 
@@ -249,49 +233,41 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
     /**
      * Check box for italic preference.
      *
-     * @since 3.0
      */
     private Button fItalicCheckBox;
     /**
      * Check box for strikethrough preference.
      *
-     * @since 3.1
      */
     private Button fStrikethroughCheckBox;
     /**
      * Check box for underline preference.
      *
-     * @since 3.1
      */
     private Button fUnderlineCheckBox;
     /**
      * Highlighting color list
      *
-     * @since 3.0
      */
     private final java.util.List<HighlightingColorListItem> fListModel = new ArrayList<HighlightingColorListItem>();
     /**
      * Highlighting color tree viewer
      *
-     * @since 3.0
      */
     private TableViewer fHighlightingColorListViewer;
     /**
      * The previewer.
      *
-     * @since 3.0
      */
     private SourceViewer fPreviewViewer;
     /**
      * The color manager.
      *
-     * @since 3.1
      */
     private IColorManager fColorManager;
     /**
      * The font metrics.
      *
-     * @since 3.1
      */
     private FontMetrics fFontMetrics;
 
@@ -520,12 +496,11 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         stylesComposite.setLayout(layout);
         stylesComposite.setLayoutData(new GridData(GridData.FILL_BOTH));
 
-        // XXX place to fix layout
 
         fColorEditorLabel = new Label(stylesComposite, SWT.LEFT);
         fColorEditorLabel.setText(YangPreferencesMessages.YANGEditorPreferencePage_color);
         gd = new GridData(GridData.HORIZONTAL_ALIGN_BEGINNING);
-        // XXX LayoutUtil.getIndent(); only since 3.9 returns 20
+
         gd.horizontalIndent = 20;
         fColorEditorLabel.setLayoutData(gd);
 
@@ -672,9 +647,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
         IPreferenceStore store = new ChainedPreferenceStore(new IPreferenceStore[] { getPreferenceStore(),
                 EditorsUI.getPreferenceStore() });
-        // XXX ATTENTION ! Updater needed
-        // fPreviewerUpdater = new AntPreviewerUpdater(fPreviewViewer, configuration, store);
-        // new JavaSourcePreviewerUpdater(fPreviewViewer, configuration, store);
 
         new YangPreviewerUpdater(fPreviewViewer, configuration, store);
 
@@ -714,7 +686,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
      * Returns the current highlighting color list item.
      *
      * @return the current highlighting color list item
-     * @since 3.0
      */
     private HighlightingColorListItem getHighlightingColorListItem() {
         IStructuredSelection selection = (IStructuredSelection) fHighlightingColorListViewer.getSelection();

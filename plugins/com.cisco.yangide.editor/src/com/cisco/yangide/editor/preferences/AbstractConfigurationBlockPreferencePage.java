@@ -1,14 +1,10 @@
-/*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.cisco.yangide.editor.preferences;
 
 import org.eclipse.core.runtime.preferences.InstanceScope;
@@ -28,7 +24,7 @@ import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
  * Abstract preference page which is used to wrap a
  * {@link com.cisco.yangide.editor.preferences.IPreferenceConfigurationBlock}.
  *
- * @since 3.0
+ * @author Alexey Kholupko
  */
 public abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {
@@ -100,8 +96,6 @@ public abstract class AbstractConfigurationBlockPreferencePage extends Preferenc
         fConfigurationBlock.performOk();
 
         fOverlayStore.propagate();
-
-        // JavaPlugin.flushInstanceScope();
 
         // TODO etxract to plugin class
 

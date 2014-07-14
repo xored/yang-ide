@@ -193,9 +193,9 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         keywordHierarchyMap.put("leaf", Arrays.asList(new String[] 
                 {"config", "default", "description", "if-feature", "mandatory", "must", "reference", "status", "type", "units", "when"}));
         keywordHierarchyMap.put("leaf-list", Arrays.asList(new String[] 
-                {"config", "description", "if-feature", "max-elements", "min-elements", "must", "ordered", "by", "reference", "status", "type", "units", "when"}));
+                {"config", "description", "if-feature", "max-elements", "min-elements", "must", "ordered-by", "reference", "status", "type", "units", "when"}));
         keywordHierarchyMap.put("list", Arrays.asList(new String[] 
-                {"anyxml", "choice", "config", "container", "description", "grouping", "if-feature", "key", "leaf", "leaf-list", "list", "max-elements", "min-elements", "must", "ordered", "by", "reference", "status", "typedef", "unique", "uses", "when"}));
+                {"anyxml", "choice", "config", "container", "description", "grouping", "if-feature", "key", "leaf", "leaf-list", "list", "max-elements", "min-elements", "must", "ordered-by", "reference", "status", "typedef", "unique", "uses", "when"}));
         keywordHierarchyMap.put("choice", Arrays.asList(new String[] 
                 {"anyxml", "case", "config", "container", "default", "description", "if-feature", "leaf", "leaf-list", "list", "mandatory", "reference", "status", "when"}));
         keywordHierarchyMap.put("case", Arrays.asList(new String[] 
@@ -262,7 +262,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     }
 
     /*
-     * (non-Javadoc) Method declared on IContentAssistProcessor XXX will be used later
+     * (non-Javadoc) Method declared on IContentAssistProcessor
      */
     @Override
     public IContextInformation[] computeContextInformation(ITextViewer viewer, int documentOffset) {
@@ -300,9 +300,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.eclipse.jface.text.contentassist.ICompletionListener#assistSessionStarted(org.eclipse
-     * .jface.text.contentassist.ContentAssistEvent)
+     * @see org.eclipse.jface.text.contentassist.ICompletionListener#assistSessionStarted(org.eclipse.jface.text.contentassist.ContentAssistEvent)
      */
     public void assistSessionStarted(ContentAssistEvent event) {
         IContentAssistant assistant = event.assistant;
@@ -357,13 +355,12 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     }
     
     /**
-     * dirty
+     * XXX dirty
      */
     private String determineProposalScopeKeyword(IDocument doc, int offset) {
         try {
             YangHeuristicScanner yangHeuristicScanner = new YangHeuristicScanner(doc);
             
-            //int blockStartPosition = yangHeuristicScanner.scanBackward(offset, YangHeuristicScanner.UNBOUND, '{');
             int blockStartPosition = yangHeuristicScanner.findOpeningPeer(offset, '{', '}');
             
             int curPos = yangHeuristicScanner.findNonWhitespaceBackward(blockStartPosition - 1, YangHeuristicScanner.UNBOUND);
@@ -422,7 +419,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     /**
      * @param prefix
-     * @param addModuleRevision TODO
+     * @param addModuleRevision 
      * @return importable module names
      */
     private TypedProposalsList getImportProposals(String prefix, boolean addModuleRevision) {
@@ -449,8 +446,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 }
 
                 if (prefix.length() == 0 || proposal.startsWith(prefix)) {
-                    // moduleProposals.add(new CompletionProposal(proposal, cursorPosition -
-                    // prefix.length(), prefix.length(), proposal.length()));
+
                     moduleProposals.add(new CompletionProposal(replacementString, cursorPosition - prefix.length(),
                             prefix.length(), proposal.length(), YangUIImages
                                     .getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL), displayString, null, null));
@@ -807,9 +803,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.eclipse.jface.text.templates.TemplateCompletionProcessor#extractPrefix(org.eclipse.jface
-     * .text.ITextViewer, int)
+     * @see org.eclipse.jface.text.templates.TemplateCompletionProcessor#extractPrefix(org.eclipse.jface.text.ITextViewer, int)
      */
     @Override
     protected String extractPrefix(ITextViewer textViewer, int offset) {
@@ -831,13 +825,10 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     /*
      * (non-Javadoc)
      * 
-     * @see
-     * org.eclipse.jface.text.templates.TemplateCompletionProcessor#getImage(org.eclipse.jface.text
-     * .templates.Template)
+     * @see org.eclipse.jface.text.templates.TemplateCompletionProcessor#getImage(org.eclipse.jface.text.templates.Template)
      */
     @Override
     protected Image getImage(Template template) {
-        Image temp = YangUIImages.getImage(IYangUIConstants.IMG_TEMPLATE_PROPOSAL);
         return YangUIImages.getImage(IYangUIConstants.IMG_TEMPLATE_PROPOSAL);
     }
 

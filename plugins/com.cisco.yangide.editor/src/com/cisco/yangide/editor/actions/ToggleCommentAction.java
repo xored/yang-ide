@@ -1,14 +1,10 @@
-/*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.cisco.yangide.editor.actions;
 
 import java.util.HashMap;
@@ -40,7 +36,7 @@ import com.cisco.yangide.editor.editors.YangEditorMessages;
 /**
  * An action which toggles comment prefixes on the selected lines.
  * 
- * @since 3.0
+ * @author Alexey Kholupko
  */
 public final class ToggleCommentAction extends TextEditorAction {
 
@@ -90,7 +86,8 @@ public final class ToggleCommentAction extends TextEditorAction {
         Shell shell = editor.getSite().getShell();
         if (!fOperationTarget.canDoOperation(operationCode)) {
             if (shell != null)
-                MessageDialog.openError(shell, YangEditorMessages.ToggleComment_error_title, YangEditorMessages.ToggleComment_error_message);
+                MessageDialog.openError(shell, YangEditorMessages.ToggleComment_error_title,
+                        YangEditorMessages.ToggleComment_error_message);
             return;
         }
 
@@ -323,16 +320,16 @@ public final class ToggleCommentAction extends TextEditorAction {
         fDocumentPartitioning = configuration.getConfiguredDocumentPartitioning(sourceViewer);
         fPrefixesMap = prefixesMap;
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.jface.action.Action#isEnabled()
      */
     @Override
     public boolean isEnabled() {
         return super.isEnabled();
-        
+
     }
-    
+
     /* (non-Javadoc)
      * @see org.eclipse.jface.action.Action#isHandled()
      */

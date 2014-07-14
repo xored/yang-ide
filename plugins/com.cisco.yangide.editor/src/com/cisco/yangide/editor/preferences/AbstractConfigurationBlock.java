@@ -15,7 +15,6 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package com.cisco.yangide.editor.preferences;
 
 import java.util.ArrayList;
@@ -57,9 +56,9 @@ import com.cisco.yangide.editor.dialogs.StatusUtil;
 import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
 
 /**
- * Configures Java Editor typing preferences.
+ * Configures YANG Editor typing preferences.
  *
- * @since 3.1
+ * @author Alexey Kholupko
  */
 abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlock {
 
@@ -286,7 +285,6 @@ abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlo
      * List of master/slave listeners when there's a dependency.
      *
      * @see #createDependency(Button, Control)
-     * @since 3.0
      */
     private ArrayList<SelectionListener> fMasterSlaveListeners = new ArrayList<SelectionListener>();
 
@@ -465,7 +463,6 @@ abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlo
     /*
      * @see com.cisco.yangide.editor.preferences.IPreferenceConfigurationBlock#dispose()
      * 
-     * @since 3.0
      */
     public void dispose() {
     }

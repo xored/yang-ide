@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.cisco.yangide.editor.editors;
 
 import java.util.HashMap;
@@ -11,8 +18,6 @@ import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.widgets.Display;
 
 /**
- * Complete JavaColorManager copy
- * 
  * @author Alexey Kholupko
  */
 public class YangColorManager implements IColorManager, IColorManagerExtension {
@@ -27,7 +32,7 @@ public class YangColorManager implements IColorManager, IColorManagerExtension {
     private boolean fAutoDisposeOnDisplayDispose;
 
     /**
-     * Creates a new Java color manager which automatically disposes the allocated colors when the
+     * Creates a new YANG color manager which automatically disposes the allocated colors when the
      * current display gets disposed.
      */
     public YangColorManager() {
@@ -35,12 +40,11 @@ public class YangColorManager implements IColorManager, IColorManagerExtension {
     }
 
     /**
-     * Creates a new Java color manager.
+     * Creates a new YANG color manager.
      *
      * @param autoDisposeOnDisplayDispose if <code>true</code> the color manager automatically
      * disposes all managed colors when the current display gets disposed and all calls to
      * {@link org.eclipse.jface.text.source.ISharedTextColors#dispose()} are ignored.
-     * @since 2.1
      */
     public YangColorManager(boolean autoDisposeOnDisplayDispose) {
         fAutoDisposeOnDisplayDispose = autoDisposeOnDisplayDispose;

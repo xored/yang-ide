@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.cisco.yangide.editor.editors;
 
 import java.util.ArrayList;
@@ -40,9 +47,14 @@ import com.cisco.yangide.editor.actions.ToggleCommentAction;
 import com.cisco.yangide.ui.YangUIPlugin;
 import com.cisco.yangide.ui.preferences.IYangColorConstants;
 
+/**
+ * Editor class
+ * @author Alexey Kholupko
+ *
+ */
 public class YangEditor extends TextEditor {
 
-    // TODO extract to another class
+    // TODO extract logic to separate classes 
     public final static String EDITOR_MATCHING_BRACKETS = "matchingBrackets";
 
     private IColorManager colorManager;
@@ -50,7 +62,6 @@ public class YangEditor extends TextEditor {
     public YangEditor() {
         super();
 
-        // colorManager = new YangColorManager();
         colorManager = new YangColorManager(false);
         setSourceViewerConfiguration(new YangSourceViewerConfiguration(YangEditorPlugin.getDefault()
                 .getCombinedPreferenceStore(), colorManager, this));
@@ -69,7 +80,7 @@ public class YangEditor extends TextEditor {
         setEditorContextMenuId("#TextEditorContext"); //$NON-NLS-1$
         setRulerContextMenuId("#TextRulerContext"); //$NON-NLS-1$
         setHelpContextId(ITextEditorHelpContextIds.TEXT_EDITOR);
-        // XXX legal everywhere else is false, causes to instantiate new smart mode
+        // XXX everywhere else is false, causes to instantiate new smart mode
         configureInsertMode(SMART_INSERT, true);
         setInsertMode(INSERT);
 
@@ -120,46 +131,21 @@ public class YangEditor extends TextEditor {
         internalDoSetInput(input);
     }
 
-    /*
-     * //TODO
-     *
-     * @see JavaEditor#internalDoSetInput
-     */
+
     private void internalDoSetInput(IEditorInput input) throws CoreException {
 
         super.doSetInput(input);
 
-        // ISourceViewer sourceViewer= getSourceViewer();
-        // JavaSourceViewer javaSourceViewer= null;
-        // if (sourceViewer instanceof JavaSourceViewer)
-        // javaSourceViewer= (JavaSourceViewer)sourceViewer;
-        //
-        // IPreferenceStore store= getPreferenceStore();
-
-        // if (javaSourceViewer != null && javaSourceViewer.getReconciler() == null) {
-        // IReconciler reconciler= getSourceViewerConfiguration().getReconciler(javaSourceViewer);
-        // if (reconciler != null) {
-        // reconciler.install(javaSourceViewer);
-        // javaSourceViewer.setReconciler(reconciler);
-        // }
-        // }
-
         if (fEncodingSupport != null) {
             fEncodingSupport.reset();
         }
-
-        // setOutlinePageInput(fOutlinePage, input);
-        //
-        // if (isShowingOverrideIndicators())
-        // installOverrideIndicator(false);
     }
 
     /**
-     * Creates and returns the preference store for this Java editor with the given input.
+     * Creates and returns the preference store for this YANG editor with the given input.
      *
      * @param input The editor input for which to create the preference store
      * @return the preference store for this editor
-     * @since 3.0
      */
     private IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
         List<IPreferenceStore> stores = new ArrayList<IPreferenceStore>(3);
@@ -192,9 +178,7 @@ public class YangEditor extends TextEditor {
     /*
      * (non-Javadoc)
      *
-     * @see
-     * org.eclipse.ui.editors.text.TextEditor#handlePreferenceStoreChanged(org.eclipse.jface.util
-     * .PropertyChangeEvent)
+     * @see org.eclipse.ui.editors.text.TextEditor#handlePreferenceStoreChanged(org.eclipse.jface.util.PropertyChangeEvent)
      */
     @Override
     protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
@@ -232,15 +216,11 @@ public class YangEditor extends TextEditor {
 
         IAction action = getAction(ITextEditorActionConstants.CONTENT_ASSIST_CONTEXT_INFORMATION);
 
-        action = new ToggleCommentAction(ResourceBundle.getBundle(YangEditorMessages.getBundleName()),
-                "ToggleComment.", this); //$NON-NLS-1$
-        // action.setActionDefinitionId(IJavaEditorActionDefinitionIds.TOGGLE_COMMENT);
+        action = new ToggleCommentAction(ResourceBundle.getBundle(YangEditorMessages.getBundleName()), "ToggleComment.", this); //$NON-NLS-1$
+
         action.setActionDefinitionId(IYangEditorActionDefinitionIds.TOGGLE_COMMENT);
         setAction("ToggleComment", action); //$NON-NLS-1$
         markAsStateDependentAction("ToggleComment", true); //$NON-NLS-1$
-        // TODO
-        // PlatformUI.getWorkbench().getHelpSystem().setHelp(action,
-        // IJavaHelpContextIds.TOGGLE_COMMENT_ACTION);
         configureToggleCommentAction();
 
         action = new AddBlockCommentAction(ResourceBundle.getBundle(YangEditorMessages.getBundleName()),
@@ -249,8 +229,6 @@ public class YangEditor extends TextEditor {
         setAction("AddBlockComment", action); //$NON-NLS-1$
         markAsStateDependentAction("AddBlockComment", true); //$NON-NLS-1$
         markAsSelectionDependentAction("AddBlockComment", true); //$NON-NLS-1$
-        // PlatformUI.getWorkbench().getHelpSystem().setHelp(action,
-        // IJavaHelpContextIds.ADD_BLOCK_COMMENT_ACTION);
 
         action = new RemoveBlockCommentAction(ResourceBundle.getBundle(YangEditorMessages.getBundleName()),
                 "RemoveBlockComment.", this); //$NON-NLS-1$
@@ -258,14 +236,11 @@ public class YangEditor extends TextEditor {
         setAction("RemoveBlockComment", action); //$NON-NLS-1$
         markAsStateDependentAction("RemoveBlockComment", true); //$NON-NLS-1$
         markAsSelectionDependentAction("RemoveBlockComment", true); //$NON-NLS-1$
-        // PlatformUI.getWorkbench().getHelpSystem().setHelp(action,
-        // IJavaHelpContextIds.REMOVE_BLOCK_COMMENT_ACTION);
     }
 
     /**
      * Configures the toggle comment action
      *
-     * @since 3.0
      */
     private void configureToggleCommentAction() {
         IAction action = getAction("ToggleComment"); //$NON-NLS-1$

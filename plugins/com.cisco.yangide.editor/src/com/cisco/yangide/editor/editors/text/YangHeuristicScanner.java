@@ -7,21 +7,9 @@
  */
 package com.cisco.yangide.editor.editors.text;
 
-/*******************************************************************************
- * Copyright (c) 2000, 2011 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
- *******************************************************************************/
-
 import java.util.Arrays;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.jdt.internal.ui.text.JavaHeuristicScanner;
 import org.eclipse.jdt.ui.text.IJavaPartitions;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
@@ -32,12 +20,13 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.TypedRegion;
 
 /**
- * Utility methods for heuristic based Java manipulations in an incomplete Java source file.
+ * Utility methods for heuristic based YANG manipulations in an incomplete YANG source file.
  * <p>
  * An instance holds some internal position in the document and is therefore not threadsafe.
  * </p>
  *
- * @since 3.0
+ * @author Alexey Kholupko
+ * 
  */
 public final class YangHeuristicScanner implements Symbols {
     /**
@@ -102,7 +91,7 @@ public final class YangHeuristicScanner implements Symbols {
      */
     private static class NonWhitespace extends StopCondition {
         /*
-         * @see com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#stop(char)
+         * @see com.cisco.yangide.editor.editors.text.YangHeuristicScanner.StopCondition#stop(char)
          */
         @Override
         public boolean stop(char ch, int position, boolean forward) {
@@ -113,11 +102,11 @@ public final class YangHeuristicScanner implements Symbols {
     /**
      * Stops upon a non-whitespace character in the default partition.
      *
-     * @see JavaHeuristicScanner.NonWhitespace
+     * @see YangHeuristicScanner.NonWhitespace
      */
     private final class NonWhitespaceDefaultPartition extends NonWhitespace {
         /*
-         * @see com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#stop(char)
+         * @see com.cisco.yangide.editor.editors.text.YangHeuristicScanner.StopCondition#stop(char)
          */
         @Override
         public boolean stop(char ch, int position, boolean forward) {
@@ -126,7 +115,7 @@ public final class YangHeuristicScanner implements Symbols {
 
         /*
          * @see
-         * com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#nextPosition
+         * com.cisco.yangide.editor.editors.text.YangHeuristicScanner.StopCondition#nextPosition
          * (int, boolean)
          */
         @Override
@@ -149,12 +138,12 @@ public final class YangHeuristicScanner implements Symbols {
     }
 
     /**
-     * Stops upon a non-java identifier (as defined by {@link Character#isJavaIdentifierPart(char)})
+     * Stops upon a non-YANG identifier (as defined by {@link #isYAngIdentifierPart(char)})
      * character.
      */
-    private static class NonJavaIdentifierPart extends StopCondition {
+    private static class NonYangIdentifierPart extends StopCondition {
         /*
-         * @see com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#stop(char)
+         * @see com.cisco.yangide.editor.editors.text.YangHeuristicScanner.StopCondition#stop(char)
          */
         @Override
         public boolean stop(char ch, int position, boolean forward) {
@@ -163,13 +152,13 @@ public final class YangHeuristicScanner implements Symbols {
     }
 
     /**
-     * Stops upon a non-java identifier character in the default partition.
+     * Stops upon a non-YANG identifier character in the default partition.
      *
-     * @see JavaHeuristicScanner.NonJavaIdentifierPart
+     * @see YangHeuristicScanner.NonYangIdentifierPart
      */
-    private final class NonJavaIdentifierPartDefaultPartition extends NonJavaIdentifierPart {
+    private final class NonYangIdentifierPartDefaultPartition extends NonYangIdentifierPart {
         /*
-         * @see com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#stop(char)
+         * @see com.cisco.yangide.editor.editors.text.YangHeuristicScanner.StopCondition#stop(char)
          */
         @Override
         public boolean stop(char ch, int position, boolean forward) {
@@ -178,7 +167,7 @@ public final class YangHeuristicScanner implements Symbols {
 
         /*
          * @see
-         * com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#nextPosition
+         * com.cisco.yangide.editor.editors.text.YangHeuristicScanner.StopCondition#nextPosition
          * (int, boolean)
          */
         @Override
@@ -228,7 +217,7 @@ public final class YangHeuristicScanner implements Symbols {
         }
 
         /*
-         * @see com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#stop(char,
+         * @see com.cisco.yangide.editor.editors.text.YangHeuristicScanner.StopCondition#stop(char,
          * int)
          */
         @Override
@@ -238,7 +227,7 @@ public final class YangHeuristicScanner implements Symbols {
 
         /*
          * @see
-         * com.cisco.yangide.editor.editors.text.JavaHeuristicScanner.StopCondition#nextPosition
+         * com.cisco.yangide.editor.editors.text.YangHeuristicScanner.StopCondition#nextPosition
          * (int, boolean)
          */
         @Override
@@ -275,15 +264,13 @@ public final class YangHeuristicScanner implements Symbols {
     private int fPos;
     /**
      * The most recently used partition.
-     * 
-     * @since 3.2
      */
     private ITypedRegion fCachedPartition = new TypedRegion(-1, 0, "__no_partition_at_all"); //$NON-NLS-1$
 
     /* preset stop conditions */
     private final StopCondition fNonWSDefaultPart = new NonWhitespaceDefaultPartition();
     private final static StopCondition fNonWS = new NonWhitespace();
-    private final StopCondition fNonIdent = new NonJavaIdentifierPartDefaultPartition();
+    private final StopCondition fNonIdent = new NonYangIdentifierPartDefaultPartition();
 
     /**
      * Creates a new instance.
@@ -745,7 +732,6 @@ public final class YangHeuristicScanner implements Symbols {
      * @return the highest position of a non-whitespace character in (<code>bound</code>,
      * <code>position</code>] that resides in a Java partition, or <code>NOT_FOUND</code> if none
      * can be found
-     * @since 3.7
      */
     public int findNonWhitespaceBackwardInAnyPartition(int position, int bound) {
         return scanBackward(position, bound, fNonWS);
@@ -931,7 +917,6 @@ public final class YangHeuristicScanner implements Symbols {
      * @param region a region
      * @param position an offset
      * @return <code>true</code> if <code>region</code> contains <code>position</code>
-     * @since 3.2
      */
     private boolean contains(IRegion region, int position) {
         int offset = region.getOffset();
@@ -976,81 +961,6 @@ public final class YangHeuristicScanner implements Symbols {
             }
         }
 
-        return false;
-    }
-
-    /**
-     * Returns <code>true</code> if the document, when scanned backwards from <code>start</code>
-     * appears to contain a class instance creation, i.e. a possibly qualified name preceded by a
-     * <code>new</code> keyword. The <code>start</code> must be at the end of the type name, and
-     * before any generic signature or constructor parameter list. The heuristic will return
-     * <code>true</code> if <code>start</code> is at the following positions (|):
-     *
-     * <pre>
-     *  new java.util. ArrayList|&lt;String&gt;(10)
-     *  new ArrayList |(10)
-     *  new  / * comment  * / ArrayList |(10)
-     * </pre>
-     *
-     * but not the following:
-     *
-     * <pre>
-     *  new java.util. ArrayList&lt;String&gt;(10)|
-     *  new java.util. ArrayList&lt;String&gt;|(10)
-     *  new ArrayList (10)|
-     *  ArrayList |(10)
-     * </pre>
-     *
-     * @param start the position where the type name of the class instance creation supposedly ends
-     * @param bound the first position in <code>fDocument</code> to not consider any more, with
-     * <code>bound</code> &lt; <code>start</code>, or <code>UNBOUND</code>
-     * @return <code>true</code> if the current position looks like after the type name of a class
-     * instance creation
-     * @since 3.2
-     */
-    public boolean looksLikeClassInstanceCreationBackward(int start, int bound) {
-        int token = previousToken(start - 1, bound);
-        if (token == Symbols.TokenIDENT) { // type name
-            token = previousToken(getPosition(), bound);
-            while (token == Symbols.TokenOTHER) { // dot of qualification
-                token = previousToken(getPosition(), bound);
-                if (token != Symbols.TokenIDENT) // qualification name
-                    return false;
-                token = previousToken(getPosition(), bound);
-            }
-            return token == Symbols.TokenNEW;
-        }
-        return false;
-    }
-
-    /**
-     * Returns <code>true</code> if <code>identifier</code> is probably a type variable or type
-     * name, <code>false</code> if it is rather not. This is a heuristic.
-     *
-     * @param identifier the identifier to check
-     * @return <code>true</code> if <code>identifier</code> is probably a type variable or type
-     * name, <code>false</code> if not
-     * @since 3.2
-     */
-    public static boolean isGenericStarter(CharSequence identifier) {
-        /*
-         * This heuristic allows any identifiers if they start with an upper case. This will fail
-         * when a comparison is made with constants:
-         * 
-         * if (MAX > foo)
-         * 
-         * will try to find the matching '<' which will never come
-         * 
-         * Also, it will fail on lower case types and type variables
-         */
-        int length = identifier.length();
-        if (length > 0 && Character.isUpperCase(identifier.charAt(0))) {
-            for (int i = 0; i < length; i++) {
-                if (identifier.charAt(i) == '_')
-                    return false;
-            }
-            return true;
-        }
         return false;
     }
 

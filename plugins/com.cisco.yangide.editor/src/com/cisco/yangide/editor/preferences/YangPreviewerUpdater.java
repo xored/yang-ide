@@ -7,9 +7,6 @@
  */
 package com.cisco.yangide.editor.preferences;
 
-//import org.eclipse.ant.internal.ui.AntSourceViewerConfiguration;
-//import org.eclipse.ant.internal.ui.editor.formatter.FormattingPreferences;
-//import org.eclipse.ant.internal.ui.editor.formatter.XmlFormatter;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jface.preference.IPreferenceStore;

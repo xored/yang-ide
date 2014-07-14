@@ -7,11 +7,6 @@
  */
 package com.cisco.yangide.editor.preferences;
 
-/**
- * @author Alexey Kholupko
- *
- */
-
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
@@ -21,7 +16,8 @@ import org.eclipse.jface.text.rules.FastPartitioner;
 import com.cisco.yangide.editor.editors.YangPartitionScanner;
 
 /**
- * The document setup participant from Ant.
+ * @author Alexey Kholupko
+ *
  */
 public class YangDocumentSetupParticipant implements IDocumentSetupParticipant {
 
@@ -41,8 +37,6 @@ public class YangDocumentSetupParticipant implements IDocumentSetupParticipant {
         if (document instanceof IDocumentExtension3) {
             IDocumentExtension3 extension3 = (IDocumentExtension3) document;
             IDocumentPartitioner partitioner = createDocumentPartitioner();
-            // extension3.setDocumentPartitioner(IDocumentExtension3.DEFAULT_PARTITIONING,
-            // partitioner);
             extension3.setDocumentPartitioner(YANG_PARTITIONING, partitioner);
             partitioner.connect(document);
         }
@@ -50,7 +44,8 @@ public class YangDocumentSetupParticipant implements IDocumentSetupParticipant {
 
     private IDocumentPartitioner createDocumentPartitioner() {
         return new FastPartitioner(new YangPartitionScanner(), new String[] {
-                // IDocument.DEFAULT_CONTENT_TYPE, //?? is this right?
+                // XXX    undetermined behaviour
+                // IDocument.DEFAULT_CONTENT_TYPE, 
                 YangPartitionScanner.YANG_COMMENT, YangPartitionScanner.YANG_STRING });
     }
 }

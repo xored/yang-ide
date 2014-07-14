@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.cisco.yangide.editor;
 
 import org.eclipse.core.runtime.IStatus;
@@ -15,6 +22,7 @@ import com.cisco.yangide.ui.YangUIPlugin;
 
 /**
  * The activator class controls the plug-in life cycle
+ * @author Alexey Kholupko
  */
 public class YangEditorPlugin extends AbstractUIPlugin {
 
@@ -99,7 +107,6 @@ public class YangEditorPlugin extends AbstractUIPlugin {
      * Returns a combined preference store, this store is read-only.
      * 
      * @return the combined preference store
-     * @since 3.1
      */
     public IPreferenceStore getCombinedPreferenceStore() {
         if (fCombinedPreferenceStore == null) {

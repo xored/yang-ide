@@ -1,13 +1,22 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.cisco.yangide.editor.preferences;
 
-import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ui.IWorkbenchPreferencePage;
-import org.osgi.service.prefs.BackingStoreException;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.ui.YangUIPlugin;
 import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
 
+/**
+ * @author Alexey Kholupko
+ *
+ */
 public class YangEditorColoringPreferencePage extends AbstractConfigurationBlockPreferencePage implements
         IWorkbenchPreferencePage {
 
@@ -44,30 +53,11 @@ public class YangEditorColoringPreferencePage extends AbstractConfigurationBlock
      * (non-Javadoc)
      * 
      * @see
-     * com.cisco.yangide.editor.preferences.AbstractConfigurationBlockPreferencePage#performOk()
-     */
-    @Override
-    public boolean performOk() {
-        // JavaPlugin.flushInstanceScope();
-        // XXX to change coloring after @apply
-        // doesnot work
-        try {
-            InstanceScope.INSTANCE.getNode(YangEditorPlugin.PLUGIN_ID).flush();
-        } catch (BackingStoreException e) {
-            YangEditorPlugin.log(e);
-        }
-        return super.performOk();
-    }
-
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
      * com.cisco.yangide.editor.preferences.AbstractConfigurationBlockPreferencePage#getHelpId()
      */
     @Override
     protected String getHelpId() {
-        // TODO
+        //TODO
         return YangEditorColoringPreferencePage.YANG_EDITOR_PREFERENCE_PAGE;
     }
 
@@ -80,7 +70,6 @@ public class YangEditorColoringPreferencePage extends AbstractConfigurationBlock
      */
     @Override
     protected void setDescription() {
-        // TODO
         String description = YangPreferencesMessages.YANGEditorPreferencePage_colors;
         setDescription(description);
     }
