@@ -1,3 +1,10 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
 package com.cisco.yangide.core.tests;
 
 import java.io.CharArrayWriter;
@@ -13,7 +20,7 @@ import org.eclipse.core.runtime.Platform;
 
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.SubModule;
-import com.cisco.yangide.core.internal.YangParserUtil;
+import com.cisco.yangide.core.parser.YangParserUtil;
 
 /**
  * @author Konstantin Zaitsev
@@ -28,7 +35,7 @@ public class YangParserTest extends TestCase {
             assertEquals("my-crypto", module.getName());
             assertEquals(7, module.getNameStartPosition());
             assertEquals(0, module.getStartPosition());
-//            assertEquals(328, module.getLength());
+            // assertEquals(328, module.getLength());
         }
     }
 

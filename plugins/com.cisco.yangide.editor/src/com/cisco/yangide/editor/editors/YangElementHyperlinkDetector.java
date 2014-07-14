@@ -23,8 +23,8 @@ import com.cisco.yangide.core.dom.TypeReference;
 import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
-import com.cisco.yangide.core.internal.YangParserUtil;
 import com.cisco.yangide.core.model.YangModelManager;
+import com.cisco.yangide.core.parser.YangParserUtil;
 
 /**
  * @author Konstantin Zaitsev

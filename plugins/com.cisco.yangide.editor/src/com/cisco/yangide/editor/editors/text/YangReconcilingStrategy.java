@@ -28,11 +28,11 @@ import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.dom.Module;
-import com.cisco.yangide.core.internal.IYangValidationListener;
-import com.cisco.yangide.core.internal.YangParserUtil;
 import com.cisco.yangide.core.model.YangFile;
 import com.cisco.yangide.core.model.YangFileInfo;
 import com.cisco.yangide.core.model.YangModelManager;
+import com.cisco.yangide.core.parser.IYangValidationListener;
+import com.cisco.yangide.core.parser.YangParserUtil;
 
 /**
  * @author Konstantin Zaitsev

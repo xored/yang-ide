@@ -25,7 +25,7 @@ import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.buffer.BufferManager;
 import com.cisco.yangide.core.buffer.IBuffer;
 import com.cisco.yangide.core.dom.Module;
-import com.cisco.yangide.core.internal.YangParserUtil;
+import com.cisco.yangide.core.parser.YangParserUtil;
 
 /**
  * @author Konstantin Zaitsev

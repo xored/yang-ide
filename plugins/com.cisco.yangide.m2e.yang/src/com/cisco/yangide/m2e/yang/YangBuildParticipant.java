@@ -26,8 +26,8 @@ import org.eclipse.m2e.core.project.configurator.MojoExecutionBuildParticipant;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
 import com.cisco.yangide.core.YangCorePlugin;
-import com.cisco.yangide.core.internal.IYangValidationListener;
-import com.cisco.yangide.core.internal.YangParserUtil;
+import com.cisco.yangide.core.parser.IYangValidationListener;
+import com.cisco.yangide.core.parser.YangParserUtil;
 import com.cisco.yangide.ui.YangUIPlugin;
 import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
 

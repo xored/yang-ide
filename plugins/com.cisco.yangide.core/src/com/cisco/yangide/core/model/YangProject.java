@@ -100,11 +100,6 @@ public class YangProject extends YangElement {
     }
 
     @Override
-    public void makeConsistent(IProgressMonitor progress) throws YangModelException {
-        YangModelManager.getYangModelManager().removeInfoAndChildren(this);
-    }
-
-    @Override
     public IResource getResource() {
         return project;
     }
@@ -117,6 +112,10 @@ public class YangProject extends YangElement {
     @Override
     public YangElementType getElementType() {
         return YangElementType.YANG_PROJECT;
+    }
+
+    public void clearInfo() throws YangModelException {
+        YangModelManager.getYangModelManager().removeInfoAndChildren(this);
     }
 
     @Override

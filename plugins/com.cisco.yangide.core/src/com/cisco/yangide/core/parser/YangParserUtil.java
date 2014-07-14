@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package com.cisco.yangide.core.internal;
+package com.cisco.yangide.core.parser;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -39,7 +39,11 @@ public class YangParserUtil {
         }
         YangParserModelListener modelListener = new YangParserModelListener();
         ParseTreeWalker.DEFAULT.walk(modelListener, yangContext);
-        return modelListener.getModule();
+        Module module = modelListener.getModule();
+        if (validationListener != null) {
+            new SemanticValidations(validationListener, module).validate();
+        }
+        return module;
     }
 
     public static void validateYangContext(YangContext context, IYangValidationListener validationListener) {
@@ -66,6 +70,10 @@ public class YangParserUtil {
     public static void validateYangFile(char[] content, IYangValidationListener validationListener) {
         YangContext parseTree = parseYangSource(content, validationListener);
         validateYangContext(parseTree, validationListener);
+
+        YangParserModelListener modelListener = new YangParserModelListener();
+        ParseTreeWalker.DEFAULT.walk(modelListener, parseTree);
+        new SemanticValidations(validationListener, modelListener.getModule()).validate();
     }
 
     public static YangContext parseYangSource(char[] content, final IYangValidationListener validationListener) {

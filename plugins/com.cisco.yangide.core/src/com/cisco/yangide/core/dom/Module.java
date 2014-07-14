@@ -29,7 +29,9 @@ public class Module extends ASTCompositeNode {
     private SimpleNode<String> organization;
     private SimpleNode<String> contact;
 
+    /** Name to Import map. */
     private Map<String, ModuleImport> imports = new HashMap<>();
+    /** Prefix to Import map. */
     private Map<String, ModuleImport> importPrefixes = new HashMap<>();
 
     /** Contains name and submodule. */

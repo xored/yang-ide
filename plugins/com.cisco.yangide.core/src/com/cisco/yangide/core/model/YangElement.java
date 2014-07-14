@@ -108,22 +108,12 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
     }
 
     @Override
-    public IOpenable getPrimaryElement() {
-        return null;
-    }
-
-    @Override
     public IResource getResource() {
         return null;
     }
 
     @Override
     public boolean isReadOnly() {
-        return false;
-    }
-
-    @Override
-    public boolean isStructureKnown() throws YangModelException {
         return false;
     }
 
@@ -134,7 +124,7 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
     public boolean canBufferBeRemovedFromCache(IBuffer buffer) {
         return !buffer.hasUnsavedChanges();
     }
-
+    
     @Override
     public void close() throws YangModelException {
         if (hasBuffer()) {
@@ -148,41 +138,18 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
 
     }
 
-    @Override
     public boolean hasUnsavedChanges() throws YangModelException {
-        // TODO Auto-generated method stub
         return false;
     }
-
-    @Override
-    public boolean isConsistent() throws YangModelException {
-        return !YangModelManager.getYangModelManager().getElementsOutOfSynchWithBuffers().contains(this);
-    }
-
+    
     @Override
     public boolean isOpen() {
         return YangModelManager.getYangModelManager().getInfo(this) != null;
     }
 
     @Override
-    public void makeConsistent(IProgressMonitor progress) throws YangModelException {
-    }
-
-    @Override
     public void open(IProgressMonitor progress) throws YangModelException {
         getElementInfo(progress);
-    }
-
-    @Override
-    public void save(IProgressMonitor progress, boolean force) throws YangModelException {
-        if (isReadOnly()) {
-            throw new YangModelException("Resource is read-only");
-        }
-        IBuffer buf = getBuffer();
-        if (buf != null) { // some Openables (like a YangProject) don't have a buffer
-            buf.save(progress, force);
-            makeConsistent(progress); // update the element info of this element
-        }
     }
 
     public Object getElementInfo(IProgressMonitor monitor) throws YangModelException {
@@ -338,5 +305,4 @@ public abstract class YangElement implements IOpenable, IBufferChangedListener {
      * @return element type.
      */
     public abstract YangElementType getElementType();
-
 }

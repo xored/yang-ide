@@ -23,7 +23,7 @@ import com.cisco.yangide.core.IOpenable;
 import com.cisco.yangide.core.OpenableElementInfo;
 import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.Module;
-import com.cisco.yangide.core.internal.YangParserUtil;
+import com.cisco.yangide.core.parser.YangParserUtil;
 
 /**
  * @author Konstantin Zaitsev
