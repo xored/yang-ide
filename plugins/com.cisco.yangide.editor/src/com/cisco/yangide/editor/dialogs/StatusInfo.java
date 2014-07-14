@@ -17,7 +17,6 @@ import com.cisco.yangide.editor.YangEditorPlugin;
  * message describes the problem.
  * 
  * @author Alexey Kholupko
- * 
  */
 public class StatusInfo implements IStatus {
 
@@ -55,6 +54,7 @@ public class StatusInfo implements IStatus {
     public boolean isInfo() {
         return fSeverity == IStatus.INFO;
     }
+
     public boolean isError() {
         return fSeverity == IStatus.ERROR;
     }
@@ -149,7 +149,7 @@ public class StatusInfo implements IStatus {
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer();
-        buf.append("StatusInfo "); 
+        buf.append("StatusInfo ");
         if (fSeverity == OK) {
             buf.append("OK");
         } else if (fSeverity == ERROR) {
@@ -157,12 +157,12 @@ public class StatusInfo implements IStatus {
         } else if (fSeverity == WARNING) {
             buf.append("WARNING");
         } else if (fSeverity == INFO) {
-            buf.append("INFO"); 
+            buf.append("INFO");
         } else {
             buf.append("severity=");
             buf.append(fSeverity);
         }
-        buf.append(": "); 
+        buf.append(": ");
         buf.append(fStatusMessage);
         return buf.toString();
     }

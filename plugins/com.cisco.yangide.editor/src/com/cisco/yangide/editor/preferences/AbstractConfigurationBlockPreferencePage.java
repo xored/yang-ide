@@ -22,7 +22,6 @@ import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
 
 /**
  * @author Alexey Kholupko
- * 
  */
 public abstract class AbstractConfigurationBlockPreferencePage extends PreferencePage implements
         IWorkbenchPreferencePage {

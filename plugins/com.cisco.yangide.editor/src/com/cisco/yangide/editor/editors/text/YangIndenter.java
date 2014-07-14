@@ -117,7 +117,8 @@ public final class YangIndenter {
     /** The indentation accumulated by <code>findReferencePosition</code>. */
     private int fIndent;
     /**
-     * The absolute (character-counted) indentation offset for special cases (method defs, array initializers)
+     * The absolute (character-counted) indentation offset for special cases (method defs, array
+     * initializers)
      */
     private int fAlign;
     /** The stateful scanposition for the indentation methods. */
@@ -129,7 +130,8 @@ public final class YangIndenter {
     /** The line of <code>fPosition</code>. */
     private int fLine;
     /**
-     * The scanner we will use to scan the document. It has to be installed on the same document as the one we get.
+     * The scanner we will use to scan the document. It has to be installed on the same document as
+     * the one we get.
      */
     private final YangHeuristicScanner fScanner;
     /**
@@ -141,8 +143,8 @@ public final class YangIndenter {
      * Creates a new instance.
      *
      * @param document the document to scan
-     * @param scanner the {@link YangHeuristicScanner} to be used for scanning the document. Must
-     * be installed on the same <code>IDocument</code>.
+     * @param scanner the {@link YangHeuristicScanner} to be used for scanning the document. Must be
+     * installed on the same <code>IDocument</code>.
      */
     public YangIndenter(IDocument document, YangHeuristicScanner scanner) {
         Assert.isNotNull(document);
@@ -154,7 +156,6 @@ public final class YangIndenter {
 
     /**
      * Computes the indentation at the reference point of <code>position</code>.
-     *
      */
     public StringBuffer getReferenceIndentation(int offset) {
         return getReferenceIndentation(offset, false);
@@ -178,7 +179,6 @@ public final class YangIndenter {
 
     /**
      * Computes the indentation at <code>offset</code>.
-     *
      */
     public StringBuffer computeIndentation(int offset) {
         return computeIndentation(offset, false);
@@ -210,7 +210,6 @@ public final class YangIndenter {
     /**
      * Computes the length of a <code>CharacterSequence</code>, counting a tab character as the size
      * until the next tab stop and every other character as one.
-     *
      */
     private int computeVisualLength(CharSequence indent) {
         final int tabSize = fPrefs.prefTabSize;
@@ -235,7 +234,6 @@ public final class YangIndenter {
     /**
      * Strips any characters off the end of <code>reference</code> that exceed
      * <code>indentLength</code>.
-     *
      */
     private StringBuffer stripExceedingChars(StringBuffer reference, int indentLength) {
         final int tabSize = fPrefs.prefTabSize;
@@ -264,7 +262,6 @@ public final class YangIndenter {
     /**
      * Returns the indentation of the line at <code>offset</code> as a <code>StringBuffer</code>. If
      * the offset is not valid, the empty string is returned.
-     *
      */
     private StringBuffer getLeadingWhitespace(int offset) {
         StringBuffer indent = new StringBuffer();
@@ -288,7 +285,6 @@ public final class YangIndenter {
      * spaces that make up a tab are replaced by a tab character. If it is not set, no conversion
      * takes place, but tabs in the original range are still copied verbatim.
      * </p>
-     *
      */
     private StringBuffer createIndent(int start, final int indent, final boolean convertSpaceRunsToTabs) {
         final boolean convertTabs = fPrefs.prefUseTabs && convertSpaceRunsToTabs;
@@ -374,7 +370,6 @@ public final class YangIndenter {
      * <code>NOT_FOUND</code>. This method calls {@link #findReferencePosition(int, int)
      * findReferencePosition(offset, nextChar)} where <code>nextChar</code> is the next character
      * after <code>offset</code>.
-     *
      */
     public int findReferencePosition(int offset) {
         return findReferencePosition(offset, peekChar(offset));
@@ -383,7 +378,6 @@ public final class YangIndenter {
     /**
      * Peeks the next char in the document that comes after <code>offset</code> on the same line as
      * <code>offset</code>.
-     *
      */
     private int peekChar(int offset) {
         if (offset < fDocument.getLength()) {
@@ -399,8 +393,8 @@ public final class YangIndenter {
     }
 
     /**
-     * Returns the reference position regarding to indentation for <code>position</code>, or <code>NOT_FOUND</code>.
-     * 
+     * Returns the reference position regarding to indentation for <code>position</code>, or
+     * <code>NOT_FOUND</code>.
      */
 
     public int findReferencePosition(int offset, int nextToken) {
@@ -474,7 +468,6 @@ public final class YangIndenter {
 
     /**
      * Tells whether the given string is a continuation expression.
-     * 
      */
     private boolean isStringContinuation(int offset) {
         int nextNonWSCharPosition = fScanner.findNonWhitespaceBackwardInAnyPartition(offset - 1,
@@ -492,7 +485,6 @@ public final class YangIndenter {
 
     /**
      * Checks if extra indentation for second line of string continuation is required.
-     * 
      */
     private boolean isSecondLineOfStringContinuation(int offset) {
         try {
@@ -804,7 +796,6 @@ public final class YangIndenter {
                 else
                     return pos;
 
-
             case Symbols.TokenKEYWORD:
                 // align the WHILE position with its do
                 return fPosition;
@@ -820,7 +811,7 @@ public final class YangIndenter {
             }
 
         }
-            
+
     }
 
     private int getBlockIndent(boolean isMethodBody, boolean isTypeBody) {
@@ -854,9 +845,8 @@ public final class YangIndenter {
     }
 
     /**
-     * Returns the reference position for a list element: either a previous list item that has its own
-     * indentation, or the list introduction start.
-     *
+     * Returns the reference position for a list element: either a previous list item that has its
+     * own indentation, or the list introduction start.
      */
     private int skipToPreviousListItemOrListStart() {
         int startLine = fLine;
@@ -960,7 +950,6 @@ public final class YangIndenter {
      * <code>Symbols.TokenLPAREN</code>, <code>Symbols.TokenLBRACE</code>, and
      * <code>Symbols.TokenLBRACKET</code>. Returns as the reference position either the token
      * introducing the scope or - if available - the first YANG token after that.
-     * 
      */
     private int handleScopeIntroduction(int bound) {
         switch (fToken) {
@@ -1065,7 +1054,6 @@ public final class YangIndenter {
         return false;
     }
 
-   
     /**
      * Skips brackets if the current token is a RBRACKET. There can be nothing but whitespace in
      * between, this is only to be used for <code>[]</code> elements.

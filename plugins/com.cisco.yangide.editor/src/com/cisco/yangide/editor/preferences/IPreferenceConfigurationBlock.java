@@ -24,7 +24,6 @@ public interface IPreferenceConfigurationBlock {
 
     /**
      * Creates the preference control.
-     *
      */
     Control createControl(Composite parent);
 

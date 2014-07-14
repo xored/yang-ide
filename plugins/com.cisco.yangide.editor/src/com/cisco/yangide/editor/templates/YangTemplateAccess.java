@@ -35,7 +35,6 @@ public class YangTemplateAccess {
 
     /**
      * Returns the shared instance.
-     * 
      */
     public static YangTemplateAccess getDefault() {
         if (fgInstance == null) {
@@ -59,7 +58,6 @@ public class YangTemplateAccess {
 
     /**
      * Returns this plug-in's context type registry.
-     * 
      */
     public ContextTypeRegistry getContextTypeRegistry() {
         if (fRegistry == null) {

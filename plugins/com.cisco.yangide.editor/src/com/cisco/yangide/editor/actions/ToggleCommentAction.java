@@ -52,7 +52,8 @@ public final class ToggleCommentAction extends TextEditorAction {
      * visual representation from the given resource bundle.
      * 
      * @param bundle the resource bundle
-     * @param prefix a prefix to be prepended to the various resource keys, or <code>null</code> if none
+     * @param prefix a prefix to be prepended to the various resource keys, or <code>null</code> if
+     * none
      * @param editor the text editor
      * @see ResourceAction#ResourceAction(ResourceBundle, String, int)
      */
@@ -61,7 +62,8 @@ public final class ToggleCommentAction extends TextEditorAction {
     }
 
     /**
-     * Checks if the selected lines are all commented or not and uncomments/comments them respectively.
+     * Checks if the selected lines are all commented or not and uncomments/comments them
+     * respectively.
      */
     @Override
     public void run() {
@@ -102,7 +104,6 @@ public final class ToggleCommentAction extends TextEditorAction {
 
     /**
      * Is the given selection single-line commented
-     * 
      */
     private boolean isSelectionCommented(ISelection selection) {
         if (!(selection instanceof ITextSelection))
@@ -154,7 +155,6 @@ public final class ToggleCommentAction extends TextEditorAction {
     /**
      * Creates a region describing the text block (something that starts at the beginning of a line)
      * completely containing the current selection.
-     * 
      */
     private IRegion getTextBlockFromSelection(ITextSelection selection, IDocument document) {
 
@@ -174,7 +174,6 @@ public final class ToggleCommentAction extends TextEditorAction {
 
     /**
      * Returns the index of the first line whose start offset is in the given text range.
-     * 
      */
     private int getFirstCompleteLineOfRegion(IRegion region, IDocument document) {
 
@@ -239,7 +238,6 @@ public final class ToggleCommentAction extends TextEditorAction {
 
         return false;
     }
-
 
     @Override
     public void update() {

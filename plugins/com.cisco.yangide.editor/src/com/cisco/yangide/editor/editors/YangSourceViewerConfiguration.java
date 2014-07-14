@@ -135,7 +135,6 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
     /**
      * Determines whether the preference change encoded by the given event changes the behavior of
      * one of its contained components.
-     *
      */
     public boolean affectsTextPresentation(PropertyChangeEvent event) {
         return scanner.affectsBehavior(event) || stringScanner.affectsBehavior(event)
@@ -145,7 +144,6 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
 
     /**
      * Adapts the behavior of the contained components to the change encoded in the given event.
-     *
      */
     public void handlePropertyChangeEvent(PropertyChangeEvent event) {
 

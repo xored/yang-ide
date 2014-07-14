@@ -20,9 +20,9 @@ import org.eclipse.jface.text.IDocument;
 
 /**
  * An <code>IDocument</code> based implementation of <code>CharacterIterator</code> and
- * <code>CharSequence</code>. Supplied document is not copied; if the document is
- * modified during the lifetime of a <code>DocumentCharacterIterator</code>, the methods returning
- * document content may not always return the same values. 
+ * <code>CharSequence</code>. Supplied document is not copied; if the document is modified during
+ * the lifetime of a <code>DocumentCharacterIterator</code>, the methods returning document content
+ * may not always return the same values.
  */
 public class DocumentCharacterIterator implements CharacterIterator, CharSequence {
 
@@ -38,7 +38,6 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
 
     /**
      * Creates an iterator for the entire document.
-     * 
      */
     public DocumentCharacterIterator(IDocument document) throws BadLocationException {
         this(document, 0);
@@ -46,7 +45,6 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
 
     /**
      * Creates an iterator, starting at offset <code>first</code>.
-     * 
      */
     public DocumentCharacterIterator(IDocument document, int first) throws BadLocationException {
         this(document, first, document.getLength());
@@ -55,7 +53,6 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
     /**
      * Creates an iterator for the document contents from <code>first</code> (inclusive) to
      * <code>last</code> (exclusive).
-     * 
      */
     public DocumentCharacterIterator(IDocument document, int first, int last) throws BadLocationException {
         if (document == null)
@@ -173,8 +170,9 @@ public class DocumentCharacterIterator implements CharacterIterator, CharSequenc
         return getEndIndex() - getBeginIndex();
     }
 
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see java.lang.CharSequence#charAt(int)
      */
     @Override

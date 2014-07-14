@@ -98,8 +98,8 @@ public class AddBlockCommentAction extends BlockCommentAction {
     /**
      * Handles partition boundaries within the selection. The end of the current partition and the
      * start of the next partition are examined for whether they contain comment tokens that
-     * interfere with the created comment.
-     * Comment tokens are removed from interior multi-line comments.
+     * interfere with the created comment. Comment tokens are removed from interior multi-line
+     * comments.
      * 
      * @param partition the current partition
      * @param edits the list of edits to add to

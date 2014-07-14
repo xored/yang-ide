@@ -52,7 +52,6 @@ import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
  */
 abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlock {
 
-
     protected final class SectionManager {
         /** The preference setting for keeping no section open. */
         private static final String __NONE = "__none"; //$NON-NLS-1$
@@ -314,7 +313,6 @@ abstract class AbstractConfigurationBlock implements IPreferenceConfigurationBlo
      * Returns an array of size 2: - first element is of type <code>Label</code> - second element is
      * of type <code>Text</code> Use <code>getLabelControl</code> and <code>getTextControl</code> to
      * get the 2 controls.
-     *
      */
     protected Control[] addLabelledTextField(Composite composite, String label, String key, int textLimit,
             int indentation, boolean isNumber) {

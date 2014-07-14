@@ -31,11 +31,12 @@ import org.eclipse.swt.widgets.Display;
 /**
  * Initialized with a color manager and a preference store
  * <p>
- * This scanner stores the color defined by the color preference key into the color manager under the same key.
+ * This scanner stores the color defined by the color preference key into the color manager under
+ * the same key.
  * </p>
  * <p>
- * Preference color key + PreferenceConstants#EDITOR_<X>_SUFFIX} are used to retrieve
- * whether the token is rendered in bold, italic, strikethrough or underline
+ * Preference color key + PreferenceConstants#EDITOR_<X>_SUFFIX} are used to retrieve whether the
+ * token is rendered in bold, italic, strikethrough or underline
  * </p>
  * 
  * @author Alexey Kholupko
@@ -59,6 +60,7 @@ public abstract class AbstractYangScanner extends BufferedRuleBasedScanner {
     private boolean fNeedsLazyColorLoading;
 
     abstract protected String[] getTokenProperties();
+
     abstract protected List<IRule> createRules();
 
     public AbstractYangScanner(IColorManager manager, IPreferenceStore store) {
@@ -163,7 +165,6 @@ public abstract class AbstractYangScanner extends BufferedRuleBasedScanner {
     /**
      * Create a text attribute based on the given color, bold, italic, strikethrough and underline
      * preference keys.
-     *
      */
     private TextAttribute createTextAttribute(String colorKey, String boldKey, String italicKey,
             String strikethroughKey, String underlineKey) {

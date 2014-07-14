@@ -92,7 +92,6 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
         /**
          * Initialize the item with the given values.
-         *
          */
         public HighlightingColorListItem(String displayName, String colorKey, String boldKey, String italicKey,
                 String strikethroughKey, String underlineKey) {
@@ -200,7 +199,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     /**
      * Check box for bold preference.
-     */ 
+     */
     private Button fBoldCheckBox;
 
     private Button fItalicCheckBox;

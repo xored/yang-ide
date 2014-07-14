@@ -50,14 +50,14 @@ public abstract class BlockCommentAction extends TextEditorAction {
     }
 
     /**
-     * An edit is a kind of <code>DocumentEvent</code>, an edit instruction, that is
-     * affiliated with a position on a document. 
+     * An edit is a kind of <code>DocumentEvent</code>, an edit instruction, that is affiliated with
+     * a position on a document.
      */
     static class Edit extends DocumentEvent {
 
         /**
          * Factory for edits which manages the creation, installation and destruction of position
-         * categories, position updaters etc. on a certain document. 
+         * categories, position updaters etc. on a certain document.
          */
         public static class EditFactory {
 
@@ -232,8 +232,7 @@ public abstract class BlockCommentAction extends TextEditorAction {
     }
 
     /**
-     * Ensures that the editor is modifyable. 
-     * 
+     * Ensures that the editor is modifyable.
      */
     protected boolean ensureEditable(ITextEditor editor) {
         Assert.isNotNull(editor);

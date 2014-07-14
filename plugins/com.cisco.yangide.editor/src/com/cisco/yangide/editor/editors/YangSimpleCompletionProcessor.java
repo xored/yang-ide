@@ -679,7 +679,6 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     /**
      * returns proposal mode basing on current cursor position (context)
-     * 
      */
     protected CompletionKind determineProposalMode(IDocument document, int cursorPosition, String prefix,
             String previousWord) {
@@ -803,7 +802,6 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     /**
      * returns template with correctly indented pattern TODO should be invoked when pattern is being
      * inserted, not computed (perfomance)
-     * 
      */
     private Template generateIndentedTemplate(Template template) {
 

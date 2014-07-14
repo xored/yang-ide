@@ -141,7 +141,6 @@ public class YangEditor extends TextEditor {
 
     /**
      * Creates and returns the preference store for this YANG editor with the given input.
-     *
      */
     private IPreferenceStore createCombinedPreferenceStore(IEditorInput input) {
         List<IPreferenceStore> stores = new ArrayList<IPreferenceStore>(3);

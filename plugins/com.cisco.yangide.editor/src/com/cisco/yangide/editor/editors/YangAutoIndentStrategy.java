@@ -453,7 +453,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     /**
      * Returns the indentation of the line <code>line</code> in <code>document</code>. The returned
      * string may contain pairs of leading slashes that are considered part of the indentation.
-     * 
      */
     private static String getCurrentIndent(Document document, int line) throws BadLocationException {
         IRegion region = document.getLineInformation(line);
@@ -487,9 +486,9 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
      * Computes the difference of two indentations and returns the difference in length of current
      * and correct. If the return value is positive, <code>addition</code> is initialized with a
      * substring of that length of <code>correct</code>.
-     * 
      */
-    private int subtractIndent(CharSequence correctIndentation, CharSequence currentIndentation, StringBuffer difference, int tabLength) {
+    private int subtractIndent(CharSequence correctIndentation, CharSequence currentIndentation,
+            StringBuffer difference, int tabLength) {
         int c1 = computeVisualLength(correctIndentation, tabLength);
         int c2 = computeVisualLength(currentIndentation, tabLength);
         int diff = c1 - c2;
@@ -510,7 +509,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     /**
      * Indents line <code>line</code> in <code>document</code> with <code>indent</code>. Leaves
      * leading comment signs alone.
-     * 
      */
     private void addIndent(Document document, int line, CharSequence indent, int tabLength) throws BadLocationException {
         IRegion region = document.getLineInformation(line);
@@ -547,7 +545,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     /**
      * Cuts the visual equivalent of <code>toDelete</code> characters out of the indentation of line
      * <code>line</code> in <code>document</code>. Leaves leading comment signs alone.
-     * 
      */
     private void cutIndent(Document document, int line, int toDelete, int tabLength) throws BadLocationException {
         IRegion region = document.getLineInformation(line);
@@ -576,7 +573,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     /**
      * Returns the visual length of a given <code>CharSequence</code> taking into account the visual
      * tabulator length.
-     * 
      */
     private int computeVisualLength(CharSequence seq, int tabLength) {
         int size = 0;
@@ -597,7 +593,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
     /**
      * Returns the visual length of a given character taking into account the visual tabulator
      * length.
-     * 
      */
     private int computeVisualLength(char ch, int tabLength) {
         if (ch == '\t')
@@ -608,7 +603,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
     /**
      * The preference setting for the visual tabulator display.
-     * 
      */
     private int getVisualTabLengthPreference() {
         // return CodeFormatterUtil.getTabWidth(fProject);
@@ -688,7 +682,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
      * Returns the block balance, i.e. zero if the blocks are balanced at <code>offset</code>, a
      * negative number if there are more closing than opening braces, and a positive number if there
      * are more opening than closing braces.
-     * 
      */
     private static int getBlockBalance(IDocument document, int offset, String partitioning) {
         if (offset < 1)
@@ -790,7 +783,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
     /**
      * Skips the scope opened by <code>token</code>.
-     *
      */
     private static int skipScope(YangHeuristicScanner scanner, int startPosition, int token) {
         int openToken = token;

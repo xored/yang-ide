@@ -40,8 +40,8 @@ public class YangScanner extends AbstractYangScanner {
     static String[] types = { "binary", "bits", "boolean", "decimal64", "empty", "enumeration", "identityref",
             "instance-identifier", "int8", "int16", "int32", "int64", "leafref", "string", "uint8", "uint16", "uint32",
             "uint64", "union" };
-    
-    public static String[] getKeywords(){
+
+    public static String[] getKeywords() {
         return keywords;
     }
 
