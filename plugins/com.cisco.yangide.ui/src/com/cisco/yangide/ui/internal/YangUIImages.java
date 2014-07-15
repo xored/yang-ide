@@ -46,7 +46,6 @@ public class YangUIImages {
     private final static String OBJECT = ICONS_PATH + "obj16/"; //basic colors - size 16x16 //$NON-NLS-1$
     @SuppressWarnings("unused")
     private final static String OVR = ICONS_PATH + "ovr16/"; //basic colors - size 7x8 //$NON-NLS-1$
-    @SuppressWarnings("unused")
     private final static String WIZ = ICONS_PATH + "wizban/"; //$NON-NLS-1$
     @SuppressWarnings("unused")
     private static final String T_ETOOL = ICONS_PATH + "etool16"; //$NON-NLS-1$
@@ -62,6 +61,9 @@ public class YangUIImages {
         declareRegistryImage(IYangUIConstants.IMG_TYPE_PROPOSAL, OBJECT + "type_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_CUSTOM_TYPE_PROPOSAL, OBJECT + "custom_type_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_GROUPING_PROPOSAL, OBJECT + "grouping_obj.gif"); //$NON-NLS-1$
+
+        declareRegistryImage(IYangUIConstants.IMG_NEW_PROJECT_WIZ, WIZ + "newprj_wiz.png"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_NEW_FILE_WIZ, WIZ + "newfile_wiz.png"); //$NON-NLS-1$
     }
 
     /**

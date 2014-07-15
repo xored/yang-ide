@@ -42,6 +42,8 @@ import org.eclipse.m2e.core.ui.internal.wizards.MavenProjectWizard;
 import org.eclipse.ui.IWorkbench;
 
 import com.cisco.yangide.ui.YangUIPlugin;
+import com.cisco.yangide.ui.internal.IYangUIConstants;
+import com.cisco.yangide.ui.internal.YangUIImages;
 
 /**
  * @author Konstantin Zaitsev
@@ -62,6 +64,7 @@ public class YangProjectWizard extends MavenProjectWizard {
     public YangProjectWizard() {
         super();
         setWindowTitle("New YANG Project");
+        setDefaultPageImageDescriptor(YangUIImages.getImageDescriptor(IYangUIConstants.IMG_NEW_PROJECT_WIZ));
     }
 
     @Override
@@ -224,7 +227,7 @@ public class YangProjectWizard extends MavenProjectWizard {
 
     /**
      * Creates single configuration parameter.
-     * 
+     *
      * @param name name
      * @param value value
      * @return config parameter

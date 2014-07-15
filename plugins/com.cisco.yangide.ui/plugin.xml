@@ -39,10 +39,20 @@
       <wizard id="com.cisco.yangide.ui.wizards.YangProjectWizard"
             category="com.cisco.yangide.yang"
             class="com.cisco.yangide.ui.wizards.YangProjectWizard"
-            icon="icons/new_project.png"
+            icon="icons/full/etool16/newprj_wiz.png"
             name="%yang.wizard.project.name"
             project="true">
          <description>%yang.wizard.project.description</description>
+      </wizard>
+
+      <wizard id="com.cisco.yangide.ui.wizards.YangFileWizard"
+            category="com.cisco.yangide.yang"
+            class="com.cisco.yangide.ui.wizards.YangFileWizard"
+            icon="icons/full/etool16/newfile_wiz.png"
+            name="%yang.wizard.file.name"
+            project="false">
+         <description>%yang.wizard.file.description</description>
+         <selection class="org.eclipse.core.resources.IResource"/>
       </wizard>
     </extension>
    

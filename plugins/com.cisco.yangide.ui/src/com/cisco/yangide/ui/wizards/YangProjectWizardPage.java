@@ -45,15 +45,13 @@ class YangProjectWizardPage extends WizardPage {
     private Button editBtn;
     private Button addBtn;
 
-    /**
-     * @param pageName
-     */
     protected YangProjectWizardPage() {
         super("yangProjectPage");
         setTitle("YANG Tools Configuration");
         setDescription("Specify YANG Code Generators Parameters");
     }
 
+    @Override
     public void createControl(Composite parent) {
         Composite container = new Composite(parent, SWT.NULL);
         container.setLayout(new GridLayout(1, false));
@@ -129,19 +127,24 @@ class YangProjectWizardPage extends WizardPage {
 
         generatorsViewer.setLabelProvider(new ITableLabelProvider() {
 
+            @Override
             public void removeListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public boolean isLabelProperty(Object element, String property) {
                 return false;
             }
 
+            @Override
             public void dispose() {
             }
 
+            @Override
             public void addListener(ILabelProviderListener listener) {
             }
 
+            @Override
             public String getColumnText(Object element, int columnIndex) {
                 if (element instanceof CodeGeneratorConfig) {
                     CodeGeneratorConfig conf = (CodeGeneratorConfig) element;
@@ -168,6 +171,7 @@ class YangProjectWizardPage extends WizardPage {
                 return "";
             }
 
+            @Override
             public Image getColumnImage(Object element, int columnIndex) {
                 return null;
             }
@@ -181,6 +185,7 @@ class YangProjectWizardPage extends WizardPage {
         addBtn.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
         addBtn.setText("Add...");
         addBtn.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 YangCodeGeneratorDialog dialog = new YangCodeGeneratorDialog(getShell());
                 if (dialog.open() == Window.OK) {
@@ -193,6 +198,7 @@ class YangProjectWizardPage extends WizardPage {
         editBtn.setLayoutData(new GridData(SWT.FILL, SWT.TOP, false, false));
         editBtn.setText("Edit...");
         editBtn.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 CodeGeneratorConfig config = (CodeGeneratorConfig) generatorsViewer.getElementAt(generatorsTable
                         .getSelectionIndex());
@@ -207,6 +213,7 @@ class YangProjectWizardPage extends WizardPage {
         removeBtn.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, false, false));
         removeBtn.setText("Remove");
         removeBtn.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent e) {
                 if (generatorsTable.getSelectionCount() > 1) {
                     generatorsTable.remove(generatorsTable.getSelectionIndices());

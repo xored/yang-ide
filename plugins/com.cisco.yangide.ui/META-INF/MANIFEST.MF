@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.m2e.core.ui;bundle-version="1.4.0",
  org.eclipse.m2e.maven.runtime,
  org.eclipse.m2e.core,
- org.eclipse.jdt.core
+ org.eclipse.jdt.core,
+ org.eclipse.ui.ide
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
