@@ -1,0 +1,10 @@
+// Contents of "%MODULE%"
+module %MODULE% {
+    namespace "%NAMESPACE%";
+    prefix "%PREFIX%";
+
+    revision %REVISION% {
+        description "%REVISION_DESC%";
+    }
+
+}

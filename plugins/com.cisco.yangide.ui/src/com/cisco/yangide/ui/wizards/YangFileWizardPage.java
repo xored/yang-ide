@@ -53,17 +53,14 @@ public class YangFileWizardPage extends WizardPage {
         new Label(group1, SWT.NONE).setText("Module Name:");
         moduleTxt = new Text(group1, SWT.BORDER);
         moduleTxt.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        moduleTxt.setText("module1");
 
         new Label(group1, SWT.NONE).setText("Namespace:");
         namespaceTxt = new Text(group1, SWT.BORDER);
         namespaceTxt.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        namespaceTxt.setText("module1");
 
         new Label(group1, SWT.NONE).setText("Prefix:");
         prefixTxt = new Text(group1, SWT.BORDER);
         prefixTxt.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
-        prefixTxt.setText("module1");
 
         new Label(group1, SWT.NONE).setText("Revision:");
         revisionTxt = new Text(group1, SWT.BORDER);
@@ -85,6 +82,14 @@ public class YangFileWizardPage extends WizardPage {
 
     @Override
     public void setVisible(boolean visible) {
+        init();
+        super.setVisible(visible);
+    }
+
+    /**
+     * Initializes fields from file page.
+     */
+    public void init() {
         String name = filePage.getFileName();
         if (name.indexOf('.') > 0) {
             name = name.substring(0, name.indexOf('.'));
@@ -92,6 +97,40 @@ public class YangFileWizardPage extends WizardPage {
         moduleTxt.setText(name);
         namespaceTxt.setText("urn:opendaylight:" + name);
         prefixTxt.setText(name);
-        super.setVisible(visible);
+    }
+
+    /**
+     * @return the module
+     */
+    public String getModule() {
+        return moduleTxt.getText();
+    }
+
+    /**
+     * @return the namespace
+     */
+    public String getNamespace() {
+        return namespaceTxt.getText();
+    }
+
+    /**
+     * @return the prefix
+     */
+    public String getPrefix() {
+        return prefixTxt.getText();
+    }
+
+    /**
+     * @return the revision
+     */
+    public String getRevision() {
+        return revisionTxt.getText();
+    }
+
+    /**
+     * @return the revision description
+     */
+    public String getRevisionDesc() {
+        return revisionDescTxt.getText();
     }
 }
