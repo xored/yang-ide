@@ -31,7 +31,7 @@ public class YangParserTest extends TestCase {
         try (InputStream in = FileLocator.openStream(Platform.getBundle("com.cisco.yangide.core.tests"), new Path(
                 "yang/simple_import.yang"), false)) {
 
-            Module module = YangParserUtil.parseYangFile(getContent(in), null);
+            Module module = YangParserUtil.parseYangFile(getContent(in));
             assertEquals("my-crypto", module.getName());
             assertEquals(7, module.getNameStartPosition());
             assertEquals(0, module.getStartPosition());
@@ -43,7 +43,7 @@ public class YangParserTest extends TestCase {
         try (InputStream in = FileLocator.openStream(Platform.getBundle("com.cisco.yangide.core.tests"), new Path(
                 "yang/simple_import.yang"), false)) {
 
-            Module module = YangParserUtil.parseYangFile(getContent(in), null);
+            Module module = YangParserUtil.parseYangFile(getContent(in));
             assertEquals(module, module.getNodeAtPosition(1));
             assertEquals(module.getImports().get("crypto-base"), module.getNodeAtPosition(100));
         }
@@ -53,7 +53,7 @@ public class YangParserTest extends TestCase {
         try (InputStream in = FileLocator.openStream(Platform.getBundle("com.cisco.yangide.core.tests"), new Path(
                 "yang/simple_import_incomplete.yang"), false)) {
 
-            Module module = YangParserUtil.parseYangFile(getContent(in), null);
+            Module module = YangParserUtil.parseYangFile(getContent(in));
             assertNotNull(module);
             assertEquals(1, module.getImports().size());
         }
@@ -63,7 +63,7 @@ public class YangParserTest extends TestCase {
         try (InputStream in = FileLocator.openStream(Platform.getBundle("com.cisco.yangide.core.tests"), new Path(
                 "yang/acme-types.yang"), false)) {
 
-            SubModule module = (SubModule) YangParserUtil.parseYangFile(getContent(in), null);
+            SubModule module = (SubModule) YangParserUtil.parseYangFile(getContent(in));
             assertNotNull(module);
             assertEquals("acme-system", module.getParentModule());
             assertEquals("acme", module.getParentPrefix());

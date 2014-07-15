@@ -47,7 +47,7 @@ public class YangElementHyperlinkDetector extends AbstractHyperlinkDetector {
         }
 
         try {
-            Module module = YangParserUtil.parseYangFile(document.get().toCharArray(), null);
+            Module module = YangParserUtil.parseYangFile(document.get().toCharArray());
             ASTNode node = module.getNodeAtPosition(offset);
 
             if (node == null) {

@@ -131,7 +131,7 @@ public class YangUIImages {
     /**
      * Returns the image for the given composite descriptor.
      */
-    public static Image getImage(CompositeImageDescriptor imageDescriptor) {
+    public synchronized static Image getImage(CompositeImageDescriptor imageDescriptor) {
         if (imageDescriptorRegistry == null) {
             imageDescriptorRegistry = new ImageDescriptorRegistry();
         }

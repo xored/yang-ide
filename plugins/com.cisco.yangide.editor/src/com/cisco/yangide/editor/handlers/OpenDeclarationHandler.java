@@ -45,7 +45,7 @@ public class OpenDeclarationHandler extends AbstractHandler {
 
             try {
                 ISelection selection = editor.getSelectionProvider().getSelection();
-                Module module = YangParserUtil.parseYangFile(editor.getDocument().get().toCharArray(), null);
+                Module module = YangParserUtil.parseYangFile(editor.getDocument().get().toCharArray());
                 ASTNode node = module.getNodeAtPosition(((ITextSelection) selection).getOffset());
 
                 ElementIndexInfo[] searchResult = null;

@@ -41,7 +41,7 @@ public class YangJarEntry extends YangElement {
     protected boolean buildStructure(OpenableElementInfo info, IProgressMonitor pm,
             Map<IOpenable, OpenableElementInfo> newElements, IResource underlyingResource) throws YangModelException {
         char[] content = getContent();
-        Module module = YangParserUtil.parseYangFile(content, null);
+        Module module = YangParserUtil.parseYangFile(content);
         ((YangFileInfo) info).setModule(module);
         info.setIsStructureKnown(true);
         return true;

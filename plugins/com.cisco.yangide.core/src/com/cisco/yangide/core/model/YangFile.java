@@ -57,7 +57,7 @@ public class YangFile extends YangElement {
             buffer = openBuffer(pm, info);
         }
 
-        Module module = YangParserUtil.parseYangFile(buffer.getCharacters(), null);
+        Module module = YangParserUtil.parseYangFile(buffer.getCharacters());
         ((YangFileInfo) info).setModule(module);
         info.setIsStructureKnown(true);
         return true;

@@ -66,7 +66,7 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
             final IFile ifile = YangCorePlugin.getIFileFromFile(new File(ds.getBasedir(), path));
             if (ifile != null) {
                 YangParserUtil.validateYangFile(YangCorePlugin.createYangFile(ifile).getBuffer().getContents()
-                        .toCharArray(), new IYangValidationListener() {
+                        .toCharArray(), ifile.getProject(), new IYangValidationListener() {
 
                     @Override
                     public void validationError(String msg, int lineNumber, int charStart, int charEnd) {

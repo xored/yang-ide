@@ -189,7 +189,7 @@ public class BasicValidations {
                         ValidationUtil.getSimpleStatementName(parent.getClass()), ValidationUtil.getName(parent));
 
                 String root = ValidationUtil.getRootParentName(parent);
-                message = parent.equals(ValidationUtil.getRootParentName(parent)) ? message : ValidationUtil.f(
+                message = ValidationUtil.getName(parent).equals(root) ? message : ValidationUtil.f(
                         "(In (sub)module:%s) %s", root, message);
                 return message;
             }
@@ -228,7 +228,7 @@ public class BasicValidations {
                     ValidationUtil.getSimpleStatementName(parent.getClass()), ValidationUtil.getName(parent));
 
             String root = ValidationUtil.getRootParentName(parent);
-            message = parent.equals(ValidationUtil.getRootParentName(parent)) ? message : ValidationUtil.f(
+            message = ValidationUtil.getName(parent).equals(root) ? message : ValidationUtil.f(
                     "(In (sub)module:%s) %s", root, message);
             return message;
         }

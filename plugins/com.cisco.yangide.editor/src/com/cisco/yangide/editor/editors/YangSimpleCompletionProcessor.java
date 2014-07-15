@@ -231,7 +231,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         keywordHierarchyMap.put(
                 "uses",
                 Arrays.asList(new String[] { "augment", "description", "if-feature", "refine", "reference", "status",
-                        "when" }));
+                "when" }));
         keywordHierarchyMap.put(
                 "rpc",
                 Arrays.asList(new String[] { "description", "grouping", "if-feature", "input", "output", "reference",
@@ -264,7 +264,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         keywordHierarchyMap.put("feature",
                 Arrays.asList(new String[] { "description", "if-feature", "status", "reference" }));
         keywordHierarchyMap
-                .put("deviation", Arrays.asList(new String[] { "description", "deviate", "n", "reference" }));
+        .put("deviation", Arrays.asList(new String[] { "description", "deviate", "n", "reference" }));
         keywordHierarchyMap.put(
                 "deviate",
                 Arrays.asList(new String[] { "config", "default", "mandatory", "max-elements", "min-elements", "must",
@@ -277,7 +277,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 Arrays.asList(new String[] { "description", "error-app-tag", "error-message", "reference" }));
         keywordHierarchyMap.put("enum", Arrays.asList(new String[] { "description", "reference", "status", "value" }));
         keywordHierarchyMap
-                .put("bit", Arrays.asList(new String[] { "description", "reference", "status", "position" }));
+        .put("bit", Arrays.asList(new String[] { "description", "reference", "status", "position" }));
 
         return keywordHierarchyMap;
     }
@@ -307,7 +307,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             result[i] = new ContextInformation(MessageFormat.format(
                     "{0} {1}", new Object[] { new Integer(i), new Integer(documentOffset) }), //$NON-NLS-1$
                     MessageFormat
-                            .format("{0} {1}", new Object[] { new Integer(i), new Integer(documentOffset - 5), new Integer(documentOffset + 5) })); //$NON-NLS-1$
+                    .format("{0} {1}", new Object[] { new Integer(i), new Integer(documentOffset - 5), new Integer(documentOffset + 5) })); //$NON-NLS-1$
         }
         return result;
     }
@@ -334,7 +334,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.text.contentassist.ICompletionListener#assistSessionStarted(org.eclipse
      * .jface.text.contentassist.ContentAssistEvent)
@@ -477,8 +477,9 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 String replacementString = proposal;
                 if (revision != null && !revision.isEmpty()) {
                     String moduleRevision = "";
-                    if (addModuleRevision)
+                    if (addModuleRevision) {
                         moduleRevision = "revision-date " + revision + "; ";
+                    }
                     replacementString = proposal + " { prefix " + proposal + "; " + moduleRevision + "}";
                     displayString = proposal += " (" + revision + ")";
                 }
@@ -487,7 +488,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
                     moduleProposals.add(new CompletionProposal(replacementString, cursorPosition - prefix.length(),
                             prefix.length(), proposal.length(), YangUIImages
-                                    .getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL), displayString, null, null));
+                            .getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL), displayString, null, null));
                 }
             }
         }
@@ -511,8 +512,9 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
         List<String> keywordProposals = YangSimpleCompletionProcessor.keywordHierarchyMap.get(scopeKeyword);
 
-        if (keywordProposals == null)
+        if (keywordProposals == null) {
             keywordProposals = Arrays.asList(fgKeywordProposals);
+        }
 
         List<ICompletionProposal> proposalsList = new ArrayList<ICompletionProposal>();
         for (String proposal : keywordProposals) {
@@ -631,7 +633,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 if (prefix.length() == 0 || proposal.startsWith(prefix)) {
                     submoduleProposals.add(new CompletionProposal(replacementString, cursorPosition - prefix.length(),
                             prefix.length(), proposal.length(), YangUIImages
-                                    .getImage(IYangUIConstants.IMG_GROUPING_PROPOSAL), displayString, null, null));
+                            .getImage(IYangUIConstants.IMG_GROUPING_PROPOSAL), displayString, null, null));
                 }
             }
         }
@@ -647,7 +649,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     /**
      * Generate proposals for types, groupings, etc. If element defined in other module, which is
      * imported, adds respective prefix If element is neither imported nor local, returns null
-     * 
+     *
      * @param elementIndexInfo
      * @return
      */
@@ -655,22 +657,24 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         String result = null;
 
         if (module != null) {
-            if (module.getName().equals(elementIndexInfo.getModule()))
+            if (module.getName().equals(elementIndexInfo.getModule())) {
                 result = elementIndexInfo.getName();
-            else if (module instanceof SubModule) {
-                if (((SubModule) module).getParentModule().equals(elementIndexInfo.getModule()))
+            } else if (module instanceof SubModule) {
+                if (((SubModule) module).getParentModule().equals(elementIndexInfo.getModule())) {
                     result = ((SubModule) module).getParentPrefix() + ":" + elementIndexInfo.getName();
+                }
             } else {
 
                 SubModuleInclude includedSubmodule = module.getIncludeByName(elementIndexInfo.getModule());
-                if (includedSubmodule != null)
+                if (includedSubmodule != null) {
                     result = elementIndexInfo.getName();
-                else {
+                } else {
 
                     ModuleImport importedModule = module.getImportByName(elementIndexInfo.getModule());
 
-                    if (importedModule != null)
+                    if (importedModule != null) {
                         result = importedModule.getPrefix() + ":" + elementIndexInfo.getName();
+                    }
                 }
             }
         }
@@ -683,7 +687,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     protected CompletionKind determineProposalMode(IDocument document, int cursorPosition, String prefix,
             String previousWord) {
 
-        module = YangParserUtil.parseYangFile(viewer.getDocument().get().toCharArray(), null);
+        module = YangParserUtil.parseYangFile(viewer.getDocument().get().toCharArray());
 
         if (module != null) {
             ASTNode nodeAtPos = module.getNodeAtPosition(cursorPosition);
@@ -834,7 +838,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.text.templates.TemplateCompletionProcessor#extractPrefix(org.eclipse.jface
      * .text.ITextViewer, int)
@@ -858,7 +862,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.jface.text.templates.TemplateCompletionProcessor#getImage(org.eclipse.jface.text
      * .templates.Template)

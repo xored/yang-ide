@@ -98,8 +98,9 @@ public final class YangIndenter {
 
         private String getPrefTabChar() {
             if (YangEditorPlugin.getDefault().getCombinedPreferenceStore()
-                    .getBoolean(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS))
+                    .getBoolean(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_SPACES_FOR_TABS)) {
                 return YangUIPlugin.SPACE;
+            }
             return YangUIPlugin.TAB;
 
         }
@@ -164,14 +165,16 @@ public final class YangIndenter {
     private StringBuffer getReferenceIndentation(int offset, boolean assumeOpeningBrace) {
 
         int unit;
-        if (assumeOpeningBrace)
+        if (assumeOpeningBrace) {
             unit = findReferencePosition(offset, Symbols.TokenLBRACE);
-        else
+        } else {
             unit = findReferencePosition(offset, peekChar(offset));
+        }
 
         // if we were unable to find anything, return null
-        if (unit == YangHeuristicScanner.NOT_FOUND)
+        if (unit == YangHeuristicScanner.NOT_FOUND) {
             return null;
+        }
 
         return getLeadingWhitespace(unit);
 
@@ -200,8 +203,9 @@ public final class YangIndenter {
             }
         }
 
-        if (reference == null)
+        if (reference == null) {
             return null;
+        }
 
         // add additional indent
         return createReusingIndent(reference, fIndent);
@@ -311,8 +315,9 @@ public final class YangIndenter {
                 start++;
             }
             // remainder
-            while (spaces-- > 0)
+            while (spaces-- > 0) {
                 ret.append(' ');
+            }
 
         } catch (BadLocationException e) {
         }
@@ -336,8 +341,8 @@ public final class YangIndenter {
         int minLength = Math.min(totalLength, refLength);
         int tabSize = fPrefs.prefTabSize;
         int maxCopyLength = tabSize > 0 ? minLength - minLength % tabSize : minLength; // maximum
-                                                                                       // indent to
-                                                                                       // copy
+        // indent to
+        // copy
         stripExceedingChars(buffer, maxCopyLength);
 
         final String MIXED = "mixed"; //$NON-NLS-1$
@@ -358,10 +363,12 @@ public final class YangIndenter {
             Assert.isTrue(false);
             return null;
         }
-        for (int i = 0; i < tabs; i++)
+        for (int i = 0; i < tabs; i++) {
             buffer.append('\t');
-        for (int i = 0; i < spaces; i++)
+        }
+        for (int i = 0; i < spaces; i++) {
             buffer.append(' ');
+        }
         return buffer;
     }
 
@@ -421,21 +428,24 @@ public final class YangIndenter {
 
                 switch (nextToken) {
                 case Symbols.TokenLBRACE: // for opening-brace-on-new-line style
-                    if (bracelessBlockStart && !fPrefs.prefIndentBracesForBlocks)
+                    if (bracelessBlockStart && !fPrefs.prefIndentBracesForBlocks) {
                         unindent = true;
-                    else if ((prevToken == Symbols.TokenCOLON || prevToken == Symbols.TokenEQUAL)
-                            && !fPrefs.prefIndentBracesForArrays)
+                    } else if ((prevToken == Symbols.TokenCOLON || prevToken == Symbols.TokenEQUAL)
+                            && !fPrefs.prefIndentBracesForArrays) {
                         unindent = true;
-                    else if (!bracelessBlockStart && fPrefs.prefIndentBracesForMethods)
+                    } else if (!bracelessBlockStart && fPrefs.prefIndentBracesForMethods) {
                         indent = true;
+                    }
                     break;
                 case Symbols.TokenRBRACE: // closing braces get unindented
-                    if (isFirstTokenOnLine)
+                    if (isFirstTokenOnLine) {
                         matchBrace = true;
+                    }
                     break;
                 case Symbols.TokenRPAREN:
-                    if (isFirstTokenOnLine)
+                    if (isFirstTokenOnLine) {
                         matchParen = true;
+                    }
                     break;
                 case Symbols.TokenPLUS:
                     if (isStringContinuation(offset)) {
@@ -459,10 +469,12 @@ public final class YangIndenter {
         }
 
         int ref = findReferencePosition(offset, danglingElse, matchBrace, matchParen, matchCase, throwsClause);
-        if (unindent)
+        if (unindent) {
             fIndent--;
-        if (indent)
+        }
+        if (indent) {
             fIndent++;
+        }
         return ref;
     }
 
@@ -473,10 +485,11 @@ public final class YangIndenter {
         int nextNonWSCharPosition = fScanner.findNonWhitespaceBackwardInAnyPartition(offset - 1,
                 YangHeuristicScanner.UNBOUND);
         try {
-            if (fDocument.getChar(nextNonWSCharPosition) == '"')
+            if (fDocument.getChar(nextNonWSCharPosition) == '"') {
                 return true;
-            else
+            } else {
                 return false;
+            }
         } catch (BadLocationException e) {
             YangEditorPlugin.log(e);
             return false;
@@ -522,10 +535,11 @@ public final class YangIndenter {
                     }
                 case Symbols.TokenLBRACKET:
                 case Symbols.TokenEOF:
-                    if ((offsetLine - fLine) == 1)
+                    if ((offsetLine - fLine) == 1) {
                         return true;
-                    else
+                    } else {
                         return false;
+                    }
                 }
             }
         } catch (BadLocationException e) {
@@ -556,8 +570,9 @@ public final class YangIndenter {
                     // align with the opening brace that is on a line by its own
                     int lineOffset = fDocument.getLineOffset(fLine);
                     if (lineOffset <= fPosition
-                            && fDocument.get(lineOffset, fPosition - lineOffset).trim().length() == 0)
+                            && fDocument.get(lineOffset, fPosition - lineOffset).trim().length() == 0) {
                         return fPosition;
+                    }
                 } catch (BadLocationException e) {
                     // concurrent modification - walk default path
                 }
@@ -595,8 +610,9 @@ public final class YangIndenter {
             // skip the block and fall through
             // if we can't complete the scope, reset the scan position
             int pos = fPosition;
-            if (!skipScope())
+            if (!skipScope()) {
                 fPosition = pos;
+            }
             return skipToStatementStart(danglingElse, false);
         case Symbols.TokenSEMICOLON:
             // this is the 90% case: after a statement block
@@ -701,7 +717,7 @@ public final class YangIndenter {
     /**
      * Checks if the statement at position is itself a continuation of the previous, else sets the
      * indentation to Continuation Indent.
-     * 
+     *
      * @return the position of the token
      */
     private int handleEqual() {
@@ -712,8 +728,9 @@ public final class YangIndenter {
             if (nonWS != Symbols.TokenEOF) {
                 int tokenAtPreviousLine = fScanner.nextToken(nonWS, nonWS + 1);
                 if (tokenAtPreviousLine != Symbols.TokenSEMICOLON && tokenAtPreviousLine != Symbols.TokenRBRACE
-                        && tokenAtPreviousLine != Symbols.TokenLBRACE && tokenAtPreviousLine != Symbols.TokenEOF)
+                        && tokenAtPreviousLine != Symbols.TokenLBRACE && tokenAtPreviousLine != Symbols.TokenEOF) {
                     return fPosition;
+                }
             }
         } catch (BadLocationException e) {
             return fPosition;
@@ -760,15 +777,17 @@ public final class YangIndenter {
                 // XXX custom case, when comments appear above new block
             case Symbols.TokenOTHER:
             case Symbols.TokenEOF:
-                if (isInBlock)
+                if (isInBlock) {
                     fIndent = getBlockIndent(mayBeMethodBody == READ_IDENT, isTypeBody);
+                }
                 // else: fIndent set by previous calls
                 return fPreviousPos;
 
             case Symbols.TokenCOLON:
                 int pos = fPreviousPos;
-                if (!isConditional())
+                if (!isConditional()) {
                     return pos;
+                }
                 break;
 
             case Symbols.TokenRBRACE:
@@ -778,31 +797,35 @@ public final class YangIndenter {
                 if (skipScope() && looksLikeArrayInitializerIntro()) {
                     continue; // it's an array
                 } else {
-                    if (isInBlock)
+                    if (isInBlock) {
                         fIndent = getBlockIndent(mayBeMethodBody == READ_IDENT, isTypeBody);
+                    }
                     return pos; // it's not - do as with all the above
                 }
 
                 // scopes: skip them
             case Symbols.TokenRPAREN:
-                if (isInBlock)
+                if (isInBlock) {
                     mayBeMethodBody = READ_PARENS;
+                }
                 //$FALL-THROUGH$
             case Symbols.TokenRBRACKET:
             case Symbols.TokenGREATERTHAN:
                 pos = fPreviousPos;
-                if (skipScope())
+                if (skipScope()) {
                     break;
-                else
+                } else {
                     return pos;
+                }
 
             case Symbols.TokenKEYWORD:
                 // align the WHILE position with its do
                 return fPosition;
 
             case Symbols.TokenIDENT:
-                if (mayBeMethodBody == READ_PARENS)
+                if (mayBeMethodBody == READ_PARENS) {
                     mayBeMethodBody = READ_IDENT;
+                }
                 break;
 
             default:
@@ -815,12 +838,13 @@ public final class YangIndenter {
     }
 
     private int getBlockIndent(boolean isMethodBody, boolean isTypeBody) {
-        if (isTypeBody)
+        if (isTypeBody) {
             return fPrefs.prefTypeIndent + (fPrefs.prefIndentBracesForTypes ? 1 : 0);
-        else if (isMethodBody)
+        } else if (isMethodBody) {
             return fPrefs.prefMethodBodyIndent + (fPrefs.prefIndentBracesForMethods ? 1 : 0);
-        else
+        } else {
             return fIndent;
+        }
     }
 
     /**
@@ -877,15 +901,13 @@ public final class YangIndenter {
                 skipScope();
                 break;
 
-            // scope introduction: special treat who special is
+                // scope introduction: special treat who special is
             case Symbols.TokenLPAREN:
             case Symbols.TokenLBRACE:
             case Symbols.TokenLBRACKET:
                 return handleScopeIntroduction(startPosition + 1);
 
             case Symbols.TokenSEMICOLON:
-                int savedPosition = fPosition;
-                fPosition = savedPosition;
                 return fPosition;
             case Symbols.TokenQUESTIONMARK:
                 if (fPrefs.prefTernaryDeepAlign) {
@@ -921,8 +943,9 @@ public final class YangIndenter {
         case Symbols.TokenRBRACE:
             return skipScope(Symbols.TokenLBRACE, Symbols.TokenRBRACE);
         case Symbols.TokenGREATERTHAN:
-            if (!fPrefs.prefHasGenerics)
+            if (!fPrefs.prefHasGenerics) {
                 return false;
+            }
             int storedPosition = fPosition;
             int storedToken = fToken;
             nextToken();
@@ -931,8 +954,9 @@ public final class YangIndenter {
                 //$FALL-THROUGH$
             case Symbols.TokenQUESTIONMARK:
             case Symbols.TokenGREATERTHAN:
-                if (skipScope(Symbols.TokenLESSTHAN, Symbols.TokenGREATERTHAN))
+                if (skipScope(Symbols.TokenLESSTHAN, Symbols.TokenGREATERTHAN)) {
                     return true;
+                }
             }
             // <> are harder to detect - restore the position if we fail
             fPosition = storedPosition;
@@ -959,23 +983,24 @@ public final class YangIndenter {
 
             // special: method declaration deep indentation
             if (looksLikeMethodDecl()) {
-                if (fPrefs.prefMethodDeclDeepIndent)
+                if (fPrefs.prefMethodDeclDeepIndent) {
                     return setFirstElementAlignment(pos, bound);
-                else {
+                } else {
                     fIndent = fPrefs.prefMethodDeclIndent;
                     return pos;
                 }
             } else {
                 fPosition = pos;
                 if (looksLikeMethodCall()) {
-                    if (fPrefs.prefMethodCallDeepIndent)
+                    if (fPrefs.prefMethodCallDeepIndent) {
                         return setFirstElementAlignment(pos, bound);
-                    else {
+                    } else {
                         fIndent = fPrefs.prefMethodCallIndent;
                         return pos;
                     }
-                } else if (fPrefs.prefParenthesisDeepIndent)
+                } else if (fPrefs.prefParenthesisDeepIndent) {
                     return setFirstElementAlignment(pos, bound);
+                }
             }
 
             // normal: return the parenthesis as reference
@@ -986,13 +1011,15 @@ public final class YangIndenter {
             pos = fPosition; // store
 
             // special: array initializer
-            if (looksLikeArrayInitializerIntro())
-                if (fPrefs.prefArrayDeepIndent)
+            if (looksLikeArrayInitializerIntro()) {
+                if (fPrefs.prefArrayDeepIndent) {
                     return setFirstElementAlignment(pos, bound);
-                else
+                } else {
                     fIndent = fPrefs.prefArrayIndent;
-            else
+                }
+            } else {
                 fIndent = fPrefs.prefBlockIndent;
+            }
 
             // normal: skip to the statement start before the scope introducer
             // opening braces are often on differently ending indents than e.g. a method definition
@@ -1033,10 +1060,11 @@ public final class YangIndenter {
      */
     private int setFirstElementAlignment(int scopeIntroducerOffset, int bound) {
         int firstPossible = scopeIntroducerOffset + 1; // align with the first position after the
-                                                       // scope intro
+        // scope intro
         fAlign = fScanner.findNonWhitespaceForwardInAnyPartition(firstPossible, bound);
-        if (fAlign == YangHeuristicScanner.NOT_FOUND)
+        if (fAlign == YangHeuristicScanner.NOT_FOUND) {
             fAlign = firstPossible;
+        }
         return fAlign;
     }
 
@@ -1115,9 +1143,9 @@ public final class YangIndenter {
 
         nextToken();
         if (fToken == Symbols.TokenIDENT) { // method name
-            do
+            do {
                 nextToken();
-            while (skipBrackets()); // optional brackets for array valued return types
+            } while (skipBrackets()); // optional brackets for array valued return types
 
             return fToken == Symbols.TokenIDENT; // return type name
 
@@ -1128,7 +1156,7 @@ public final class YangIndenter {
     /**
      * Returns <code>true</code> if the current tokens look like an annotation (i.e. an annotation
      * name (potentially qualified) preceded by an at-sign).
-     * 
+     *
      * @return <code>true</code> if the current position looks like an annotation.
      */
 
@@ -1138,8 +1166,9 @@ public final class YangIndenter {
             nextToken();
             while (fToken == Symbols.TokenOTHER) { // dot of qualification
                 nextToken();
-                if (fToken != Symbols.TokenIDENT) // qualifying name
+                if (fToken != Symbols.TokenIDENT) {
                     return false;
+                }
                 nextToken();
             }
             return fToken == Symbols.TokenAT;
@@ -1179,8 +1208,9 @@ public final class YangIndenter {
                 depth++;
             } else if (fToken == openToken) {
                 depth--;
-                if (depth == 0)
+                if (depth == 0) {
                     return true;
+                }
             } else if (fToken == Symbols.TokenEOF) {
                 return false;
             }

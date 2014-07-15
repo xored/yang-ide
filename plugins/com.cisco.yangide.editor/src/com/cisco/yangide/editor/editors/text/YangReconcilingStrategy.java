@@ -88,22 +88,23 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
         YangFile yangFile = YangCorePlugin.createYangFile(file);
         try {
             final AtomicBoolean errors = new AtomicBoolean(false);
-            Module module = YangParserUtil.parseYangFile(document.get().toCharArray(), new IYangValidationListener() {
+            Module module = YangParserUtil.parseYangFile(document.get().toCharArray(), file.getProject(),
+                    new IYangValidationListener() {
 
-                @Override
-                public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
-                    errors.set(true);
-                    annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart, charEnd
-                            - charStart));
-                }
+                        @Override
+                        public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
+                            errors.set(true);
+                            annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart,
+                                    charEnd - charStart));
+                        }
 
-                @Override
-                public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
-                    errors.set(true);
-                    annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart, charEnd
-                            - charStart));
-                }
-            });
+                        @Override
+                        public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
+                            errors.set(true);
+                            annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart,
+                                    charEnd - charStart));
+                        }
+                    });
             System.out.println(module.getIncludeByName("sub-test"));
             // reindex if no errors found
             if (!errors.get()) {

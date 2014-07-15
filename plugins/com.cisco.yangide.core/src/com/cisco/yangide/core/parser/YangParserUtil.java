@@ -15,6 +15,7 @@ import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
+import org.eclipse.core.resources.IProject;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangLexer;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.YangContext;
@@ -32,7 +33,26 @@ public class YangParserUtil {
         // empty block
     }
 
-    public static Module parseYangFile(char[] chars, IYangValidationListener validationListener) {
+    /**
+     * Parses YANG file contents and returns AST tree as {@link Module}
+     *
+     * @param chars file contents
+     * @return AST Tree
+     */
+    public static Module parseYangFile(char[] chars) {
+        YangContext yangContext = parseYangSource(chars, null);
+        YangParserModelListener modelListener = new YangParserModelListener();
+        ParseTreeWalker.DEFAULT.walk(modelListener, yangContext);
+        return modelListener.getModule();
+    }
+
+    /**
+     * @param chars
+     * @param project
+     * @param validationListener
+     * @return
+     */
+    public static Module parseYangFile(char[] chars, IProject project, IYangValidationListener validationListener) {
         YangContext yangContext = parseYangSource(chars, validationListener);
         if (validationListener != null) {
             validateYangContext(yangContext, validationListener);
@@ -41,7 +61,7 @@ public class YangParserUtil {
         ParseTreeWalker.DEFAULT.walk(modelListener, yangContext);
         Module module = modelListener.getModule();
         if (validationListener != null) {
-            new SemanticValidations(validationListener, module).validate();
+            new SemanticValidations(validationListener, project, module).validate();
         }
         return module;
     }
@@ -67,13 +87,13 @@ public class YangParserUtil {
         }
     }
 
-    public static void validateYangFile(char[] content, IYangValidationListener validationListener) {
+    public static void validateYangFile(char[] content, IProject project, IYangValidationListener validationListener) {
         YangContext parseTree = parseYangSource(content, validationListener);
         validateYangContext(parseTree, validationListener);
 
         YangParserModelListener modelListener = new YangParserModelListener();
         ParseTreeWalker.DEFAULT.walk(modelListener, parseTree);
-        new SemanticValidations(validationListener, modelListener.getModule()).validate();
+        new SemanticValidations(validationListener, project, modelListener.getModule()).validate();
     }
 
     public static YangContext parseYangSource(char[] content, final IYangValidationListener validationListener) {

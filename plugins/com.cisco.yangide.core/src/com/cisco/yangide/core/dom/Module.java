@@ -10,7 +10,9 @@ package com.cisco.yangide.core.dom;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -33,6 +35,8 @@ public class Module extends ASTCompositeNode {
     private Map<String, ModuleImport> imports = new HashMap<>();
     /** Prefix to Import map. */
     private Map<String, ModuleImport> importPrefixes = new HashMap<>();
+    /** Duplicate import declaration, used for validation purpose. */
+    private Set<ModuleImport> duplicateImports = new HashSet<>();
 
     /** Contains name and submodule. */
     private Map<String, SubModuleInclude> includes = new HashMap<>();
@@ -222,11 +226,27 @@ public class Module extends ASTCompositeNode {
         return groupings;
     }
 
+    /**
+     * Add module import statement.
+     *
+     * @param moduleImport statement
+     */
     public void addImport(ModuleImport moduleImport) {
-        this.imports.put(moduleImport.getName(), moduleImport);
-        if (moduleImport.getPrefix() != null) {
-            this.importPrefixes.put(moduleImport.getPrefix(), moduleImport);
+        if (this.imports.containsKey(moduleImport.getName())) {
+            duplicateImports.add(moduleImport);
+        } else {
+            this.imports.put(moduleImport.getName(), moduleImport);
+            if (moduleImport.getPrefix() != null) {
+                this.importPrefixes.put(moduleImport.getPrefix(), moduleImport);
+            }
         }
+    }
+
+    /**
+     * @return the duplicateImports
+     */
+    public Set<ModuleImport> getDuplicateImports() {
+        return duplicateImports;
     }
 
     @Override
@@ -296,11 +316,6 @@ public class Module extends ASTCompositeNode {
         acceptChild(visitor, yangVersion);
         acceptChild(visitor, organization);
         acceptChild(visitor, contact);
-
-        acceptChildren(visitor, imports.values());
-        acceptChildren(visitor, includes.values());
-        acceptChildren(visitor, typeDefinitions);
-        acceptChildren(visitor, groupings);
 
         acceptChildren(visitor, getChildren());
     }

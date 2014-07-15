@@ -8,9 +8,6 @@
 package com.cisco.yangide.core.parser;
 
 import java.net.URI;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.Stack;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -63,12 +60,11 @@ import com.cisco.yangide.core.dom.UsesNode;
  * @date Jun 26, 2014
  */
 public class YangParserModelListener extends YangParserBaseListener {
-    public final static DateFormat SIMPLE_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
     private Module module;
     private URI namespace = URI.create("none");
     private String yangModelPrefix;
-    private String revision = SIMPLE_DATE_FORMAT.format(new Date(0L));
+    private String revision = "1970-01-01"; // default revision Date(0L)
     private Stack<ASTNode> stack = new Stack<>();
 
     @Override
@@ -325,7 +321,7 @@ public class YangParserModelListener extends YangParserBaseListener {
             if (module instanceof SubModule) {
                 SubModule subModule = (SubModule) module;
                 if (parts[0].equals(subModule.getParentPrefix())) {
-                    return new QName(subModule.getParentModule(), parts[0], typeName, revision);
+                    return new QName(subModule.getParentModule(), parts[0], parts[1], null);
                 }
             }
         }

@@ -206,37 +206,34 @@ public class IndexManager extends JobManager {
             IProject project, IPath scope) {
         ArrayList<ElementIndexInfo> infos = null;
         for (Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo> entry : idxKeywords) {
-            boolean add = true;
             if (module != null && module.length() > 0 && !module.equals(entry.a)) {
-                add = false;
+                continue;
             }
 
             if (revision != null && revision.length() > 0 && !revision.equals(entry.b)) {
-                add = false;
+                continue;
             }
 
             if (type != null && type != entry.d) {
-                add = false;
+                continue;
             }
 
             if (name != null && name.length() > 0 && !entry.c.startsWith(name)) {
-                add = false;
+                continue;
             }
 
-            if (project != null && !entry.f.getProject().equals(project.getFullPath().toString())) {
-                add = false;
+            if (project != null && !entry.f.getProject().equals(project.getName())) {
+                continue;
             }
 
             if (scope != null && !scope.isPrefixOf(new Path(entry.e))) {
-                add = false;
+                continue;
             }
 
-            if (add) {
-                if (infos == null) {
-                    infos = new ArrayList<ElementIndexInfo>();
-                }
-                infos.add(entry.f);
+            if (infos == null) {
+                infos = new ArrayList<ElementIndexInfo>();
             }
+            infos.add(entry.f);
         }
 
         if (infos != null) {
