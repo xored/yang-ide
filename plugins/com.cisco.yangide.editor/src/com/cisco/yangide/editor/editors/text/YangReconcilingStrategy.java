@@ -133,6 +133,10 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
                 // reindex content
                 YangModelManager.getIndexManager().addSource(file);
             }
+            
+            if (editor instanceof YangEditor)
+                ((YangEditor) editor).updateFoldingRegions(module);
+            
         } catch (Exception e) {
             // ignore any exception on reconcile
         }
@@ -145,70 +149,6 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
     @Override
     public void initialReconcile() {
         reconcile(new Region(0, document.getLength()));
-        fRangeEnd = document.getLength();
-        calculatePositions();        
-    }
-    
-    /**
-     * uses {@link #fDocument}, {@link #fOffset} and {@link #fRangeEnd} to
-     * calculate {@link #fPositions}. About syntax errors: this method is not a
-     * validator, it is useful.
-     */
-    protected void calculatePositions() {
-            fPositions.clear();
-            cNextPos = 0;
-
-            try {
-                    recursiveTokens(0);
-            } catch (BadLocationException e) {
-                    e.printStackTrace();
-            }
-            // Collections.sort(fPositions, new RangeTokenComparator());
-
-            Display.getDefault().asyncExec(new Runnable() {
-                    public void run() {
-                            ((YangEditor) editor).updateFoldingStructure(fPositions);
-                    }
-
-            });
-    }
-    
-    protected void emitPosition(int startOffset, int length) {
-        fPositions.add(new Position(startOffset, length));
-    }
-    
-    /**
-     * emits tokens to {@link #fPositions}.
-     *
-     * @return number of newLines
-     * @throws BadLocationException
-     */
-    protected int recursiveTokens(int depth) throws BadLocationException {
-        
-        char[] matchChars = { '{', '}' }; // which brackets to match
-        ICharacterPairMatcher matcher = new DefaultCharacterPairMatcher(matchChars,
-                IDocumentExtension3.DEFAULT_PARTITIONING);
-        
-        
-            int newLines = 0;
-            while (cNextPos < fRangeEnd) {
-
-                            char ch = document.getChar(cNextPos++);
-                            switch (ch) {
-                            case '{':
-                                IRegion region = matcher.match(document, cNextPos);
-                                
-                                String foldedString = document.get(cNextPos - 1, region.getLength()); // this is to see where we are in the debugger
-                                
-                                int startPosition = document.getLineOffset(document.getLineOfOffset(cNextPos - 1));
-                                
-                                emitPosition(startPosition, region.getLength() + cNextPos - startPosition);
-                                break;
-                            }
-                    }
-
-            
-            return newLines;
     }
    
 }

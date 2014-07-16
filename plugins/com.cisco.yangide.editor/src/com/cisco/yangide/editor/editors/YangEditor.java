@@ -8,7 +8,6 @@
 package com.cisco.yangide.editor.editors;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -26,7 +25,7 @@ import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
-import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
+import org.eclipse.jface.text.source.projection.IProjectionListener;
 import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
@@ -45,12 +44,15 @@ import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
+import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.model.YangModelManager;
+import com.cisco.yangide.core.parser.YangParserUtil;
 import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.actions.AddBlockCommentAction;
 import com.cisco.yangide.editor.actions.IYangEditorActionDefinitionIds;
 import com.cisco.yangide.editor.actions.RemoveBlockCommentAction;
 import com.cisco.yangide.editor.actions.ToggleCommentAction;
+import com.cisco.yangide.editor.editors.text.YangFoldingStructureProvider;
 import com.cisco.yangide.ui.YangUIPlugin;
 import com.cisco.yangide.ui.preferences.IYangColorConstants;
 
@@ -59,7 +61,7 @@ import com.cisco.yangide.ui.preferences.IYangColorConstants;
  * 
  * @author Alexey Kholupko
  */
-public class YangEditor extends TextEditor {
+public class YangEditor extends TextEditor implements IProjectionListener {
 
     // TODO extract logic to separate classes
     public final static String EDITOR_MATCHING_BRACKETS = "matchingBrackets";
@@ -68,9 +70,7 @@ public class YangEditor extends TextEditor {
 
     private ProjectionSupport projectionSupport;
 
-    private ProjectionAnnotationModel annotationModel;
-    
-    private Annotation[] oldAnnotations;
+    private YangFoldingStructureProvider fFoldingStructureProvider;
 
     public YangEditor() {
         super();
@@ -258,26 +258,34 @@ public class YangEditor extends TextEditor {
             ((ToggleCommentAction) action).configure(sourceViewer, configuration);
         }
     }
-    
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createPartControl(org.eclipse.swt.widgets.Composite)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createPartControl(org.eclipse.swt.widgets
+     * .Composite)
      */
     @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
-        ProjectionViewer viewer = (ProjectionViewer) getSourceViewer();
+        ProjectionViewer projectionviewer = (ProjectionViewer) getSourceViewer();
+        projectionviewer.addProjectionListener(this);
 
-        projectionSupport = new ProjectionSupport(viewer, getAnnotationAccess(), getSharedColors());
+        projectionSupport = new ProjectionSupport(projectionviewer, getAnnotationAccess(), getSharedColors());
         projectionSupport.install();
 
         // turn projection mode on
-        viewer.doOperation(ProjectionViewer.TOGGLE);
+        projectionviewer.doOperation(ProjectionViewer.TOGGLE);
 
-        annotationModel = viewer.getProjectionAnnotationModel();
     }
-    
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createSourceViewer(org.eclipse.swt.widgets.Composite, org.eclipse.jface.text.source.IVerticalRuler, int)
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see
+     * org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createSourceViewer(org.eclipse.swt.
+     * widgets.Composite, org.eclipse.jface.text.source.IVerticalRuler, int)
      */
     @Override
     protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
@@ -289,28 +297,64 @@ public class YangEditor extends TextEditor {
         // ensure decoration support has been created and configured.
         getSourceViewerDecorationSupport(viewer);
 
+        if (fFoldingStructureProvider != null) {
+            fFoldingStructureProvider.setDocument(getDocumentProvider().getDocument(getEditorInput()));
+        }
+
         return viewer;
     }
-    
-    public void updateFoldingStructure(ArrayList positions)
-    {
-       Annotation[] annotations = new Annotation[positions.size()];
 
-       //this will hold the new annotations along
-       //with their corresponding positions
-       HashMap newAnnotations = new HashMap();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.text.source.projection.IProjectionListener#projectionEnabled()
+     */
+    public void projectionEnabled() {
+        fFoldingStructureProvider = new YangFoldingStructureProvider(this);
+        fFoldingStructureProvider.setDocument(getDocumentProvider().getDocument(getEditorInput()));
 
-       for(int i = 0; i < positions.size();i++)
-       {
-          ProjectionAnnotation annotation = new ProjectionAnnotation();
+        Module module = YangParserUtil.parseYangFile(getDocumentProvider().getDocument(getEditorInput()).get()
+                .toCharArray());
 
-          newAnnotations.put(annotation, positions.get(i));
+        fFoldingStructureProvider.updateFoldingRegions(module);
 
-          annotations[i] = annotation;
-       }
+        // IPreferenceStore preferenceStore = AntUIPlugin.getDefault().getPreferenceStore();
+        // preferenceStore.setValue(AntEditorPreferenceConstants.EDITOR_FOLDING_ENABLED, true);
+    }
 
-       annotationModel.modifyAnnotations(oldAnnotations, newAnnotations,null);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.jface.text.source.projection.IProjectionListener#projectionDisabled()
+     */
+    @Override
+    public void projectionDisabled() {
+        fFoldingStructureProvider = null;
+        // IPreferenceStore preferenceStore = AntUIPlugin.getDefault().getPreferenceStore();
+        // preferenceStore.setValue(AntEditorPreferenceConstants.EDITOR_FOLDING_ENABLED, false);
 
-       oldAnnotations = annotations;
-    }    
+    }
+
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+     */
+    public Object getAdapter(Class key) {
+
+        if (projectionSupport != null) {
+            Object adapter = projectionSupport.getAdapter(getSourceViewer(), key);
+            if (adapter != null) {
+                return adapter;
+            }
+        }
+
+        return super.getAdapter(key);
+    }
+
+    public void updateFoldingRegions(Module module) {
+        if (fFoldingStructureProvider != null) {
+            fFoldingStructureProvider.updateFoldingRegions(module);
+        }
+    }
 }
