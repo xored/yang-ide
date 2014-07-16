@@ -62,8 +62,7 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
 
     @Override
     public void reconcile(DirtyRegion dirtyRegion, IRegion subRegion) {
-        System.out.println();
-
+        reconcile(dirtyRegion);
     }
 
     @Override
@@ -91,21 +90,20 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
             Module module = YangParserUtil.parseYangFile(document.get().toCharArray(), file.getProject(),
                     new IYangValidationListener() {
 
-                        @Override
-                        public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
-                            errors.set(true);
-                            annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart,
-                                    charEnd - charStart));
-                        }
+                @Override
+                public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
+                    errors.set(true);
+                    annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart,
+                            charEnd - charStart));
+                }
 
-                        @Override
-                        public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
-                            errors.set(true);
-                            annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart,
-                                    charEnd - charStart));
-                        }
-                    });
-            System.out.println(module.getIncludeByName("sub-test"));
+                @Override
+                public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
+                    errors.set(true);
+                    annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart,
+                            charEnd - charStart));
+                }
+            });
             // reindex if no errors found
             if (!errors.get()) {
                 YangFileInfo fileInfo = (YangFileInfo) yangFile.getElementInfo(monitor);

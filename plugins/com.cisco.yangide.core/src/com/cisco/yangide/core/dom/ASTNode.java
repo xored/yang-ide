@@ -33,6 +33,13 @@ public abstract class ASTNode {
      */
     private int length = 0;
 
+    /** Line number. */
+    private int lineNumber = -1;
+
+    /** Start position of AST node body '{' or '"'. */
+    private int bodyStartPosition = -1;
+
+    /** Parent AST node. */
     private ASTNode parent = null;
 
     public ASTNode(ASTNode parent) {
@@ -107,6 +114,48 @@ public abstract class ASTNode {
      */
     public void setReference(String reference) {
         this.reference = reference;
+    }
+
+    /**
+     * @return the lineNumber
+     */
+    public int getLineNumber() {
+        return lineNumber;
+    }
+
+    /**
+     * @param lineNumber the lineNumber to set
+     */
+    public void setLineNumber(int lineNumber) {
+        this.lineNumber = lineNumber;
+    }
+
+    /**
+     * @return the bodyStartPosition
+     */
+    public int getBodyStartPosition() {
+        return bodyStartPosition;
+    }
+
+    /**
+     * @param bodyStartPosition the bodyStartPosition to set
+     */
+    public void setBodyStartPosition(int bodyStartPosition) {
+        this.bodyStartPosition = bodyStartPosition;
+    }
+
+    /**
+     * @return the bodyLenght
+     */
+    public int getBodyLength() {
+        return (bodyStartPosition >= 0 && startPosition >= 0) ? (length - (bodyStartPosition - startPosition) + 1) : 0;
+    }
+
+    /**
+     * @return the bodyEndPosition
+     */
+    public int getBodyEndPosition() {
+        return bodyStartPosition + getBodyLength();
     }
 
     /**

@@ -135,7 +135,7 @@ public class SemanticValidations {
      * @param node related AST node
      */
     private void reportError(String msg, ASTNamedNode node) {
-        listener.validationError(msg, -1, node.getNameStartPosition(),
-                node.getNameStartPosition() + node.getNameLength());
+        listener.validationError(msg, node.getLineNumber(), node.getNameStartPosition(), node.getNameStartPosition()
+                + node.getNameLength());
     }
 }

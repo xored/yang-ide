@@ -11,8 +11,10 @@ import java.net.URI;
 import java.util.Stack;
 
 import org.antlr.v4.runtime.ParserRuleContext;
+import org.antlr.v4.runtime.Token;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangLexer;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Belongs_to_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Contact_stmtContext;
@@ -335,6 +337,7 @@ public class YangParserModelListener extends YangParserBaseListener {
         if ((revisionDate != null) && (this.revision.compareTo(revisionDate) < 0)) {
             this.revision = revisionDate;
             SimpleNode<String> revisionNode = new SimpleNode<String>(module, "revision", revisionDate);
+            updateNodePosition(revisionNode, treeNode);
             module.setRevisionNode(revisionNode);
             for (int i = 0; i < treeNode.getChildCount(); ++i) {
                 ParseTree child = treeNode.getChild(i);
@@ -348,7 +351,22 @@ public class YangParserModelListener extends YangParserBaseListener {
     private void updateNodePosition(ASTNode astNode, ParseTree treeNode) {
         if (astNode != null && treeNode instanceof ParserRuleContext) {
             astNode.setStartPosition(((ParserRuleContext) treeNode).start.getStartIndex());
+            astNode.setLineNumber(((ParserRuleContext) treeNode).start.getLine());
             astNode.setLength(((ParserRuleContext) treeNode).stop.getStopIndex() - astNode.getStartPosition());
+
+            Token bodyToken = null;
+            for (int i = 0; i < treeNode.getChildCount(); ++i) {
+                if (treeNode.getChild(i) instanceof TerminalNode) {
+                    final TerminalNode term = (TerminalNode) treeNode.getChild(i);
+                    if (term != null && term.getSymbol() != null && term.getSymbol().getType() == YangLexer.LEFT_BRACE) {
+                        bodyToken = term.getSymbol();
+                    }
+                }
+            }
+
+            if (bodyToken != null) {
+                astNode.setBodyStartPosition(bodyToken.getStartIndex());
+            }
         }
     }
 
@@ -378,6 +396,7 @@ public class YangParserModelListener extends YangParserBaseListener {
                 final StringContext context = (StringContext) treeNode.getChild(i);
                 if (context != null) {
                     astNode.setNameStartPosition(context.getStart().getStartIndex());
+                    astNode.setLineNumber(context.getStart().getLine());
                     astNode.setName(stringFromStringContext(context));
                 }
             }

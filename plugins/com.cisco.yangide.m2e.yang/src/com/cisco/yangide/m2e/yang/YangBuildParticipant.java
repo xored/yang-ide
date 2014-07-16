@@ -46,10 +46,6 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
         IMaven maven = MavenPlugin.getMaven();
         BuildContext buildContext = getBuildContext();
 
-        // clear markers before build
-        getMavenProjectFacade().getProject().deleteMarkers(YangCorePlugin.YANGIDE_PROBLEM_MARKER, true,
-                IResource.DEPTH_INFINITE);
-
         File source = maven.getMojoParameterValue(getSession().getCurrentProject(), getMojoExecution(),
                 YangM2EPlugin.YANG_FILES_ROOT_DIR, File.class, monitor);
         if (source == null) {
@@ -61,6 +57,9 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
         if (includedFiles == null || includedFiles.length <= 0) {
             return null;
         }
+        // clear markers before build
+        getMavenProjectFacade().getProject().deleteMarkers(YangCorePlugin.YANGIDE_PROBLEM_MARKER, true,
+                IResource.DEPTH_INFINITE);
 
         for (String path : includedFiles) {
             final IFile ifile = YangCorePlugin.getIFileFromFile(new File(ds.getBasedir(), path));
