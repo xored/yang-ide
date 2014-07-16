@@ -10,8 +10,11 @@ package com.cisco.yangide.editor.editors;
 import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.editors.text.FileDocumentProvider;
 
+import com.cisco.yangide.editor.editors.text.YangAnnotationModel;
 import com.cisco.yangide.editor.preferences.YangDocumentSetupParticipant;
 
 /**
@@ -19,6 +22,7 @@ import com.cisco.yangide.editor.preferences.YangDocumentSetupParticipant;
  */
 public class YangDocumentProvider extends FileDocumentProvider {
 
+    @Override
     protected IDocument createDocument(Object element) throws CoreException {
         IDocument document = super.createDocument(element);
 
@@ -27,5 +31,14 @@ public class YangDocumentProvider extends FileDocumentProvider {
             partiticipant.setup(document);
         }
         return document;
+    }
+
+    @Override
+    protected IAnnotationModel createAnnotationModel(Object element) throws CoreException {
+        if (element instanceof IFileEditorInput) {
+            IFileEditorInput input = (IFileEditorInput) element;
+            return new YangAnnotationModel(input.getFile());
+        }
+        return super.createAnnotationModel(element);
     }
 }

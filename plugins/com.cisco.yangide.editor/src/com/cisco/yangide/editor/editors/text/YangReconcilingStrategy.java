@@ -7,8 +7,6 @@
  */
 package com.cisco.yangide.editor.editors.text;
 
-import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.resources.IFile;
@@ -20,7 +18,6 @@ import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
-import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.IAnnotationModel;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IFileEditorInput;
@@ -71,39 +68,30 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
             return;
         }
         IFile file = ((IFileEditorInput) editor.getEditorInput()).getFile();
-        final IAnnotationModel annotationModel = getAnnotationModel();
-        ArrayList<Annotation> toRemove = new ArrayList<Annotation>();
+        final YangAnnotationModel annotationModel = (YangAnnotationModel) getAnnotationModel();
 
-        Iterator<?> it = annotationModel.getAnnotationIterator();
-        while (it.hasNext()) {
-            Annotation annotation = (Annotation) it.next();
-            if (annotation.getType().equals(YangSyntaxAnnotation.TYPE)) {
-                toRemove.add(annotation);
-            }
-        }
-        for (Annotation annotation : toRemove) {
-            annotationModel.removeAnnotation(annotation);
-        }
         YangFile yangFile = YangCorePlugin.createYangFile(file);
         try {
             final AtomicBoolean errors = new AtomicBoolean(false);
+            annotationModel.init();
             Module module = YangParserUtil.parseYangFile(document.get().toCharArray(), file.getProject(),
                     new IYangValidationListener() {
 
-                @Override
-                public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
-                    errors.set(true);
-                    annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart,
-                            charEnd - charStart));
-                }
+                        @Override
+                        public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
+                            errors.set(true);
+                            annotationModel.addProblem(new YangProblem(new YangSyntaxAnnotation(null), new Position(
+                                    charStart, charEnd - charStart)));
+                        }
 
-                @Override
-                public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
-                    errors.set(true);
-                    annotationModel.addAnnotation(new YangSyntaxAnnotation(msg), new Position(charStart,
-                            charEnd - charStart));
-                }
-            });
+                        @Override
+                        public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
+                            errors.set(true);
+                            annotationModel.addProblem(new YangProblem(new YangSyntaxAnnotation(null), new Position(
+                            charStart, charEnd - charStart)));
+                        }
+                    });
+            annotationModel.reportProblem();
             // reindex if no errors found
             if (!errors.get()) {
                 YangFileInfo fileInfo = (YangFileInfo) yangFile.getElementInfo(monitor);
