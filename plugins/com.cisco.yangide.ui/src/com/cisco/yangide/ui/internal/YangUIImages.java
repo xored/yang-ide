@@ -54,7 +54,7 @@ public class YangUIImages {
      * Declare all images
      */
     private static void declareImages() {
-        // Ant Editor images
+        // Editor images
         declareRegistryImage(IYangUIConstants.IMG_TEMPLATE_PROPOSAL, OBJECT + "template_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_IMPORT_PROPOSAL, OBJECT + "import_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_KEYWORD_PROPOSAL, OBJECT + "keyword_obj.gif"); //$NON-NLS-1$
@@ -62,6 +62,11 @@ public class YangUIImages {
         declareRegistryImage(IYangUIConstants.IMG_CUSTOM_TYPE_PROPOSAL, OBJECT + "custom_type_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_GROUPING_PROPOSAL, OBJECT + "grouping_obj.gif"); //$NON-NLS-1$
 
+        // Marker images
+        declareRegistryImage(IYangUIConstants.IMG_ERROR_MARKER, OBJECT + "error_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_ERROR_MARKER_ALT, OBJECT + "error_alt_obj.gif"); //$NON-NLS-1$
+
+        // Wizard images
         declareRegistryImage(IYangUIConstants.IMG_NEW_PROJECT_WIZ, WIZ + "newprj_wiz.png"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_NEW_FILE_WIZ, WIZ + "newfile_wiz.png"); //$NON-NLS-1$
     }

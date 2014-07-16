@@ -23,4 +23,7 @@ public interface IYangUIConstants {
 
     public static final String IMG_NEW_PROJECT_WIZ = PLUGIN_ID + ".new_project_wiz";
     public static final String IMG_NEW_FILE_WIZ = PLUGIN_ID + ".new_file_wiz";
+
+    public static final String IMG_ERROR_MARKER = PLUGIN_ID + ".error_marker";
+    public static final String IMG_ERROR_MARKER_ALT = PLUGIN_ID + ".error_marker_alt";
 }

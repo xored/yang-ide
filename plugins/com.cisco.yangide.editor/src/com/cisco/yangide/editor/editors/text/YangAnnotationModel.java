@@ -116,8 +116,8 @@ public class YangAnnotationModel extends ResourceMarkerAnnotationModel {
             Object obj = it.next();
             if (obj instanceof YangMarkerAnnotation) {
                 YangMarkerAnnotation m = (YangMarkerAnnotation) obj;
-                if (m.getPosition() == position) {
-                    m.setOverlay(annotation);
+                if (position.equals(m.getPosition())) {
+                    m.markDeleted(false);
                     prevOverlaid.remove(m);
                     curOverlaid.add(m);
                 }
