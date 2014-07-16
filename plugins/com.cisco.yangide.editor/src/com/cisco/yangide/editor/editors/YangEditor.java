@@ -8,6 +8,7 @@
 package com.cisco.yangide.editor.editors;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -18,13 +19,20 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
+import org.eclipse.jface.text.source.Annotation;
 import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
+import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotation;
+import org.eclipse.jface.text.source.projection.ProjectionAnnotationModel;
+import org.eclipse.jface.text.source.projection.ProjectionSupport;
+import org.eclipse.jface.text.source.projection.ProjectionViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PlatformUI;
@@ -57,6 +65,12 @@ public class YangEditor extends TextEditor {
     public final static String EDITOR_MATCHING_BRACKETS = "matchingBrackets";
 
     private IColorManager colorManager;
+
+    private ProjectionSupport projectionSupport;
+
+    private ProjectionAnnotationModel annotationModel;
+    
+    private Annotation[] oldAnnotations;
 
     public YangEditor() {
         super();
@@ -244,4 +258,59 @@ public class YangEditor extends TextEditor {
             ((ToggleCommentAction) action).configure(sourceViewer, configuration);
         }
     }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createPartControl(org.eclipse.swt.widgets.Composite)
+     */
+    @Override
+    public void createPartControl(Composite parent) {
+        super.createPartControl(parent);
+        ProjectionViewer viewer = (ProjectionViewer) getSourceViewer();
+
+        projectionSupport = new ProjectionSupport(viewer, getAnnotationAccess(), getSharedColors());
+        projectionSupport.install();
+
+        // turn projection mode on
+        viewer.doOperation(ProjectionViewer.TOGGLE);
+
+        annotationModel = viewer.getProjectionAnnotationModel();
+    }
+    
+    /* (non-Javadoc)
+     * @see org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createSourceViewer(org.eclipse.swt.widgets.Composite, org.eclipse.jface.text.source.IVerticalRuler, int)
+     */
+    @Override
+    protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
+        fAnnotationAccess = getAnnotationAccess();
+        fOverviewRuler = createOverviewRuler(getSharedColors());
+
+        ISourceViewer viewer = new ProjectionViewer(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles);
+
+        // ensure decoration support has been created and configured.
+        getSourceViewerDecorationSupport(viewer);
+
+        return viewer;
+    }
+    
+    public void updateFoldingStructure(ArrayList positions)
+    {
+       Annotation[] annotations = new Annotation[positions.size()];
+
+       //this will hold the new annotations along
+       //with their corresponding positions
+       HashMap newAnnotations = new HashMap();
+
+       for(int i = 0; i < positions.size();i++)
+       {
+          ProjectionAnnotation annotation = new ProjectionAnnotation();
+
+          newAnnotations.put(annotation, positions.get(i));
+
+          annotations[i] = annotation;
+       }
+
+       annotationModel.modifyAnnotations(oldAnnotations, newAnnotations,null);
+
+       oldAnnotations = annotations;
+    }    
 }
