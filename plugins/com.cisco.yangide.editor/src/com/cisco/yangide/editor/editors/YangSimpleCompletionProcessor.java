@@ -112,7 +112,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     private final static Map<String, List> keywordHierarchyMap = createKeywordHierarchyMap();
 
     enum CompletionKind {
-        None, Keyword, Import, Type, Uses, Include, BelongsTo
+        None, KeywordScope, Import, Type, Uses, Include, BelongsTo, Keyword
     }
 
     protected IContextInformationValidator fValidator = new Validator();
@@ -153,7 +153,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             return NO_PROPOSALS;
         }
         switch (result.type) {
-        case Keyword:
+        case KeywordScope:
             return mergeProposals(result.proposals, determineTemplateProposalsForContext(documentOffset));
         default:
             if (result.proposals == null) {
@@ -176,7 +176,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                         "deviation", "extension", "feature", "grouping", "identity", "import", "include", "leaf",
                         "leaf-list", "list", "namespace", "notification", "organization", "prefix", "reference",
                         "revision", "rpc", "typedef", "uses", "yang-version" }));
-        keywordHierarchyMap.put("import", Arrays.asList(new String[] { "prefix, revision-date" }));
+        keywordHierarchyMap.put("import", Arrays.asList(new String[] { "prefix", "revision-date" }));
         keywordHierarchyMap.put("include", Arrays.asList(new String[] { "revision-date" }));
         keywordHierarchyMap.put("revision", Arrays.asList(new String[] { "description", "reference" }));
         keywordHierarchyMap.put(
@@ -363,7 +363,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 return null;
             }
 
-            String previousWord = determinePreviousWord(doc, columnNumber - prefix.length());
+            String previousWord = determinePreviousWord(doc, cursorPosition - prefix.length());
 
             return getProposalsFromDocument(doc, prefix, previousWord);
         } catch (BadLocationException e) {
@@ -374,7 +374,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     private String determinePreviousWord(IDocument doc, int offset) throws BadLocationException {
         try {
-            String previousText = doc.get(doc.getLineOffset(lineNumber), offset).trim();
+            String previousText = doc.get(doc.getLineOffset(lineNumber), offset - doc.getLineOffset(lineNumber)).trim();
             String previousWord = null;
             int lastPos = previousText.lastIndexOf(" ");
             if (lastPos == -1) {
@@ -385,7 +385,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             } else {
                 previousWord = previousText;
             }
-            return previousWord;
+            return previousWord.trim();
         } catch (Exception e) {
             return "";
         }
@@ -427,9 +427,13 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
      * @return proposals for the specified document
      */
     protected TypedProposalsList getProposalsFromDocument(IDocument document, String prefix, String previousWord) {
-        TypedProposalsList proposals = null;
         currentProposalMode = determineProposalMode(document, cursorPosition, prefix, previousWord);
-        switch (currentProposalMode) {
+        return getProposalsByMode(prefix, currentProposalMode);
+    }
+
+    protected TypedProposalsList getProposalsByMode(String prefix, CompletionKind proposalMode) {
+        TypedProposalsList proposals = null;
+        switch (proposalMode) {
         case Import:
             proposals = getImportProposals(prefix, true);
             break;
@@ -445,16 +449,16 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         case Include:
             proposals = getIncludeProposals(prefix);
             break;
-
-        case Keyword:
-        default:
-            proposals = getKeywordProposals(prefix);
+        case KeywordScope:
+            proposals = getKeywordScopeProposals(prefix);
+            break;
+        default:            
             break;
         }
 
-        return proposals;
+        return proposals;        
     }
-
+    
     /**
      * @param prefix
      * @param addModuleRevision
@@ -467,46 +471,115 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
         List<ICompletionProposal> moduleProposals = new ArrayList<ICompletionProposal>();
 
-        Set<String> addedImport = new HashSet<>();
-        for (int i = 0; i < importModules.length; i++) {
-            ElementIndexInfo info = importModules[i];
-            if (addedImport.add(info.getName())) {
-                String proposal = info.getName();
-                String revision = info.getRevision();
-                String displayString = proposal;
-                String replacementString = proposal;
-                if (revision != null && !revision.isEmpty()) {
-                    String moduleRevision = "";
-                    if (addModuleRevision) {
-                        moduleRevision = "revision-date " + revision + "; ";
-                    }
-                    replacementString = proposal + " { prefix " + proposal + "; " + moduleRevision + "}";
-                    displayString = proposal += " (" + revision + ")";
-                }
+        boolean hasImportProposals = true;
 
-                if (prefix.length() == 0 || proposal.startsWith(prefix)) {
+        try {
 
-                    moduleProposals.add(new CompletionProposal(replacementString, cursorPosition - prefix.length(),
-                            prefix.length(), proposal.length(), YangUIImages
-                            .getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL), displayString, null, null));
+            // import, prefix or revision-date
+            String previousWord = determinePreviousWord(viewer.getDocument(), cursorPosition - prefix.length());
+            
+            Map<String, String> usedImports = new HashMap<>();
+
+            for (int i = 0; i < importModules.length; i++) {
+                ElementIndexInfo info = importModules[i];
+
+                String usedRevision = usedImports.get(info.getName());
+
+                if (usedRevision == null || !usedRevision.equals(info.getRevision())) {
+                    usedImports.put(info.getName(), info.getRevision());
+                    String importModuleName = info.getName();
+                    
+                    String revision = info.getRevision();
+                    
+                    ICompletionProposal proposal = generateImportProposal(previousWord, prefix, importModuleName, revision, addModuleRevision);
+                    
+                    if(proposal != null)
+                        moduleProposals.add(proposal);
+                   
                 }
             }
+
+            //TODO 
+//          if (moduleProposals.isEmpty() && previousWord != "import" && previousWord != "revision-date")
+//              return getProposalsByMode(prefix, CompletionKind.KeywordScope); //or CompletionKind.Keyword
+
+            
+
+        } catch (BadLocationException e) {
+            YangEditorPlugin.log(e);
         }
 
-        Collections.sort(moduleProposals, proposalComparator);
-
+        Collections.sort(moduleProposals, proposalComparator);        
         TypedProposalsList result = new TypedProposalsList();
         result.proposals = moduleProposals;
         result.type = CompletionKind.Import;
         return result;
 
     }
+    
+    private ICompletionProposal generateImportProposal(String previousWord, String prefix, String importModuleName, String revision, boolean addModuleRevision){
+        
+        ICompletionProposal resultProposal = null;
+
+        boolean isImportProposal = true;
+                
+        String displayString = importModuleName;
+        String replacementString = importModuleName;
+
+        // default for "import"
+        int replacementOffset = cursorPosition - prefix.length();
+        int replacementLength = prefix.length();
+        int replCursorPosition = cursorPosition;
+        isImportProposal = true;
+
+
+        switch (previousWord) {
+        case "import":
+            if (revision != null && !revision.isEmpty()) {
+                String moduleRevision = "";
+                if (addModuleRevision) 
+                    moduleRevision = "revision-date " + revision + "; ";
+                
+                replacementString = importModuleName + " { prefix " + importModuleName + "; "
+                        + moduleRevision + "}";
+                displayString = importModuleName += " (" + revision + ")";
+                replCursorPosition = importModuleName.length();
+                break;
+
+            }
+
+        case "revision-date":
+            ASTNode nodeAtPos = module.getNodeAtPosition(cursorPosition);
+            if (nodeAtPos instanceof ModuleImport) {
+                if (importModuleName.equals(((ModuleImport) nodeAtPos).getName())) {
+                    replacementString = revision;
+                    displayString = revision;
+                    replCursorPosition = revision.length();
+                    break;
+                }
+            }
+
+        case "prefix":
+        default:
+            isImportProposal = false;
+            break;
+        }
+
+        if (isImportProposal && ((prefix.length() == 0 || importModuleName.startsWith(prefix)))) {
+
+            resultProposal = new CompletionProposal(replacementString, replacementOffset,
+                    replacementLength, replCursorPosition, YangUIImages
+                            .getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL), displayString, null, null);
+        }        
+        
+        return resultProposal;
+    }
 
     /**
      * @param prefix
      * @return general keyword proposals
      */
-    private TypedProposalsList getKeywordProposals(String prefix) {
+    private TypedProposalsList getKeywordScopeProposals(String prefix) {
 
         String scopeKeyword = determineProposalScopeKeyword(viewer.getDocument(), cursorPosition);
 
@@ -529,7 +602,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
         TypedProposalsList result = new TypedProposalsList();
         result.proposals = proposalsList;
-        result.type = CompletionKind.Keyword;
+        result.type = CompletionKind.KeywordScope;
         return result;
     }
 
@@ -716,8 +789,12 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         if ("include".equalsIgnoreCase(previousWord)) {
             return CompletionKind.Include;
         }
-
-        return CompletionKind.Keyword;
+        
+        if(Arrays.asList(fgKeywordProposals).contains(previousWord)){
+            return CompletionKind.Keyword;
+        }
+        
+        return CompletionKind.KeywordScope;
 
     }
 

@@ -96,7 +96,7 @@ public class YangFoldingStructureProvider {
                 contentType = getTokenContentType(token);
             } while (contentType == null && !token.isEOF());
 
-            if (contentType.equals(YangPartitionScanner.YANG_COMMENT)) {
+            if (contentType != null && contentType.equals(YangPartitionScanner.YANG_COMMENT)) {
 
                 int tokenStartLine = fDocument.getLineOfOffset(scanner.getTokenOffset());
                 int tokenEndLine = fDocument.getLineOfOffset(scanner.getTokenOffset() + scanner.getTokenLength());
