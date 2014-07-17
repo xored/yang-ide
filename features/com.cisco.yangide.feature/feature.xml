@@ -25,10 +25,6 @@
       %license
    </license>
 
-   <includes
-         id="com.cisco.yangide.m2e.yang.feature"
-         version="0.0.0"/>
-
    <plugin
          id="com.cisco.yangide.core"
          download-size="0"

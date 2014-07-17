@@ -6,5 +6,11 @@
    <feature url="features/com.cisco.yangide.m2e.yang.feature_0.1.0.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature" version="0.1.0.qualifier">
       <category name="yang-ide"/>
    </feature>
+   <feature url="features/com.cisco.yangide.feature.source_0.1.0.qualifier.jar" id="com.cisco.yangide.feature.source" version="0.1.0.qualifier">
+      <category name="yang-ide"/>
+   </feature>
+   <feature url="features/com.cisco.yangide.m2e.yang.feature.source_0.1.0.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature.source" version="0.1.0.qualifier">
+      <category name="yang-ide"/>
+   </feature>
    <category-def name="yang-ide" label="YANG IDE"/>
 </site>

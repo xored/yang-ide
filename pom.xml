@@ -15,6 +15,7 @@
   <name>YANG IDE Parent</name>
   <properties>
     <tycho-version>0.20.0</tycho-version>
+    <tycho-extras-version>0.20.0</tycho-extras-version>
   </properties>
   <modules>
     <!-- plugins -->
@@ -43,7 +44,7 @@
       <url>http://maven.xored.com/nexus/content/repositories/snapshots/</url>
     </pluginRepository>
   </pluginRepositories>
-  
+
   <build>
     <plugins>
       <plugin>
@@ -51,6 +52,47 @@
         <artifactId>tycho-maven-plugin</artifactId>
         <version>${tycho-version}</version>
         <extensions>true</extensions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-source-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <executions>
+          <execution>
+            <id>plugin-source</id>
+            <goals>
+              <goal>plugin-source</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho.extras</groupId>
+        <artifactId>tycho-source-feature-plugin</artifactId>
+        <version>${tycho-extras-version}</version>
+        <executions>
+          <execution>
+            <id>source-feature</id>
+            <phase>package</phase>
+            <goals>
+              <goal>source-feature</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.eclipse.tycho</groupId>
+        <artifactId>tycho-p2-plugin</artifactId>
+        <version>${tycho-version}</version>
+        <executions>
+          <execution>
+            <id>attach-p2-metadata</id>
+            <phase>package</phase>
+            <goals>
+              <goal>p2-metadata</goal>
+            </goals>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <groupId>org.eclipse.tycho</groupId>
