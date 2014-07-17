@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.cisco.yangide.test</groupId>
+  <artifactId>com.cisco.yangide.test.parent</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+  
+  <packaging>pom</packaging>
+
+  <properties>
+    <eclipse-version>3.7.2</eclipse-version>
+    <q7-version>1.5.0</q7-version>
+  </properties>
+
+  <modules>
+    <module>com.cisco.yangide.editor.test</module>
+  </modules>
+
+
+  <pluginRepositories>
+    <pluginRepository>
+      <id>q7-releases</id>
+      <name>Xored Q7</name>
+      <url>http://maven.xored.com/nexus/content/repositories/q7-releases/</url>
+    </pluginRepository>
+  </pluginRepositories>
+
+  <repositories>
+    <repository>
+      <id>q7-releases</id>
+      <name>Xored Q7</name>
+      <url>http://maven.xored.com/nexus/content/repositories/q7-releases/</url>
+    </repository>
+  </repositories>
+</project>

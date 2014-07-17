@@ -129,7 +129,9 @@ public class YangAnnotationModel extends ResourceMarkerAnnotationModel {
     protected MarkerAnnotation createMarkerAnnotation(IMarker marker) {
         try {
             if (YangCorePlugin.YANGIDE_PROBLEM_MARKER.equals(marker.getType())) {
-                return new YangMarkerAnnotation(marker);
+                YangMarkerAnnotation annotation = new YangMarkerAnnotation(marker);
+                curOverlaid.add(annotation);
+                return annotation;
             }
         } catch (CoreException e) {
             // ignore exception

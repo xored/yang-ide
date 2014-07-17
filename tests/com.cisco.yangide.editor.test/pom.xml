@@ -1,0 +1,91 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>com.cisco.yangide.test</groupId>
+    <artifactId>com.cisco.yangide.test.parent</artifactId>
+    <version>0.1.0-SNAPSHOT</version>
+    <relativePath>..</relativePath>
+  </parent> 
+
+  <groupId>com.cisco.yangide.test</groupId>
+  <artifactId>com.cisco.yangide.editor.test</artifactId>
+  
+  <packaging>q7test</packaging>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>com.xored.q7</groupId>
+        <artifactId>q7-maven-plugin</artifactId>
+        <version>1.5.0</version>
+        <extensions>true</extensions>
+        <configuration>
+          <aut>
+            <groupId>org.eclipse</groupId>
+            <artifactId>sdk</artifactId>
+            <version>${eclipse-version}</version>
+
+            <injections>
+              <injection>
+                <site>file://${project.basedir}/product/update-site/target/repository/</site>
+                <features>
+                  <feature>com.cisco.yangide.feature.feature.group</feature>
+                  <feature>com.cisco.yangide.m2e.yang.feature.feature.group</feature>
+                </features>
+              </injection>
+
+              <injection>
+                <site>http://download.eclipse.org/releases/indigo/</site>
+                <features>
+                  <feature>org.eclipse.emf.feature.group</feature>
+                  <feature>org.eclipse.emf.ecore.feature.group</feature>
+                  <feature>org.eclipse.xsd.feature.group</feature>
+                  <feature>org.eclipse.gef.feature.group</feature>
+                  <feature>org.eclipse.equinox.p2.discovery.feature.feature.group</feature>
+                  <feature>org.eclipse.wst.xml_core.feature.feature.group</feature>
+                  <feature>org.eclipse.wst.common_core.feature.feature.group</feature>
+                </features>
+              </injection>
+
+              <injection>
+                <site>http://download.eclipse.org/webtools/repository/indigo/</site>
+                <features>
+                  <feature>org.eclipse.wst.common.fproj.feature.group</feature>
+                </features>
+              </injection>
+
+              <injection>
+                <site>http://download.eclipse.org/technology/m2e/releases-for-indigo/1.4/</site>
+                <features>
+                  <feature>org.eclipse.m2e.feature.feature.group</feature>
+                  <feature>org.eclipse.m2e.logback.feature.feature.group</feature>
+                </features>      
+              </injection>
+
+              <injection>
+                <site>https://repository.sonatype.org/content/repositories/forge-sites/m2e-extras/0.15.0/N/0.15.0.201206251206/</site>
+                <features>
+                  <feature>org.sonatype.m2e.buildhelper.feature.feature.group</feature>
+                </features>      
+              </injection>
+
+              <injection>
+                <site>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</site>
+                <features>
+                  <feature>org.slf4j.api</feature>
+                  <feature>ch.qos.logback.classic</feature>
+                  <feature>ch.qos.logback.core</feature>
+                </features>      
+              </injection>
+            </injections>
+          </aut>
+          <q7>
+            <version>${q7-version}</version>
+          </q7>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+</project>
