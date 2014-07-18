@@ -1,0 +1,44 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Contexts: _CN8X4Av8EeSdascDp4ftXw,_aHkbQAwDEeSdascDp4ftXw,_zefAMAwDEeSdascDp4ftXw
+Element-Name: AutoCompletionTestCase1
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _M0ZOcA5HEeSKlfM72EMibA
+Runtime-Version: 1.5.0.201406151150
+Save-Time: 7/18/14 2:32 PM
+Testcase-Type: ecl
+Verifications: _EwyH4A5IEeSKlfM72EMibA
+
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+with [get-editor "opendaylight-flow-statistics.yang" | get-text-viewer] {
+    set-caret-pos 3 21
+    key-type Enter
+    type-text i
+    key-type "M1+SPACE"
+}
+with [get-window -from "CompletionProposalPopup.createProposalSelector()" | get-table] {
+    get-property "getItems().TableItem[0].getText()" | equals identity | verify-true
+    get-property "getItems().TableItem[1].getText()" | equals "if-feature" | verify-true
+    get-property "getItems().TableItem[2].getText()" | equals import | verify-true
+    get-property "getItems().TableItem[4].getText()" | equals input | verify-true
+}
+get-window -from "CompletionProposalPopup.createProposalSelector()" | get-table | select import | click -default
+with [get-editor "opendaylight-flow-statistics.yang" | get-text-viewer] {
+    set-caret-pos 4 11
+    type-text " "
+    key-type "M1+SPACE" -times 2
+}
+with [get-window -from "CompletionProposalPopup.createProposalSelector()" | get-table] {
+    get-property "getItems().TableItem[0].getText()" | equals "acme-system (2007-06-09)" | verify-true
+    get-property "getItems().TableItem[1].getText()" | equals "aug-referenced-elements-module (2013-12-3)" | verify-true
+    get-property "getItems().TableItem[2].getText()" | equals "augment-augment-module (2014-01-17)" | verify-true
+    get-property "getItems().TableItem[98].getText()" | equals "yang (2013-11-26)" | verify-true
+}
+get-window -from "CompletionProposalPopup.createProposalSelector()" | get-table 
+    | select "aug-referenced-elements-module \\(2013-12-3\\)" | click -default
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

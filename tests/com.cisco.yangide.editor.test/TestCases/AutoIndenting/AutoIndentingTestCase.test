@@ -7,46 +7,59 @@ Element-Version: 3.0
 External-Reference: 
 Id: _LA_SIAwNEeSdascDp4ftXw
 Runtime-Version: 1.5.0.201406151150
-Save-Time: 7/17/14 5:01 PM
+Save-Time: 7/18/14 12:16 PM
 Testcase-Type: ecl
+Verifications: _ox3R0A46EeS2F7KvdfPBCg
 
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
 Content-Type: text/ecl
 Entry-Name: .content
 
-get-preferences-menu | click
-with [get-window Preferences] {
-    get-tree | select "YANG/Syntax Coloring"
-    get-link "Default colors and font can be configured on the <a href=\"org.eclipse.ui.preferencePages.GeneralTextEditor\">\'Text Editors\'</a> and on the <a href=\"org.eclipse.ui.preferencePages.ColorsAndFonts\">\'Colors and Fonts\'</a> preference page." 
-        | click-link "org.eclipse.ui.preferencePages.GeneralTextEditor"
-    get-button "Insert spaces for tabs" | check
-    get-button OK | click
-}
-with [get-view "Package Explorer" | get-tree] {
-    select "model-parent/model-flow-statistics/src/main/yang/opendaylight-flow-statistics.yang" | click -default
-    select "model-parent/model-flow-statistics/src/main/yang/opendaylight-flow-statistics.yang" | double-click
-}
 with [get-editor "opendaylight-flow-statistics.yang" | get-text-viewer] {
     set-caret-pos 1 38
-    key-type Del -times 5
     key-type Enter
-}
-get-editor "opendaylight-flow-statistics.yang" | get-text-viewer | set-caret-pos 3 21
-get-editor "opendaylight-flow-statistics.yang" | get-text-viewer | get-property "styles[6].start" | equals 42 
-    | verify-true
-with [get-editor "opendaylight-flow-statistics.yang" | get-text-viewer] {
-    hover-text 12 25
-    set-caret-pos 15 28
-    key-type Del -times 9
+    key-type Down
+    key-type Right
+    key-type "M1+ARROW_RIGHT"
     key-type Enter
-}
-get-editor "opendaylight-flow-statistics.yang" | get-text-viewer | get-property "styles[123].start" | equals 739 
-    | verify-true
-with [get-editor "opendaylight-flow-statistics.yang" | get-text-viewer] {
-    set-caret-pos 16 22
+    key-type Down -times 4
+    key-type End
+    key-type Enter
+    key-type Down -times 9
+    key-type End
+    key-type Enter
+    key-type Down
+    key-type End
+    key-type Enter
+    key-type Up
+    key-type Right -times 8
+    key-type Enter
+    set-caret-pos 28 67
+    key-type Enter
+    key-type Down -times 2
+    key-type Right -times 5
+    key-type Enter
+    key-type Down
+    key-type "M2+HOME"
+    select-range 33 6 33 5
+    key-type "M2+HOME"
+    select-range 33 6 33 1
+    key-type Del
+    key-type Down
+    type-text "}"
+    key-type Enter
+    key-type Down -times 2
+    key-type End
     key-type Left
+    key-type "M2+ARROW_DOWN" -times 4
+    key-type Del
+    type-text "{"
+    key-type Enter
+    type-text ";"
+    key-type Enter
+    key-type Down -times 15
+    key-type Up
+    key-type Home
     key-type Enter
 }
-get-editor "opendaylight-flow-statistics.yang" | get-text-viewer | get-property "styles[125].start" | equals 764 
-    | verify-true
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--
