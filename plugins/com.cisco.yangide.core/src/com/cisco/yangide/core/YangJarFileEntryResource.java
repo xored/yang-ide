@@ -122,7 +122,7 @@ public class YangJarFileEntryResource extends PlatformObject implements IJarEntr
 
     @Override
     public boolean isFile() {
-        return true;
+        return true; 
     }
 
     /**
