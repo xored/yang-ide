@@ -22,6 +22,7 @@ import org.eclipse.jface.text.TextUtilities;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditorExtension3;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
@@ -41,8 +42,6 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
 
     /** The line comment introducer. Value is "{@value} " */
     private static final String LINE_COMMENT = "//"; //$NON-NLS-1$
-
-    private static final int DEFAULT_TAB_WIDTH = 2;
 
     private boolean fCloseBrace;
     private boolean fIsSmartMode;
@@ -605,8 +604,8 @@ public class YangAutoIndentStrategy extends DefaultIndentLineAutoEditStrategy {
      * The preference setting for the visual tabulator display.
      */
     private int getVisualTabLengthPreference() {
-        // return CodeFormatterUtil.getTabWidth(fProject);
-        return DEFAULT_TAB_WIDTH;
+        return YangEditorPlugin.getDefault().getCombinedPreferenceStore()
+        .getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
     }
 
     private boolean isLineDelimiter(IDocument document, String text) {
