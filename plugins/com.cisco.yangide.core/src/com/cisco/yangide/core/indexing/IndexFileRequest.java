@@ -36,13 +36,23 @@ public class IndexFileRequest extends IndexRequest {
             // remove previously indexed file
             manager.remove(file);
 
-            System.err.println(toString());
             YangFileInfo info = (YangFileInfo) YangCorePlugin.createYangFile(file).getElementInfo(progressMonitor);
             manager.addModule(info.getModule(), file.getProject(), file.getFullPath(), "");
+            manager.fileAddedToIndex(file.getFullPath(), file.getModificationStamp());
         } catch (YangModelException e) {
             // ignore exception
         }
         return true;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof IndexFileRequest && file.equals(((IndexFileRequest) obj).file);
+    }
+
+    @Override
+    public int hashCode() {
+        return file.hashCode();
     }
 
     @Override

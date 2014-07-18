@@ -124,7 +124,7 @@ public class IndexAllProject extends IndexRequest {
                 this.manager.addSource(iFile);
             }
         } catch (CoreException e) {
-            this.manager.removeIndex(this.containerPath);
+            this.manager.removeIndexFamily(project);
             return false;
         }
         return true;

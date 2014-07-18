@@ -55,12 +55,27 @@ public class IndexJarFileRequest extends IndexRequest {
                     manager.addModule(info.getModule(), project, path, entry.getName());
                 }
             }
+            manager.fileAddedToIndex(path, path.toFile().lastModified());
         } catch (IOException e) {
             YangCorePlugin.log(e);
         } catch (YangModelException e) {
             YangCorePlugin.log(e);
         }
         return true;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof IndexJarFileRequest) {
+            IndexJarFileRequest req = (IndexJarFileRequest) obj;
+            return project.equals(req.project) && path.equals(req.path);
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * project.hashCode() + path.hashCode();
     }
 
     @Override

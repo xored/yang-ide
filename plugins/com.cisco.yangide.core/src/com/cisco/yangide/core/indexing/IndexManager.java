@@ -18,6 +18,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Fun;
@@ -31,13 +32,32 @@ import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.TypeDefinition;
 
 /**
+ * Provides functionality to index AST nodes and search item in index.
+ *
  * @author Konstantin Zaitsev
  * @date Jun 25, 2014
  */
 public class IndexManager extends JobManager {
 
+    /**
+     * Stores index version, it is required increment version on each major changes of indexing
+     * algorithm or indexed data.
+     */
+    private static final int INDEX_VERSION = 2;
+
+    /**
+     * Index DB file path.
+     */
+    private static final String INDEX_PATH = "index_" + INDEX_VERSION + ".db";
+
+    /**
+     * Empty result array.
+     */
     private static final ElementIndexInfo[] NO_ELEMENTS = new ElementIndexInfo[0];
 
+    /**
+     * Index database.
+     */
     private DB db;
 
     /**
@@ -53,26 +73,33 @@ public class IndexManager extends JobManager {
      */
     private NavigableSet<Fun.Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo>> idxKeywords;
 
+    /**
+     * Resources index that contains relation of indexed resource and modification stamp of resource
+     * when indexed was performed.
+     */
+    private BTreeMap<String, Long> idxResources;
+
     public IndexManager() {
-        File indexFile = YangCorePlugin.getDefault().getStateLocation().append("index.db").toFile();
+        File indexFile = YangCorePlugin.getDefault().getStateLocation().append(INDEX_PATH).toFile();
         try {
-            this.db = DBMaker.newFileDB(indexFile).closeOnJvmShutdown().make();
-            this.idxKeywords = db.getTreeSet("keywords");
+            initDB(indexFile, false);
 
             if (!idxKeywords.isEmpty() && !(idxKeywords.first() instanceof Fun.Tuple6)) {
-                cleanDB(indexFile);
+                initDB(indexFile, true);
             }
         } catch (Throwable e) {
-            cleanDB(indexFile);
+            initDB(indexFile, true);
         }
     }
 
     /**
-     * Cleans DB by recreate index file.
+     * Inits database by cleans old version of DB and recreate current index file if necessary.
      *
      * @param indexFile index file
+     * @param cleanAll if <code>true</code> remove old version and current index also otherwise
+     * remove only old version of index DB.
      */
-    private void cleanDB(File indexFile) {
+    private void initDB(File indexFile, final boolean cleanAll) {
         // delete index db in case if index is broken and reopen with clean state
         if (this.db != null) {
             this.db.close();
@@ -81,7 +108,7 @@ public class IndexManager extends JobManager {
 
             @Override
             public boolean accept(File dir, String name) {
-                return name.startsWith("index.db");
+                return name.startsWith("index") && (cleanAll || !name.startsWith("index_" + INDEX_VERSION));
             }
         });
         if (files != null) {
@@ -91,12 +118,8 @@ public class IndexManager extends JobManager {
         }
         this.db = DBMaker.newFileDB(indexFile).closeOnJvmShutdown().make();
         this.idxKeywords = db.getTreeSet("keywords");
-        // reindex all projects
-        for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
-            if (YangCorePlugin.isYangProject(project)) {
-                indexAll(project);
-            }
-        }
+        this.idxResources = db.getTreeMap("resources");
+        indexAllProjects();
     }
 
     @Override
@@ -114,10 +137,31 @@ public class IndexManager extends JobManager {
     }
 
     public void addSource(IFile file) {
+        // this workaround need in case of old project that has target copied yang file but this
+        // files not ignored by JDT yet.
+        if ("target".equals(file.getProjectRelativePath().segment(0))) {
+            return;
+        }
+        // in case of file not change, skip indexing
+        String path = file.getFullPath().toString();
+        if (idxResources.containsKey(path) && idxResources.get(path) == file.getModificationStamp()) {
+            System.err.println("[x] " + file);
+            return;
+        }
+        request(new IndexFileRequest(file, this));
+    }
+
+    public void addWorkingCopy(IFile file) {
         request(new IndexFileRequest(file, this));
     }
 
     public void addJarFile(IProject project, IPath file) {
+        // in case of file not change, skip indexing
+        if (idxResources.containsKey(file.toString())
+                && idxResources.get(file.toString()) == file.toFile().lastModified()) {
+            System.err.println("[x] " + file);
+            return;
+        }
         request(new IndexJarFileRequest(project, file, this));
     }
 
@@ -134,7 +178,7 @@ public class IndexManager extends JobManager {
                 .iterator();
         while (iterator.hasNext()) {
             Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo> entry = iterator.next();
-            if (project.getFullPath().toString().equals(entry.f.getProject())) {
+            if (project.getName().equals(entry.f.getProject())) {
                 iterator.remove();
             }
         }
@@ -156,6 +200,7 @@ public class IndexManager extends JobManager {
                 iterator.remove();
             }
         }
+        idxResources.remove(containerPath.toString());
     }
 
     public synchronized void addElementIndexInfo(ElementIndexInfo info) {
@@ -218,7 +263,7 @@ public class IndexManager extends JobManager {
                 continue;
             }
 
-            if (name != null && name.length() > 0 && !entry.c.startsWith(name)) {
+            if (name != null && name.length() > 0 && !entry.c.equals(name)) {
                 continue;
             }
 
@@ -240,5 +285,18 @@ public class IndexManager extends JobManager {
             return infos.toArray(new ElementIndexInfo[infos.size()]);
         }
         return NO_ELEMENTS;
+    }
+
+    private void indexAllProjects() {
+        // reindex all projects
+        for (IProject project : ResourcesPlugin.getWorkspace().getRoot().getProjects()) {
+            if (YangCorePlugin.isYangProject(project)) {
+                indexAll(project);
+            }
+        }
+    }
+
+    protected void fileAddedToIndex(IPath path, long modificationStamp) {
+        idxResources.put(path.toString(), modificationStamp);
     }
 }

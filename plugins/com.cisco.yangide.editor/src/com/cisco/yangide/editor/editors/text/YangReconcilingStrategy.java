@@ -11,9 +11,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
@@ -21,9 +19,7 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.eclipse.jface.text.source.IAnnotationModel;
-import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -46,16 +42,15 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
     private IDocument document;
     private ISourceViewer viewer;
     private ITextEditor editor;
-    
+
     /**
-     * next character position - used locally and only valid while
-     * {@link #calculatePositions()} is in progress.
+     * next character position - used locally and only valid while {@link #calculatePositions()} is
+     * in progress.
      */
     protected int cNextPos = 0;
 
     /** number of newLines found by {@link #classifyTag()} */
     protected int cNewLines = 0;
-    
 
     public YangReconcilingStrategy(ISourceViewer viewer, ITextEditor editor) {
         this.viewer = viewer;
@@ -112,13 +107,14 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
                 YangFileInfo fileInfo = (YangFileInfo) yangFile.getElementInfo(monitor);
                 fileInfo.setModule(module);
                 fileInfo.setIsStructureKnown(true);
-                // reindex content
-                YangModelManager.getIndexManager().addSource(file);
+                // re index content
+                YangModelManager.getIndexManager().addWorkingCopy(file);
             }
-            
-            if (editor instanceof YangEditor)
+
+            if (editor instanceof YangEditor) {
                 ((YangEditor) editor).updateFoldingRegions(module);
-            
+            }
+
         } catch (Exception e) {
             // ignore any exception on reconcile
         }
@@ -132,5 +128,5 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
     public void initialReconcile() {
         reconcile(new Region(0, document.getLength()));
     }
-   
+
 }

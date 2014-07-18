@@ -56,7 +56,7 @@ import com.cisco.yangide.ui.preferences.IYangColorConstants;
 
 /**
  * Editor class
- * 
+ *
  * @author Alexey Kholupko
  */
 public class YangEditor extends TextEditor implements IProjectionListener {
@@ -81,7 +81,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.editors.text.TextEditor#initializeEditor() Called from TextEditor.<init>
      */
     @Override
@@ -109,7 +109,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
             if (file != null) {
                 try {
                     YangModelManager.getYangModelManager().removeInfoAndChildren(YangCorePlugin.createYangFile(file));
-                    YangModelManager.getIndexManager().addSource(file);
+                    YangModelManager.getIndexManager().addWorkingCopy(file);
                 } catch (YangModelException e) {
                     // ignore exception
                 }
@@ -184,7 +184,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.editors.text.TextEditor#handlePreferenceStoreChanged(org.eclipse.jface.util
      * .PropertyChangeEvent)
@@ -215,7 +215,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.editors.text.TextEditor#createActions()
      */
     @Override
@@ -259,7 +259,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createPartControl(org.eclipse.swt.widgets
      * .Composite)
@@ -280,7 +280,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createSourceViewer(org.eclipse.swt.
      * widgets.Composite, org.eclipse.jface.text.source.IVerticalRuler, int)
@@ -304,9 +304,10 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.text.source.projection.IProjectionListener#projectionEnabled()
      */
+    @Override
     public void projectionEnabled() {
         fFoldingStructureProvider = new YangFoldingStructureProvider(this);
         fFoldingStructureProvider.setDocument(getDocumentProvider().getDocument(getEditorInput()));
@@ -322,7 +323,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.jface.text.source.projection.IProjectionListener#projectionDisabled()
      */
     @Override
@@ -335,9 +336,10 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
      */
+    @Override
     public Object getAdapter(Class key) {
 
         if (projectionSupport != null) {

@@ -42,6 +42,7 @@ import com.cisco.yangide.ui.YangUIPlugin;
  * @author Konstantin Zaitsev
  * @date Jul 4, 2014
  */
+@SuppressWarnings("restriction")
 public class EditorUtility {
 
     /**
