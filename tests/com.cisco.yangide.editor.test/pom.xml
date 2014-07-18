@@ -29,7 +29,7 @@
 
             <injections>
               <injection>
-                <site>file://${project.basedir}/../../product/update-site/target/repository/</site>
+                <site>${update.site.url}</site>
                 <features>
                   <feature>com.cisco.yangide.feature.feature.group</feature>
                   <feature>com.cisco.yangide.m2e.yang.feature.feature.group</feature>
