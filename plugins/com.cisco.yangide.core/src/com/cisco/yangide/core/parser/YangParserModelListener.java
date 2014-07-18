@@ -76,7 +76,6 @@ public class YangParserModelListener extends YangParserBaseListener {
         module.setRevision(revision);
         stack.push(module);
         updateNamedNode(module, ctx);
-        setNodeDescription(module, ctx);
     }
 
     @Override
@@ -86,7 +85,6 @@ public class YangParserModelListener extends YangParserBaseListener {
         module.setRevision(revision);
         stack.push(module);
         updateNamedNode(module, ctx);
-        setNodeDescription(module, ctx);
     }
 
     @Override
@@ -367,6 +365,8 @@ public class YangParserModelListener extends YangParserBaseListener {
             if (bodyToken != null) {
                 astNode.setBodyStartPosition(bodyToken.getStartIndex());
             }
+
+            setNodeDescription(astNode, treeNode);
         }
     }
 

@@ -43,7 +43,7 @@ public class IndexManager extends JobManager {
      * Stores index version, it is required increment version on each major changes of indexing
      * algorithm or indexed data.
      */
-    private static final int INDEX_VERSION = 2;
+    private static final int INDEX_VERSION = 3;
 
     /**
      * Index DB file path.
