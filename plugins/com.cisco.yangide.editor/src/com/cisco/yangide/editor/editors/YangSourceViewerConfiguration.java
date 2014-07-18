@@ -61,7 +61,7 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
     @Override
     public String[] getConfiguredContentTypes(ISourceViewer sourceViewer) {
         return new String[] { IDocument.DEFAULT_CONTENT_TYPE, YangPartitionScanner.YANG_COMMENT,
-                YangPartitionScanner.YANG_STRING };
+                YangPartitionScanner.YANG_STRING, YangPartitionScanner.YANG_STRING_SQ };
     }
 
     @Override
@@ -116,6 +116,11 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
         dr = new DefaultDamagerRepairer(getYangStringScanner());
         reconciler.setDamager(dr, YangPartitionScanner.YANG_STRING);
         reconciler.setRepairer(dr, YangPartitionScanner.YANG_STRING);
+        
+        dr = new DefaultDamagerRepairer(getYangStringScanner());
+        reconciler.setDamager(dr, YangPartitionScanner.YANG_STRING_SQ);
+        reconciler.setRepairer(dr, YangPartitionScanner.YANG_STRING_SQ);
+        
 
         return reconciler;
     }

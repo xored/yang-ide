@@ -134,34 +134,36 @@ public class YangFoldingStructureProvider {
     }
 
     public void updateFoldingRegions(Module yangModule) {
-        fPositionToElement = new HashMap();
-        try {
-            ProjectionAnnotationModel model = (ProjectionAnnotationModel) fEditor
-                    .getAdapter(ProjectionAnnotationModel.class);
-            if (model == null) {
-                return;
-            }
-
-            final List root = new ArrayList();
-
-            yangModule.accept(new ASTVisitor() {
-
-                @Override
-                public void preVisit(ASTNode node) {
-                    root.add(node);
+        if (yangModule != null) {
+            fPositionToElement = new HashMap();
+            try {
+                ProjectionAnnotationModel model = (ProjectionAnnotationModel) fEditor
+                        .getAdapter(ProjectionAnnotationModel.class);
+                if (model == null) {
+                    return;
                 }
-            });
 
-            List currentRegions = new ArrayList<>();
+                final List root = new ArrayList();
 
-            // order is important, to know about header comment
-            addFoldingNonASTregions(currentRegions);
+                yangModule.accept(new ASTVisitor() {
 
-            addFoldingRegions(currentRegions, root);
+                    @Override
+                    public void preVisit(ASTNode node) {
+                        root.add(node);
+                    }
+                });
 
-            updateFoldingRegions(model, currentRegions);
-        } catch (BadLocationException be) {
-            // ignore as document has changed
+                List currentRegions = new ArrayList<>();
+
+                // order is important, to know about header comment
+                addFoldingNonASTregions(currentRegions);
+
+                addFoldingRegions(currentRegions, root);
+
+                updateFoldingRegions(model, currentRegions);
+            } catch (BadLocationException be) {
+                // ignore as document has changed
+            }
         }
     }
 

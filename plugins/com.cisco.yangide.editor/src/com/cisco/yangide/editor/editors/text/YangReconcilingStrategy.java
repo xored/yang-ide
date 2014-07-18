@@ -11,7 +11,9 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.Region;
@@ -19,7 +21,9 @@ import org.eclipse.jface.text.reconciler.DirtyRegion;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategyExtension;
 import org.eclipse.jface.text.source.IAnnotationModel;
+import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
@@ -98,7 +102,7 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
                         public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
                             errors.set(true);
                             annotationModel.addProblem(new YangProblem(new YangSyntaxAnnotation(null), new Position(
-                            charStart, charEnd - charStart)));
+                                    charStart, charEnd - charStart)));
                         }
                     });
             annotationModel.reportProblem();
@@ -111,9 +115,8 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
                 YangModelManager.getIndexManager().addWorkingCopy(file);
             }
 
-            if (editor instanceof YangEditor) {
+            if (editor instanceof YangEditor && module != null)
                 ((YangEditor) editor).updateFoldingRegions(module);
-            }
 
         } catch (Exception e) {
             // ignore any exception on reconcile

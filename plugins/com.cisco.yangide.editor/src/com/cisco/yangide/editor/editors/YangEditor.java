@@ -315,7 +315,8 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         Module module = YangParserUtil.parseYangFile(getDocumentProvider().getDocument(getEditorInput()).get()
                 .toCharArray());
 
-        fFoldingStructureProvider.updateFoldingRegions(module);
+        if(module != null)
+            fFoldingStructureProvider.updateFoldingRegions(module);
 
         // IPreferenceStore preferenceStore = AntUIPlugin.getDefault().getPreferenceStore();
         // preferenceStore.setValue(AntEditorPreferenceConstants.EDITOR_FOLDING_ENABLED, true);
@@ -353,7 +354,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     }
 
     public void updateFoldingRegions(Module module) {
-        if (fFoldingStructureProvider != null) {
+        if (fFoldingStructureProvider != null && module != null) {
             fFoldingStructureProvider.updateFoldingRegions(module);
         }
     }

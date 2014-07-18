@@ -169,7 +169,7 @@ public class AddBlockCommentAction extends BlockCommentAction {
      * @return <code>true</code> if <code>partType</code> is special, <code>false</code> otherwise
      */
     private boolean isSpecialPartition(String partType) {
-        return partType == YangPartitionScanner.YANG_STRING;
+        return partType == YangPartitionScanner.YANG_STRING || partType == YangPartitionScanner.YANG_STRING_SQ;
     }
 
     /*

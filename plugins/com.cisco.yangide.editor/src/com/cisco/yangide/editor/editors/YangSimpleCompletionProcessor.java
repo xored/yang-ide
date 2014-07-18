@@ -392,7 +392,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     }
 
     /**
-     * XXX dirty
+     * FIXME dirty and ugly
      */
     private String determineProposalScopeKeyword(IDocument doc, int offset) {
         try {
@@ -404,12 +404,18 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                     YangHeuristicScanner.UNBOUND);
 
             int currentToken = yangHeuristicScanner.previousToken(curPos, YangHeuristicScanner.UNBOUND);
+
+            //assuming identifier between keyword and {
             int keywordEndPos = yangHeuristicScanner.getPosition();
             int keywordStartPos = keywordEndPos;
 
             if (currentToken == Symbols.TokenIDENT) {
                 yangHeuristicScanner.previousToken(keywordEndPos, YangHeuristicScanner.UNBOUND);
                 keywordStartPos = yangHeuristicScanner.getPosition();
+            }
+            //if there was no identifier (empty or string partition)
+            if(currentToken == Symbols.TokenKEYWORD){
+                keywordEndPos = curPos + 1;
             }
 
             String keyword = doc.get(keywordStartPos, keywordEndPos - keywordStartPos).trim();

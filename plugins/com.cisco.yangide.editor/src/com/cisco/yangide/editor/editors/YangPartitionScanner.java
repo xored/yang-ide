@@ -22,7 +22,14 @@ import org.eclipse.jface.text.rules.Token;
  */
 public class YangPartitionScanner extends RuleBasedPartitionScanner {
 
+    /**
+     * Double qoute string partition
+     */    
     public final static String YANG_STRING = "__yang_string";
+    /**
+     * Single qoute string partition 
+     */
+    public final static String YANG_STRING_SQ = "__yang_string_sq"; 
     public final static String YANG_COMMENT = "__yang_comment";
 
     public YangPartitionScanner() {
@@ -36,7 +43,8 @@ public class YangPartitionScanner extends RuleBasedPartitionScanner {
         IToken multiLineString = new Token(YANG_STRING);
         // TODO escaping " or ' in each other sequence
         rules.add(new MultiLineRule("\"", "\"", multiLineString, '\\', true));
-        rules.add(new MultiLineRule("'", "'", multiLineString, '\\', true));
+        IToken multiLineString_sq = new Token(YANG_STRING_SQ);
+        rules.add(new MultiLineRule("'", "'", multiLineString_sq, '\\', true));
 
         IPredicateRule[] result = new IPredicateRule[rules.size()];
         rules.toArray(result);

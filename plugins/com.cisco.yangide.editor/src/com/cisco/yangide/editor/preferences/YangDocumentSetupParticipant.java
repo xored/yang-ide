@@ -45,6 +45,6 @@ public class YangDocumentSetupParticipant implements IDocumentSetupParticipant {
         return new FastPartitioner(new YangPartitionScanner(), new String[] {
                 // XXX undetermined behaviour
                 // IDocument.DEFAULT_CONTENT_TYPE,
-                YangPartitionScanner.YANG_COMMENT, YangPartitionScanner.YANG_STRING });
+                YangPartitionScanner.YANG_COMMENT, YangPartitionScanner.YANG_STRING, YangPartitionScanner.YANG_STRING_SQ });
     }
 }
