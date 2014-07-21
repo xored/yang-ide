@@ -12,7 +12,10 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.jdt.internal.core.JarEntryFile;
+import org.eclipse.jdt.internal.ui.javaeditor.JarEntryEditorInput;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.preference.IPreferenceStore;
@@ -41,6 +44,7 @@ import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
 
 import com.cisco.yangide.core.YangCorePlugin;
+import com.cisco.yangide.core.YangJarFileEntryResource;
 import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.model.YangModelManager;
@@ -81,7 +85,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.ui.editors.text.TextEditor#initializeEditor() Called from TextEditor.<init>
      */
     @Override
@@ -182,13 +186,6 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.ui.editors.text.TextEditor#handlePreferenceStoreChanged(org.eclipse.jface.util
-     * .PropertyChangeEvent)
-     */
     @Override
     protected void handlePreferenceStoreChanged(PropertyChangeEvent event) {
 
@@ -213,11 +210,6 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         return getSourceViewer().getDocument();
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.ui.editors.text.TextEditor#createActions()
-     */
     @Override
     protected void createActions() {
 
@@ -257,13 +249,6 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         }
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createPartControl(org.eclipse.swt.widgets
-     * .Composite)
-     */
     @Override
     public void createPartControl(Composite parent) {
         super.createPartControl(parent);
@@ -278,13 +263,6 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.ui.texteditor.AbstractDecoratedTextEditor#createSourceViewer(org.eclipse.swt.
-     * widgets.Composite, org.eclipse.jface.text.source.IVerticalRuler, int)
-     */
     @Override
     protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
         fAnnotationAccess = getAnnotationAccess();
@@ -302,11 +280,6 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         return viewer;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.jface.text.source.projection.IProjectionListener#projectionEnabled()
-     */
     @Override
     public void projectionEnabled() {
         fFoldingStructureProvider = new YangFoldingStructureProvider(this);
@@ -315,18 +288,14 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         Module module = YangParserUtil.parseYangFile(getDocumentProvider().getDocument(getEditorInput()).get()
                 .toCharArray());
 
-        if(module != null)
+        if (module != null) {
             fFoldingStructureProvider.updateFoldingRegions(module);
+        }
 
         // IPreferenceStore preferenceStore = AntUIPlugin.getDefault().getPreferenceStore();
         // preferenceStore.setValue(AntEditorPreferenceConstants.EDITOR_FOLDING_ENABLED, true);
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.jface.text.source.projection.IProjectionListener#projectionDisabled()
-     */
     @Override
     public void projectionDisabled() {
         fFoldingStructureProvider = null;
@@ -335,13 +304,8 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-     */
     @Override
-    public Object getAdapter(Class key) {
+    public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
 
         if (projectionSupport != null) {
             Object adapter = projectionSupport.getAdapter(getSourceViewer(), key);
@@ -357,5 +321,35 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         if (fFoldingStructureProvider != null && module != null) {
             fFoldingStructureProvider.updateFoldingRegions(module);
         }
+    }
+
+    /**
+     * @return {@link Module} of the current editor input or <code>null</code> if editor input does
+     * not contains approprieate {@link Module}
+     * @throws YangModelException error during initialization of Module
+     */
+    @SuppressWarnings("restriction")
+    public Module getModule() throws YangModelException {
+        IEditorInput input = getEditorInput();
+        if (input == null) {
+            return null;
+        }
+
+        if (input instanceof IFileEditorInput) {
+            IFile file = ((IFileEditorInput) input).getFile();
+            return YangCorePlugin.createYangFile(file).getModule();
+        } else if (input instanceof JarEntryEditorInput) {
+            JarEntryEditorInput jarInput = (JarEntryEditorInput) input;
+            IStorage storage = jarInput.getStorage();
+            if (storage instanceof YangJarFileEntryResource) {
+                YangJarFileEntryResource jarEntry = (YangJarFileEntryResource) storage;
+                return YangCorePlugin.createJarEntry(jarEntry.getPath(), jarEntry.getEntry()).getModule();
+            } else if (storage instanceof JarEntryFile) {
+                JarEntryFile jarEntry = (JarEntryFile) storage;
+                return YangCorePlugin.createJarEntry(jarEntry.getPackageFragmentRoot().getPath(),
+                        jarEntry.getFullPath().makeRelative().toString()).getModule();
+            }
+        }
+        return null;
     }
 }

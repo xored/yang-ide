@@ -26,7 +26,7 @@ import org.eclipse.jdt.core.IPackageFragmentRoot;
 
 /**
  * Custom implementation of {@link IJarEntryResource} to open correct jar file from JDT perspective.
- * 
+ *
  * @author Konstantin Zaitsev
  * @date Jul 7, 2014
  */
@@ -66,7 +66,7 @@ public class YangJarFileEntryResource extends PlatformObject implements IJarEntr
 
     @Override
     public String getName() {
-        return entry;
+        return new Path(entry).lastSegment();
     }
 
     @Override
@@ -112,7 +112,7 @@ public class YangJarFileEntryResource extends PlatformObject implements IJarEntr
                 }
             }
         }
-        return parent;
+        return parent.getParent();
     }
 
     @Override
@@ -123,5 +123,19 @@ public class YangJarFileEntryResource extends PlatformObject implements IJarEntr
     @Override
     public boolean isFile() {
         return true;
+    }
+
+    /**
+     * @return the entry
+     */
+    public String getEntry() {
+        return entry;
+    }
+
+    /**
+     * @return the path
+     */
+    public IPath getPath() {
+        return path;
     }
 }

@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Map;
 import java.util.jar.JarFile;
+import java.util.zip.ZipEntry;
 
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.IPath;
@@ -73,7 +74,8 @@ public class YangJarEntry extends YangElement {
 
     private char[] getContent() throws YangModelException {
         try (JarFile file = new JarFile(getParent().getPath().toFile())) {
-            InputStreamReader in = new InputStreamReader(file.getInputStream(file.getEntry(path.toString())), "UTF-8");
+            ZipEntry entry = file.getEntry(path.toString());
+            InputStreamReader in = new InputStreamReader(file.getInputStream(entry), "UTF-8");
             CharArrayWriter out = new CharArrayWriter();
             char[] buff = new char[1024];
             int len = 0;
