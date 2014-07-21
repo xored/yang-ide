@@ -7,7 +7,7 @@ Element-Version: 3.0
 External-Reference: 
 Id: _TwMTMA5YEeSKlfM72EMibA
 Runtime-Version: 1.5.0.201406151150
-Save-Time: 7/18/14 5:39 PM
+Save-Time: 7/21/14 12:28 PM
 Testcase-Type: ecl
 Verifications: _vUNrEA5nEeSKlfM72EMibA
 
@@ -15,8 +15,6 @@ Verifications: _vUNrEA5nEeSKlfM72EMibA
 Content-Type: text/ecl
 Entry-Name: .content
 
-get-view "Task List" | close
-get-view Outline | close
 with [get-editor "opendaylight-flow-statistics.yang" | get-text-viewer] {
     set-caret-pos 15 28
     key-type Enter

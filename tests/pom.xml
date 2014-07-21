@@ -11,7 +11,7 @@
   <properties>
     <eclipse-version>3.7.2</eclipse-version>
     <q7-version>1.5.0</q7-version>
-    <update.site.url>file://${project.basedir}/../product/update-site/target/repository/</update.site.url>
+    <update.site.url>file://${project.basedir}/../../product/update-site/target/repository/</update.site.url>
   </properties>
 
   <modules>
