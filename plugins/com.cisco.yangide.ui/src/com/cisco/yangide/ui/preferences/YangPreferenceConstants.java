@@ -51,4 +51,12 @@ public class YangPreferenceConstants {
     public final static String EDITOR_SMART_INDENT_AFTER_NEWLINE = "smartIndentAfterNewline"; //$NON-NLS-1$
 
     public final static String M2E_PLUGIN_CLEAN_TARGET = "m2ePluginCleanTarget";
+
+    // formatter preferences
+    public final static String FMT_INDENT_SPACE = "fmtIndentSpace";
+    public final static String FMT_INDENT_WIDTH = "fmtIndentWidth";
+    public final static String FMT_COMMENT = "fmtComment";
+    public final static String FMT_STRING = "fmtString";
+    public final static String FMT_MAX_LINE_LENGTH = "fmtMaxLineLength";
+    public final static String FMT_COMPACT_IMPORT = "fmtCompactImport";
 }

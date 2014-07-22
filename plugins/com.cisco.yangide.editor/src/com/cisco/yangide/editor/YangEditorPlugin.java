@@ -7,7 +7,12 @@
  */
 package com.cisco.yangide.editor;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+
+import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -22,7 +27,7 @@ import com.cisco.yangide.ui.YangUIPlugin;
 
 /**
  * The activator class controls the plug-in life cycle
- * 
+ *
  * @author Alexey Kholupko
  */
 public class YangEditorPlugin extends AbstractUIPlugin {
@@ -49,6 +54,7 @@ public class YangEditorPlugin extends AbstractUIPlugin {
      * 
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
      */
+    @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
@@ -59,6 +65,7 @@ public class YangEditorPlugin extends AbstractUIPlugin {
      * 
      * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
      */
+    @Override
     public void stop(BundleContext context) throws Exception {
         plugin = null;
         super.stop(context);
@@ -85,7 +92,7 @@ public class YangEditorPlugin extends AbstractUIPlugin {
 
     /**
      * Logs the specified throwable with this plug-in's log.
-     * 
+     *
      * @param t throwable to log
      */
     public static void log(Throwable t) {
@@ -95,8 +102,9 @@ public class YangEditorPlugin extends AbstractUIPlugin {
 
     private IWorkbenchPage internalGetActivePage() {
         IWorkbenchWindow window = getWorkbench().getActiveWorkbenchWindow();
-        if (window == null)
+        if (window == null) {
             return null;
+        }
         return window.getActivePage();
     }
 
@@ -106,7 +114,7 @@ public class YangEditorPlugin extends AbstractUIPlugin {
 
     /**
      * Returns a combined preference store, this store is read-only.
-     * 
+     *
      * @return the combined preference store
      */
     public IPreferenceStore getCombinedPreferenceStore() {
@@ -118,4 +126,22 @@ public class YangEditorPlugin extends AbstractUIPlugin {
         return fCombinedPreferenceStore;
     }
 
+    /**
+     * @param path path to file relative to this bundle.
+     * @return string content of the bundle file
+     */
+    public String getBundleFileContent(String path) {
+        try (InputStreamReader in = new InputStreamReader(FileLocator.openStream(getBundle(), new Path(path), false),
+                "UTF-8")) {
+            StringBuilder sb = new StringBuilder();
+            char[] cbuf = new char[1024];
+            int len = 0;
+            while ((len = in.read(cbuf)) > 0) {
+                sb.append(cbuf, 0, len);
+            }
+            return sb.toString();
+        } catch (IOException e) {
+            return null;
+        }
+    }
 }

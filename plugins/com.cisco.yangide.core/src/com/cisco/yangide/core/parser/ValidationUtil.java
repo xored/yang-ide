@@ -14,9 +14,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.antlr.v4.runtime.tree.ParseTree;
+import org.antlr.v4.runtime.tree.TerminalNode;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Module_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.StringContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Submodule_stmtContext;
-import org.opendaylight.yangtools.yang.parser.util.ParserListenerUtils;
 
 /**
  * Validation utilities.
@@ -69,11 +70,34 @@ public class ValidationUtil {
     }
 
     static String getName(ParseTree child) {
-        return ParserListenerUtils.stringFromNode(child);
+        String result = "";
+        for (int i = 0; i < child.getChildCount(); ++i) {
+            if (child.getChild(i) instanceof StringContext) {
+                final StringContext context = (StringContext) child.getChild(i);
+                if (context != null) {
+                    return stringFromStringContext(context);
+
+                }
+            }
+        }
+        return result;
     }
 
     static String f(String base, Object... args) {
         return String.format(base, args);
+    }
+
+    public static String stringFromStringContext(final StringContext context) {
+        StringBuilder str = new StringBuilder();
+        for (TerminalNode stringNode : context.STRING()) {
+            String result = stringNode.getText();
+            if (!result.contains("\"")) {
+                str.append(result);
+            } else {
+                str.append(result.replace("\"", ""));
+            }
+        }
+        return str.toString();
     }
 
     /**

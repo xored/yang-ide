@@ -17,6 +17,8 @@ import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
 import org.eclipse.jface.text.contentassist.IContentAssistant;
+import org.eclipse.jface.text.formatter.IContentFormatter;
+import org.eclipse.jface.text.formatter.MultiPassContentFormatter;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
 import org.eclipse.jface.text.presentation.PresentationReconciler;
@@ -32,6 +34,7 @@ import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cisco.yangide.editor.editors.text.CompositeReconcilingStrategy;
+import com.cisco.yangide.editor.editors.text.YangFormattingStrategy;
 import com.cisco.yangide.editor.editors.text.YangReconcilingStrategy;
 import com.cisco.yangide.editor.preferences.YangDocumentSetupParticipant;
 
@@ -116,22 +119,14 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
         dr = new DefaultDamagerRepairer(getYangStringScanner());
         reconciler.setDamager(dr, YangPartitionScanner.YANG_STRING);
         reconciler.setRepairer(dr, YangPartitionScanner.YANG_STRING);
-        
+
         dr = new DefaultDamagerRepairer(getYangStringScanner());
         reconciler.setDamager(dr, YangPartitionScanner.YANG_STRING_SQ);
         reconciler.setRepairer(dr, YangPartitionScanner.YANG_STRING_SQ);
-        
 
         return reconciler;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.source.SourceViewerConfiguration#getConfiguredDocumentPartitioning
-     * (org.eclipse.jface.text.source.ISourceViewer)
-     */
     @Override
     public String getConfiguredDocumentPartitioning(ISourceViewer sourceViewer) {
         return YangDocumentSetupParticipant.YANG_PARTITIONING;
@@ -164,24 +159,12 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
         }
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.source.SourceViewerConfiguration#getAutoEditStrategies(org.eclipse
-     * .jface.text.source.ISourceViewer, java.lang.String)
-     */
     @Override
     public IAutoEditStrategy[] getAutoEditStrategies(ISourceViewer sourceViewer, String contentType) {
         String partitioning = getConfiguredDocumentPartitioning(sourceViewer);
         return new IAutoEditStrategy[] { new YangAutoIndentStrategy(partitioning, sourceViewer) }; // usefull
     }
 
-    /*
-     * @see
-     * org.eclipse.jface.text.source.SourceViewerConfiguration#getTabWidth(org.eclipse.jface.text
-     * .source.ISourceViewer)
-     */
     @Override
     public int getTabWidth(ISourceViewer sourceViewer) {
         if (preferencesStore == null) {
@@ -190,13 +173,6 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
         return preferencesStore.getInt(AbstractDecoratedTextEditorPreferenceConstants.EDITOR_TAB_WIDTH);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.jface.text.source.SourceViewerConfiguration#getContentAssistant(org.eclipse.jface
-     * .text.source.ISourceViewer)
-     */
     @Override
     public IContentAssistant getContentAssistant(ISourceViewer sourceViewer) {
 
@@ -255,6 +231,14 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
             return reconciler;
         }
         return null;
+    }
+
+    @Override
+    public IContentFormatter getContentFormatter(ISourceViewer sourceViewer) {
+        final MultiPassContentFormatter formatter = new MultiPassContentFormatter(
+                getConfiguredDocumentPartitioning(sourceViewer), IDocument.DEFAULT_CONTENT_TYPE);
+        formatter.setMasterStrategy(new YangFormattingStrategy());
+        return formatter;
     }
 
     /**

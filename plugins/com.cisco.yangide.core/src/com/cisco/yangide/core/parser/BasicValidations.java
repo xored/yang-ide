@@ -20,7 +20,6 @@ import java.util.regex.Pattern;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Yang_version_stmtContext;
-import org.opendaylight.yangtools.yang.parser.util.YangValidationException;
 
 /**
  * Reusable checks of basic constraints on yang statements

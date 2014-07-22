@@ -7,9 +7,6 @@
  */
 package com.cisco.yangide.editor.preferences;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -187,7 +184,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
      */
     private final String[][] fSyntaxColorListModel = new String[][] {
 
-    { YangPreferencesMessages.YANGEditorPreferencePage_strings, IYangColorConstants.YANG_STRING },
+            { YangPreferencesMessages.YANGEditorPreferencePage_strings, IYangColorConstants.YANG_STRING },
             { YangPreferencesMessages.YANGEditorPreferencePage_keywords, IYangColorConstants.YANG_KEYWORD },
             { YangPreferencesMessages.YANGEditorPreferencePage_comments, IYangColorConstants.YANG_COMMENT },
             { YangPreferencesMessages.YANGEditorPreferencePage_identifiers, IYangColorConstants.YANG_IDENTIFIER },
@@ -298,7 +295,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
         fHighlightingColorListViewer.setInput(fListModel);
         fHighlightingColorListViewer
-                .setSelection(new StructuredSelection(fHighlightingColorListViewer.getElementAt(0)));
+        .setSelection(new StructuredSelection(fHighlightingColorListViewer.getElementAt(0)));
     }
 
     @Override
@@ -572,36 +569,12 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
         new YangPreviewerUpdater(fPreviewViewer, configuration, store);
 
-        String content = loadPreviewContentFromFile("/resources/ColorSettingPreviewCode.txt"); //$NON-NLS-1$
+        String content = YangEditorPlugin.getDefault().getBundleFileContent("/resources/ColorSettingPreviewCode.txt"); //$NON-NLS-1$
         IDocument document = new Document(content);
         new YangDocumentSetupParticipant().setup(document);
         fPreviewViewer.setDocument(document);
 
         return fPreviewViewer.getControl();
-    }
-
-    private String loadPreviewContentFromFile(String filename) {
-        String line;
-        String separator = System.getProperty("line.separator"); //$NON-NLS-1$
-        StringBuffer buffer = new StringBuffer(512);
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(getClass().getResourceAsStream(filename)));
-            while ((line = reader.readLine()) != null) {
-                buffer.append(line);
-                buffer.append(separator);
-            }
-        } catch (IOException io) {
-            YangEditorPlugin.log(io);
-        } finally {
-            if (reader != null) {
-                try {
-                    reader.close();
-                } catch (IOException e) {
-                }
-            }
-        }
-        return buffer.toString();
     }
 
     /**

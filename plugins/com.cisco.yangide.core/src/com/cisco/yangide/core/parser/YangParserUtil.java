@@ -9,7 +9,9 @@ package com.cisco.yangide.core.parser;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
+import org.antlr.v4.runtime.BufferedTokenStream;
 import org.antlr.v4.runtime.CommonTokenStream;
+import org.antlr.v4.runtime.IntStream;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
@@ -119,5 +121,23 @@ public class YangParserUtil {
             });
         }
         return parser.yang();
+    }
+
+    public static String formatYangSource(YangFormattingPreferences preferences, char[] content, int indentationLevel,
+            String lineSeparator) {
+        ANTLRInputStream input = new ANTLRInputStream(content, content.length);
+        final YangLexer lexer = new YangLexer(input) {
+            @Override
+            public void skip() {
+                // disable skipping of comment tokens
+            }
+        };
+        final BufferedTokenStream tokens = new BufferedTokenStream(lexer);
+        final ITokenFormatter formatter = new YangTokenFormatter(preferences, indentationLevel, lineSeparator);
+        while (tokens.LT(1).getType() != IntStream.EOF) {
+            formatter.process(tokens.LT(1));
+            tokens.consume();
+        }
+        return formatter.getFormattedContent();
     }
 }

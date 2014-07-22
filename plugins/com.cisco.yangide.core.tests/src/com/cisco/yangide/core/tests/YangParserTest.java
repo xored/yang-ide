@@ -70,6 +70,15 @@ public class YangParserTest extends TestCase {
         }
     }
 
+    public void testParseComments() throws Exception {
+        try (InputStream in = FileLocator.openStream(Platform.getBundle("com.cisco.yangide.core.tests"), new Path(
+                "yang/yang-ext.yang"), false)) {
+
+            Module module = YangParserUtil.parseYangFile(getContent(in));
+            assertNotNull(module);
+        }
+    }
+
     private static char[] getContent(InputStream in) throws IOException {
         char[] buff = new char[1024];
         int len = 0;

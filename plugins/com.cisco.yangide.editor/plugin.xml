@@ -33,6 +33,12 @@
             id="com.cisco.yangide.editor.templates.YANGEditorTemplatesPage"
             name="Templates">
       </page>
+      <page
+            category="com.cisco.yangide.ui.preferences.YANGBasePreferencePage"
+            class="com.cisco.yangide.editor.preferences.YangFormatterPreferencePage"
+            id="com.cisco.yangide.editor.preferences.YangFormatterPreferencePage"
+            name="Formatter">
+      </page>
    </extension>
    <extension
          point="org.eclipse.ui.editors.templates">
@@ -91,35 +97,36 @@
    </extension>
     
     <extension point="org.eclipse.ui.bindings">
-      <key
-           sequence="F3"
-           contextId="com.cisco.yangide.ui.Context"
-           commandId="com.cisco.yangide.navigate.open.declaration"
-           schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
-       <key
-             commandId="com.cisco.yangide.actions.toggle.comment"
-             contextId="com.cisco.yangide.ui.Context"
-             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-             sequence="M1+/">
-       </key>
-       <key
-             commandId="com.cisco.yangide.actions.toggle.comment"
-             contextId="com.cisco.yangide.ui.Context"
-             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-             sequence="M1+M2+C">
-       </key>
-       <key
-             commandId="com.cisco.yangide.actions.add.block.comment"
-             contextId="com.cisco.yangide.ui.Context"
-             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-             sequence="M1+M2+/">
-       </key>
-       <key
-             commandId="com.cisco.yangide.actions.remove.block.comment"
-             contextId="com.cisco.yangide.ui.Context"
-             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
-             sequence="M1+M2+\">
-       </key>
+        <key
+            commandId="com.cisco.yangide.navigate.open.declaration"
+            contextId="com.cisco.yangide.ui.Context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="F3"/>
+        <key
+            commandId="com.cisco.yangide.actions.toggle.comment"
+            contextId="com.cisco.yangide.ui.Context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+/"/>
+        <key
+            commandId="com.cisco.yangide.actions.toggle.comment"
+            contextId="com.cisco.yangide.ui.Context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+C"/>
+        <key
+            commandId="com.cisco.yangide.actions.add.block.comment"
+            contextId="com.cisco.yangide.ui.Context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+/"/>
+        <key
+            commandId="com.cisco.yangide.actions.remove.block.comment"
+            contextId="com.cisco.yangide.ui.Context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
+            sequence="M1+M2+\"/>
+        <key
+            sequence="M1+M2+F"
+            contextId="com.cisco.yangide.ui.Context"
+            commandId="org.eclipse.jdt.ui.edit.text.java.format"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/> 
     </extension>
     
     <extension point="org.eclipse.ui.menus">
@@ -135,6 +142,9 @@
                     </with>
                 </visibleWhen>
                 </command>
+        </menuContribution>
+        <menuContribution
+            locationURI="popup:#TextEditorContext?endof=group.edit">
                 <command
                       commandId="com.cisco.yangide.actions.toggle.comment"
                       label="Toggle Comment"

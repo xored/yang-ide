@@ -1,0 +1,126 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ * and is available at http://www.eclipse.org/legal/epl-v10.html
+ */
+module dhcp {
+  namespace "http://yang-central.org/ns/example/dhcp";
+  prefix dhcp;
+
+  /* import statements*/
+  import ietf-yang-types {prefix yang;revision-date "2013-08-19";}
+  import ietf-inet-types { prefix inet; }
+
+  organization "yang-central.org"; // your organization
+  description "Partial data model for DHCP, based on the config of the ISC DHCP reference implementation.";
+
+  container dhcp {
+    description
+      "configuration and operational parameters for a DHCP server.";
+
+    leaf max-lease-time {
+      type uint32;
+      units seconds;
+      default 7200;
+    }
+
+    leaf default-lease-time {
+      type uint32;
+      units seconds;
+      must 'current() <= ../max-lease-time' {
+        error-message
+          "The default-lease-time must be less than max-lease-time";
+      }
+      default 600;
+    }
+    
+    uses subnet-list;
+  
+    container shared-networks {
+      list shared-network {
+        key name;
+
+        leaf name {
+          type string;
+        }
+        uses subnet-list;
+      }
+    }
+
+    container status {
+      config false;
+      list leases {
+        key address;
+      
+        leaf address {
+          type inet:ip-address;
+        }
+        leaf starts {
+          type yang:date-and-time;
+        }
+        leaf ends {
+          type yang:date-and-time;
+        }
+        container hardware {
+          leaf type {
+            type enumeration {
+              enum "ethernet";
+              enum "token-ring";
+              enum "fddi";
+            }
+          }
+          leaf address {
+            type yang:phys-address;
+          }
+        }
+      }
+    }
+  }
+
+  grouping subnet-list {
+    description "A reusable list of subnets";
+    list subnet {
+      key net;
+      leaf net {
+        type inet:ip-prefix;
+      }
+      container range {
+        presence "enables dynamic address assignment";
+        leaf dynamic-bootp {
+          type empty;
+          description 
+            "Allows BOOTP clients to get addresses in this range";
+        }
+        leaf low {
+          type inet:ip-address;
+          mandatory true;
+        }
+        leaf high {
+          type inet:ip-address;
+          mandatory true;
+        }
+      }
+      
+      container dhcp-options {
+        description "Options in the DHCP protocol";
+        leaf-list router {
+          type inet:host;
+          ordered-by user;
+          reference "RFC 2132, sec. 3.8";
+        }
+        leaf domain-name {
+          type inet:domain-name;
+          reference "RFC 2132, sec. 3.17";
+        }
+      }
+      
+      leaf max-lease-time {
+        type uint32;
+        units seconds;
+        default 7200;
+      }
+    }
+  }
+}

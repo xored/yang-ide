@@ -17,8 +17,10 @@ import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jdt.internal.core.JarEntryFile;
 import org.eclipse.jdt.internal.ui.javaeditor.JarEntryEditorInput;
+import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
@@ -49,6 +51,7 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
+import org.eclipse.ui.texteditor.TextOperationAction;
 import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
@@ -74,6 +77,7 @@ import com.cisco.yangide.ui.preferences.IYangColorConstants;
  *
  * @author Alexey Kholupko
  */
+@SuppressWarnings("restriction")
 public class YangEditor extends TextEditor implements IProjectionListener {
 
     // TODO extract logic to separate classes
@@ -84,16 +88,14 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     private ProjectionSupport projectionSupport;
 
     private YangFoldingStructureProvider fFoldingStructureProvider;
-    
+
     private YangEditorSelectionChangedListener editorSelectionChangedListener;
-    
+
     private YangOutlineSelectionChangedListener outlineSelectionChangedListener = new YangOutlineSelectionChangedListener();
-    
+
     private YangContentOutlinePage outlinePage;
-    
-    private Module module;
-    
-    private abstract class AbstractSelectionChangedListener implements ISelectionChangedListener  {
+
+    private abstract class AbstractSelectionChangedListener implements ISelectionChangedListener {
         public void install(ISelectionProvider selectionProvider) {
             try {
                 if (selectionProvider == null || getModule() == null) {
@@ -109,7 +111,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
                 selectionProvider.addSelectionChangedListener(this);
             }
         }
-        
+
         public void uninstall(ISelectionProvider selectionProvider) {
             try {
                 if (selectionProvider == null || getModule() == null) {
@@ -124,9 +126,9 @@ public class YangEditor extends TextEditor implements IProjectionListener {
             } else {
                 selectionProvider.removeSelectionChangedListener(this);
             }
-        }        
+        }
     }
-    
+
     private class YangEditorSelectionChangedListener extends AbstractSelectionChangedListener {
 
         @Override
@@ -143,7 +145,6 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
         }
     }
-    
 
     private class YangOutlineSelectionChangedListener extends AbstractSelectionChangedListener {
         @Override
@@ -162,8 +163,8 @@ public class YangEditor extends TextEditor implements IProjectionListener {
                         }
                     }
                 }
-            }            
-        }        
+            }
+        }
     }
 
     public YangEditor() {
@@ -177,7 +178,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.editors.text.TextEditor#initializeEditor() Called from TextEditor.<init>
      */
     @Override
@@ -310,26 +311,29 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     protected void createActions() {
 
         super.createActions();
+        IAction action = null;
+        ResourceBundle bundle = ResourceBundle.getBundle(YangEditorMessages.getBundleName());
 
-        IAction action = getAction(ITextEditorActionConstants.CONTENT_ASSIST_CONTEXT_INFORMATION);
+        action = new TextOperationAction(bundle, "ContentFormat.", this, ISourceViewer.FORMAT); //$NON-NLS-1$
+        action.setActionDefinitionId(IJavaEditorActionDefinitionIds.FORMAT);
+        setAction("ContentFormat", action); //$NON-NLS-1$
 
-        action = new ToggleCommentAction(ResourceBundle.getBundle(YangEditorMessages.getBundleName()),
-                "ToggleComment.", this); //$NON-NLS-1$
+        action = getAction(ITextEditorActionConstants.CONTENT_ASSIST_CONTEXT_INFORMATION);
+
+        action = new ToggleCommentAction(bundle, "ToggleComment.", this); //$NON-NLS-1$
 
         action.setActionDefinitionId(IYangEditorActionDefinitionIds.TOGGLE_COMMENT);
         setAction("ToggleComment", action); //$NON-NLS-1$
         markAsStateDependentAction("ToggleComment", true); //$NON-NLS-1$
         configureToggleCommentAction();
 
-        action = new AddBlockCommentAction(ResourceBundle.getBundle(YangEditorMessages.getBundleName()),
-                "AddBlockComment.", this); //$NON-NLS-1$
+        action = new AddBlockCommentAction(bundle, "AddBlockComment.", this); //$NON-NLS-1$
         action.setActionDefinitionId(IYangEditorActionDefinitionIds.ADD_BLOCK_COMMENT);
         setAction("AddBlockComment", action); //$NON-NLS-1$
         markAsStateDependentAction("AddBlockComment", true); //$NON-NLS-1$
         markAsSelectionDependentAction("AddBlockComment", true); //$NON-NLS-1$
 
-        action = new RemoveBlockCommentAction(ResourceBundle.getBundle(YangEditorMessages.getBundleName()),
-                "RemoveBlockComment.", this); //$NON-NLS-1$
+        action = new RemoveBlockCommentAction(bundle, "RemoveBlockComment.", this); //$NON-NLS-1$
         action.setActionDefinitionId(IYangEditorActionDefinitionIds.REMOVE_BLOCK_COMMENT);
         setAction("RemoveBlockComment", action); //$NON-NLS-1$
         markAsStateDependentAction("RemoveBlockComment", true); //$NON-NLS-1$
@@ -353,7 +357,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
         projectionSupport = new ProjectionSupport(projectionviewer, getAnnotationAccess(), getSharedColors());
         projectionSupport.install();
-        
+
         editorSelectionChangedListener = new YangEditorSelectionChangedListener();
         editorSelectionChangedListener.install(getSelectionProvider());
 
@@ -361,7 +365,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         projectionviewer.doOperation(ProjectionViewer.TOGGLE);
 
     }
-    
+
     @Override
     protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
         fAnnotationAccess = getAnnotationAccess();
@@ -404,6 +408,19 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     }
 
     @Override
+    protected void editorContextMenuAboutToShow(IMenuManager menu) {
+        super.editorContextMenuAboutToShow(menu);
+        try {
+            if (getModule() != null) {
+                IAction action = getAction("ContentFormat"); //$NON-NLS-1$
+                menu.appendToGroup(ITextEditorActionConstants.GROUP_EDIT, action);
+            }
+        } catch (YangModelException e) {
+            // ignore exception
+        }
+    }
+
+    @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
         if (IContentOutlinePage.class.equals(key)) {
             return getYangOulinePage();
@@ -417,26 +434,23 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
         return super.getAdapter(key);
     }
-        
+
     private boolean isYangOutlinePageActive() {
         IWorkbenchPart part = getSite().getWorkbenchWindow().getPartService().getActivePart();
         return part instanceof ContentOutline && ((ContentOutline) part).getCurrentPage() == outlinePage;
     }
-    
+
     private YangContentOutlinePage getYangOulinePage() {
         if (null == outlinePage) {
             outlinePage = new YangContentOutlinePage(this);
-            outlineSelectionChangedListener.install(outlinePage);            
+            outlineSelectionChangedListener.install(outlinePage);
         }
         return outlinePage;
     }
-    
-    public void updateModule(Module module) {
-        if (null != module) {
-            this.module = module;
-            updateOutline();
-            updateFoldingRegions();            
-        }
+
+    public void reconcile() {
+        updateOutline();
+        updateFoldingRegions();
     }
 
     private void updateFoldingRegions() {
@@ -454,16 +468,13 @@ public class YangEditor extends TextEditor implements IProjectionListener {
             outlinePage.updateOutline();
         }
     }
+
     /**
      * @return {@link Module} of the current editor input or <code>null</code> if editor input does
-     * not contains approprieate {@link Module}
+     * not contains appropriate {@link Module}
      * @throws YangModelException error during initialization of Module
      */
-    @SuppressWarnings("restriction")
     public Module getModule() throws YangModelException {
-        if (null != module) {
-            return module;
-        }
         IEditorInput input = getEditorInput();
         if (input == null) {
             return null;
@@ -471,19 +482,19 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
         if (input instanceof IFileEditorInput) {
             IFile file = ((IFileEditorInput) input).getFile();
-            module = YangCorePlugin.createYangFile(file).getModule();
+            return YangCorePlugin.createYangFile(file).getModule();
         } else if (input instanceof JarEntryEditorInput) {
             JarEntryEditorInput jarInput = (JarEntryEditorInput) input;
             IStorage storage = jarInput.getStorage();
             if (storage instanceof YangJarFileEntryResource) {
                 YangJarFileEntryResource jarEntry = (YangJarFileEntryResource) storage;
-                module = YangCorePlugin.createJarEntry(jarEntry.getPath(), jarEntry.getEntry()).getModule();
+                return YangCorePlugin.createJarEntry(jarEntry.getPath(), jarEntry.getEntry()).getModule();
             } else if (storage instanceof JarEntryFile) {
                 JarEntryFile jarEntry = (JarEntryFile) storage;
-                module = YangCorePlugin.createJarEntry(jarEntry.getPackageFragmentRoot().getPath(),
+                return YangCorePlugin.createJarEntry(jarEntry.getPackageFragmentRoot().getPath(),
                         jarEntry.getFullPath().makeRelative().toString()).getModule();
             }
         }
-        return module;
+        return null;
     }
 }

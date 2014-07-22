@@ -43,7 +43,13 @@ public class YangUIPreferenceInitializer extends AbstractPreferenceInitializer {
 
         PreferenceConverter.setDefault(store, IYangColorConstants.EDITOR_MATCHING_BRACKETS_COLOR,
                 new RGB(200, 200, 200));
-        //
-    }
 
+        // formatter settings
+        store.setDefault(YangPreferenceConstants.FMT_INDENT_SPACE, true);
+        store.setDefault(YangPreferenceConstants.FMT_INDENT_WIDTH, 4);
+        store.setDefault(YangPreferenceConstants.FMT_MAX_LINE_LENGTH, 60);
+        store.setDefault(YangPreferenceConstants.FMT_COMMENT, false);
+        store.setDefault(YangPreferenceConstants.FMT_STRING, true);
+        store.setDefault(YangPreferenceConstants.FMT_COMPACT_IMPORT, true);
+    }
 }
