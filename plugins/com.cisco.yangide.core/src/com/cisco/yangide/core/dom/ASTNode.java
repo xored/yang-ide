@@ -179,4 +179,8 @@ public abstract class ASTNode {
             child.accept(visitor);
         }
     }
+    
+    public boolean isShowedInOutline() {
+        return true;
+    }
 }

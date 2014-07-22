@@ -51,4 +51,10 @@ public class SimpleNode<T> extends ASTNode {
         visitor.preVisit(this);
         visitor.visit(this);
     }
+
+    @Override
+    public boolean isShowedInOutline() {
+        return false;
+    }  
+    
 }

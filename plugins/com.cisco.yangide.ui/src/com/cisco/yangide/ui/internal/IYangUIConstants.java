@@ -20,7 +20,13 @@ public interface IYangUIConstants {
     public static final String IMG_TYPE_PROPOSAL = PLUGIN_ID + ".type_obj";
     public static final String IMG_CUSTOM_TYPE_PROPOSAL = PLUGIN_ID + ".custom_type_obj";
     public static final String IMG_GROUPING_PROPOSAL = PLUGIN_ID + ".grouping_obj";
-
+    public static final String IMG_CONTAINER_PROPOSAL = PLUGIN_ID + ".container_obj";
+    public static final String IMG_LEAF_PROPOSAL = PLUGIN_ID + ".leaf_obj";
+    public static final String IMG_MODULE_PROPOSAL = PLUGIN_ID + ".module_obj";
+    public static final String IMG_SUBMODULE_PROPOSAL = PLUGIN_ID + ".submodule_obj";
+    public static final String IMG_USES_PROPOSAL = PLUGIN_ID + ".uses_obj";
+    public static final String IMG_INCLUDE_PROPOSAL = PLUGIN_ID + ".include_obj";
+    
     public static final String IMG_NEW_PROJECT_WIZ = PLUGIN_ID + ".new_project_wiz";
     public static final String IMG_NEW_FILE_WIZ = PLUGIN_ID + ".new_file_wiz";
 

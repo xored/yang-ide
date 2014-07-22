@@ -111,8 +111,10 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
                 YangModelManager.getIndexManager().addWorkingCopy(file);
             }
 
-            if (editor instanceof YangEditor && module != null)
-                ((YangEditor) editor).updateFoldingRegions(module);
+            if (editor instanceof YangEditor && module != null) {
+                ((YangEditor) editor).updateModule(module);             
+            }
+            
 
         } catch (Exception e) {
             // ignore any exception on reconcile

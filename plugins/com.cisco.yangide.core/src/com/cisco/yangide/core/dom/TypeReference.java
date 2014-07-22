@@ -43,4 +43,10 @@ public class TypeReference extends ASTNamedNode {
         visitor.visit(this);
     }
 
+    @Override
+    public boolean isShowedInOutline() {
+        return false;
+    }  
+    
+
 }

@@ -60,7 +60,13 @@ public class YangUIImages {
         declareRegistryImage(IYangUIConstants.IMG_KEYWORD_PROPOSAL, OBJECT + "keyword_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_TYPE_PROPOSAL, OBJECT + "type_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_CUSTOM_TYPE_PROPOSAL, OBJECT + "custom_type_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IYangUIConstants.IMG_GROUPING_PROPOSAL, OBJECT + "grouping_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_GROUPING_PROPOSAL, OBJECT + "grouping_obj.gif"); //$NON-NLS-1$        
+        declareRegistryImage(IYangUIConstants.IMG_CONTAINER_PROPOSAL, OBJECT + "container_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_LEAF_PROPOSAL, OBJECT + "leaf_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_MODULE_PROPOSAL, OBJECT + "module_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_SUBMODULE_PROPOSAL, OBJECT + "submodule_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_USES_PROPOSAL, OBJECT + "uses_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_INCLUDE_PROPOSAL, OBJECT + "include_obj.gif"); //$NON-NLS-1$
 
         // Marker images
         declareRegistryImage(IYangUIConstants.IMG_ERROR_MARKER, OBJECT + "error_obj.gif"); //$NON-NLS-1$
