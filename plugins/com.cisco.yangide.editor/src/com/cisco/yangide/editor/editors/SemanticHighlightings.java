@@ -168,7 +168,7 @@ public class SemanticHighlightings {
          */
         @Override
         public RGB getDefaultTextColor() {
-            return new RGB(192, 64, 0);
+            return new RGB(168, 98, 0);
         }
 
         /*
@@ -272,7 +272,7 @@ public class SemanticHighlightings {
          */
         @Override
         public RGB getDefaultTextColor() {
-            return new RGB(0, 192, 192);
+            return new RGB(128, 128, 128);
         }
 
         /*
@@ -289,7 +289,7 @@ public class SemanticHighlightings {
          */
         @Override
         public boolean isItalicByDefault() {
-            return false;
+            return true;
         }
 
         /*

@@ -462,6 +462,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
      */
     public void propertyChange(PropertyChangeEvent event) {
         handlePropertyChangeEvent(event);
+        fSourceViewer.invalidateTextPresentation();
     }
 
     /**
