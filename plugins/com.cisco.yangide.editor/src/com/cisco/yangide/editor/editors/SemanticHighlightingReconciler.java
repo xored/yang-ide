@@ -10,8 +10,6 @@ package com.cisco.yangide.editor.editors;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -21,6 +19,8 @@ import org.eclipse.jface.text.ITextInputListener;
 import org.eclipse.jface.text.Position;
 import org.eclipse.jface.text.TextPresentation;
 import org.eclipse.jface.text.source.ISourceViewer;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbenchPartSite;
 
 import com.cisco.yangide.core.YangModelException;
@@ -49,6 +49,17 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
 
         /** The semantic token */
         private ASTNode fToken = null;
+        
+        /*
+         * @see org.eclipse.jdt.core.dom.ASTVisitor#visit(org.eclipse.jdt.core.dom.SimpleName)
+         */
+        public boolean visit(Module node) {
+            if ((node.getFlags() & ASTNode.MALFORMED) == ASTNode.MALFORMED) {
+                retainPositions(node.getStartPosition(), node.getLength());
+                return false;
+            }
+            return true;            
+        }
 
         /*
          * @see org.eclipse.jdt.core.dom.ASTVisitor#visit(org.eclipse.jdt.core.dom.SimpleName)
@@ -142,32 +153,22 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
             }
         }
 
-//        //TODO to prevent incorrect coloring
-//        @Override
-//        protected boolean visit(ASTNode node) {
-//            if ((node.getFlags() & ASTNode.MALFORMED) == ASTNode.MALFORMED) {
-//                retainPositions(node.getStartPosition(), node.getLength());
-//                return false;
-//            }
-//            return true;
-//        }        
-//        
-//        /**
-//         * Retain the positions completely contained in the given range.
-//         * 
-//         * @param offset The range offset
-//         * @param length The range length
-//         */
-//        private void retainPositions(int offset, int length) {
-//            // TODO: use binary search
-//            for (int i = 0, n = fRemovedPositions.size(); i < n; i++) {
-//                HighlightedPosition position = (HighlightedPosition) fRemovedPositions.get(i);
-//                if (position != null && position.isContained(offset, length)) {
-//                    fRemovedPositions.set(i, null);
-//                    fNOfRemovedPositions--;
-//                }
-//            }
-//        }
+        /**
+         * Retain the positions completely contained in the given range.
+         * 
+         * @param offset The range offset
+         * @param length The range length
+         */
+        private void retainPositions(int offset, int length) {
+            // TODO: use binary search
+            for (int i = 0, n = fRemovedPositions.size(); i < n; i++) {
+                HighlightedPosition position = (HighlightedPosition) fRemovedPositions.get(i);
+                if (position != null && position.isContained(offset, length)) {
+                    fRemovedPositions.set(i, null);
+                    fNOfRemovedPositions--;
+                }
+            }
+        }
     }
 
     /** Position collector */
@@ -378,6 +379,7 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
 
         fSourceViewer.addTextInputListener(this);
         // fEditor.addReconcileListener(this);
+        fEditor.updateSemanticHigliting();
         if (fEditor == null)
             scheduleJob();
     }

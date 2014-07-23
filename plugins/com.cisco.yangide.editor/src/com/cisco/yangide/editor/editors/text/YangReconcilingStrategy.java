@@ -24,6 +24,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cisco.yangide.core.YangCorePlugin;
+import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.model.YangFile;
 import com.cisco.yangide.core.model.YangFileInfo;
@@ -102,13 +103,21 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
                         }
                     });
             annotationModel.reportProblem();
+            
+            YangFileInfo fileInfo = (YangFileInfo) yangFile.getElementInfo(monitor);
+            
             // reindex if no errors found
             if (!errors.get()) {
-                YangFileInfo fileInfo = (YangFileInfo) yangFile.getElementInfo(monitor);
+                module.setFlags(ASTNode.VALID);
                 fileInfo.setModule(module);
                 fileInfo.setIsStructureKnown(true);
                 // re index content
                 YangModelManager.getIndexManager().addWorkingCopy(file);
+            }
+            else{
+                module.setFlags(ASTNode.MALFORMED);
+                fileInfo.setModule(module);
+                fileInfo.setIsStructureKnown(false);
             }
 
             if (editor instanceof YangEditor) {
@@ -120,9 +129,11 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
             // ignore any exception on reconcile
         }
         finally{
-            if (editor instanceof YangEditor)
+            if (editor instanceof YangEditor) {
                 ((YangEditor) editor).updateSemanticHigliting();
+            }            
         }
+
     }
 
     private IAnnotationModel getAnnotationModel() {

@@ -40,7 +40,79 @@ public abstract class ASTNode {
     private int bodyStartPosition = -1;
 
     /** Parent AST node. */
-    private ASTNode parent = null;
+    private ASTNode parent = null;    
+    
+    /**
+     * Flag constant (bit mask, value 1) indicating that there is something
+     * not quite right with this AST node.
+     * <p>
+     * The standard parser (<code>ASTParser</code>) SHOULD set this
+     * flag on a node to indicate a syntax error detected in the vicinity.
+     * </p>
+     */
+    public static final int MALFORMED = 1;
+    
+    public static final int VALID = 0;
+    
+    /**
+     * int containing the node type in the top 16 bits and
+     * flags in the bottom 16 bits; none set by default.
+     * <p>
+     * N.B. This is a private field, but declared as package-visible
+     * for more efficient access from inner classes.
+     * </p>
+     *
+     * @see #MALFORMED
+     */
+    int typeAndFlags = 0;
+    
+    /**
+     * Returns the flags associated with this node.
+     * <p>
+     * No flags are associated with newly created nodes.
+     * </p>
+     * <p>
+     * The flags are the bitwise-or of individual flags.
+     * The following flags are currently defined:
+     * <ul>
+     * <li>{@link #MALFORMED} - indicates node is syntactically
+     *   malformed</li>
+     * </ul>
+     * Other bit positions are reserved for future use.
+     * </p>
+     *
+     * @return the bitwise-or of individual flags
+     * @see #setFlags(int)
+     */
+    public final int getFlags() {
+        return this.typeAndFlags & 0xFFFF;
+    }
+
+    /**
+     * Sets the flags associated with this node to the given value.
+     * <p>
+     * The flags are the bitwise-or of individual flags.
+     * The following flags are currently defined:
+     * <ul>
+     * <li>{@link #MALFORMED} - indicates node is syntactically
+     *   malformed</li>
+     * </ul>
+     * Other bit positions are reserved for future use.
+     * </p>
+     * <p>
+     * Note that the flags are <em>not</em> considered a structural
+     * property of the node, and can be changed even if the
+     * node is marked as protected.
+     * </p>
+     *
+     * @param flags the bitwise-or of individual flags
+     * @see #getFlags()
+     */
+    public final void setFlags(int flags) {
+        int old = this.typeAndFlags & 0xFFFF0000;
+        this.typeAndFlags = old | (flags & 0xFFFF);
+    }    
+    
 
     public ASTNode(ASTNode parent) {
         this.parent = parent;

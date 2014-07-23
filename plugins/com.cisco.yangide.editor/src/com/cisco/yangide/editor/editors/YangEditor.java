@@ -462,6 +462,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     public void reconcile() {
         updateOutline();
         updateFoldingRegions();
+        //updateSemanticHigliting();
     }
 
     private void updateFoldingRegions() {
