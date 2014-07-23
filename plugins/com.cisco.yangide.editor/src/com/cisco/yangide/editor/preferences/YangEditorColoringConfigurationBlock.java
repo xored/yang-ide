@@ -18,6 +18,7 @@ import org.eclipse.jface.preference.ColorSelector;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.PreferenceConverter;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.Document;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.source.SourceViewer;
@@ -53,6 +54,10 @@ import org.eclipse.ui.model.WorkbenchViewerComparator;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.editor.editors.SemanticHighlighting;
+import com.cisco.yangide.editor.editors.SemanticHighlightingManager;
+import com.cisco.yangide.editor.editors.SemanticHighlightingManager.HighlightedRange;
+import com.cisco.yangide.editor.editors.SemanticHighlightings;
 import com.cisco.yangide.editor.editors.YangColorManager;
 import com.cisco.yangide.editor.editors.YangSourceViewerConfiguration;
 import com.cisco.yangide.ui.preferences.IYangColorConstants;
@@ -61,7 +66,7 @@ import com.cisco.yangide.ui.preferences.OverlayPreferenceStore.OverlayKey;
 
 /**
  * Configures YANG Editor hover preferences.
- *
+ * 
  * @author Alexey Kholupko
  */
 class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
@@ -125,6 +130,36 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
         public String getDisplayName() {
             return fDisplayName;
+        }
+    }
+
+    private static class SemanticHighlightingColorListItem extends HighlightingColorListItem {
+
+        /** Enablement preference key */
+        private final String fEnableKey;
+
+        /**
+         * Initialize the item with the given values.
+         * 
+         * @param displayName the display name
+         * @param colorKey the color preference key
+         * @param boldKey the bold preference key
+         * @param italicKey the italic preference key
+         * @param strikethroughKey the strikethroughKey preference key
+         * @param underlineKey the underlineKey preference key
+         * @param enableKey the enable preference key
+         */
+        public SemanticHighlightingColorListItem(String displayName, String colorKey, String boldKey, String italicKey,
+                String strikethroughKey, String underlineKey, String enableKey) {
+            super(displayName, colorKey, boldKey, italicKey, strikethroughKey, underlineKey);
+            fEnableKey = enableKey;
+        }
+
+        /**
+         * @return the enablement preference key
+         */
+        public String getEnableKey() {
+            return fEnableKey;
         }
     }
 
@@ -217,6 +252,8 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     private FontMetrics fFontMetrics;
 
+    private SemanticHighlightingManager fSemanticHighlightingManager;
+
     public YangEditorColoringConfigurationBlock(OverlayPreferenceStore store) {
         super(store);
 
@@ -227,6 +264,16 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
                     fSyntaxColorListModel[i][1] + BOLD, fSyntaxColorListModel[i][1] + ITALIC,
                     fSyntaxColorListModel[i][1] + STRIKETHROUGH, fSyntaxColorListModel[i][1] + UNDERLINE));
         }
+
+        SemanticHighlighting[] semanticHighlightings = SemanticHighlightings.getSemanticHighlightings();
+        for (int i = 0, n = semanticHighlightings.length; i < n; i++)
+            fListModel.add(new SemanticHighlightingColorListItem(semanticHighlightings[i].getDisplayName(),
+                    SemanticHighlightings.getColorPreferenceKey(semanticHighlightings[i]), SemanticHighlightings
+                            .getBoldPreferenceKey(semanticHighlightings[i]), SemanticHighlightings
+                            .getItalicPreferenceKey(semanticHighlightings[i]), SemanticHighlightings
+                            .getStrikethroughPreferenceKey(semanticHighlightings[i]), SemanticHighlightings
+                            .getUnderlinePreferenceKey(semanticHighlightings[i]), SemanticHighlightings
+                            .getEnabledPreferenceKey(semanticHighlightings[i])));
 
         store.addKeys(createOverlayStoreKeys());
     }
@@ -244,6 +291,10 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
                     .getStrikethroughKey()));
             overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, item
                     .getUnderlineKey()));
+
+            if (item instanceof SemanticHighlightingColorListItem)
+                overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN,
+                        ((SemanticHighlightingColorListItem) item).getEnableKey()));
 
         }
 
@@ -303,6 +354,9 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         super.performDefaults();
 
         handleSyntaxColorListSelection();
+
+        uninstallSemanticHighlighting();
+        installSemanticHighlighting();
 
         fPreviewViewer.invalidateTextPresentation();
     }
@@ -574,12 +628,14 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         new YangDocumentSetupParticipant().setup(document);
         fPreviewViewer.setDocument(document);
 
+        installSemanticHighlighting();
+
         return fPreviewViewer.getControl();
     }
 
     /**
      * Returns the current highlighting color list item.
-     *
+     * 
      * @return the current highlighting color list item
      */
     private HighlightingColorListItem getHighlightingColorListItem() {
@@ -597,7 +653,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
      * <p>
      * This method must be called before any of the dialog unit based conversion methods are called.
      * </p>
-     *
+     * 
      * @param testControl a control from which to obtain the current font
      */
     private void initializeDialogUnits(Control testControl) {
@@ -606,6 +662,87 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         gc.setFont(JFaceResources.getDialogFont());
         fFontMetrics = gc.getFontMetrics();
         gc.dispose();
+    }
+
+    /**
+     * Install Semantic Highlighting on the previewer
+     */
+    private void installSemanticHighlighting() {
+        if (fSemanticHighlightingManager == null) {
+            fSemanticHighlightingManager = new SemanticHighlightingManager();
+            fSemanticHighlightingManager.install(fPreviewViewer, fColorManager, getPreferenceStore(),
+                    createPreviewerRanges());
+        }
+    }
+
+    /**
+     * Uninstall Semantic Highlighting from the previewer
+     */
+    private void uninstallSemanticHighlighting() {
+        if (fSemanticHighlightingManager != null) {
+            fSemanticHighlightingManager.uninstall();
+            fSemanticHighlightingManager = null;
+        }
+    }
+
+    /**
+     * Create the hard coded previewer ranges
+     * 
+     * @return the hard coded previewer ranges
+     */
+    private SemanticHighlightingManager.HighlightedRange[][] createPreviewerRanges() {
+        return new SemanticHighlightingManager.HighlightedRange[][] {
+//                { createHighlightedRange(35, 9, 11, SemanticHighlightings.GROUPING) },
+//                { createHighlightedRange(77, 11, 11, SemanticHighlightings.GROUPING) },
+//                { createHighlightedRange(53, 15, 4, SemanticHighlightings.PREFIX) },
+//                { createHighlightedRange(56, 15, 4, SemanticHighlightings.PREFIX) },
+//                { createHighlightedRange(59, 15, 4, SemanticHighlightings.PREFIX) },
+//                { createHighlightedRange(70, 17, 4, SemanticHighlightings.PREFIX) },
+//                { createHighlightedRange(82, 13, 4, SemanticHighlightings.PREFIX) },
+//                { createHighlightedRange(92, 15, 4, SemanticHighlightings.PREFIX) },
+//                { createHighlightedRange(96, 15, 4, SemanticHighlightings.PREFIX) },
+//                { createHighlightedRange(104, 15, 4, SemanticHighlightings.PREFIX) },
+//                { createHighlightedRange(109, 15, 4, SemanticHighlightings.PREFIX) },
+//                { createHighlightedRange(53, 20, 10, SemanticHighlightings.TYPE) },
+//                { createHighlightedRange(56, 20, 13, SemanticHighlightings.TYPE) },
+//                { createHighlightedRange(59, 20, 13, SemanticHighlightings.TYPE) },
+//                { createHighlightedRange(70, 22, 12, SemanticHighlightings.TYPE) },
+//                { createHighlightedRange(82, 18, 9, SemanticHighlightings.TYPE) },
+//                { createHighlightedRange(92, 20, 10, SemanticHighlightings.TYPE) },
+//                { createHighlightedRange(96, 20, 10, SemanticHighlightings.TYPE) },
+//                { createHighlightedRange(104, 20, 4, SemanticHighlightings.TYPE) },
+//                { createHighlightedRange(109, 20, 11, SemanticHighlightings.TYPE) },
+
+              { createHighlightedRange(1, 15, 4, SemanticHighlightings.PREFIX),createHighlightedRange(1, 20, 10, SemanticHighlightings.TYPE) },
+              { createHighlightedRange(4, 15, 4, SemanticHighlightings.PREFIX),createHighlightedRange(4, 20, 13, SemanticHighlightings.TYPE)  },
+              //{ createHighlightedRange(7, 15, 4, SemanticHighlightings.PREFIX),createHighlightedRange(7, 20, 13, SemanticHighlightings.TYPE)  },                
+                
+              { createHighlightedRange(1, 20, 10, SemanticHighlightings.TYPE) },
+              { createHighlightedRange(4, 20, 13, SemanticHighlightings.TYPE) },
+              //{ createHighlightedRange(7, 20, 13, SemanticHighlightings.TYPE) },                  
+
+        };
+    }
+
+    /**
+     * Create a highlighted range on the previewers document with the given line, column, length and
+     * key.
+     * 
+     * @param line the line
+     * @param column the column
+     * @param length the length
+     * @param key the key
+     * @return the highlighted range
+     */
+    private HighlightedRange createHighlightedRange(int line, int column, int length, String key) {
+        try {
+            IDocument document = fPreviewViewer.getDocument();
+            int offset = document.getLineOffset(line) + column;
+            return new HighlightedRange(offset, length, key);
+        } catch (BadLocationException x) {
+            YangEditorPlugin.log(x);
+        }
+        return null;
     }
 
 }

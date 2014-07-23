@@ -30,6 +30,7 @@ import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.text.source.ISourceViewerExtension2;
 import org.eclipse.jface.text.source.IVerticalRuler;
+import org.eclipse.jface.text.source.SourceViewer;
 import org.eclipse.jface.text.source.SourceViewerConfiguration;
 import org.eclipse.jface.text.source.projection.IProjectionListener;
 import org.eclipse.jface.text.source.projection.ProjectionSupport;
@@ -88,6 +89,8 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     private ProjectionSupport projectionSupport;
 
     private YangFoldingStructureProvider fFoldingStructureProvider;
+    
+    private SemanticHighlightingManager fSemanticManager;
 
     private YangEditorSelectionChangedListener editorSelectionChangedListener;
 
@@ -203,6 +206,9 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         }
         colorManager.dispose();
         super.dispose();
+        
+        uninstallSemanticHighlighting();
+        
         IEditorInput input = getEditorInput();
         // revert index to file content instead of editor
         if (input != null && input instanceof IFileEditorInput) {
@@ -363,6 +369,11 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
         // turn projection mode on
         projectionviewer.doOperation(ProjectionViewer.TOGGLE);
+        
+        //TODO somewhere else
+        SemanticHighlightings.initDefaults(YangUIPlugin.getDefault().getPreferenceStore());
+        //TODO check if enabled through preferences        
+        installSemanticHighlighting();
 
     }
 
@@ -468,6 +479,12 @@ public class YangEditor extends TextEditor implements IProjectionListener {
             outlinePage.updateOutline();
         }
     }
+    
+    public void updateSemanticHigliting() {
+        if(fSemanticManager != null){
+            fSemanticManager.getReconciler().refresh();
+        }
+    }
 
     /**
      * @return {@link Module} of the current editor input or <code>null</code> if editor input does
@@ -497,4 +514,19 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         }
         return null;
     }
+
+    protected void installSemanticHighlighting() {
+        if (fSemanticManager == null) {
+            fSemanticManager = new SemanticHighlightingManager();
+            fSemanticManager.install(this, (SourceViewer) getSourceViewer(), colorManager, getPreferenceStore());
+        }
+    }
+
+    private void uninstallSemanticHighlighting() {
+        if (fSemanticManager != null) {
+            fSemanticManager.uninstall();
+            fSemanticManager = null;
+        }
+    }
+    
 }

@@ -87,6 +87,19 @@ public abstract class ASTNode {
     public ASTNode getParent() {
         return parent;
     }
+    
+    /**
+     * @return the parent module of this node
+     */
+    public ASTNode getModule() {
+        ASTNode module = this;
+        while (module.getParent() != null)
+            module = module.getParent();
+        if(module instanceof Module)
+            return module;
+        
+        return null;
+    }
 
     /**
      * @return the description

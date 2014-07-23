@@ -121,7 +121,7 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
         /**
          * for semantic higlighting @see org.eclipse.jdt.internal.ui.text.JavaPresentationReconciler
          */
-        PresentationReconciler reconciler = new PresentationReconciler();
+        YangPresentationReconciler reconciler = new YangPresentationReconciler();
         reconciler.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 
         DefaultDamagerRepairer dr = new DefaultDamagerRepairer(getYangScanner());

@@ -115,8 +115,13 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
                 ((YangEditor) editor).reconcile();
             }
 
+
         } catch (Exception e) {
             // ignore any exception on reconcile
+        }
+        finally{
+            if (editor instanceof YangEditor)
+                ((YangEditor) editor).updateSemanticHigliting();
         }
     }
 

@@ -660,6 +660,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
      */
     private TypedProposalsList getUsesProposals(String prefix) {
         ElementIndexInfo[] groupings = YangModelManager.search(null, null, null, ElementIndexType.GROUPING, null, null);
+        
 
         List<ICompletionProposal> groupingProposals = new ArrayList<ICompletionProposal>();
 

@@ -60,9 +60,11 @@ public class YangFoldingStructureProvider {
         Map additionsMap = new HashMap();
 
         Position headerCommentCandidate = (Position) currentRegions.get(0);
-        ProjectionAnnotation headerCommentCandidateAnnotation = new ProjectionAnnotation(false);
-
-        additionsMap.put(headerCommentCandidateAnnotation, headerCommentCandidate);
+        ProjectionAnnotation headerCommentCandidateAnnotation = null;
+        if(headerCommentCandidate != null){
+            headerCommentCandidateAnnotation = new ProjectionAnnotation(false);
+            additionsMap.put(headerCommentCandidateAnnotation, headerCommentCandidate);
+        }
 
         for (int i = 1; i < currentRegions.size(); i++) {
             Position position = (Position) currentRegions.get(i);
@@ -83,6 +85,9 @@ public class YangFoldingStructureProvider {
      * @return
      */
     private boolean isHeaderComment(Position headerCommentCandidate) {
+        if(headerCommentCandidate == null)
+            return false;
+        
         YangPartitionScanner scanner = new YangPartitionScanner();
         scanner.setRange(fDocument, 0, fDocument.getLength());
 

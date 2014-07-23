@@ -30,6 +30,10 @@ public class YangPreferencesMessages extends NLS {
     public static String YANGEditorPreferencePage_enable;
     public static String YANGEditorPreferencePage_preview;
     public static String YANGEditorPreferencePage_highlightMatchingBrackets;
+    
+    public static String SemanticHighlighting_type;
+    public static String SemanticHighlighting_grouping;
+    public static String SemanticHighlighting_prefix;
 
     public static String YANGEditorColoringConfigurationBlock_link;
     public static String YANGEditorPreferencePage_coloring_element;
