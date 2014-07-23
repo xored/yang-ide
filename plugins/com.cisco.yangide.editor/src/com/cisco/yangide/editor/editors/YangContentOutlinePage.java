@@ -1,15 +1,14 @@
 package com.cisco.yangide.editor.editors;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider;
 import org.eclipse.jface.viewers.DelegatingStyledCellLabelProvider.IStyledLabelProvider;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
 import org.eclipse.jface.viewers.StyledString;
 import org.eclipse.jface.viewers.Viewer;
@@ -159,23 +158,6 @@ public class YangContentOutlinePage extends ContentOutlinePage {
 		getTreeViewer().setLabelProvider(new DelegatingStyledCellLabelProvider(new YangOutlineStyledLabelProvider()));
 		getTreeViewer().setInput(getOutlineRoot());
 	}
-	
-	@Override
-    public void selectionChanged(SelectionChangedEvent event) {
-        super.selectionChanged(event);
-        if (event.getSelection() instanceof IStructuredSelection) {
-            Iterator<Object> iter = ((IStructuredSelection)event.getSelection()).iterator();
-            if (iter.hasNext()) {
-                Object selected = iter.next();
-                if (selected instanceof ASTNamedNode) {
-                    editor.selectAndReveal(((ASTNamedNode) selected).getNameStartPosition(),
-                            ((ASTNamedNode) selected).getNameLength());
-                } else if (selected instanceof ASTNode) {
-                    editor.selectAndReveal(((ASTNode) selected).getStartPosition(), ((ASTNode) selected).getLength());
-                }
-            }
-        }
-    }
 
     private ASTNode getOutlineRoot() {
         try {
@@ -202,16 +184,19 @@ public class YangContentOutlinePage extends ContentOutlinePage {
     
     public void selectNode(ASTNode node) {
         if (null != node) {
-            getTreeViewer().setSelection(new StructuredSelection(node), true);
+            ISelection selected = getTreeViewer().getSelection();
+            if (selected instanceof IStructuredSelection && !((IStructuredSelection)selected).toList().contains(node)) {
+                getTreeViewer().setSelection(new StructuredSelection(node), true);
+            }            
         }
     }
     
-    public void updateOutline(final Module module) {         
+    public void updateOutline() {         
         Display d = getControl().getDisplay();
         if (d != null) {
             d.asyncExec(new Runnable() {
                 public void run() {
-                    getTreeViewer().setInput(getOutlineRoot(module));
+                    getTreeViewer().setInput(getOutlineRoot());
                 }
             });
         }

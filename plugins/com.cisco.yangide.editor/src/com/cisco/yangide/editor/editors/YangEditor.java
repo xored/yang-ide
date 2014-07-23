@@ -8,6 +8,7 @@
 package com.cisco.yangide.editor.editors;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -35,10 +36,12 @@ import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.jface.viewers.IPostSelectionProvider;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.ISelectionProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.ITextEditorHelpContextIds;
@@ -46,11 +49,14 @@ import org.eclipse.ui.editors.text.TextEditor;
 import org.eclipse.ui.texteditor.ChainedPreferenceStore;
 import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 import org.eclipse.ui.texteditor.SourceViewerDecorationSupport;
+import org.eclipse.ui.views.contentoutline.ContentOutline;
 import org.eclipse.ui.views.contentoutline.IContentOutlinePage;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangJarFileEntryResource;
 import com.cisco.yangide.core.YangModelException;
+import com.cisco.yangide.core.dom.ASTNamedNode;
+import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.core.parser.YangParserUtil;
@@ -79,13 +85,15 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     private YangFoldingStructureProvider fFoldingStructureProvider;
     
-    YangEditorSelectionChangedListener editorSelectionChangedListener;
+    private YangEditorSelectionChangedListener editorSelectionChangedListener;
+    
+    private YangOutlineSelectionChangedListener outlineSelectionChangedListener = new YangOutlineSelectionChangedListener();
     
     private YangContentOutlinePage outlinePage;
     
     private Module module;
     
-    private class YangEditorSelectionChangedListener implements ISelectionChangedListener  {
+    private abstract class AbstractSelectionChangedListener implements ISelectionChangedListener  {
         public void install(ISelectionProvider selectionProvider) {
             try {
                 if (selectionProvider == null || getModule() == null) {
@@ -116,7 +124,10 @@ public class YangEditor extends TextEditor implements IProjectionListener {
             } else {
                 selectionProvider.removeSelectionChangedListener(this);
             }
-        }
+        }        
+    }
+    
+    private class YangEditorSelectionChangedListener extends AbstractSelectionChangedListener {
 
         @Override
         public void selectionChanged(SelectionChangedEvent event) {
@@ -129,8 +140,30 @@ public class YangEditor extends TextEditor implements IProjectionListener {
                 } catch (YangModelException e) {
                 }
             }
+
         }
-        
+    }
+    
+
+    private class YangOutlineSelectionChangedListener extends AbstractSelectionChangedListener {
+        @Override
+        @SuppressWarnings("unchecked")
+        public void selectionChanged(SelectionChangedEvent event) {
+            if (isYangOutlinePageActive()) {
+                if (event.getSelection() instanceof IStructuredSelection) {
+                    Iterator<Object> iter = ((IStructuredSelection) event.getSelection()).iterator();
+                    if (iter.hasNext()) {
+                        Object s = iter.next();
+                        if (s instanceof ASTNamedNode) {
+                            selectAndReveal(((ASTNamedNode) s).getNameStartPosition(),
+                                    ((ASTNamedNode) s).getNameLength());
+                        } else if (s instanceof ASTNode) {
+                            selectAndReveal(((ASTNode) s).getStartPosition(), ((ASTNode) s).getLength());
+                        }
+                    }
+                }
+            }            
+        }        
     }
 
     public YangEditor() {
@@ -328,7 +361,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         projectionviewer.doOperation(ProjectionViewer.TOGGLE);
 
     }
-
+    
     @Override
     protected ISourceViewer createSourceViewer(Composite parent, IVerticalRuler ruler, int styles) {
         fAnnotationAccess = getAnnotationAccess();
@@ -373,10 +406,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     @Override
     public Object getAdapter(@SuppressWarnings("rawtypes") Class key) {
         if (IContentOutlinePage.class.equals(key)) {
-            if (null == outlinePage) {
-                outlinePage = new YangContentOutlinePage(this);
-            }
-            return outlinePage;
+            return getYangOulinePage();
         }
         if (projectionSupport != null) {
             Object adapter = projectionSupport.getAdapter(getSourceViewer(), key);
@@ -386,6 +416,19 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         }
 
         return super.getAdapter(key);
+    }
+        
+    private boolean isYangOutlinePageActive() {
+        IWorkbenchPart part = getSite().getWorkbenchWindow().getPartService().getActivePart();
+        return part instanceof ContentOutline && ((ContentOutline) part).getCurrentPage() == outlinePage;
+    }
+    
+    private YangContentOutlinePage getYangOulinePage() {
+        if (null == outlinePage) {
+            outlinePage = new YangContentOutlinePage(this);
+            outlineSelectionChangedListener.install(outlinePage);            
+        }
+        return outlinePage;
     }
     
     public void updateModule(Module module) {
@@ -407,12 +450,8 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     }
 
     private void updateOutline() {
-        try {
-            if (null != outlinePage) {
-                outlinePage.updateOutline(getModule());
-            }
-        } catch (YangModelException e) {
-            YangUIPlugin.log(e);
+        if (null != outlinePage) {
+            outlinePage.updateOutline();
         }
     }
     /**
