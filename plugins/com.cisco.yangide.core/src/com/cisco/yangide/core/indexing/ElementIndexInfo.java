@@ -13,6 +13,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.runtime.IPath;
 
 import com.cisco.yangide.core.dom.ASTNamedNode;
+import com.cisco.yangide.core.dom.Module;
 
 /**
  * @author Konstantin Zaitsev
@@ -33,6 +34,12 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
     private String path;
     private String description;
     private String reference;
+    private String status;
+    // module fields
+    private String namespace;
+    private String organization;
+    private String contact;
+
     /** Optional entry in case of Jar Entry. */
     private String entry;
 
@@ -46,6 +53,13 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
         this.length = node.getNameLength();
         this.description = node.getDescription();
         this.reference = node.getReference();
+        this.status = node.getStatus();
+        if (node instanceof Module) {
+            Module m = (Module) node;
+            this.namespace = m.getNamespace() != null ? m.getNamespace().toASCIIString() : null;
+            this.organization = m.getOrganization() != null ? m.getOrganization().getValue() : null;
+            this.contact = m.getContact() != null ? m.getContact().getValue() : null;
+        }
         this.project = project.getName();
         this.path = path.toString();
         this.entry = entry;
@@ -205,6 +219,62 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
         this.revision = revision;
     }
 
+    /**
+     * @return the status
+     */
+    public String getStatus() {
+        return status;
+    }
+
+    /**
+     * @param status the status to set
+     */
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    /**
+     * @return the organization
+     */
+    public String getOrganization() {
+        return organization;
+    }
+
+    /**
+     * @param organization the organization to set
+     */
+    public void setOrganization(String organization) {
+        this.organization = organization;
+    }
+
+    /**
+     * @return the contact
+     */
+    public String getContact() {
+        return contact;
+    }
+
+    /**
+     * @param contact the contact to set
+     */
+    public void setContact(String contact) {
+        this.contact = contact;
+    }
+
+    /**
+     * @return the namespace
+     */
+    public String getNamespace() {
+        return namespace;
+    }
+
+    /**
+     * @param namespace the namespace to set
+     */
+    public void setNamespace(String namespace) {
+        this.namespace = namespace;
+    }
+
     @Override
     public int compareTo(ElementIndexInfo o) {
         return o.toString().compareTo(this.toString());
@@ -214,6 +284,7 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
     public String toString() {
         return "ElementIndexInfo [module=" + module + ", revision=" + revision + ", name=" + name + ", type=" + type
                 + ", startPosition=" + startPosition + ", length=" + length + ", project=" + project + ", path=" + path
-                + ", description=" + description + ", reference=" + reference + ", entry=" + entry + "]";
+                + ", description=" + description + ", reference=" + reference + ", status=" + status + ", namespace="
+                + namespace + ", organization=" + organization + ", contact=" + contact + ", entry=" + entry + "]";
     }
 }

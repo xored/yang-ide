@@ -16,23 +16,34 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangLexer;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Augment_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Base_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Belongs_to_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Contact_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Container_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Description_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Deviation_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Extension_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Feature_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Grouping_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Identity_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Import_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Include_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Input_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Leaf_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Module_header_stmtsContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Module_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Namespace_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Notification_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Organization_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Output_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Prefix_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Reference_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Revision_date_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Revision_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Revision_stmtsContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Rpc_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Status_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.StringContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Submodule_header_stmtsContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Submodule_stmtContext;
@@ -44,12 +55,22 @@ import org.opendaylight.yangtools.antlrv4.code.gen.YangParserBaseListener;
 
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
+import com.cisco.yangide.core.dom.AugmentationSchema;
+import com.cisco.yangide.core.dom.BaseReference;
 import com.cisco.yangide.core.dom.ContrainerSchemaNode;
+import com.cisco.yangide.core.dom.Deviation;
+import com.cisco.yangide.core.dom.ExtensionDefinition;
+import com.cisco.yangide.core.dom.FeatureDefinition;
 import com.cisco.yangide.core.dom.GroupingDefinition;
+import com.cisco.yangide.core.dom.IdentitySchemaNode;
 import com.cisco.yangide.core.dom.LeafSchemaNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
+import com.cisco.yangide.core.dom.NotificationDefinition;
 import com.cisco.yangide.core.dom.QName;
+import com.cisco.yangide.core.dom.RpcDefinition;
+import com.cisco.yangide.core.dom.RpcInputNode;
+import com.cisco.yangide.core.dom.RpcOutputNode;
 import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.SubModuleInclude;
@@ -299,6 +320,119 @@ public class YangParserModelListener extends YangParserBaseListener {
         usesNode.setGrouping(parseQName(groupingPath));
     }
 
+    @Override
+    public void enterAugment_stmt(Augment_stmtContext ctx) {
+        AugmentationSchema augmentation = new AugmentationSchema(stack.peek());
+        updateNamedNode(augmentation, ctx);
+        stack.push(augmentation);
+    }
+
+    @Override
+    public void exitAugment_stmt(Augment_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterDeviation_stmt(Deviation_stmtContext ctx) {
+        Deviation deviation = new Deviation(stack.peek());
+        updateNamedNode(deviation, ctx);
+        stack.push(deviation);
+    }
+
+    @Override
+    public void exitDeviation_stmt(Deviation_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterExtension_stmt(Extension_stmtContext ctx) {
+        ExtensionDefinition extension = new ExtensionDefinition(stack.peek());
+        updateNamedNode(extension, ctx);
+        stack.push(extension);
+    }
+
+    @Override
+    public void exitExtension_stmt(Extension_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterFeature_stmt(Feature_stmtContext ctx) {
+        FeatureDefinition feature = new FeatureDefinition(stack.peek());
+        updateNamedNode(feature, ctx);
+        stack.push(feature);
+    }
+
+    @Override
+    public void exitFeature_stmt(Feature_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterNotification_stmt(Notification_stmtContext ctx) {
+        NotificationDefinition notification = new NotificationDefinition(stack.peek());
+        updateNamedNode(notification, ctx);
+        stack.push(notification);
+    }
+
+    @Override
+    public void exitNotification_stmt(Notification_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterRpc_stmt(Rpc_stmtContext ctx) {
+        RpcDefinition rpc = new RpcDefinition(stack.peek());
+        updateNamedNode(rpc, ctx);
+        stack.push(rpc);
+    }
+
+    @Override
+    public void exitRpc_stmt(Rpc_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterInput_stmt(Input_stmtContext ctx) {
+        RpcInputNode input = new RpcInputNode(stack.peek());
+        input.setName("input");
+        input.setNameStartPosition(input.getStartPosition());
+        updateNodePosition(input, ctx);
+        stack.push(input);
+    }
+
+    @Override
+    public void exitInput_stmt(Input_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterOutput_stmt(Output_stmtContext ctx) {
+        RpcOutputNode output = new RpcOutputNode(stack.peek());
+        output.setName("output");
+        output.setNameStartPosition(output.getStartPosition());
+        updateNodePosition(output, ctx);
+        stack.push(output);
+    }
+
+    @Override
+    public void exitOutput_stmt(Output_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterIdentity_stmt(Identity_stmtContext ctx) {
+        IdentitySchemaNode identity = new IdentitySchemaNode(stack.peek());
+        updateNamedNode(identity, ctx);
+        Base_stmtContext base = getChildNode(ctx, Base_stmtContext.class);
+        if (base != null) {
+            BaseReference baseRef = new BaseReference(identity);
+            baseRef.setType(parseQName(stringFromNode(base)));
+            updateNamedNode(baseRef, base);
+            identity.setBase(baseRef);
+        }
+    }
+
     /**
      * @return
      */
@@ -373,18 +507,22 @@ public class YangParserModelListener extends YangParserBaseListener {
     private void setNodeDescription(ASTNode astNode, ParseTree treeNode) {
         String description = null;
         String reference = null;
+        String status = null;
         for (int i = 0; i < treeNode.getChildCount(); i++) {
             ParseTree child = treeNode.getChild(i);
             if (child instanceof Description_stmtContext) {
                 description = stringFromNode(child);
             } else if (child instanceof Reference_stmtContext) {
                 reference = stringFromNode(child);
+            } else if (child instanceof Status_stmtContext) {
+                status = stringFromNode(child);
             } else {
                 if (description != null && reference != null) {
                     break;
                 }
             }
         }
+        astNode.setStatus(status);
         astNode.setDescription(description);
         astNode.setReference(reference);
     }
@@ -434,5 +572,16 @@ public class YangParserModelListener extends YangParserBaseListener {
             }
         }
         return str.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    private <T> T getChildNode(ParseTree ctx, Class<T> clazz) {
+        for (int i = 0; i < ctx.getChildCount(); ++i) {
+            final ParseTree treeNode = ctx.getChild(i);
+            if (treeNode.getClass().equals(clazz)) {
+                return (T) treeNode;
+            }
+        }
+        return null;
     }
 }

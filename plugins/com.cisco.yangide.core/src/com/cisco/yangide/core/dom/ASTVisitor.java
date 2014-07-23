@@ -57,12 +57,51 @@ public abstract class ASTVisitor {
         return true;
     }
 
-    public boolean visit(ASTCompositeNode astCompositeNode) {
+    public boolean visit(NotificationDefinition notification) {
         return true;
     }
+
+    public boolean visit(RpcDefinition rpc) {
+        return true;
+    }
+
+    public boolean visit(FeatureDefinition feature) {
+        return true;
+    }
+
+    public boolean visit(AugmentationSchema augmentation) {
+        return true;
+    }
+
+    public boolean visit(Deviation deviation) {
+        return true;
+    }
+
+    public boolean visit(ExtensionDefinition extension) {
+        return true;
+    }
+
+    public boolean visit(IdentitySchemaNode identity) {
+        return true;
+    }
+
+    public boolean visit(RpcInputNode input) {
+        return true;
+    }
+
+    public boolean visit(RpcOutputNode output) {
+        return true;
+    }
+
+    public boolean visit(BaseReference base) {
+        return true;
+    }
+
+    // public boolean visit(ASTCompositeNode astCompositeNode) {
+    // return true;
+    // }
 
     public void preVisit(ASTNode node) {
 
     }
-
 }

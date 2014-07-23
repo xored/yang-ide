@@ -16,6 +16,7 @@ import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.handlers.HandlerUtil;
 
 import com.cisco.yangide.core.dom.ASTNode;
+import com.cisco.yangide.core.dom.BaseReference;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
 import com.cisco.yangide.core.dom.QName;
@@ -59,11 +60,20 @@ public class OpenDeclarationHandler extends AbstractHandler {
                     QName type = ref.getType();
                     searchResult = YangModelManager.search(type.getModule(), type.getRevision(), type.getName(),
                             ElementIndexType.TYPE, null, null);
+                    if (searchResult.length == 0) {
+                        searchResult = YangModelManager.search(type.getModule(), type.getRevision(), type.getName(),
+                                ElementIndexType.IDENTITY, null, null);
+                    }
                 } else if (node instanceof UsesNode) {
                     UsesNode usesNode = (UsesNode) node;
                     QName ref = usesNode.getGrouping();
                     searchResult = YangModelManager.search(ref.getModule(), ref.getRevision(), ref.getName(),
                             ElementIndexType.GROUPING, null, null);
+                } else if (node instanceof BaseReference) {
+                    BaseReference base = (BaseReference) node;
+                    QName ref = base.getType();
+                    searchResult = YangModelManager.search(ref.getModule(), ref.getRevision(), ref.getName(),
+                            ElementIndexType.IDENTITY, null, null);
                 }
 
                 if (searchResult != null && searchResult.length > 0) {

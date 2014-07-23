@@ -29,5 +29,8 @@ public enum ElementIndexType {
     TYPE,
 
     /** Yang Grouping <code>grouping</code> */
-    GROUPING;
+    GROUPING,
+
+    /** Identity declaration <code>identity</code> */
+    IDENTITY;
 }

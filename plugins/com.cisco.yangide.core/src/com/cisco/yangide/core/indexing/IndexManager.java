@@ -27,6 +27,7 @@ import org.mapdb.Fun.Tuple6;
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.dom.ASTVisitor;
 import com.cisco.yangide.core.dom.GroupingDefinition;
+import com.cisco.yangide.core.dom.IdentitySchemaNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.TypeDefinition;
@@ -43,7 +44,7 @@ public class IndexManager extends JobManager {
      * Stores index version, it is required increment version on each major changes of indexing
      * algorithm or indexed data.
      */
-    private static final int INDEX_VERSION = 3;
+    private static final int INDEX_VERSION = 5;
 
     /**
      * Index DB file path.
@@ -240,6 +241,13 @@ public class IndexManager extends JobManager {
                 public boolean visit(GroupingDefinition groupingDefinition) {
                     addElementIndexInfo(new ElementIndexInfo(groupingDefinition, moduleName, revision,
                             ElementIndexType.GROUPING, project, path, entry));
+                    return true;
+                }
+
+                @Override
+                public boolean visit(IdentitySchemaNode identity) {
+                    addElementIndexInfo(new ElementIndexInfo(identity, moduleName, revision, ElementIndexType.IDENTITY,
+                            project, path, entry));
                     return true;
                 }
             });

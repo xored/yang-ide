@@ -11,11 +11,8 @@ import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.JFaceResources;
-import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
-import org.eclipse.jface.text.IInformationControl;
-import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
@@ -24,11 +21,7 @@ import org.eclipse.jface.text.contentassist.IContentAssistant;
 import org.eclipse.jface.text.formatter.IContentFormatter;
 import org.eclipse.jface.text.formatter.MultiPassContentFormatter;
 import org.eclipse.jface.text.hyperlink.IHyperlinkDetector;
-import org.eclipse.jface.text.information.IInformationPresenter;
-import org.eclipse.jface.text.information.IInformationProvider;
-import org.eclipse.jface.text.information.InformationPresenter;
 import org.eclipse.jface.text.presentation.IPresentationReconciler;
-import org.eclipse.jface.text.presentation.PresentationReconciler;
 import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.reconciler.IReconcilingStrategy;
 import org.eclipse.jface.text.reconciler.MonoReconciler;
@@ -36,7 +29,6 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -44,6 +36,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import com.cisco.yangide.editor.editors.text.CompositeReconcilingStrategy;
 import com.cisco.yangide.editor.editors.text.YangFormattingStrategy;
 import com.cisco.yangide.editor.editors.text.YangReconcilingStrategy;
+import com.cisco.yangide.editor.editors.text.hover.YangTextHover;
 import com.cisco.yangide.editor.preferences.YangDocumentSetupParticipant;
 
 /**
@@ -108,13 +101,12 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
     }
 
     @Override
-    public ITextHover getTextHover(ISourceViewer sourceViewer,
-    		String contentType) {
-    	YangTextHover yangTextHover = new YangTextHover();
-    	yangTextHover.setEditor(editor); 	
-    	return yangTextHover;
+    public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType) {
+        YangTextHover yangTextHover = new YangTextHover();
+        yangTextHover.setEditor(editor);
+        return yangTextHover;
     }
-    
+
     @Override
     public IPresentationReconciler getPresentationReconciler(ISourceViewer sourceViewer) {
 
@@ -238,8 +230,8 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
         if (editor != null && editor.isEditable()) {
             CompositeReconcilingStrategy strategy = new CompositeReconcilingStrategy();
             strategy.setReconcilingStrategies(new IReconcilingStrategy[] {
-            // yang syntax reconcile
-            new YangReconcilingStrategy(sourceViewer, getEditor()) });
+                    // yang syntax reconcile
+                    new YangReconcilingStrategy(sourceViewer, getEditor()) });
             MonoReconciler reconciler = new MonoReconciler(strategy, false);
             reconciler.setIsAllowedToModifyDocument(false);
             reconciler.setDelay(500);
@@ -263,29 +255,31 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
     protected ITextEditor getEditor() {
         return editor;
     }
-    
-    @Override
-    public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {
-    	InformationPresenter presenter= new InformationPresenter(getInformationPresenterControlCreator(sourceViewer));
-		presenter.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
 
-		// Register information provider
-		IInformationProvider provider= new YangInformationProvider(getEditor());
-		String[] contentTypes= getConfiguredContentTypes(sourceViewer);
-		for (int i= 0; i < contentTypes.length; i++)
-			presenter.setInformationProvider(provider, contentTypes[i]);
+    // @Override
+    // public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {
+    // InformationPresenter presenter = new
+    // InformationPresenter(getInformationPresenterControlCreator(sourceViewer));
+    // presenter.setDocumentPartitioning(getConfiguredDocumentPartitioning(sourceViewer));
+    //
+    // // Register information provider
+    // IInformationProvider provider = new YangInformationProvider(getEditor());
+    // String[] contentTypes = getConfiguredContentTypes(sourceViewer);
+    // for (int i = 0; i < contentTypes.length; i++) {
+    // presenter.setInformationProvider(provider, contentTypes[i]);
+    // }
+    //
+    // // sizes: see org.eclipse.jface.text.TextViewer.TEXT_HOVER_*_CHARS
+    // return presenter;
+    // }
 
-		// sizes: see org.eclipse.jface.text.TextViewer.TEXT_HOVER_*_CHARS
-		presenter.setSizeConstraints(100, 100, true, false);
-		return presenter;
-    	
-    }
-    
-    private IInformationControlCreator getInformationPresenterControlCreator(ISourceViewer sourceViewer) {
-		return new IInformationControlCreator() {
-			public IInformationControl createInformationControl(Shell parent) {
-				return new DefaultInformationControl(parent, true);
-			}
-		};
-	}
+    // private IInformationControlCreator getInformationPresenterControlCreator(ISourceViewer
+    // sourceViewer) {
+    // return new IInformationControlCreator() {
+    // @Override
+    // public IInformationControl createInformationControl(Shell parent) {
+    // return new DefaultInformationControl(parent, true);
+    // }
+    // };
+    // }
 }
