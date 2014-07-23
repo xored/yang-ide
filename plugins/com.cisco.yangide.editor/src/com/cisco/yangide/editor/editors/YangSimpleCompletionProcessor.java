@@ -834,7 +834,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         }
 
         while (startOfWordToken > 0
-                && (Character.isJavaIdentifierPart(token) || '.' == token || '-' == token || ';' == token)
+                && (Character.isJavaIdentifierPart(token) || '.' == token || '-' == token || ';' == token || ':' == token)
                 && !('$' == token)) {
             startOfWordToken--;
             if (startOfWordToken == 0) {
