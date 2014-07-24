@@ -10,12 +10,13 @@ package com.cisco.yangide.editor.editors.text.hover;
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.DefaultTextHover;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
-import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.ITextHoverExtension;
 import org.eclipse.jface.text.ITextViewer;
-import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.source.Annotation;
+import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.swt.graphics.FontData;
 import org.eclipse.ui.IEditorPart;
 
@@ -35,19 +36,25 @@ import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.editors.YangEditor;
+import com.cisco.yangide.editor.editors.text.YangMarkerAnnotation;
+import com.cisco.yangide.editor.editors.text.YangSyntaxAnnotation;
 
 /**
  * @author Konstantin Zaitsev
  * @date Jul 23, 2014
  */
 @SuppressWarnings("restriction")
-public class YangTextHover implements ITextHover, ITextHoverExtension {
+public class YangTextHover extends DefaultTextHover implements ITextHoverExtension {
 
     private static String styleSheet = null;
 
     private IInformationControlCreator hoverControlCreator;
     private IInformationControlCreator presenterCtrlCreator;
     private IEditorPart editor;
+
+    public YangTextHover(ISourceViewer sourceViewer) {
+        super(sourceViewer);
+    }
 
     /**
      * @param editor the editor to set
@@ -64,12 +71,16 @@ public class YangTextHover implements ITextHover, ITextHoverExtension {
     }
 
     @Override
-    public IRegion getHoverRegion(ITextViewer textViewer, int offset) {
-        return new Region(offset, 0);
-    }
-
-    @Override
     public String getHoverInfo(ITextViewer textViewer, IRegion hoverRegion) {
+        @SuppressWarnings("deprecation")
+        String info = super.getHoverInfo(textViewer, hoverRegion);
+        if (info != null) {
+            StringBuffer sb = new StringBuffer(info);
+            HTMLPrinter.insertPageProlog(sb, 0, getStyleSheet());
+            HTMLPrinter.addPageEpilog(sb);
+            return sb.toString();
+        }
+
         String hoverInfo = null;
         YangEditor editor = (YangEditor) getEditor();
         try {
@@ -84,6 +95,23 @@ public class YangTextHover implements ITextHover, ITextHoverExtension {
         return hoverInfo;
     }
 
+    @Override
+    public IInformationControlCreator getHoverControlCreator() {
+        if (presenterCtrlCreator == null) {
+            presenterCtrlCreator = new PresenterControlCreator();
+        }
+        if (hoverControlCreator == null) {
+            hoverControlCreator = new HoverControlCreator(presenterCtrlCreator);
+        }
+        return hoverControlCreator;
+    }
+
+    @Override
+    protected boolean isIncluded(Annotation annotation) {
+        return YangSyntaxAnnotation.TYPE.equals(annotation.getType())
+                || YangMarkerAnnotation.TYPE.equals(annotation.getType());
+    }
+
     private String getHoverInfo(ASTNode node) {
         if (node.getDescription() != null && node.getDescription().length() > 0) {
             return getLocalHoverInfo(node);
@@ -91,10 +119,6 @@ public class YangTextHover implements ITextHover, ITextHoverExtension {
         return getIndexedInfo(node);
     }
 
-    /**
-     * @param node
-     * @return
-     */
     private String getIndexedInfo(ASTNode node) {
         QName name = null;
         ElementIndexType indexType = null;
@@ -150,10 +174,6 @@ public class YangTextHover implements ITextHover, ITextHoverExtension {
         return null;
     }
 
-    /**
-     * @param node
-     * @return
-     */
     private String getLocalHoverInfo(ASTNode node) {
         StringBuffer buffer = new StringBuffer();
         String name = node.getNodeName();
@@ -177,17 +197,6 @@ public class YangTextHover implements ITextHover, ITextHoverExtension {
         HTMLPrinter.insertPageProlog(buffer, 0, getStyleSheet());
         HTMLPrinter.addPageEpilog(buffer);
         return buffer.toString();
-    }
-
-    @Override
-    public IInformationControlCreator getHoverControlCreator() {
-        if (presenterCtrlCreator == null) {
-            presenterCtrlCreator = new PresenterControlCreator();
-        }
-        if (hoverControlCreator == null) {
-            hoverControlCreator = new HoverControlCreator(presenterCtrlCreator);
-        }
-        return hoverControlCreator;
     }
 
     private String formatValue(String source) {

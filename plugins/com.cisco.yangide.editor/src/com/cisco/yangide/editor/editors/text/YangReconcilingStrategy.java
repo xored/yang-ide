@@ -88,24 +88,24 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
             Module module = YangParserUtil.parseYangFile(document.get().toCharArray(), file.getProject(),
                     new IYangValidationListener() {
 
-                        @Override
-                        public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
-                            errors.set(true);
-                            annotationModel.addProblem(new YangProblem(new YangSyntaxAnnotation(null), new Position(
-                                    charStart, charEnd - charStart)));
-                        }
+                @Override
+                public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
+                    errors.set(true);
+                    annotationModel.addProblem(new YangProblem(new YangSyntaxAnnotation(msg), new Position(
+                            charStart, charEnd - charStart)));
+                }
 
-                        @Override
-                        public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
-                            errors.set(true);
-                            annotationModel.addProblem(new YangProblem(new YangSyntaxAnnotation(null), new Position(
-                                    charStart, charEnd - charStart)));
-                        }
-                    });
+                @Override
+                public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
+                    errors.set(true);
+                    annotationModel.addProblem(new YangProblem(new YangSyntaxAnnotation(msg), new Position(
+                            charStart, charEnd - charStart)));
+                }
+            });
             annotationModel.reportProblem();
-            
+
             YangFileInfo fileInfo = (YangFileInfo) yangFile.getElementInfo(monitor);
-            
+
             // reindex if no errors found
             if (!errors.get()) {
                 module.setFlags(ASTNode.VALID);
@@ -113,8 +113,7 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
                 fileInfo.setIsStructureKnown(true);
                 // re index content
                 YangModelManager.getIndexManager().addWorkingCopy(file);
-            }
-            else{
+            } else {
                 module.setFlags(ASTNode.MALFORMED);
                 fileInfo.setModule(module);
                 fileInfo.setIsStructureKnown(false);
@@ -124,14 +123,12 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
                 ((YangEditor) editor).reconcile();
             }
 
-
         } catch (Exception e) {
             // ignore any exception on reconcile
-        }
-        finally{
+        } finally {
             if (editor instanceof YangEditor) {
                 ((YangEditor) editor).updateSemanticHigliting();
-            }            
+            }
         }
 
     }

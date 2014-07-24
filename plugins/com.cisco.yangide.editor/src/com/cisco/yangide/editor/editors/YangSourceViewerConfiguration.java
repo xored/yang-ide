@@ -102,7 +102,7 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
 
     @Override
     public ITextHover getTextHover(ISourceViewer sourceViewer, String contentType) {
-        YangTextHover yangTextHover = new YangTextHover();
+        YangTextHover yangTextHover = new YangTextHover(sourceViewer);
         yangTextHover.setEditor(editor);
         return yangTextHover;
     }
@@ -230,8 +230,8 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
         if (editor != null && editor.isEditable()) {
             CompositeReconcilingStrategy strategy = new CompositeReconcilingStrategy();
             strategy.setReconcilingStrategies(new IReconcilingStrategy[] {
-                    // yang syntax reconcile
-                    new YangReconcilingStrategy(sourceViewer, getEditor()) });
+            // yang syntax reconcile
+            new YangReconcilingStrategy(sourceViewer, getEditor()) });
             MonoReconciler reconciler = new MonoReconciler(strategy, false);
             reconciler.setIsAllowedToModifyDocument(false);
             reconciler.setDelay(500);
