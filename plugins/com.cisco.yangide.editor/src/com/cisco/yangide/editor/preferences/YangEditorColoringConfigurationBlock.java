@@ -59,6 +59,7 @@ import com.cisco.yangide.editor.editors.SemanticHighlightingManager;
 import com.cisco.yangide.editor.editors.SemanticHighlightingManager.HighlightedRange;
 import com.cisco.yangide.editor.editors.SemanticHighlightings;
 import com.cisco.yangide.editor.editors.YangColorManager;
+import com.cisco.yangide.editor.editors.YangSourceViewer;
 import com.cisco.yangide.editor.editors.YangSourceViewerConfiguration;
 import com.cisco.yangide.ui.preferences.IYangColorConstants;
 import com.cisco.yangide.ui.preferences.OverlayPreferenceStore;
@@ -66,7 +67,7 @@ import com.cisco.yangide.ui.preferences.OverlayPreferenceStore.OverlayKey;
 
 /**
  * Configures YANG Editor hover preferences.
- * 
+ *
  * @author Alexey Kholupko
  */
 class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
@@ -140,7 +141,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
         /**
          * Initialize the item with the given values.
-         * 
+         *
          * @param displayName the display name
          * @param colorKey the color preference key
          * @param boldKey the bold preference key
@@ -219,7 +220,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
      */
     private final String[][] fSyntaxColorListModel = new String[][] {
 
-            { YangPreferencesMessages.YANGEditorPreferencePage_strings, IYangColorConstants.YANG_STRING },
+    { YangPreferencesMessages.YANGEditorPreferencePage_strings, IYangColorConstants.YANG_STRING },
             { YangPreferencesMessages.YANGEditorPreferencePage_keywords, IYangColorConstants.YANG_KEYWORD },
             { YangPreferencesMessages.YANGEditorPreferencePage_comments, IYangColorConstants.YANG_COMMENT },
             { YangPreferencesMessages.YANGEditorPreferencePage_identifiers, IYangColorConstants.YANG_IDENTIFIER },
@@ -266,14 +267,15 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
         }
 
         SemanticHighlighting[] semanticHighlightings = SemanticHighlightings.getSemanticHighlightings();
-        for (int i = 0, n = semanticHighlightings.length; i < n; i++)
+        for (int i = 0, n = semanticHighlightings.length; i < n; i++) {
             fListModel.add(new SemanticHighlightingColorListItem(semanticHighlightings[i].getDisplayName(),
                     SemanticHighlightings.getColorPreferenceKey(semanticHighlightings[i]), SemanticHighlightings
-                            .getBoldPreferenceKey(semanticHighlightings[i]), SemanticHighlightings
-                            .getItalicPreferenceKey(semanticHighlightings[i]), SemanticHighlightings
-                            .getStrikethroughPreferenceKey(semanticHighlightings[i]), SemanticHighlightings
-                            .getUnderlinePreferenceKey(semanticHighlightings[i]), SemanticHighlightings
-                            .getEnabledPreferenceKey(semanticHighlightings[i])));
+                    .getBoldPreferenceKey(semanticHighlightings[i]), SemanticHighlightings
+                    .getItalicPreferenceKey(semanticHighlightings[i]), SemanticHighlightings
+                    .getStrikethroughPreferenceKey(semanticHighlightings[i]), SemanticHighlightings
+                    .getUnderlinePreferenceKey(semanticHighlightings[i]), SemanticHighlightings
+                    .getEnabledPreferenceKey(semanticHighlightings[i])));
+        }
 
         store.addKeys(createOverlayStoreKeys());
     }
@@ -292,9 +294,10 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
             overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN, item
                     .getUnderlineKey()));
 
-            if (item instanceof SemanticHighlightingColorListItem)
+            if (item instanceof SemanticHighlightingColorListItem) {
                 overlayKeys.add(new OverlayPreferenceStore.OverlayKey(OverlayPreferenceStore.BOOLEAN,
                         ((SemanticHighlightingColorListItem) item).getEnableKey()));
+            }
 
         }
 
@@ -346,7 +349,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
         fHighlightingColorListViewer.setInput(fListModel);
         fHighlightingColorListViewer
-        .setSelection(new StructuredSelection(fHighlightingColorListViewer.getElementAt(0)));
+                .setSelection(new StructuredSelection(fHighlightingColorListViewer.getElementAt(0)));
     }
 
     @Override
@@ -608,7 +611,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     private Control createPreviewer(Composite parent) {
 
-        fPreviewViewer = new SourceViewer(parent, null, null, false, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
+        fPreviewViewer = new YangSourceViewer(parent, null, null, false, SWT.BORDER | SWT.V_SCROLL | SWT.H_SCROLL);
 
         YangSourceViewerConfiguration configuration = new YangSourceViewerConfiguration(YangEditorPlugin.getDefault()
                 .getCombinedPreferenceStore(), fColorManager, null);
@@ -635,7 +638,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     /**
      * Returns the current highlighting color list item.
-     * 
+     *
      * @return the current highlighting color list item
      */
     private HighlightingColorListItem getHighlightingColorListItem() {
@@ -653,7 +656,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
      * <p>
      * This method must be called before any of the dialog unit based conversion methods are called.
      * </p>
-     * 
+     *
      * @param testControl a control from which to obtain the current font
      */
     private void initializeDialogUnits(Control testControl) {
@@ -687,7 +690,7 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
 
     /**
      * Create the hard coded previewer ranges
-     * 
+     *
      * @return the hard coded previewer ranges
      */
     private SemanticHighlightingManager.HighlightedRange[][] createPreviewerRanges() {
@@ -713,15 +716,13 @@ class YangEditorColoringConfigurationBlock extends AbstractConfigurationBlock {
                 { createHighlightedRange(104, 20, 4, SemanticHighlightings.TYPE) },
                 { createHighlightedRange(109, 20, 11, SemanticHighlightings.TYPE) },
 
-           
-
         };
     }
 
     /**
      * Create a highlighted range on the previewers document with the given line, column, length and
      * key.
-     * 
+     *
      * @param line the line
      * @param column the column
      * @param length the length
