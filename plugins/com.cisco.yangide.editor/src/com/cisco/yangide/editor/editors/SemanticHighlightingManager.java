@@ -10,29 +10,27 @@ package com.cisco.yangide.editor.editors;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.jdt.ui.text.IColorManager;
+import org.eclipse.jdt.ui.text.IColorManagerExtension;
+import org.eclipse.jface.preference.IPreferenceStore;
+import org.eclipse.jface.preference.PreferenceConverter;
+import org.eclipse.jface.resource.StringConverter;
+import org.eclipse.jface.text.Position;
+import org.eclipse.jface.text.Region;
+import org.eclipse.jface.text.TextAttribute;
+import org.eclipse.jface.text.source.SourceViewer;
+import org.eclipse.jface.util.IPropertyChangeListener;
+import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.RGB;
-import org.eclipse.jface.preference.IPreferenceStore;
-import org.eclipse.jface.preference.PreferenceConverter;
-import org.eclipse.jface.resource.StringConverter;
-import org.eclipse.jface.util.IPropertyChangeListener;
-import org.eclipse.jface.util.PropertyChangeEvent;
-import org.eclipse.jface.text.Position;
-import org.eclipse.jface.text.Region;
-import org.eclipse.jface.text.TextAttribute;
-import org.eclipse.jface.text.presentation.PresentationReconciler;
-import org.eclipse.jface.text.source.SourceViewer;
-import org.eclipse.jdt.ui.text.IColorManager;
-import org.eclipse.jdt.ui.text.IColorManagerExtension;
-import org.eclipse.jdt.ui.text.JavaSourceViewerConfiguration;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
 
 /**
  * Semantic highlighting manager
- * 
+ *
  * @author Alexey Kholupko
  */
 public class SemanticHighlightingManager implements IPropertyChangeListener {
@@ -94,7 +92,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 
         /**
          * Initialize the styled positions with the given offset, length and foreground color.
-         * 
+         *
          * @param offset The position offset
          * @param length The position length
          * @param highlighting The position's highlighting
@@ -111,8 +109,9 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
          */
         public StyleRange createStyleRange() {
             int len = 0;
-            if (fStyle.isEnabled())
+            if (fStyle.isEnabled()) {
                 len = getLength();
+            }
 
             TextAttribute textAttribute = fStyle.getTextAttribute();
             int style = textAttribute.getStyle();
@@ -127,7 +126,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 
         /**
          * Uses reference equality for the highlighting.
-         * 
+         *
          * @param off The offset
          * @param len The length
          * @param highlighting The highlighting
@@ -143,7 +142,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
         /**
          * Is this position contained in the given range (inclusive)? Synchronizes on position
          * updater.
-         * 
+         *
          * @param off The range offset
          * @param len The range length
          * @return <code>true</code> iff this position is not delete and contained in the given
@@ -219,7 +218,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 
         /**
          * Initialize with the given offset, length and highlighting key.
-         * 
+         *
          * @param offset the offset
          * @param length the length
          * @param key the highlighting key as returned by
@@ -299,8 +298,9 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 
         fPreferenceStore.addPropertyChangeListener(this);
 
-        if (isEnabled())
+        if (isEnabled()) {
             enable();
+        }
     }
 
     /**
@@ -332,7 +332,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 
     /**
      * Computes the hard-coded positions from the hard-coded ranges
-     * 
+     *
      * @return the hard-coded positions
      */
     private HighlightedPosition[] createHardcodedPositions() {
@@ -348,8 +348,9 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
                 }
             }
 
-            if (range != null)
+            if (range != null) {
                 positions.add(fPresenter.createHighlightedPosition(range.getOffset(), range.getLength(), hl));
+            }
         }
         return positions.toArray(new HighlightedPosition[positions.size()]);
     }
@@ -360,8 +361,9 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
     private Highlighting getHighlighting(String key) {
         for (int i = 0; i < fSemanticHighlightings.length; i++) {
             SemanticHighlighting semanticHighlighting = fSemanticHighlightings[i];
-            if (key.equals(semanticHighlighting.getPreferenceKey()))
+            if (key.equals(semanticHighlighting.getPreferenceKey())) {
                 return fHighlightings[i];
+            }
         }
         return null;
     }
@@ -399,8 +401,9 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
             fPresenter = null;
         }
 
-        if (fSemanticHighlightings != null)
+        if (fSemanticHighlightings != null) {
             disposeHighlightings();
+        }
     }
 
     /**
@@ -426,16 +429,19 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
             int style = fPreferenceStore.getBoolean(boldKey) ? SWT.BOLD : SWT.NORMAL;
 
             String italicKey = SemanticHighlightings.getItalicPreferenceKey(semanticHighlighting);
-            if (fPreferenceStore.getBoolean(italicKey))
+            if (fPreferenceStore.getBoolean(italicKey)) {
                 style |= SWT.ITALIC;
+            }
 
             String strikethroughKey = SemanticHighlightings.getStrikethroughPreferenceKey(semanticHighlighting);
-            if (fPreferenceStore.getBoolean(strikethroughKey))
+            if (fPreferenceStore.getBoolean(strikethroughKey)) {
                 style |= TextAttribute.STRIKETHROUGH;
+            }
 
             String underlineKey = SemanticHighlightings.getUnderlinePreferenceKey(semanticHighlighting);
-            if (fPreferenceStore.getBoolean(underlineKey))
+            if (fPreferenceStore.getBoolean(underlineKey)) {
                 style |= TextAttribute.UNDERLINE;
+            }
 
             boolean isEnabled = fPreferenceStore.getBoolean(SemanticHighlightings
                     .getEnabledPreferenceKey(semanticHighlighting));
@@ -449,8 +455,9 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
      * Dispose the semantic highlightings.
      */
     private void disposeHighlightings() {
-        for (int i = 0, n = fSemanticHighlightings.length; i < n; i++)
+        for (int i = 0, n = fSemanticHighlightings.length; i < n; i++) {
             removeColor(SemanticHighlightings.getColorPreferenceKey(fSemanticHighlightings[i]));
+        }
 
         fSemanticHighlightings = null;
         fHighlightings = null;
@@ -460,6 +467,7 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
      * @see org.eclipse.jface.util.IPropertyChangeListener#propertyChange(org.eclipse.jface.util.
      * PropertyChangeEvent)
      */
+    @Override
     public void propertyChange(PropertyChangeEvent event) {
         handlePropertyChangeEvent(event);
         fSourceViewer.invalidateTextPresentation();
@@ -467,25 +475,29 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
 
     /**
      * Handle the given property change event
-     * 
+     *
      * @param event The event
      */
     private void handlePropertyChangeEvent(PropertyChangeEvent event) {
-        if (fPreferenceStore == null)
+        if (fPreferenceStore == null) {
             return; // Uninstalled during event notification
-
-        if (fConfiguration != null)
-            fConfiguration.handlePropertyChangeEvent(event);
-
-        if (SemanticHighlightings.affectsEnablement(fPreferenceStore, event)) {
-            if (isEnabled())
-                enable();
-            else
-                disable();
         }
 
-        if (!isEnabled())
+        if (fConfiguration != null) {
+            fConfiguration.handlePropertyChangeEvent(event);
+        }
+
+        if (SemanticHighlightings.affectsEnablement(fPreferenceStore, event)) {
+            if (isEnabled()) {
+                enable();
+            } else {
+                disable();
+            }
+        }
+
+        if (!isEnabled()) {
             return;
+        }
 
         boolean refreshNeeded = false;
 
@@ -541,19 +553,21 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
             }
         }
 
-        if (refreshNeeded && fReconciler != null)
+        if (refreshNeeded && fReconciler != null) {
             fReconciler.refresh();
+        }
     }
 
     private void adaptToEnablementChange(Highlighting highlighting, PropertyChangeEvent event) {
         Object value = event.getNewValue();
         boolean eventValue;
-        if (value instanceof Boolean)
+        if (value instanceof Boolean) {
             eventValue = ((Boolean) value).booleanValue();
-        else if (IPreferenceStore.TRUE.equals(value))
+        } else if (IPreferenceStore.TRUE.equals(value)) {
             eventValue = true;
-        else
+        } else {
             eventValue = false;
+        }
         highlighting.setEnabled(eventValue);
     }
 
@@ -561,10 +575,11 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
         RGB rgb = null;
 
         Object value = event.getNewValue();
-        if (value instanceof RGB)
+        if (value instanceof RGB) {
             rgb = (RGB) value;
-        else if (value instanceof String)
+        } else if (value instanceof String) {
             rgb = StringConverter.asRGB((String) value);
+        }
 
         if (rgb != null) {
 
@@ -586,17 +601,19 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
     private void adaptToTextStyleChange(Highlighting highlighting, PropertyChangeEvent event, int styleAttribute) {
         boolean eventValue = false;
         Object value = event.getNewValue();
-        if (value instanceof Boolean)
+        if (value instanceof Boolean) {
             eventValue = ((Boolean) value).booleanValue();
-        else if (IPreferenceStore.TRUE.equals(value))
+        } else if (IPreferenceStore.TRUE.equals(value)) {
             eventValue = true;
+        }
 
         TextAttribute oldAttr = highlighting.getTextAttribute();
         boolean activeValue = (oldAttr.getStyle() & styleAttribute) == styleAttribute;
 
-        if (activeValue != eventValue)
+        if (activeValue != eventValue) {
             highlighting.setTextAttribute(new TextAttribute(oldAttr.getForeground(), oldAttr.getBackground(),
                     eventValue ? oldAttr.getStyle() | styleAttribute : oldAttr.getStyle() & ~styleAttribute));
+        }
     }
 
     private void addColor(String colorKey) {
@@ -611,8 +628,9 @@ public class SemanticHighlightingManager implements IPropertyChangeListener {
     }
 
     private void removeColor(String colorKey) {
-        if (fColorManager instanceof IColorManagerExtension)
+        if (fColorManager instanceof IColorManagerExtension) {
             ((IColorManagerExtension) fColorManager).unbindColor(colorKey);
+        }
     }
 
     /**

@@ -89,7 +89,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     private ProjectionSupport projectionSupport;
 
     private YangFoldingStructureProvider fFoldingStructureProvider;
-    
+
     private SemanticHighlightingManager fSemanticManager;
 
     private YangEditorSelectionChangedListener editorSelectionChangedListener;
@@ -181,7 +181,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.eclipse.ui.editors.text.TextEditor#initializeEditor() Called from TextEditor.<init>
      */
     @Override
@@ -206,9 +206,9 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         }
         colorManager.dispose();
         super.dispose();
-        
+
         uninstallSemanticHighlighting();
-        
+
         IEditorInput input = getEditorInput();
         // revert index to file content instead of editor
         if (input != null && input instanceof IFileEditorInput) {
@@ -369,12 +369,9 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
         // turn projection mode on
         projectionviewer.doOperation(ProjectionViewer.TOGGLE);
-        
-        //TODO somewhere else
-        SemanticHighlightings.initDefaults(YangUIPlugin.getDefault().getPreferenceStore());
-        //TODO check if enabled through preferences        
-        installSemanticHighlighting();
 
+        SemanticHighlightings.initDefaults(YangUIPlugin.getDefault().getPreferenceStore());
+        installSemanticHighlighting();
     }
 
     @Override
@@ -382,7 +379,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         fAnnotationAccess = getAnnotationAccess();
         fOverviewRuler = createOverviewRuler(getSharedColors());
 
-        ISourceViewer viewer = new ProjectionViewer(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles);
+        ISourceViewer viewer = new YangSourceViewer(parent, ruler, getOverviewRuler(), isOverviewRulerVisible(), styles);
 
         // ensure decoration support has been created and configured.
         getSourceViewerDecorationSupport(viewer);
@@ -462,7 +459,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     public void reconcile() {
         updateOutline();
         updateFoldingRegions();
-        //updateSemanticHigliting();
+        // updateSemanticHigliting();
     }
 
     private void updateFoldingRegions() {
@@ -480,9 +477,9 @@ public class YangEditor extends TextEditor implements IProjectionListener {
             outlinePage.updateOutline();
         }
     }
-    
+
     public void updateSemanticHigliting() {
-        if(fSemanticManager != null){
+        if (fSemanticManager != null) {
             fSemanticManager.getReconciler().refresh();
         }
     }
@@ -529,5 +526,5 @@ public class YangEditor extends TextEditor implements IProjectionListener {
             fSemanticManager = null;
         }
     }
-    
+
 }

@@ -38,7 +38,6 @@ public final class YangIndenter {
         final boolean prefArrayDeepIndent;
         final boolean prefTernaryDeepAlign;
         final int prefTernaryIndent;
-        final int prefCaseIndent;
         final int prefCaseBlockIndent;
         final int prefSimpleIndent;
         final int prefBracketIndent;
@@ -75,7 +74,6 @@ public final class YangIndenter {
             prefArrayDeepIndent = true;
             prefTernaryDeepAlign = false;
             prefTernaryIndent = prefContinuationIndent;
-            prefCaseIndent = 0;
             prefCaseBlockIndent = prefBlockIndent;
             prefIndentBracesForBlocks = false;
             prefSimpleIndent = (prefIndentBracesForBlocks && prefBlockIndent == 0) ? 1 : prefBlockIndent;
@@ -901,7 +899,7 @@ public final class YangIndenter {
                 skipScope();
                 break;
 
-                // scope introduction: special treat who special is
+            // scope introduction: special treat who special is
             case Symbols.TokenLPAREN:
             case Symbols.TokenLBRACE:
             case Symbols.TokenLBRACKET:

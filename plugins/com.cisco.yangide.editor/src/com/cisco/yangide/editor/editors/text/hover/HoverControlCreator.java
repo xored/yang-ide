@@ -4,7 +4,7 @@
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
- */ 
+ */
 package com.cisco.yangide.editor.editors.text.hover;
 
 import org.eclipse.jface.internal.text.html.BrowserInformationControl;
@@ -16,6 +16,7 @@ import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.EditorsUI;
 
+@SuppressWarnings("restriction")
 public final class HoverControlCreator extends AbstractReusableInformationControlCreator {
 
     private final IInformationControlCreator fInformationPresenterControlCreator;
@@ -29,7 +30,6 @@ public final class HoverControlCreator extends AbstractReusableInformationContro
         fInformationPresenterControlCreator = informationPresenterControlCreator;
     }
 
-    @SuppressWarnings("restriction")
     @Override
     public IInformationControl doCreateInformationControl(Shell parent) {
         if (BrowserInformationControl.isAvailable(parent)) {

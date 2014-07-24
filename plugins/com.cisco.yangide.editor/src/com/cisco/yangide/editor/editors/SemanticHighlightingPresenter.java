@@ -33,7 +33,7 @@ import com.cisco.yangide.editor.editors.SemanticHighlightingManager.Highlighting
 
 /**
  * Semantic highlighting presenter - UI thread implementation.
- * 
+ *
  * @author Alexey Kholupko
  */
 public class SemanticHighlightingPresenter implements ITextPresentationListener, ITextInputListener, IDocumentListener {
@@ -48,7 +48,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
         /**
          * Creates a new updater for the given <code>category</code>.
-         * 
+         *
          * @param category the new category.
          */
         public HighlightingPositionUpdater(String category) {
@@ -58,6 +58,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
         /*
          * @see org.eclipse.jface.text.IPositionUpdater#update(org.eclipse.jface.text.DocumentEvent)
          */
+        @Override
         public void update(DocumentEvent event) {
 
             int eventOffset = event.getOffset();
@@ -80,18 +81,19 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
                     int length = position.getLength();
                     int end = offset + length;
 
-                    if (offset > eventEnd)
+                    if (offset > eventEnd) {
                         updateWithPrecedingEvent(position, event);
-                    else if (end < eventOffset)
+                    } else if (end < eventOffset) {
                         updateWithSucceedingEvent(position, event);
-                    else if (offset <= eventOffset && end >= eventEnd)
+                    } else if (offset <= eventOffset && end >= eventEnd) {
                         updateWithIncludedEvent(position, event);
-                    else if (offset <= eventOffset)
+                    } else if (offset <= eventOffset) {
                         updateWithOverEndEvent(position, event);
-                    else if (end >= eventEnd)
+                    } else if (end >= eventEnd) {
                         updateWithOverStartEvent(position, event);
-                    else
+                    } else {
                         updateWithIncludingEvent(position, event);
+                    }
                 }
             } catch (BadPositionCategoryException e) {
                 // ignore and return
@@ -100,7 +102,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
         /**
          * Update the given position with the given event. The event precedes the position.
-         * 
+         *
          * @param position The position
          * @param event The event
          */
@@ -114,7 +116,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
         /**
          * Update the given position with the given event. The event succeeds the position.
-         * 
+         *
          * @param position The position
          * @param event The event
          */
@@ -123,15 +125,16 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
         /**
          * Update the given position with the given event. The event is included by the position.
-         * 
+         *
          * @param position The position
          * @param event The event
          */
         private void updateWithIncludedEvent(HighlightedPosition position, DocumentEvent event) {
             int eventOffset = event.getOffset();
             String newText = event.getText();
-            if (newText == null)
+            if (newText == null) {
                 newText = ""; //$NON-NLS-1$
+            }
             int eventNewLength = newText.length();
 
             int deltaLength = eventNewLength - event.getLength();
@@ -141,16 +144,18 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
             int end = offset + length;
 
             int includedLength = 0;
-            while (includedLength < eventNewLength && Character.isJavaIdentifierPart(newText.charAt(includedLength)))
+            while (includedLength < eventNewLength && Character.isJavaIdentifierPart(newText.charAt(includedLength))) {
                 includedLength++;
-            if (includedLength == eventNewLength)
+            }
+            if (includedLength == eventNewLength) {
                 position.setLength(length + deltaLength);
-            else {
+            } else {
                 int newLeftLength = eventOffset - offset + includedLength;
 
                 int excludedLength = eventNewLength;
-                while (excludedLength > 0 && Character.isJavaIdentifierPart(newText.charAt(excludedLength - 1)))
+                while (excludedLength > 0 && Character.isJavaIdentifierPart(newText.charAt(excludedLength - 1))) {
                     excludedLength--;
+                }
                 int newRightOffset = eventOffset + excludedLength;
                 int newRightLength = end + deltaLength - newRightOffset;
 
@@ -170,26 +175,28 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
         /**
          * Update the given position with the given event. The event overlaps with the end of the
          * position.
-         * 
+         *
          * @param position The position
          * @param event The event
          */
         private void updateWithOverEndEvent(HighlightedPosition position, DocumentEvent event) {
             String newText = event.getText();
-            if (newText == null)
+            if (newText == null) {
                 newText = ""; //$NON-NLS-1$
+            }
             int eventNewLength = newText.length();
 
             int includedLength = 0;
-            while (includedLength < eventNewLength && Character.isJavaIdentifierPart(newText.charAt(includedLength)))
+            while (includedLength < eventNewLength && Character.isJavaIdentifierPart(newText.charAt(includedLength))) {
                 includedLength++;
+            }
             position.setLength(event.getOffset() - position.getOffset() + includedLength);
         }
 
         /**
          * Update the given position with the given event. The event overlaps with the start of the
          * position.
-         * 
+         *
          * @param position The position
          * @param event The event
          */
@@ -198,13 +205,15 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
             int eventEnd = eventOffset + event.getLength();
 
             String newText = event.getText();
-            if (newText == null)
+            if (newText == null) {
                 newText = ""; //$NON-NLS-1$
+            }
             int eventNewLength = newText.length();
 
             int excludedLength = eventNewLength;
-            while (excludedLength > 0 && Character.isJavaIdentifierPart(newText.charAt(excludedLength - 1)))
+            while (excludedLength > 0 && Character.isJavaIdentifierPart(newText.charAt(excludedLength - 1))) {
                 excludedLength--;
+            }
             int deleted = eventEnd - position.getOffset();
             int inserted = eventNewLength - excludedLength;
             position.update(eventOffset + excludedLength, position.getLength() - deleted + inserted);
@@ -212,7 +221,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
         /**
          * Update the given position with the given event. The event includes the position.
-         * 
+         *
          * @param position The position
          * @param event The event
          */
@@ -249,7 +258,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
     /**
      * Adds all current positions to the given list.
-     * 
+     *
      * @param list The list
      */
     public void addAllPositions(List<Position> list) {
@@ -260,7 +269,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
     /**
      * Create a text presentation in the background.
-     * 
+     *
      * @param addedPositions the added positions
      * @param removedPositions the removed positions
      * @return the text presentation or <code>null</code>, if reconciliation should be canceled
@@ -268,15 +277,18 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
     public TextPresentation createPresentation(List<Position> addedPositions, List<Position> removedPositions) {
         SourceViewer sourceViewer = fSourceViewer;
         YangPresentationReconciler presentationReconciler = fPresentationReconciler;
-        if (sourceViewer == null || presentationReconciler == null)
+        if (sourceViewer == null || presentationReconciler == null) {
             return null;
+        }
 
-        if (isCanceled())
+        if (isCanceled()) {
             return null;
+        }
 
         IDocument document = sourceViewer.getDocument();
-        if (document == null)
+        if (document == null) {
             return null;
+        }
 
         int minStart = Integer.MAX_VALUE;
         int maxEnd = Integer.MIN_VALUE;
@@ -293,20 +305,21 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
             maxEnd = Math.max(maxEnd, offset + position.getLength());
         }
 
-        if (minStart < maxEnd)
+        if (minStart < maxEnd) {
             try {
                 return presentationReconciler
                         .createRepairDescription(new Region(minStart, maxEnd - minStart), document);
             } catch (RuntimeException e) {
                 // Assume concurrent modification from UI thread
             }
+        }
 
         return null;
     }
 
     /**
      * Create a runnable for updating the presentation.
-     * 
+     *
      * @param textPresentation the text presentation
      * @param addedPositions the added positions
      * @param removedPositions the removed positions
@@ -314,20 +327,23 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
      */
     public Runnable createUpdateRunnable(final TextPresentation textPresentation, List<Position> addedPositions,
             List<Position> removedPositions) {
-        if (fSourceViewer == null || textPresentation == null)
+        if (fSourceViewer == null || textPresentation == null) {
             return null;
+        }
 
         // TODO: do clustering of positions and post multiple fast runnables
         final HighlightedPosition[] added = new SemanticHighlightingManager.HighlightedPosition[addedPositions.size()];
         addedPositions.toArray(added);
         final SemanticHighlightingManager.HighlightedPosition[] removed = new SemanticHighlightingManager.HighlightedPosition[removedPositions
-                .size()];
+                                                                                                                              .size()];
         removedPositions.toArray(removed);
 
-        if (isCanceled())
+        if (isCanceled()) {
             return null;
+        }
 
         Runnable runnable = new Runnable() {
+            @Override
             public void run() {
                 updatePresentation(textPresentation, added, removed);
             }
@@ -342,8 +358,9 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
      */
     public void updatePresentation(TextPresentation textPresentation, HighlightedPosition[] addedPositions,
             HighlightedPosition[] removedPositions) {
-        if (fSourceViewer == null)
+        if (fSourceViewer == null) {
             return;
+        }
 
         //		checkOrdering("added positions: ", Arrays.asList(addedPositions)); //$NON-NLS-1$
         //		checkOrdering("removed positions: ", Arrays.asList(removedPositions)); //$NON-NLS-1$
@@ -351,12 +368,14 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
         // TODO: double-check consistency with document.getPositions(...)
         // TODO: reuse removed positions
-        if (isCanceled())
+        if (isCanceled()) {
             return;
+        }
 
         IDocument document = fSourceViewer.getDocument();
-        if (document == null)
+        if (document == null) {
             return;
+        }
 
         String positionCategory = getPositionCategory();
 
@@ -398,7 +417,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
                     // c) merge: add the next of position/addedPosition with the lower offset
                     if (position != null) {
-                        if (addedPosition != null)
+                        if (addedPosition != null) {
                             if (position.getOffset() <= addedPosition.getOffset()) {
                                 newPositions.add(position);
                                 position = null;
@@ -406,7 +425,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
                                 newPositions.add(addedPosition);
                                 addedPosition = null;
                             }
-                        else {
+                        } else {
                             newPositions.add(position);
                             position = null;
                         }
@@ -426,10 +445,11 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
         }
         //		checkOrdering("new positions: ", fPositions); //$NON-NLS-1$
 
-        if (textPresentation != null)
+        if (textPresentation != null) {
             fSourceViewer.changeTextPresentation(textPresentation, false);
-        else
+        } else {
             fSourceViewer.invalidateTextPresentation();
+        }
     }
 
     // private void checkOrdering(String s, List positions) {
@@ -443,7 +463,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
     /**
      * Returns <code>true</code> iff the positions contain the position.
-     * 
+     *
      * @param positions the positions, must be ordered by offset but may overlap
      * @param position the position
      * @return <code>true</code> iff the positions contain the position
@@ -454,7 +474,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
     /**
      * Returns index of the position in the positions, <code>-1</code> if not found.
-     * 
+     *
      * @param positions the positions, must be ordered by offset but may overlap
      * @param position the position
      * @return the index
@@ -463,8 +483,9 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
         int index = computeIndexAtOffset(positions, position.getOffset());
         int size = positions.size();
         while (index < size) {
-            if (positions.get(index) == position)
+            if (positions.get(index) == position) {
                 return index;
+            }
             index++;
         }
         return -1;
@@ -473,7 +494,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
     /**
      * Insert the given position in <code>fPositions</code>, s.t. the offsets remain in linear
      * order.
-     * 
+     *
      * @param position The position for insertion
      */
     private void insertPosition(Position position) {
@@ -483,7 +504,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
     /**
      * Returns the index of the first position with an offset greater than the given offset.
-     * 
+     *
      * @param positions the positions, must be ordered by offset and must not overlap
      * @param offset the offset
      * @return the index of the last position with an offset greater than the given offset
@@ -493,11 +514,12 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
         int j = positions.size();
         while (j - i > 1) {
             int k = (i + j) >> 1;
-            Position position = positions.get(k);
-            if (position.getOffset() > offset)
-                j = k;
-            else
-                i = k;
+                            Position position = positions.get(k);
+                            if (position.getOffset() > offset) {
+                                j = k;
+                            } else {
+                                i = k;
+                            }
         }
         return j;
     }
@@ -511,11 +533,12 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
         int j = positions.size();
         while (j - i > 1) {
             int k = (i + j) >> 1;
-            Position position = positions.get(k);
-            if (position.getOffset() >= offset)
-                j = k;
-            else
-                i = k;
+                Position position = positions.get(k);
+                if (position.getOffset() >= offset) {
+                    j = k;
+                } else {
+                    i = k;
+                }
         }
         return j;
     }
@@ -525,6 +548,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
      * org.eclipse.jface.text.ITextPresentationListener#applyTextPresentation(org.eclipse.jface.
      * text.TextPresentation)
      */
+    @Override
     public void applyTextPresentation(TextPresentation textPresentation) {
         IRegion region = textPresentation.getExtent();
         int i = computeIndexAtOffset(fPositions, region.getOffset()), n = computeIndexAtOffset(fPositions,
@@ -533,8 +557,9 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
             List<StyleRange> ranges = new ArrayList<StyleRange>(n - i);
             for (; i < n; i++) {
                 HighlightedPosition position = (HighlightedPosition) fPositions.get(i);
-                if (!position.isDeleted())
+                if (!position.isDeleted()) {
                     ranges.add(position.createStyleRange());
+                }
             }
             StyleRange[] array = new StyleRange[ranges.size()];
             array = ranges.toArray(array);
@@ -542,8 +567,9 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
         } else {
             for (; i < n; i++) {
                 HighlightedPosition position = (HighlightedPosition) fPositions.get(i);
-                if (!position.isDeleted())
+                if (!position.isDeleted()) {
                     textPresentation.replaceStyleRange(position.createStyleRange());
+                }
             }
         }
     }
@@ -553,6 +579,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
      * org.eclipse.jface.text.ITextInputListener#inputDocumentAboutToBeChanged(org.eclipse.jface
      * .text.IDocument, org.eclipse.jface.text.IDocument)
      */
+    @Override
     public void inputDocumentAboutToBeChanged(IDocument oldInput, IDocument newInput) {
         setCanceled(true);
         releaseDocument(oldInput);
@@ -564,6 +591,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
      * org.eclipse.jface.text.ITextInputListener#inputDocumentChanged(org.eclipse.jface.text.IDocument
      * , org.eclipse.jface.text.IDocument)
      */
+    @Override
     public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {
         manageDocument(newInput);
     }
@@ -573,6 +601,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
      * org.eclipse.jface.text.IDocumentListener#documentAboutToBeChanged(org.eclipse.jface.text.
      * DocumentEvent)
      */
+    @Override
     public void documentAboutToBeChanged(DocumentEvent event) {
         setCanceled(true);
     }
@@ -582,6 +611,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
      * org.eclipse.jface.text.IDocumentListener#documentChanged(org.eclipse.jface.text.DocumentEvent
      * )
      */
+    @Override
     public void documentChanged(DocumentEvent event) {
     }
 
@@ -590,8 +620,9 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
      */
     public boolean isCanceled() {
         IDocument document = fSourceViewer != null ? fSourceViewer.getDocument() : null;
-        if (document == null)
+        if (document == null) {
             return fIsCanceled;
+        }
 
         synchronized (getLockObject(document)) {
             return fIsCanceled;
@@ -620,8 +651,9 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
     private Object getLockObject(IDocument document) {
         if (document instanceof ISynchronizable) {
             Object lock = ((ISynchronizable) document).getLockObject();
-            if (lock != null)
+            if (lock != null) {
                 return lock;
+            }
         }
         return document;
     }
@@ -633,7 +665,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
         fSourceViewer = sourceViewer;
         fPresentationReconciler = backgroundPresentationReconciler;
 
-        fSourceViewer.addTextPresentationListener(this);
+        ((YangSourceViewer) fSourceViewer).prependTextPresentationListener(this);
         fSourceViewer.addTextInputListener(this);
         manageDocument(fSourceViewer.getDocument());
     }
@@ -657,14 +689,15 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
     /**
      * Invalidate text presentation of positions with the given highlighting.
-     * 
+     *
      * @param highlighting The highlighting
      */
     public void highlightingStyleChanged(Highlighting highlighting) {
         for (int i = 0, n = fPositions.size(); i < n; i++) {
             HighlightedPosition position = (HighlightedPosition) fPositions.get(i);
-            if (position.getHighlighting() == highlighting)
+            if (position.getHighlighting() == highlighting) {
                 fSourceViewer.invalidateTextPresentation(position.getOffset(), position.getLength());
+            }
         }
     }
 
@@ -682,7 +715,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
      * Add a position with the given range and highlighting unconditionally, only from UI thread.
      * The position will also be registered on the document. The text presentation is not
      * invalidated.
-     * 
+     *
      * @param offset The range offset
      * @param length The range length
      * @param highlighting the highlighting
@@ -694,8 +727,9 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
         }
 
         IDocument document = fSourceViewer.getDocument();
-        if (document == null)
+        if (document == null) {
             return;
+        }
         String positionCategory = getPositionCategory();
         try {
             document.addPosition(positionCategory, position);
@@ -719,7 +753,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
     /**
      * Start managing the given document.
-     * 
+     *
      * @param document The document
      */
     private void manageDocument(IDocument document) {
@@ -732,7 +766,7 @@ public class SemanticHighlightingPresenter implements ITextPresentationListener,
 
     /**
      * Stop managing the given document.
-     * 
+     *
      * @param document The document
      */
     private void releaseDocument(IDocument document) {

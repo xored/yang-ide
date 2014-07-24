@@ -25,12 +25,9 @@ import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.contentassist.CompletionProposal;
-import org.eclipse.jface.text.contentassist.ContentAssistEvent;
 import org.eclipse.jface.text.contentassist.ContextInformation;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
-import org.eclipse.jface.text.contentassist.IContentAssistant;
-import org.eclipse.jface.text.contentassist.IContentAssistantExtension2;
 import org.eclipse.jface.text.contentassist.IContextInformation;
 import org.eclipse.jface.text.contentassist.IContextInformationValidator;
 import org.eclipse.jface.text.templates.Template;
@@ -109,7 +106,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     private final static String[] fgBuiltinTypes = YangScanner.types;
 
-    private final static Map<String, List> keywordHierarchyMap = createKeywordHierarchyMap();
+    private final static Map<String, List<String>> keywordHierarchyMap = createKeywordHierarchyMap();
 
     enum CompletionKind {
         None, KeywordScope, Import, Type, Uses, Include, BelongsTo, Keyword
@@ -117,15 +114,11 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     protected IContextInformationValidator fValidator = new Validator();
 
-    private IContentAssistantExtension2 fContentAssistant;
-
     private ITextViewer viewer;
 
     private int cursorPosition;
 
     private int lineNumber;
-
-    private int columnNumber;
 
     private String currentPrefix = null;
 
@@ -167,8 +160,8 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     /**
      * @return
      */
-    private static Map<String, List> createKeywordHierarchyMap() {
-        Map<String, List> keywordHierarchyMap = new HashMap<String, List>();
+    private static Map<String, List<String>> createKeywordHierarchyMap() {
+        Map<String, List<String>> keywordHierarchyMap = new HashMap<String, List<String>>();
 
         keywordHierarchyMap.put(
                 "module",
@@ -332,20 +325,6 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         return null;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.jface.text.contentassist.ICompletionListener#assistSessionStarted(org.eclipse
-     * .jface.text.contentassist.ContentAssistEvent)
-     */
-    public void assistSessionStarted(ContentAssistEvent event) {
-        IContentAssistant assistant = event.assistant;
-        if (assistant instanceof IContentAssistantExtension2) {
-            fContentAssistant = (IContentAssistantExtension2) assistant;
-        }
-    }
-
     /**
      * @return new determined proposals
      */
@@ -356,7 +335,6 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         IDocument doc = viewer.getDocument();
         try {
             lineNumber = doc.getLineOfOffset(cursorPosition);
-            columnNumber = cursorPosition - doc.getLineOffset(lineNumber);
 
             String prefix = getCurrentPrefix();
             if (prefix == null || cursorPosition == -1) {
@@ -405,7 +383,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
             int currentToken = yangHeuristicScanner.previousToken(curPos, YangHeuristicScanner.UNBOUND);
 
-            //assuming identifier between keyword and {
+            // assuming identifier between keyword and {
             int keywordEndPos = yangHeuristicScanner.getPosition();
             int keywordStartPos = keywordEndPos;
 
@@ -413,8 +391,8 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 yangHeuristicScanner.previousToken(keywordEndPos, YangHeuristicScanner.UNBOUND);
                 keywordStartPos = yangHeuristicScanner.getPosition();
             }
-            //if there was no identifier (empty or string partition)
-            if(currentToken == Symbols.TokenKEYWORD){
+            // if there was no identifier (empty or string partition)
+            if (currentToken == Symbols.TokenKEYWORD) {
                 keywordEndPos = curPos + 1;
             }
 
@@ -458,13 +436,13 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         case KeywordScope:
             proposals = getKeywordScopeProposals(prefix);
             break;
-        default:            
+        default:
             break;
         }
 
-        return proposals;        
+        return proposals;
     }
-    
+
     /**
      * @param prefix
      * @param addModuleRevision
@@ -477,13 +455,11 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
         List<ICompletionProposal> moduleProposals = new ArrayList<ICompletionProposal>();
 
-        boolean hasImportProposals = true;
-
         try {
 
             // import, prefix or revision-date
             String previousWord = determinePreviousWord(viewer.getDocument(), cursorPosition - prefix.length());
-            
+
             Map<String, String> usedImports = new HashMap<>();
 
             for (int i = 0; i < importModules.length; i++) {
@@ -494,41 +470,44 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 if (usedRevision == null || !usedRevision.equals(info.getRevision())) {
                     usedImports.put(info.getName(), info.getRevision());
                     String importModuleName = info.getName();
-                    
+
                     String revision = info.getRevision();
-                    
-                    ICompletionProposal proposal = generateImportProposal(previousWord, prefix, importModuleName, revision, addModuleRevision);
-                    
-                    if(proposal != null)
+
+                    ICompletionProposal proposal = generateImportProposal(previousWord, prefix, importModuleName,
+                            revision, addModuleRevision);
+
+                    if (proposal != null) {
                         moduleProposals.add(proposal);
-                   
+                    }
+
                 }
             }
 
-            //TODO 
-//          if (moduleProposals.isEmpty() && previousWord != "import" && previousWord != "revision-date")
-//              return getProposalsByMode(prefix, CompletionKind.KeywordScope); //or CompletionKind.Keyword
-
-            
+            // TODO
+            // if (moduleProposals.isEmpty() && previousWord != "import" && previousWord !=
+            // "revision-date")
+            // return getProposalsByMode(prefix, CompletionKind.KeywordScope); //or
+            // CompletionKind.Keyword
 
         } catch (BadLocationException e) {
             YangEditorPlugin.log(e);
         }
 
-        Collections.sort(moduleProposals, proposalComparator);        
+        Collections.sort(moduleProposals, proposalComparator);
         TypedProposalsList result = new TypedProposalsList();
         result.proposals = moduleProposals;
         result.type = CompletionKind.Import;
         return result;
 
     }
-    
-    private ICompletionProposal generateImportProposal(String previousWord, String prefix, String importModuleName, String revision, boolean addModuleRevision){
-        
+
+    private ICompletionProposal generateImportProposal(String previousWord, String prefix, String importModuleName,
+            String revision, boolean addModuleRevision) {
+
         ICompletionProposal resultProposal = null;
 
         boolean isImportProposal = true;
-                
+
         String displayString = importModuleName;
         String replacementString = importModuleName;
 
@@ -538,16 +517,15 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         int replCursorPosition = cursorPosition;
         isImportProposal = true;
 
-
         switch (previousWord) {
         case "import":
             if (revision != null && !revision.isEmpty()) {
                 String moduleRevision = "";
-                if (addModuleRevision) 
+                if (addModuleRevision) {
                     moduleRevision = "revision-date " + revision + "; ";
-                
-                replacementString = importModuleName + " { prefix " + importModuleName + "; "
-                        + moduleRevision + "}";
+                }
+
+                replacementString = importModuleName + " { prefix " + importModuleName + "; " + moduleRevision + "}";
                 displayString = importModuleName += " (" + revision + ")";
                 replCursorPosition = importModuleName.length();
                 break;
@@ -573,11 +551,11 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
         if (isImportProposal && ((prefix.length() == 0 || importModuleName.startsWith(prefix)))) {
 
-            resultProposal = new CompletionProposal(replacementString, replacementOffset,
-                    replacementLength, replCursorPosition, YangUIImages
-                            .getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL), displayString, null, null);
-        }        
-        
+            resultProposal = new CompletionProposal(replacementString, replacementOffset, replacementLength,
+                    replCursorPosition, YangUIImages.getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL), displayString,
+                    null, null);
+        }
+
         return resultProposal;
     }
 
@@ -660,7 +638,6 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
      */
     private TypedProposalsList getUsesProposals(String prefix) {
         ElementIndexInfo[] groupings = YangModelManager.search(null, null, null, ElementIndexType.GROUPING, null, null);
-        
 
         List<ICompletionProposal> groupingProposals = new ArrayList<ICompletionProposal>();
 
@@ -796,11 +773,11 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         if ("include".equalsIgnoreCase(previousWord)) {
             return CompletionKind.Include;
         }
-        
-        if(Arrays.asList(fgKeywordProposals).contains(previousWord)){
+
+        if (Arrays.asList(fgKeywordProposals).contains(previousWord)) {
             return CompletionKind.Keyword;
         }
-        
+
         return CompletionKind.KeywordScope;
 
     }
@@ -920,13 +897,6 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         return indentedTemplate;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.eclipse.jface.text.templates.TemplateCompletionProcessor#extractPrefix(org.eclipse.jface
-     * .text.ITextViewer, int)
-     */
     @Override
     protected String extractPrefix(ITextViewer textViewer, int offset) {
         return getPrefixFromDocument(textViewer.getDocument().get(), offset);
