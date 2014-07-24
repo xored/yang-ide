@@ -18,10 +18,10 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
-import org.mapdb.BTreeMap;
 import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Fun;
+import org.mapdb.Fun.Tuple3;
 import org.mapdb.Fun.Tuple6;
 
 import com.cisco.yangide.core.YangCorePlugin;
@@ -44,7 +44,7 @@ public class IndexManager extends JobManager {
      * Stores index version, it is required increment version on each major changes of indexing
      * algorithm or indexed data.
      */
-    private static final int INDEX_VERSION = 5;
+    private static final int INDEX_VERSION = 6;
 
     /**
      * Index DB file path.
@@ -78,7 +78,7 @@ public class IndexManager extends JobManager {
      * Resources index that contains relation of indexed resource and modification stamp of resource
      * when indexed was performed.
      */
-    private BTreeMap<String, Long> idxResources;
+    private NavigableSet<Fun.Tuple3<String, String, Long>> idxResources;
 
     public IndexManager() {
         File indexFile = YangCorePlugin.getDefault().getStateLocation().append(INDEX_PATH).toFile();
@@ -119,7 +119,7 @@ public class IndexManager extends JobManager {
         }
         this.db = DBMaker.newFileDB(indexFile).closeOnJvmShutdown().make();
         this.idxKeywords = db.getTreeSet("keywords");
-        this.idxResources = db.getTreeMap("resources");
+        this.idxResources = db.getTreeSet("resources");
         indexAllProjects();
     }
 
@@ -144,10 +144,12 @@ public class IndexManager extends JobManager {
             return;
         }
         // in case of file not change, skip indexing
-        String path = file.getFullPath().toString();
-        if (idxResources.containsKey(path) && idxResources.get(path) == file.getModificationStamp()) {
-            System.err.println("[x] " + file);
-            return;
+        Iterable<Long> it = Fun.filter(idxResources, file.getProject().getName(), file.getFullPath().toString());
+        for (Long modStamp : it) {
+            if (modStamp == file.getModificationStamp()) {
+                System.err.println("[x] " + file);
+                return;
+            }
         }
         request(new IndexFileRequest(file, this));
     }
@@ -158,10 +160,12 @@ public class IndexManager extends JobManager {
 
     public void addJarFile(IProject project, IPath file) {
         // in case of file not change, skip indexing
-        if (idxResources.containsKey(file.toString())
-                && idxResources.get(file.toString()) == file.toFile().lastModified()) {
-            System.err.println("[x] " + file);
-            return;
+        Iterable<Long> it = Fun.filter(idxResources, project.getName(), file.toString());
+        for (Long modStamp : it) {
+            if (modStamp == file.toFile().lastModified()) {
+                System.err.println("[x] " + file);
+                return;
+            }
         }
         request(new IndexJarFileRequest(project, file, this));
     }
@@ -183,25 +187,37 @@ public class IndexManager extends JobManager {
                 iterator.remove();
             }
         }
+
+        Iterator<Long> it = Fun.filter(idxResources, project.getName(), null).iterator();
+        while (it.hasNext()) {
+            it.next();
+            it.remove();
+        }
     }
 
     public synchronized void remove(IFile file) {
-        removeIndex(file.getFullPath());
+        removeIndex(file.getProject(), file.getFullPath());
     }
 
     public synchronized void jobWasCancelled(IPath containerPath) {
     }
 
-    public synchronized void removeIndex(IPath containerPath) {
+    public synchronized void removeIndex(IProject project, IPath containerPath) {
         Iterator<Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo>> iterator = idxKeywords
                 .iterator();
         while (iterator.hasNext()) {
             Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo> entry = iterator.next();
-            if (containerPath.isPrefixOf(new Path(entry.e))) {
+            if (project.getName().equals(entry.f.getProject()) && containerPath.isPrefixOf(new Path(entry.e))) {
                 iterator.remove();
             }
         }
-        idxResources.remove(containerPath.toString());
+        Iterator<Tuple3<String, String, Long>> it = idxResources.iterator();
+        while (it.hasNext()) {
+            Tuple3<String, String, Long> idxr = it.next();
+            if (project.getName().equals(idxr.a) && containerPath.isPrefixOf(new Path(idxr.b))) {
+                it.remove();
+            }
+        }
     }
 
     public synchronized void addElementIndexInfo(ElementIndexInfo info) {
@@ -304,7 +320,7 @@ public class IndexManager extends JobManager {
         }
     }
 
-    protected void fileAddedToIndex(IPath path, long modificationStamp) {
-        idxResources.put(path.toString(), modificationStamp);
+    protected void fileAddedToIndex(IProject project, IPath path, long modificationStamp) {
+        idxResources.add(Fun.t3(project.getName(), path.toString(), modificationStamp));
     }
 }

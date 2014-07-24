@@ -49,13 +49,13 @@ public class IndexJarFileRequest extends IndexRequest {
                 JarEntry entry = entries.nextElement();
                 if (entry.getName().startsWith("META-INF/yang/") && CoreUtil.isYangLikeFileName(entry.getName())) {
                     IPath jarEntryPath = path.append(entry.getName());
-                    manager.removeIndex(jarEntryPath);
+                    manager.removeIndex(project, jarEntryPath);
                     YangJarEntry element = YangCorePlugin.createJarEntry(path, entry.getName());
                     YangFileInfo info = (YangFileInfo) element.getElementInfo(progressMonitor);
                     manager.addModule(info.getModule(), project, path, entry.getName());
                 }
             }
-            manager.fileAddedToIndex(path, path.toFile().lastModified());
+            manager.fileAddedToIndex(project, path, path.toFile().lastModified());
         } catch (IOException e) {
             YangCorePlugin.log(e);
         } catch (YangModelException e) {

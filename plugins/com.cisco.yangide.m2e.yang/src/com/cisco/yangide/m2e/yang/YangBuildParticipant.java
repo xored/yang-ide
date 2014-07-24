@@ -26,6 +26,7 @@ import org.eclipse.m2e.core.project.configurator.MojoExecutionBuildParticipant;
 import org.sonatype.plexus.build.incremental.BuildContext;
 
 import com.cisco.yangide.core.YangCorePlugin;
+import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.core.parser.IYangValidationListener;
 import com.cisco.yangide.core.parser.YangParserUtil;
 import com.cisco.yangide.ui.YangUIPlugin;
@@ -60,6 +61,18 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
         // clear markers before build
         getMavenProjectFacade().getProject().deleteMarkers(YangCorePlugin.YANGIDE_PROBLEM_MARKER, true,
                 IResource.DEPTH_INFINITE);
+
+        // wait index job
+        if (kind == FULL_BUILD) {
+            YangModelManager.getIndexManager().indexAll(getMavenProjectFacade().getProject());
+            try {
+                while (YangModelManager.getIndexManager().awaitingJobsCount() > 0) {
+                    Thread.sleep(100);
+                }
+            } catch (InterruptedException e) {
+                // ignore
+            }
+        }
 
         for (String path : includedFiles) {
             final IFile ifile = YangCorePlugin.getIFileFromFile(new File(ds.getBasedir(), path));
