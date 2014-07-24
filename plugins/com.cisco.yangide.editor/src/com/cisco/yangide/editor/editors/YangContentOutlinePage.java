@@ -21,7 +21,6 @@ import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.ASTCompositeNode;
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
-import com.cisco.yangide.core.dom.ASTVisitor;
 import com.cisco.yangide.core.dom.AugmentationSchema;
 import com.cisco.yangide.core.dom.ContrainerSchemaNode;
 import com.cisco.yangide.core.dom.Deviation;
@@ -185,26 +184,11 @@ public class YangContentOutlinePage extends ContentOutlinePage {
 
     private ASTNode getOutlineRoot() {
         try {
-            return getOutlineRoot(editor.getModule());
+            return editor.getModule();
         } catch (YangModelException e) {
             return null;
         }
 	}
-    
-    private ASTNode getOutlineRoot(Module module) {
-        ASTCompositeNode root = new ASTCompositeNode(null) {
-            @Override
-            public String getNodeName() {
-                return null;
-            }
-
-            @Override
-            public void accept(ASTVisitor visitor) {
-            }
-        };
-        root.getChildren().add(module);
-        return root;
-    }
     
     public void selectNode(ASTNode node) {
         if (null != node) {
