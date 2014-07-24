@@ -7,7 +7,7 @@ Element-Version: 3.0
 External-Reference: 
 Id: _Q2aGsBJKEeSuB9srVCSsAA
 Runtime-Version: 1.5.0.201406151150
-Save-Time: 7/23/14 6:22 PM
+Save-Time: 7/24/14 10:11 AM
 Testcase-Type: ecl
 
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
@@ -30,10 +30,8 @@ with [get-editor "opendaylight-flow-statistics.yang" | get-text-viewer] {
     select-range 28 34 28 19
 }
 with [get-view Outline | get-tree] {
-    get-item "opendaylight-flow-statistics" | get-item "flow-statistics" -index 1 | get-item "flow-statistics" 
-        | get-property selected | equals true | verify-true
-    get-item "opendaylight-flow-statistics" | get-item "flow-statistics" -index 1 | get-item "flow-statistics" 
-        | get-property "getParentItem().getExpanded()" | equals true | verify-true
+    get-view Outline | get-tree | get-item "opendaylight-flow-statistics/flow-statistics/flow-statistics" 
+    | get-property selected | equals true | verify-true
 }
 
 
@@ -54,5 +52,7 @@ with [get-editor "opendaylight-flow-statistics.yang" | get-text-viewer] {
     get-property "getSelection().x" | equals 1350 | verify-true
     get-property "getSelectionText()" | equals "flow-and-statistics-map-list" | verify-true
 }
+
+
 
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

@@ -7,7 +7,7 @@ Element-Version: 3.0
 External-Reference: 
 Id: _M0ZOcA5HEeSKlfM72EMibA
 Runtime-Version: 1.5.0.201406151150
-Save-Time: 7/18/14 2:32 PM
+Save-Time: 7/23/14 7:27 PM
 Testcase-Type: ecl
 Verifications: _EwyH4A5IEeSKlfM72EMibA
 
@@ -15,6 +15,8 @@ Verifications: _EwyH4A5IEeSKlfM72EMibA
 Content-Type: text/ecl
 Entry-Name: .content
 
+get-view "Package Explorer" | get-tree 
+    | select "model-parent/model-flow-statistics/src/main/yang/opendaylight-flow-statistics.yang" | double-click
 with [get-editor "opendaylight-flow-statistics.yang" | get-text-viewer] {
     set-caret-pos 3 21
     key-type Enter
@@ -34,11 +36,14 @@ with [get-editor "opendaylight-flow-statistics.yang" | get-text-viewer] {
     key-type "M1+SPACE" -times 2
 }
 with [get-window -from "CompletionProposalPopup.createProposalSelector()" | get-table] {
-    get-property "getItems().TableItem[0].getText()" | equals "acme-system (2007-06-09)" | verify-true
-    get-property "getItems().TableItem[1].getText()" | equals "aug-referenced-elements-module (2013-12-3)" | verify-true
-    get-property "getItems().TableItem[2].getText()" | equals "augment-augment-module (2014-01-17)" | verify-true
-    get-property "getItems().TableItem[98].getText()" | equals "yang (2013-11-26)" | verify-true
+    get-property "getItems().TableItem[0].getText()" | equals "flow-capable-transaction (2013-11-03)" | verify-true
+    get-property "getItems().TableItem[1].getText()" | equals "flow-errors (2013-11-16)" | verify-true
+    get-property "getItems().TableItem[2].getText()" | equals "flow-management (2013-08-19)" | verify-true
+    get-property "getItems().TableItem[38].getText()" | equals "table-management (2013-10-24)" | verify-true
 }
+
 get-window -from "CompletionProposalPopup.createProposalSelector()" | get-table 
-    | select "aug-referenced-elements-module \\(2013-12-3\\)" | click -default
+    | select "flow-management \\(2013-08-19\\)" | click -default
+    
+    
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--
