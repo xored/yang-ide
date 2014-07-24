@@ -16,6 +16,7 @@ public abstract class ASTNamedNode extends ASTNode {
     private String name;
 
     private int nameStartPosition = -1;
+    private int nameLength = 0;
 
     public ASTNamedNode(ASTNode parent) {
         this(parent, null);
@@ -58,6 +59,13 @@ public abstract class ASTNamedNode extends ASTNode {
      * @return the nameLength
      */
     public int getNameLength() {
-        return name.length();
+        return nameLength;
+    }
+
+    /**
+     * @param nameLength the nameLength to set
+     */
+    public void setNameLength(int nameLength) {
+        this.nameLength = nameLength;
     }
 }

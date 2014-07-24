@@ -533,8 +533,10 @@ public class YangParserModelListener extends YangParserBaseListener {
             if (treeNode.getChild(i) instanceof StringContext) {
                 final StringContext context = (StringContext) treeNode.getChild(i);
                 if (context != null) {
-                    astNode.setNameStartPosition(context.getStart().getStartIndex());
-                    astNode.setLineNumber(context.getStart().getLine());
+                    Token token = context.getStart();
+                    astNode.setNameStartPosition(token.getStartIndex());
+                    astNode.setNameLength(token.getStopIndex() - token.getStartIndex() + 1);
+                    astNode.setLineNumber(token.getLine());
                     astNode.setName(stringFromStringContext(context));
                 }
             }
