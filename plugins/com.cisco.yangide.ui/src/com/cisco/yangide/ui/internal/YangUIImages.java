@@ -66,7 +66,15 @@ public class YangUIImages {
         declareRegistryImage(IYangUIConstants.IMG_MODULE_PROPOSAL, OBJECT + "module_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_SUBMODULE_PROPOSAL, OBJECT + "submodule_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_USES_PROPOSAL, OBJECT + "uses_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IYangUIConstants.IMG_INCLUDE_PROPOSAL, OBJECT + "include_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_INCLUDE_PROPOSAL, OBJECT + "include_obj.gif"); //$NON-NLS-1$        
+        declareRegistryImage(IYangUIConstants.IMG_AUGMENT_PROPOSAL, OBJECT + "augment_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_DEVIATION_PROPOSAL, OBJECT + "deviation_obj.gif"); //$NON-NLS-1$        
+        declareRegistryImage(IYangUIConstants.IMG_EXTENSION_PROPOSAL, OBJECT + "extension_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_IDENTITY_PROPOSAL, OBJECT + "identity_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_NOTIFICATION_PROPOSAL, OBJECT + "notification_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_RPC_INPUT_PROPOSAL, OBJECT + "rpc_input_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_RPC_OUTPUT_PROPOSAL, OBJECT + "rpc_output_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_RPC_PROPOSAL, OBJECT + "rpc_obj.gif"); //$NON-NLS-1$
 
         // Marker images
         declareRegistryImage(IYangUIConstants.IMG_ERROR_MARKER, OBJECT + "error_obj.gif"); //$NON-NLS-1$

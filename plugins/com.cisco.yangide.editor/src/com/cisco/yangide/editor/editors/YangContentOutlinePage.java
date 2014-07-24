@@ -22,11 +22,19 @@ import com.cisco.yangide.core.dom.ASTCompositeNode;
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.ASTVisitor;
+import com.cisco.yangide.core.dom.AugmentationSchema;
 import com.cisco.yangide.core.dom.ContrainerSchemaNode;
+import com.cisco.yangide.core.dom.Deviation;
+import com.cisco.yangide.core.dom.ExtensionDefinition;
 import com.cisco.yangide.core.dom.GroupingDefinition;
+import com.cisco.yangide.core.dom.IdentitySchemaNode;
 import com.cisco.yangide.core.dom.LeafSchemaNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
+import com.cisco.yangide.core.dom.NotificationDefinition;
+import com.cisco.yangide.core.dom.RpcDefinition;
+import com.cisco.yangide.core.dom.RpcInputNode;
+import com.cisco.yangide.core.dom.RpcOutputNode;
 import com.cisco.yangide.core.dom.SubModuleInclude;
 import com.cisco.yangide.core.dom.TypeDefinition;
 import com.cisco.yangide.core.dom.TypeReference;
@@ -65,7 +73,23 @@ public class YangContentOutlinePage extends ContentOutlinePage {
         
         @Override
         public Image getImage(Object element) {
-            if (element instanceof ModuleImport) {
+            if(element instanceof AugmentationSchema) {
+                return YangUIImages.getImage(IYangUIConstants.IMG_AUGMENT_PROPOSAL);
+            } else if (element instanceof Deviation) {
+                return YangUIImages.getImage(IYangUIConstants.IMG_DEVIATION_PROPOSAL);
+            } else if (element instanceof IdentitySchemaNode) {
+                return YangUIImages.getImage(IYangUIConstants.IMG_IDENTITY_PROPOSAL);
+            } else if (element instanceof ExtensionDefinition) {
+                return YangUIImages.getImage(IYangUIConstants.IMG_EXTENSION_PROPOSAL);
+            } else if (element instanceof NotificationDefinition) {
+                return YangUIImages.getImage(IYangUIConstants.IMG_NOTIFICATION_PROPOSAL);
+            } else if (element instanceof RpcInputNode) {
+                return YangUIImages.getImage(IYangUIConstants.IMG_RPC_INPUT_PROPOSAL);
+            } else if (element instanceof RpcOutputNode) {
+                return YangUIImages.getImage(IYangUIConstants.IMG_RPC_OUTPUT_PROPOSAL);
+            } else if (element instanceof RpcDefinition) {
+                return YangUIImages.getImage(IYangUIConstants.IMG_RPC_PROPOSAL);
+            } else if (element instanceof ModuleImport) {
                 return YangUIImages.getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL);
             } else if (element instanceof TypeReference) {
                 return YangUIImages.getImage(IYangUIConstants.IMG_TYPE_PROPOSAL);

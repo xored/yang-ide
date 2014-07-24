@@ -42,4 +42,10 @@ public class UsesNode extends ASTNamedNode {
         visitor.preVisit(this);
         visitor.visit(this);
     }
+
+    @Override
+    public boolean isShowedInOutline() {
+        return false;
+    }
+    
 }
