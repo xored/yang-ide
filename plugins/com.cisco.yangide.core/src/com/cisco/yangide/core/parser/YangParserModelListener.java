@@ -395,9 +395,10 @@ public class YangParserModelListener extends YangParserBaseListener {
     @Override
     public void enterInput_stmt(Input_stmtContext ctx) {
         RpcInputNode input = new RpcInputNode(stack.peek());
+        updateNodePosition(input, ctx);
         input.setName("input");
         input.setNameStartPosition(input.getStartPosition());
-        updateNodePosition(input, ctx);
+        input.setNameLength(input.getName().length());
         stack.push(input);
     }
 
@@ -409,9 +410,10 @@ public class YangParserModelListener extends YangParserBaseListener {
     @Override
     public void enterOutput_stmt(Output_stmtContext ctx) {
         RpcOutputNode output = new RpcOutputNode(stack.peek());
+        updateNodePosition(output, ctx);
         output.setName("output");
         output.setNameStartPosition(output.getStartPosition());
-        updateNodePosition(output, ctx);
+        output.setNameLength(output.getName().length());
         stack.push(output);
     }
 
