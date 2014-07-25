@@ -1,0 +1,61 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Contexts: _r3H2sBPZEeSaxLxF-fnitg
+Element-Name: NewYangFileTest
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _OhLngBPFEeSaxLxF-fnitg
+Runtime-Version: 1.5.0.201406151150
+Save-Time: 7/25/14 4:14 PM
+Testcase-Type: ecl
+
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+get-view "Package Explorer" | get-tree | select "org.test.yang.example/src\\/main\\/yang" | get-menu "New/Other..." 
+    | click
+with [get-window New] {
+    get-tree | select "YANG/YANG File"
+    get-button "Next >" | click
+}
+with [get-window "New YANG File"] {
+    get-editbox -after [get-label "File name:"] | set-text "module1.yang"
+    get-button "Next >" | click
+}
+with [get-window "New YANG File"] {
+    get-editbox -after [get-label "Module Name:"] | get-property text | equals module1 | verify-true
+    get-editbox -after [get-label "Namespace:"] | get-property text | equals "urn:opendaylight:module1" | verify-true
+    get-editbox -after [get-label "Prefix:"] | get-property text | equals module1 | verify-true
+    get-editbox -after [get-label "Revision:"] | get-property "getCharCount()" | equals 10 | verify-true
+    get-editbox -after [get-label "Revision Description:"] | get-property text | equals "Initial revision" | verify-true
+}
+get-window "New YANG File" | get-button Finish | click
+get-editor "module1.yang" | get-text-viewer | get-property text | equals "// Contents of \"module1\"\n"
+    + "module module1 {\n"
+    + "    namespace \"urn:opendaylight:module1\";\n"
+    + "    prefix \"module1\";\n\n"
+    + "    revision 2014-07-25 {\n"
+    + "        description \"Initial revision\";\n"
+    + "    }\n\n"
+    + "}" | verify-true
+get-view "Package Explorer" | get-tree | select "org.test.yang.example/src\\/main\\/yang/module1.yang" 
+    | get-menu "New/Other..." | click
+with [get-window New] {
+    get-tree | select "YANG/YANG File"
+    get-button "Next >" | click
+}
+with [get-window "New YANG File"] {
+    get-editbox -after [get-label "File name:"] | set-text "module2.yang"
+    get-button Finish | click
+}
+get-editor "module2.yang" | get-text-viewer | get-property text | equals "// Contents of \"module2\"\n"
+    + "module module2 {\n"
+    + "    namespace \"urn:opendaylight:module2\";\n"
+    + "    prefix \"module2\";\n\n"
+    + "    revision 2014-07-25 {\n"
+    + "        description \"Initial revision\";\n"
+    + "    }\n\n"
+    + "}" | verify-true
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

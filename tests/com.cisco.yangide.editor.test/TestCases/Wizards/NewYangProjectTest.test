@@ -1,0 +1,183 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Contexts: _kWZHoBPCEeSaxLxF-fnitg
+Element-Name: NewYangProjectTest
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _WbcsMBPBEeSaxLxF-fnitg
+Runtime-Version: 1.5.0.201406151150
+Save-Time: 7/25/14 4:01 PM
+Testcase-Type: ecl
+Verifications: _WQzF8BPCEeSaxLxF-fnitg
+
+------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa
+Content-Type: text/plain
+Entry-Name: .description
+
+Test creation new Yang project
+------=_.description-216f885c-d591-38ce-8ea2-e4f8cb4d6ffa--
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+get-view "Package Explorer" | get-tree | get-menu "New/Project..." | click
+with [get-window "New Project"] {
+    get-tree | select "YANG/YANG Project"
+    get-button "Next >" | click
+}
+with [get-window "New YANG Project"] {
+    get-combo -after [get-label "YANG Tools Version:"] | select "0.6.1"
+    get-table | select "org.opendaylight.yangtools" | double-click
+    get-button "Edit..." | click
+    with [get-window "Code Generator Configuration"] {
+        with [get-editbox -after [get-label "Maven Artifact Version:"]] {
+            click-text 4
+            key-type Right
+            set-text "0.6.1"
+        }
+        get-button OK | click
+    }
+    get-button "Next >" | click
+    get-button "Create a simple project (skip archetype selection)" | check
+    get-button "Next >" | click
+    with [get-group Artifact] {
+        with [get-combo -after [get-label "Group Id:"]] {
+            set-text "org.test.yang.example"
+            key-type "TRAVERSE_TAB_NEXT"
+        }
+        get-combo -after [get-label "Artifact Id:"] | set-text "org.test.yang.example"
+        get-combo -after [get-label "Group Id:"] | set-text "org.test.yang"
+    }
+    get-button Finish | click
+}
+get-view "Package Explorer" | get-tree | select "org.test.yang.example/pom.xml" | double-click
+get-editor "org.test.yang.example/pom.xml" | get-tab-folder | get-tab-item "pom.xml" | click
+get-editor "org.test.yang.example/pom.xml" | get-text-viewer | get-property text 
+    | equals "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n"
+    + "  <modelVersion>4.0.0</modelVersion>\n"
+    + "  <groupId>org.test.yang</groupId>\n"
+    + "  <artifactId>org.test.yang.example</artifactId>\n"
+    + "  <version>0.0.1-SNAPSHOT</version>\n"
+    + "  <properties>\n"
+    + "    <maven.compiler.source>1.7</maven.compiler.source>\n"
+    + "    <maven.compiler.target>1.7</maven.compiler.target>\n"
+    + "  </properties>\n"
+    + "  <dependencies>\n"
+    + "    <dependency>\n"
+    + "      <groupId>org.opendaylight.yangtools</groupId>\n"
+    + "      <artifactId>yang-binding</artifactId>\n"
+    + "      <version>0.6.1</version>\n"
+    + "    </dependency>\n"
+    + "  </dependencies>\n"
+    + "  <repositories>\n"
+    + "    <repository>\n"
+    + "      <id>opendaylight-release</id>\n"
+    + "      <name>opendaylight-release</name>\n"
+    + "      <url>http://nexus.opendaylight.org/content/repositories/opendaylight.release/</url>\n"
+    + "    </repository>\n"
+    + "    <repository>\n"
+    + "      <id>opendaylight-snapshot</id>\n"
+    + "      <name>opendaylight-snapshot</name>\n"
+    + "      <url>http://nexus.opendaylight.org/content/repositories/opendaylight.snapshot/</url>\n"
+    + "    </repository>\n"
+    + "  </repositories>\n"
+    + "  <pluginRepositories>\n"
+    + "    <pluginRepository>\n"
+    + "      <id>opendaylight-release</id>\n"
+    + "      <name>opendaylight-release</name>\n"
+    + "      <url>http://nexus.opendaylight.org/content/repositories/opendaylight.release/</url>\n"
+    + "    </pluginRepository>\n"
+    + "    <pluginRepository>\n"
+    + "      <id>opendaylight-snapshot</id>\n"
+    + "      <name>opendaylight-snapshot</name>\n"
+    + "      <url>http://nexus.opendaylight.org/content/repositories/opendaylight.snapshot/</url>\n"
+    + "    </pluginRepository>\n"
+    + "  </pluginRepositories>\n"
+    + "  <build>\n"
+    + "    <plugins>\n"
+    + "      <plugin>\n"
+    + "        <groupId>org.opendaylight.yangtools</groupId>\n"
+    + "        <artifactId>yang-maven-plugin</artifactId>\n"
+    + "        <version>0.6.1</version>\n"
+    + "        <executions>\n"
+    + "          <execution>\n"
+    + "            <id>generate-sources</id>\n"
+    + "            <goals>\n"
+    + "              <goal>generate-sources</goal>\n"
+    + "            </goals>\n"
+    + "            <configuration>\n"
+    + "              <yangFilesRootDir>src/main/yang</yangFilesRootDir>\n"
+    + "              <codeGenerators>\n"
+    + "                <generator>\n"
+    + "                  <codeGeneratorClass>org.opendaylight.yangtools.maven.sal.api.gen.plugin.CodeGeneratorImpl</codeGeneratorClass>\n"
+    + "                  <outputBaseDir>target/generated-sources/sal</outputBaseDir>\n"
+    + "                </generator>\n"
+    + "              </codeGenerators>\n"
+    + "              <inspectDependencies>false</inspectDependencies>\n"
+    + "            </configuration>\n"
+    + "          </execution>\n"
+    + "        </executions>\n"
+    + "        <dependencies>\n"
+    + "          <dependency>\n"
+    + "            <groupId>org.opendaylight.yangtools</groupId>\n"
+    + "            <artifactId>maven-sal-api-gen-plugin</artifactId>\n"
+    + "            <version>0.6.1</version>\n"
+    + "          </dependency>\n"
+    + "        </dependencies>\n"
+    + "      </plugin>\n"
+    + "    </plugins>\n"
+    + "  </build>\n"
+    + "</project>" | verify-true
+get-view "Package Explorer" | get-tree | select "org.test.yang.example/src\\/main\\/yang/acme-system.yang" | double-click
+get-editor "acme-system.yang" | get-text-viewer | get-property text | equals "// Contents of \"acme-system.yang\"\n"
+    + "module acme-system {\n"
+    + "    namespace \"http://acme.example.com/system\";\n"
+    + "    prefix \"acme\";\n"
+    + "    \n"
+    + "    organization \"ACME Inc.\";\n"
+    + "    contact \"joe@acme.example.com\";\n"
+    + "    \n"
+    + "    description\n"
+    + "        \"The module for entities implementing the ACME system.\";\n"
+    + "    \n"
+    + "    revision 2007-06-09 {\n"
+    + "        description \"Initial revision.\";\n"
+    + "    }\n"
+    + "    \n"
+    + "    container system {\n"
+    + "        leaf host-name {\n"
+    + "            type string;\n"
+    + "            description \"Hostname for this system\";\n"
+    + "        }\n"
+    + "    \n"
+    + "        leaf-list domain-search {\n"
+    + "            type string;\n"
+    + "            description \"List of domain names to search\";\n"
+    + "        }\n"
+    + "    \n"
+    + "        container login {\n"
+    + "            leaf message {\n"
+    + "                type string;\n"
+    + "                description\n"
+    + "                    \"Message given at start of login session\";\n"
+    + "            }\n"
+    + "    \n"
+    + "            list user {\n"
+    + "                key \"name\";\n"
+    + "                leaf name {\n"
+    + "                    type string;\n"
+    + "                }\n"
+    + "    \n"
+    + "                leaf full-name {\n"
+    + "                    type string;\n"
+    + "                }\n"
+    + "                \n"
+    + "                leaf class {\n"
+    + "                    type string;\n"
+    + "                }\n"
+    + "            }\n"
+    + "        }\n"
+    + "    }\n"
+    + "}" | verify-true
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--
