@@ -9,7 +9,7 @@
 <feature
       id="com.cisco.yangide.m2e.yang.feature"
       label="%featureName"
-      version="0.1.0.qualifier"
+      version="1.0.0.qualifier"
       provider-name="%providerName"
       plugin="com.cisco.yangide.m2e.yang">
 
