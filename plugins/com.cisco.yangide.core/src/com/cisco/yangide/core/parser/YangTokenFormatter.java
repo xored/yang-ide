@@ -14,7 +14,9 @@ import static org.opendaylight.yangtools.antlrv4.code.gen.YangLexer.SEMICOLON;
 import static org.opendaylight.yangtools.antlrv4.code.gen.YangLexer.STRING;
 import static org.opendaylight.yangtools.antlrv4.code.gen.YangLexer.WS;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.StringTokenizer;
 
 import org.antlr.v4.runtime.Token;
@@ -27,11 +29,15 @@ import org.opendaylight.yangtools.antlrv4.code.gen.YangLexer;
 public class YangTokenFormatter implements ITokenFormatter {
 
     private StringBuilder sb;
+    private List<Token> tokens;
+    private Token prevToken;
+
     // states
     private int currIndent = 0;
     private boolean wasNL;
     private boolean ovrNL;
     private boolean wasWS;
+    // was new line separator '{' '}' ';'
     private int nlCount = 0;
     private boolean importScope = false;
     private StringBuilder importStatement = null;
@@ -55,19 +61,28 @@ public class YangTokenFormatter implements ITokenFormatter {
         this.maxLineLength = preferences.getMaxLineLength();
         this.lineSeparator = lineSeparator;
         this.currIndent = indentationLevel * this.indent;
+        this.tokens = new ArrayList<>();
     }
 
     @Override
     public void process(Token token) {
-        boolean ignore = checkForIgnore(token);
-
-        if (!ignore) {
-            if (!processImportCase(token)) {
-                updatePreState(token);
-                processToken(token);
-                updateState(token);
-            }
+        // ignore '\r' token
+        if (isCarriageReturn(token)) {
+            return;
         }
+
+        if (isWS(token) && (isWS(prevToken) || isNewLine(prevToken))) {
+            return;
+        }
+
+        if (isNewLine(token) && (isNewLine(prevToken) && nlCount > 1)) {
+            return;
+        }
+
+        nlCount = isNewLine(token) ? (nlCount + 1) : 0;
+        prevToken = token;
+        tokens.add(token);
+
         // System.out.println(ignore + " '" + token.getText() + "'" + " - " +
         // YangLexer.tokenNames[token.getType()]);
     }
@@ -77,10 +92,6 @@ public class YangTokenFormatter implements ITokenFormatter {
      * @return <code>true</code> if token should be ignored from processing
      */
     private boolean checkForIgnore(Token token) {
-        // ignore '\r' token
-        if (isCarriageReturn(token)) {
-            return true;
-        }
 
         // ignore any repeat whitespace
         if (isWS(token) && (wasWS || wasNL)) {
@@ -110,18 +121,19 @@ public class YangTokenFormatter implements ITokenFormatter {
         }
 
         if (importScope) {
-            if (importStatement.length() > 0 && token.getType() != SEMICOLON) {
-                importStatement.append(' ');
-            }
             if (token.getType() == RIGHT_BRACE) {
                 importScope = false;
                 printIndent();
-                sb.append(importStatement.toString());
+                sb.append(importStatement.toString()).append(' ');
                 wasWS = true;
+                nlCount = 0;
                 // add indent for right brace processing
                 currIndent += indent;
                 return false;
-            } else {
+            } else if (!isNewLine(token) && !isWS(token)) {
+                if (importStatement.length() > 0 && token.getType() != SEMICOLON) {
+                    importStatement.append(' ');
+                }
                 importStatement.append(token.getText());
             }
             return true;
@@ -254,10 +266,10 @@ public class YangTokenFormatter implements ITokenFormatter {
         ovrNL = false;
 
         // added new line after '{', ';', '}' tokens
-        if (!wasNL && (type == LEFT_BRACE || type == SEMICOLON || type == RIGHT_BRACE)) {
+        if (type == LEFT_BRACE || type == SEMICOLON || type == RIGHT_BRACE) {
             sb.append(lineSeparator);
             ovrNL = true;
-            nlCount++;
+            // nlCount++;
         }
 
         wasNL = isNewLine(token) || ovrNL;
@@ -317,8 +329,52 @@ public class YangTokenFormatter implements ITokenFormatter {
         return (type == WS || type == S) && token.getText().equals("\r");
     }
 
+    /**
+     * @param token token to inspect
+     * @return <code>true</code> if token is '{' '}' ';' token.
+     */
+    private boolean isBlockSeparator(Token token) {
+        if (token == null) {
+            return false;
+        }
+        int type = token.getType();
+        return type == LEFT_BRACE || type == SEMICOLON || type == RIGHT_BRACE;
+    }
+
     @Override
     public String getFormattedContent() {
+        cleanTokens();
+        for (Token token : tokens) {
+            boolean ignore = checkForIgnore(token);
+            if (!ignore) {
+                if (!processImportCase(token)) {
+                    updatePreState(token);
+                    processToken(token);
+                    updateState(token);
+                }
+            }
+        }
         return sb.toString();
+    }
+
+    /**
+     * Cleans 'new line' tokens before block separators. We assume that we already clean all 'new
+     * line' that occurred more 2 times.
+     */
+    private void cleanTokens() {
+        int idx = 0;
+        while (idx < tokens.size() - 2) {
+            if (isWS(tokens.get(idx)) && isNewLine(tokens.get(idx + 1))) {
+                tokens.remove(tokens.get(idx));
+                idx--;
+            } else if (isNewLine(tokens.get(idx))
+                    && (isBlockSeparator(tokens.get(idx + 1)) || (isBlockSeparator(tokens.get(idx + 1)) && isBlockSeparator(tokens
+                            .get(idx + 2))))) {
+                tokens.remove(tokens.get(idx));
+                idx--;
+            } else {
+                idx++;
+            }
+        }
     }
 }
