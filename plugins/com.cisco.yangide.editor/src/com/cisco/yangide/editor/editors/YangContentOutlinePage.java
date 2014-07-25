@@ -191,12 +191,20 @@ public class YangContentOutlinePage extends ContentOutlinePage {
 	}
     
     public void selectNode(ASTNode node) {
-        if (null != node) {
-            ISelection selected = getTreeViewer().getSelection();
-            if (selected instanceof IStructuredSelection && !((IStructuredSelection)selected).toList().contains(node)) {
-                getTreeViewer().setSelection(new StructuredSelection(node), true);
+        ASTNode s = getFirstNodeInTree(node);
+        if (null != s) {
+            ISelection selected = getTreeViewer().getSelection();            
+            if (selected instanceof IStructuredSelection && !((IStructuredSelection)selected).toList().contains(s)) {
+                getTreeViewer().setSelection(new StructuredSelection(s), true);
             }            
         }
+    }
+    private ASTNode getFirstNodeInTree (ASTNode node) {
+        ASTNode result = node;
+        while (null != result && !result.isShowedInOutline()) {
+            result = result.getParent();
+        }
+        return result;
     }
     
     public void updateOutline() {         
