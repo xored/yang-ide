@@ -1,13 +1,13 @@
 --- RCPTT testcase ---
 Format-Version: 1.0
-Contexts: _CN8X4Av8EeSdascDp4ftXw
+Contexts: _CN8X4Av8EeSdascDp4ftXw,_aHkbQAwDEeSdascDp4ftXw
 Element-Name: ValidFileSyntaxColoringTestCase
 Element-Type: testcase
 Element-Version: 3.0
 External-Reference: 
 Id: _JFpV4AwEEeSdascDp4ftXw
 Runtime-Version: 1.5.0.201406151150
-Save-Time: 7/25/14 1:00 PM
+Save-Time: 7/28/14 1:16 PM
 Testcase-Type: ecl
 Verifications: _A11zIAwVEeSdascDp4ftXw,_KIccYAwUEeSdascDp4ftXw
 
@@ -15,51 +15,45 @@ Verifications: _A11zIAwVEeSdascDp4ftXw,_KIccYAwUEeSdascDp4ftXw
 Content-Type: text/ecl
 Entry-Name: .content
 
-with [get-view "Package Explorer" | get-tree] {
-    select "model-parent/model-flow-statistics/src/main/yang/opendaylight-flow-statistics.yang" | double-click
-}
 //with [get-editor "opendaylight-flow-statistics.yang" | get-editbox] {
 //    get-property "styles[0].foregroundColor" | equals "#000080" | verify-true //keyword: module - blue
 //    get-property "styles[2].foregroundColor" | equals "#000000" | verify-true //identifier - black
 //    get-property "styles[8].foregroundColor" | equals "#008000" | verify-true //single-line string - green
 //	get-property "styles[125].foregroundColor" | equals "#008000" | verify-true //multi-line string - green
 //}
-with [get-view "Package Explorer" | get-tree] {
-    select "model-parent/model-flow-statistics/src/main/yang/opendaylight-statistics-types.yang" | double-click
-}
 //with [get-editor "opendaylight-statistics-types.yang" | get-editbox] {
 //	get-property "styles[15].foregroundColor" | equals "#802020" | verify-true //multi-line comment - red
 //	get-property "styles[104].foregroundColor" | equals "#008080" | verify-true //type - bluegreen
 //    get-property "styles[109].foregroundColor" | equals "#800080" | verify-true //number - violete
 //    get-property "styles[112].foregroundColor" | equals "#802020" | verify-true	 //single-line comment - red
 //}
-with [get-editor "opendaylight-statistics-types.yang" | get-text-viewer] {
-    set-caret-pos 29 26
-    key-type "M1+BS"
-}
-get-editor "opendaylight-statistics-types.yang" | get-text-viewer | set-caret-pos 31 35
-
-get-editor "opendaylight-statistics-types.yang" | get-text-viewer | get-property "styles[94].foregroundColor" 
-    | equals "#800080" | verify-true
-get-eclipse-window | key-type "M1+z"
-with [get-editor "opendaylight-statistics-types.yang" | get-text-viewer] {
-    set-caret-pos 30 29
-    type-text x
-}
-get-editor "opendaylight-statistics-types.yang" | get-text-viewer | get-property "styles[99].foregroundColor" 
-    | equals "#000000" | verify-true
-get-eclipse-window | key-type "M1+z"
-get-eclipse-window | key-type "M1+s"
-with [get-editor "opendaylight-statistics-types.yang" | get-text-viewer] {
-    set-caret-pos 5 9
-    key-type Enter -times 3
-    set-caret-pos 6 5
-    type-text x
-    set-caret-pos 15 39
-    key-type Enter -times 3
-    key-type Up -times 2
-    key-type Enter
-    type-text x
-}
+//with [get-editor "opendaylight-statistics-types.yang" | get-text-viewer] {
+//    set-caret-pos 29 26
+//    key-type "M1+BS"
+//}
+//get-editor "opendaylight-statistics-types.yang" | get-text-viewer | set-caret-pos 31 35
+//
+//get-editor "opendaylight-statistics-types.yang" | get-text-viewer | get-property "styles[94].foregroundColor" 
+//    | equals "#800080" | verify-true
+//get-eclipse-window | key-type "M1+z"
+//with [get-editor "opendaylight-statistics-types.yang" | get-text-viewer] {
+//    set-caret-pos 30 29
+//    type-text x
+//}
+//get-editor "opendaylight-statistics-types.yang" | get-text-viewer | get-property "styles[99].foregroundColor" 
+//    | equals "#000000" | verify-true
+//get-eclipse-window | key-type "M1+z"
+//get-eclipse-window | key-type "M1+s"
+//with [get-editor "opendaylight-statistics-types.yang" | get-text-viewer] {
+//    set-caret-pos 5 9
+//    key-type Enter -times 3
+//    set-caret-pos 6 5
+//    type-text x
+//    set-caret-pos 15 39
+//    key-type Enter -times 3
+//    key-type Up -times 2
+//    key-type Enter
+//    type-text x
+//}
 
 ------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

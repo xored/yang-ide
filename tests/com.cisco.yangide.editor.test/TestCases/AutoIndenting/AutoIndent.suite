@@ -1,0 +1,18 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: AutoIndent
+Element-Type: testsuite
+Element-Version: 2.0
+Id: _Ktvw8BYcEeSaxLxF-fnitg
+Runtime-Version: 1.5.0.201406151150
+Save-Time: 7/28/14 12:58 PM
+
+------=_testcase-items-62c497da-4241-31f4-811a-6b453a3ecff8
+Content-Type: text/testcase
+Entry-Name: testcase-items
+
+_LA_SIAwNEeSdascDp4ftXw	// kind: 'test' name: 'AutoIndentingTestCase' path: 'AutoIndentingTestCase.test'
+__1C5kA46EeS2F7KvdfPBCg	// kind: 'test' name: 'SmartPasteTestCase1' path: 'SmartPasteTestCase1.test'
+_eiE1UA5AEeSmmuXdoHAkcQ	// kind: 'test' name: 'SmartPasteTestCase2' path: 'SmartPasteTestCase2.test'
+
+------=_testcase-items-62c497da-4241-31f4-811a-6b453a3ecff8--

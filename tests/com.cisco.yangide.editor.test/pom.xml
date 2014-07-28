@@ -22,10 +22,19 @@
         <version>1.5.0</version>
         <extensions>true</extensions>
         <configuration>
+          <suites>
+            <suite>AllTests</suite>
+          </suites>
+
           <aut>
             <groupId>org.eclipse</groupId>
             <artifactId>sdk</artifactId>
             <version>${eclipse-version}</version>
+            
+            <vmArgs> 
+              <vmArg>-Xmx1024m</vmArg>  
+              <vmArg>-XX:MaxPermSize=256m</vmArg> 
+            </vmArgs>
 
             <injections>
               <injection>

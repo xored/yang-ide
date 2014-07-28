@@ -1,13 +1,13 @@
 --- RCPTT testcase ---
 Format-Version: 1.0
-Contexts: _CN8X4Av8EeSdascDp4ftXw
+Contexts: _CN8X4Av8EeSdascDp4ftXw,_aHkbQAwDEeSdascDp4ftXw
 Element-Name: InvalidFileSyntaxColoringTestCase4
 Element-Type: testcase
 Element-Version: 3.0
 External-Reference: 
 Id: _5ayIEAwaEeSdascDp4ftXw
 Runtime-Version: 1.5.0.201406151150
-Save-Time: 7/25/14 1:00 PM
+Save-Time: 7/28/14 1:05 PM
 Testcase-Type: ecl
 Verifications: _KdSm0AwbEeSdascDp4ftXw
 
@@ -15,8 +15,6 @@ Verifications: _KdSm0AwbEeSdascDp4ftXw
 Content-Type: text/ecl
 Entry-Name: .content
 
-get-view "Package Explorer" | get-tree 
-    | select "model-parent/model-flow-statistics/src/main/yang/opendaylight-flow-statistics.yang" | double-click
 with [get-editor "opendaylight-flow-statistics.yang" | get-text-viewer] {
     set-caret-pos 4 1
     type-text "/*"
