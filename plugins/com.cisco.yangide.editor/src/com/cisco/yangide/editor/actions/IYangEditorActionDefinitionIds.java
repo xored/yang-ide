@@ -29,4 +29,10 @@ public interface IYangEditorActionDefinitionIds {
      */
     public static final String REMOVE_BLOCK_COMMENT = "com.cisco.yangide.actions.remove.block.comment"; //$NON-NLS-1$
 
+    /**
+     * Action definition ID of the source -> format action (value
+     * <code>"com.cisco.yangide.actions.format"</code>).
+     */
+    public static final String FORMAT = "com.cisco.yangide.actions.format"; //$NON-NLS-1$
+
 }

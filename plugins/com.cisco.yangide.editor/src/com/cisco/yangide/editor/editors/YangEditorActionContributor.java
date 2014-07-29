@@ -7,43 +7,49 @@
  */
 package com.cisco.yangide.editor.editors;
 
-import org.eclipse.jface.action.IAction;
+import java.util.List;
+
 import org.eclipse.ui.IActionBars;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.texteditor.BasicTextEditorActionContributor;
 import org.eclipse.ui.texteditor.ITextEditor;
-import org.eclipse.ui.texteditor.ITextEditorActionConstants;
 
 /**
  * @author Alexey Kholupko
  */
 public class YangEditorActionContributor extends BasicTextEditorActionContributor {
 
-    public YangEditorActionContributor() {
-        super();
-    }
-
-    /*
-     * @see IEditorActionBarContributor#setActiveEditor(IEditorPart)
-     */
     @Override
     public void setActiveEditor(IEditorPart part) {
+        if (getActiveEditorPart() == part) {
+            return;
+        }
         super.setActiveEditor(part);
 
         ITextEditor textEditor = null;
-        if (part instanceof ITextEditor)
+        if (part instanceof ITextEditor) {
             textEditor = (ITextEditor) part;
+        }
+        IActionBars actionBars = getActionBars();
+        actionBars.setGlobalActionHandler(
+                "com.cisco.yangide.editor.actions.shiftRight", getAction(textEditor, "ShiftRight")); //$NON-NLS-1$
+        actionBars.setGlobalActionHandler(
+                "com.cisco.yangide.editor.actions.shiftLeft", getAction(textEditor, "ShiftLeft")); //$NON-NLS-1$
+        actionBars.setGlobalActionHandler("com.cisco.yangide.editor.actions.ToggleComment",
+                getAction(textEditor, "ToggleComment")); //$NON-NLS-1$
+        actionBars.setGlobalActionHandler("com.cisco.yangide.editor.actions.AddBlockComment",
+                getAction(textEditor, "AddBlockComment")); //$NON-NLS-1$
+        actionBars.setGlobalActionHandler("com.cisco.yangide.editor.actions.RemoveBlockComment",
+                getAction(textEditor, "RemoveBlockComment")); //$NON-NLS-1$
+        actionBars.setGlobalActionHandler(
+                "com.cisco.yangide.editor.actions.FormatDocument", getAction(textEditor, "FormatDocument")); //$NON-NLS-1$
 
-        // Source menu.
-        IActionBars bars = getActionBars();
-        bars.setGlobalActionHandler(
-                "com.cisco.yangide.editor.actions.ToggleComment", getAction(textEditor, "ToggleComment")); //$NON-NLS-1$
-        bars.setGlobalActionHandler(
-                "com.cisco.yangide.editor.actions.AddBlockComment", getAction(textEditor, "AddBlockComment")); //$NON-NLS-1$
-        bars.setGlobalActionHandler(
-                "com.cisco.yangide.editor.actions.RemoveBlockComment", getAction(textEditor, "RemoveBlockComment")); //$NON-NLS-1$
-
-        IAction action = getAction(textEditor, ITextEditorActionConstants.REFRESH);
-        bars.setGlobalActionHandler(ITextEditorActionConstants.REFRESH, action);
+        if (part instanceof YangEditor) {
+            List<ActionGroup> actionGroups = ((YangEditor) part).getActionGroups();
+            for (ActionGroup actionGroup : actionGroups) {
+                actionGroup.fillActionBars(actionBars);
+            }
+        }
     }
 }

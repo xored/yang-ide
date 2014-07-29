@@ -6,6 +6,7 @@ Bundle-Version: 1.1.0.qualifier
 Bundle-ClassPath: .
 Bundle-Activator: com.cisco.yangide.editor.YangEditorPlugin
 Bundle-Vendor: Cisco
+Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  org.eclipse.core.runtime,

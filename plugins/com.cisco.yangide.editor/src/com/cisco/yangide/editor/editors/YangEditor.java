@@ -15,9 +15,10 @@ import java.util.ResourceBundle;
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IStorage;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IConfigurationElement;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.jdt.internal.core.JarEntryFile;
 import org.eclipse.jdt.internal.ui.javaeditor.JarEntryEditorInput;
-import org.eclipse.jdt.ui.actions.IJavaEditorActionDefinitionIds;
 import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IMenuManager;
@@ -46,6 +47,8 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.actions.ActionContext;
+import org.eclipse.ui.actions.ActionGroup;
 import org.eclipse.ui.editors.text.EditorsUI;
 import org.eclipse.ui.editors.text.ITextEditorHelpContextIds;
 import org.eclipse.ui.editors.text.TextEditor;
@@ -97,6 +100,8 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     private YangOutlineSelectionChangedListener outlineSelectionChangedListener = new YangOutlineSelectionChangedListener();
 
     private YangContentOutlinePage outlinePage;
+
+    private List<ActionGroup> actionGroups = new ArrayList<ActionGroup>();
 
     private abstract class AbstractSelectionChangedListener implements ISelectionChangedListener {
         public void install(ISelectionProvider selectionProvider) {
@@ -205,6 +210,10 @@ public class YangEditor extends TextEditor implements IProjectionListener {
             editorSelectionChangedListener = null;
         }
         colorManager.dispose();
+        for (ActionGroup actionGroup : actionGroups) {
+            actionGroup.dispose();
+        }
+        actionGroups.clear();
         super.dispose();
 
         uninstallSemanticHighlighting();
@@ -224,9 +233,13 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         }
     }
 
-    /*
-     * @see AbstractTextEditor#doSetInput
+    /**
+     * @return the actionGroups
      */
+    public List<ActionGroup> getActionGroups() {
+        return actionGroups;
+    }
+
     @Override
     protected void doSetInput(IEditorInput input) throws CoreException {
         ISourceViewer sourceViewer = getSourceViewer();
@@ -321,8 +334,8 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         ResourceBundle bundle = ResourceBundle.getBundle(YangEditorMessages.getBundleName());
 
         action = new TextOperationAction(bundle, "ContentFormat.", this, ISourceViewer.FORMAT); //$NON-NLS-1$
-        action.setActionDefinitionId(IJavaEditorActionDefinitionIds.FORMAT);
-        setAction("ContentFormat", action); //$NON-NLS-1$
+        action.setActionDefinitionId(IYangEditorActionDefinitionIds.FORMAT);
+        setAction("FormatDocument", action); //$NON-NLS-1$
 
         action = getAction(ITextEditorActionConstants.CONTENT_ASSIST_CONTEXT_INFORMATION);
 
@@ -344,6 +357,18 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         setAction("RemoveBlockComment", action); //$NON-NLS-1$
         markAsStateDependentAction("RemoveBlockComment", true); //$NON-NLS-1$
         markAsSelectionDependentAction("RemoveBlockComment", true); //$NON-NLS-1$
+
+        IConfigurationElement[] configs = Platform.getExtensionRegistry().getConfigurationElementsFor(
+                "com.cisco.yangide.editor.actionGroup");
+        for (IConfigurationElement config : configs) {
+            try {
+                IActionGroup actionGroup = (IActionGroup) config.createExecutableExtension("class");
+                actionGroup.init(this, config.getAttribute("groupName"));
+                actionGroups.add((ActionGroup) actionGroup);
+            } catch (CoreException e) {
+                YangEditorPlugin.log(e);
+            }
+        }
     }
 
     private void configureToggleCommentAction() {
@@ -418,13 +443,11 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     @Override
     protected void editorContextMenuAboutToShow(IMenuManager menu) {
         super.editorContextMenuAboutToShow(menu);
-        try {
-            if (getModule() != null) {
-                IAction action = getAction("ContentFormat"); //$NON-NLS-1$
-                menu.appendToGroup(ITextEditorActionConstants.GROUP_EDIT, action);
-            }
-        } catch (YangModelException e) {
-            // ignore exception
+        ActionContext context = new ActionContext(getSelectionProvider().getSelection());
+        for (ActionGroup actionGroup : actionGroups) {
+            actionGroup.setContext(context);
+            actionGroup.fillContextMenu(menu);
+            actionGroup.setContext(null);
         }
     }
 
@@ -459,7 +482,6 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     public void reconcile() {
         updateOutline();
         updateFoldingRegions();
-        // updateSemanticHigliting();
     }
 
     private void updateFoldingRegions() {
@@ -526,5 +548,4 @@ public class YangEditor extends TextEditor implements IProjectionListener {
             fSemanticManager = null;
         }
     }
-
 }

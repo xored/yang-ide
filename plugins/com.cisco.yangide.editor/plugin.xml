@@ -8,6 +8,8 @@
 <!-- and is available at http://www.eclipse.org/legal/epl-v10.html                  -->
 <!-- ============================================================================== -->
 <plugin>
+   <extension-point id="actionGroup" name="actionGroup" schema="schema/actionGroup.exsd"/>
+   
    <extension
          point="org.eclipse.ui.editors">
       <editor
@@ -79,6 +81,14 @@
            categoryId="com.cisco.yangide.category.navigate" 
            defaultHandler="com.cisco.yangide.editor.handlers.OpenDeclarationHandler" 
            id="com.cisco.yangide.navigate.open.declaration" />
+     
+     
+      <command
+            categoryId="com.cisco.yangide.category.source"
+            id="com.cisco.yangide.actions.format"
+            name="Format">
+      </command>
+      
       <command
             categoryId="com.cisco.yangide.category.source"
             id="com.cisco.yangide.actions.toggle.comment"
@@ -94,6 +104,7 @@
             id="com.cisco.yangide.actions.remove.block.comment"
             name="Remove Block comment">
       </command>
+     
    </extension>
     
     <extension point="org.eclipse.ui.bindings">
@@ -102,6 +113,7 @@
             contextId="com.cisco.yangide.ui.Context"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="F3"/>
+       
         <key
             commandId="com.cisco.yangide.actions.toggle.comment"
             contextId="com.cisco.yangide.ui.Context"
@@ -122,50 +134,25 @@
             contextId="com.cisco.yangide.ui.Context"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"
             sequence="M1+M2+\"/>
+            
         <key
             sequence="M1+M2+F"
             contextId="com.cisco.yangide.ui.Context"
-            commandId="org.eclipse.jdt.ui.edit.text.java.format"
+            commandId="com.cisco.yangide.actions.format"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/> 
     </extension>
     
-    <extension point="org.eclipse.ui.menus">
-        <menuContribution
-            locationURI="popup:#TextEditorContext?endof=group.open">
-                <command
-                    commandId="com.cisco.yangide.navigate.open.declaration" 
-                    label="Open Declaration"
-                    style="toggle">
-                <visibleWhen checkEnabled="true">
-                    <with variable="activeEditor">
-                        <instanceof value="com.cisco.yangide.editor.editors.YangEditor"/>
-                    </with>
-                </visibleWhen>
-                </command>
-        </menuContribution>
-        <menuContribution
-            locationURI="popup:#TextEditorContext?endof=group.edit">
-                <command
-                      commandId="com.cisco.yangide.actions.toggle.comment"
-                      label="Toggle Comment"
-                      style="toggle">
-                </command>
-        </menuContribution>
-    </extension>
-
-    <extension
-          point="org.eclipse.ui.actionSets">
-       <actionSet
-             description="CodingActionSet Description"
-             id="com.cisco.yangide.editor.CodingActionSet"
-             label="CodingActionSet">
+     <extension point="org.eclipse.ui.actionSets">
+        <actionSet
+            id="com.cisco.yangide.editor.CodingActionSet" 
+            label="Source">
           <menu
                 id="com.cisco.yangide.editor.source.menu"
-                label="&amp;Source"
+                label="%Source"
                 path="edit">
-             <separator
-                   name="commentGroup">
-             </separator>
+             <separator name="commentGroup"/>
+             <separator name="shiftGroup"/>
+             <separator name="formatGroup"/>
           </menu>
           <action
                 allowLabelUpdate="true"
@@ -191,16 +178,90 @@
                 menubarPath="com.cisco.yangide.editor.source.menu/commentGroup"
                 retarget="true">
           </action>
+            <action 
+                id="com.cisco.yangide.editor.actions.shiftLeft" 
+                definitionId="org.eclipse.ui.edit.text.shiftLeft"
+                menubarPath="com.cisco.yangide.editor.source.menu/shiftGroup"
+                label="Shift Left"
+                retarget="true">
+            </action>
+            <action 
+                id="com.cisco.yangide.editor.actions.shiftRight" 
+                definitionId="org.eclipse.ui.edit.text.shiftRight"
+                menubarPath="com.cisco.yangide.editor.source.menu/shiftGroup"
+                label="Shift Right"
+                retarget="true">
+            </action>
+          <action
+                allowLabelUpdate="true"
+                definitionId="com.cisco.yangide.actions.format"
+                id="com.cisco.yangide.editor.actions.FormatDocument"
+                label="Format"
+                menubarPath="com.cisco.yangide.editor.source.menu/formatGroup"
+                retarget="true">
+          </action>
        </actionSet>
     </extension>
-    <extension
-          point="org.eclipse.ui.actionSetPartAssociations">
-       <actionSetPartAssociation
-             targetID="com.cisco.yangide.editor.CodingActionSet">
-          <part
-                id="com.cisco.yangide.editor.editors.YANGEditor">
-          </part>
+    <extension point="org.eclipse.ui.menus">
+        <menuContribution
+            locationURI="popup:#TextEditorContext?endof=group.open">
+                <command
+                    commandId="com.cisco.yangide.navigate.open.declaration" 
+                    label="Open Declaration"
+                    style="toggle">
+                <visibleWhen checkEnabled="true">
+                    <with variable="activeEditor">
+                        <instanceof value="com.cisco.yangide.editor.editors.YangEditor"/>
+                    </with>
+                </visibleWhen>
+                </command>
+        </menuContribution>
+    </extension>
+    
+    <extension point="org.eclipse.ui.menus">
+        <!-- Contribute a Source menu for popup -->
+         <menuContribution locationURI="popup:org.eclipse.ui.popup.any?before=group.find">
+            <menu id="sourceMenuId" label="%Source">
+                <command id="ToggleComment"
+                    commandId="com.cisco.yangide.actions.toggle.comment"
+                    style="push">
+                    <visibleWhen checkEnabled="false"><reference definitionId="com.cisco.yangide.activeContext.definition"/></visibleWhen>
+                </command>
+                <command id="AddBlockComment"
+                    commandId="com.cisco.yangide.actions.add.block.comment"
+                    style="push">
+                    <visibleWhen checkEnabled="false"><reference definitionId="com.cisco.yangide.activeContext.definition"/></visibleWhen>
+                </command>
+                <command id="RemoveBlockComment"
+                    commandId="com.cisco.yangide.actions.remove.block.comment"
+                    style="push">
+                    <visibleWhen checkEnabled="false"><reference definitionId="com.cisco.yangide.activeContext.definition"/></visibleWhen>
+                </command>
+                
+                <separator name="format" visible="true"></separator>
+                
+                <command id="FormatDocument"
+                    commandId="com.cisco.yangide.actions.format" 
+                    style="push">
+                    <visibleWhen checkEnabled="false"><reference definitionId="com.cisco.yangide.activeContext.definition"/></visibleWhen>
+                </command>
+            </menu>
+        </menuContribution>
+    </extension>
+    
+    <extension point="org.eclipse.ui.actionSetPartAssociations">
+       <actionSetPartAssociation targetID="com.cisco.yangide.editor.CodingActionSet">
+          <part id="com.cisco.yangide.editor.editors.YANGEditor"/>
        </actionSetPartAssociation>
     </extension>
-
+   
+    <extension point="org.eclipse.core.expressions.definitions">
+        <definition id="com.cisco.yangide.activeContext.definition">
+            <with variable="activeContexts">
+               <iterate operator="or">
+                  <equals value="com.cisco.yangide.ui.Context"/>
+               </iterate>
+            </with>
+        </definition>
+    </extension>
 </plugin>
