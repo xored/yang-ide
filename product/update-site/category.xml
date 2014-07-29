@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<site>
+   <feature url="features/com.cisco.yangide.ext.feature_1.0.0.qualifier.jar" id="com.cisco.yangide.ext.feature" version="1.0.0.qualifier">
+      <category name="yang-ide-ext"/>
+   </feature>
+   <category-def name="yang-ide-ext" label="YANG IDE Extensions"/>
+</site>
