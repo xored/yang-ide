@@ -12,6 +12,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NavigableSet;
+import java.util.Set;
 
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
@@ -25,12 +26,14 @@ import org.mapdb.Fun.Tuple3;
 import org.mapdb.Fun.Tuple6;
 
 import com.cisco.yangide.core.YangCorePlugin;
+import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.ASTVisitor;
 import com.cisco.yangide.core.dom.GroupingDefinition;
 import com.cisco.yangide.core.dom.IdentitySchemaNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.TypeDefinition;
+import com.cisco.yangide.core.model.YangProjectInfo;
 
 /**
  * Provides functionality to index AST nodes and search item in index.
@@ -274,6 +277,17 @@ public class IndexManager extends JobManager {
     public synchronized ElementIndexInfo[] search(String module, String revision, String name, ElementIndexType type,
             IProject project, IPath scope) {
         ArrayList<ElementIndexInfo> infos = null;
+        Set<String> projectScope = null;
+
+        if (project != null) {
+            try {
+                projectScope = ((YangProjectInfo) YangCorePlugin.create(project).getElementInfo(null))
+                        .getProjectScope();
+            } catch (YangModelException e) {
+                // ignore
+            }
+        }
+
         for (Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo> entry : idxKeywords) {
             if (module != null && module.length() > 0 && !module.equals(entry.a)) {
                 continue;
@@ -291,7 +305,7 @@ public class IndexManager extends JobManager {
                 continue;
             }
 
-            if (project != null && !entry.f.getProject().equals(project.getName())) {
+            if (projectScope != null && !projectScope.contains(entry.f.getProject())) {
                 continue;
             }
 
