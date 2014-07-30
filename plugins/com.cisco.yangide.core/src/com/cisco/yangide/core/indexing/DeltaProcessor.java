@@ -681,11 +681,13 @@ public class DeltaProcessor implements IResourceChangeListener, IElementChangedL
     }
 
     private boolean processJavaDeltas(IJavaElementDelta[] affectedChildren) {
+
         for (IJavaElementDelta d : affectedChildren) {
             IJavaElement element = d.getElement();
             if (element instanceof IPackageFragmentRoot) {
                 IClasspathEntry entry;
                 try {
+                    YangCorePlugin.create(element.getJavaProject().getProject()).close();
                     entry = ((IPackageFragmentRoot) element).getResolvedClasspathEntry();
                     IPath path = entry.getPath();
                     if (path != null && path.toFile().exists() && path.lastSegment().toLowerCase().endsWith(".jar")) {
@@ -700,7 +702,7 @@ public class DeltaProcessor implements IResourceChangeListener, IElementChangedL
                             return false;
                         }
                     }
-                } catch (JavaModelException e) {
+                } catch (JavaModelException | YangModelException e) {
                     YangCorePlugin.log(e);
                 }
             }

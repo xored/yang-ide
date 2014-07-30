@@ -20,6 +20,12 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.jdt.core.IJavaModel;
+import org.eclipse.jdt.core.IJavaProject;
+import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.embedder.IMaven;
 import org.eclipse.m2e.core.project.configurator.MojoExecutionBuildParticipant;
@@ -43,7 +49,7 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
     }
 
     @Override
-    public Set<IProject> build(int kind, IProgressMonitor monitor) throws Exception {
+    public Set<IProject> build(final int kind, IProgressMonitor monitor) throws Exception {
         IMaven maven = MavenPlugin.getMaven();
         BuildContext buildContext = getBuildContext();
 
@@ -126,6 +132,31 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
             buildContext.refresh(outputDir);
         }
 
+        final IProject curProject = getMavenProjectFacade().getProject();
+        if (result == null) {
+            new Job("Updating referenced projects") {
+
+                @Override
+                public IStatus run(IProgressMonitor monitor) {
+                    try {
+                        IJavaModel model = JavaCore.create(ResourcesPlugin.getWorkspace().getRoot());
+                        for (IJavaProject project : model.getJavaProjects()) {
+                            if (!project.getProject().equals(curProject)) {
+                                for (String name : project.getRequiredProjectNames()) {
+                                    if (curProject.getName().equals(name)) {
+                                        project.getProject().touch(monitor);
+                                        project.getProject().build(kind, monitor);
+                                    }
+                                }
+                            }
+                        }
+                    } catch (Exception e) {
+                        YangCorePlugin.log(e);
+                    }
+                    return Status.OK_STATUS;
+                }
+            }.schedule();
+        }
         return result;
     }
 }
