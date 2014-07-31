@@ -30,6 +30,7 @@ public class YangProjectInfo extends OpenableElementInfo {
      * @param projectScope the projectScope to set
      */
     public void setProjectScope(Set<String> projectScope) {
+        System.err.println("set " + projectScope);
         this.projectScope = projectScope;
     }
 }

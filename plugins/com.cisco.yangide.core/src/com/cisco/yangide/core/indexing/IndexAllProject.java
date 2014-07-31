@@ -17,6 +17,7 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.IResourceProxy;
 import org.eclipse.core.resources.IResourceProxyVisitor;
+import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -28,6 +29,8 @@ import org.eclipse.jdt.internal.core.JavaProject;
 
 import com.cisco.yangide.core.CoreUtil;
 import com.cisco.yangide.core.YangCorePlugin;
+import com.cisco.yangide.core.YangModelException;
+import com.cisco.yangide.core.model.YangProjectInfo;
 
 /**
  * @author Konstantin Zaitsev
@@ -53,6 +56,7 @@ public class IndexAllProject extends IndexRequest {
 
     @Override
     public boolean execute(IProgressMonitor progressMonitor) {
+        System.err.println("[I] Project: " + project.getName());
 
         if (this.isCancelled || progressMonitor != null && progressMonitor.isCanceled()) {
             return true;
@@ -65,6 +69,9 @@ public class IndexAllProject extends IndexRequest {
         final HashSet<IPath> externalJarsPath = new HashSet<IPath>();
         try {
             JavaProject proj = (JavaProject) JavaCore.create(project);
+            final HashSet<String> projectScope = new HashSet<>();
+            projectScope.add(project.getName());
+
             if (proj != null) {
                 IClasspathEntry[] classpath = proj.getResolvedClasspath();
                 for (int i = 0, length = classpath.length; i < length; i++) {
@@ -73,6 +80,15 @@ public class IndexAllProject extends IndexRequest {
                     IPath output = entry.getOutputLocation();
                     if (output != null && !entryPath.equals(output)) {
                         ignoredPath.add(output);
+                    }
+
+                    // index dependencies projects
+                    if (entry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
+                        IProject prj = ResourcesPlugin.getWorkspace().getRoot().getProject(entry.getPath().segment(0));
+                        if (prj != null && prj.exists()) {
+                            this.manager.indexAll(prj);
+                            projectScope.add(prj.getName());
+                        }
                     }
                 }
                 IPackageFragmentRoot[] roots = proj.getAllPackageFragmentRoots();
@@ -83,8 +99,10 @@ public class IndexAllProject extends IndexRequest {
                         externalJarsPath.add(entryPath);
                     }
                 }
+                // Update project information with set of project dependencies
+                ((YangProjectInfo) YangCorePlugin.create(project).getElementInfo(null)).setProjectScope(projectScope);
             }
-        } catch (JavaModelException e) {
+        } catch (JavaModelException | YangModelException e) {
             // java project doesn't exist: ignore
         }
 
