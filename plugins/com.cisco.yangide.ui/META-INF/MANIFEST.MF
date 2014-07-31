@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: com.cisco.yangide.ui
 Bundle-SymbolicName: com.cisco.yangide.ui;singleton:=true
-Bundle-Version: 1.0.0.qualifier
+Bundle-Version: 1.0.1.qualifier
 Bundle-Activator: com.cisco.yangide.ui.YangUIPlugin
 Bundle-Vendor: Cisco Systems, Inc.
 Bundle-Localization: plugin
