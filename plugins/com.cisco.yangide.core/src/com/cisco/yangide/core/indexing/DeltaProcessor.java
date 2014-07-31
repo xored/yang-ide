@@ -597,8 +597,8 @@ public class DeltaProcessor implements IResourceChangeListener, IElementChangedL
                             // if any flag is set but SYNC or MARKER, this delta should be
                             // considered
                             if (delta.getAffectedChildren().length == 0 // only check leaf delta
-                                    // nodes
-                                    && (delta.getFlags() & ~(IResourceDelta.SYNC | IResourceDelta.MARKERS)) != 0) {
+                            // nodes
+                            && (delta.getFlags() & ~(IResourceDelta.SYNC | IResourceDelta.MARKERS)) != 0) {
                                 throw new FoundRelevantDeltaException();
                             }
                         }
@@ -687,7 +687,6 @@ public class DeltaProcessor implements IResourceChangeListener, IElementChangedL
             if (element instanceof IPackageFragmentRoot) {
                 IClasspathEntry entry;
                 try {
-                    YangCorePlugin.create(element.getJavaProject().getProject()).close();
                     entry = ((IPackageFragmentRoot) element).getResolvedClasspathEntry();
                     IPath path = entry.getPath();
                     if (path != null && path.toFile().exists() && path.lastSegment().toLowerCase().endsWith(".jar")) {
@@ -702,7 +701,7 @@ public class DeltaProcessor implements IResourceChangeListener, IElementChangedL
                             return false;
                         }
                     }
-                } catch (JavaModelException | YangModelException e) {
+                } catch (JavaModelException e) {
                     YangCorePlugin.log(e);
                 }
             }

@@ -53,8 +53,6 @@ public class YangProject extends YangElement {
             Map<IOpenable, OpenableElementInfo> newElements, IResource underlyingResource) throws YangModelException {
         final HashSet<IResource> resources = new HashSet<IResource>();
         final HashSet<IPath> externalJarsPath = new HashSet<IPath>();
-        final HashSet<String> projectScope = new HashSet<>();
-        projectScope.add(project.getName());
 
         IJavaProject javaProject = JavaCore.create(project);
         try {
@@ -75,8 +73,6 @@ public class YangProject extends YangElement {
                     IPath entryPath = entry.getPath();
                     if (entry.getEntryKind() == IClasspathEntry.CPE_LIBRARY) {
                         externalJarsPath.add(entryPath);
-                    } else if (entry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
-                        projectScope.add(entry.getPath().segment(0));
                     }
                 }
             }
@@ -100,7 +96,6 @@ public class YangProject extends YangElement {
                 YangCorePlugin.log(e);
             }
         }
-        ((YangProjectInfo) info).setProjectScope(projectScope);
         info.setChildren(result.toArray(new IOpenable[result.size()]));
         return javaProject.isOpen();
     }
