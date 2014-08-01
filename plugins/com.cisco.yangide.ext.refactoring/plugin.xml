@@ -8,4 +8,72 @@
 <!-- and is available at http://www.eclipse.org/legal/epl-v10.html                  -->
 <!-- ============================================================================== -->
 <plugin>
+    <extension point="com.cisco.yangide.editor.actionGroup">
+       <actionGroup class="com.cisco.yangide.ext.refactoring.RefactorActionGroup" groupName="group.edit"/>
+    </extension>
+    
+    <extension point="org.eclipse.ui.actionSets">
+       <actionSet 
+            id="com.cisco.yangide.ext.actionSet"
+            label="Yang IDE Extensions Actions"
+            visible="false">
+            <menu
+               label="%Refactor"
+               id="com.cisco.yangide.ext.refactoring.menu"
+               path="edit">
+               <separator name="reorgGroup"/>
+            </menu>
+         
+            <action id="com.cisco.yangide.ui.actions.Rename"
+               definitionId="com.cisco.yangide.ext.rename.element"
+               label="Rename..."
+               retarget="true"
+               menubarPath="com.cisco.yangide.ext.refactoring.menu/reorgGroup">
+            </action>
+       </actionSet>
+    </extension>
+
+    <extension point="org.eclipse.ui.commands">
+        <category id="com.cisco.yangide.ext.refactoring" name="Refactoring"/>
+
+        <command
+            name="Rename - Refactoring"
+            description="Rename the selected element"
+            categoryId="com.cisco.yangide.ext.refactoring"
+            id="com.cisco.yangide.ext.rename.element">
+        </command>
+    </extension>
+      
+    <extension point="org.eclipse.ui.bindings">
+        <!-- Rename keys -->    
+        <key
+            sequence="M2+M3+R"
+            commandId="com.cisco.yangide.ext.rename.element"
+            contextId="com.cisco.yangide.ui.Context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <key
+            platform="carbon"
+            sequence="M2+M3+R"
+            contextId="com.cisco.yangide.ui.Context"
+            commandId=""
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <key
+            platform="carbon"
+            sequence="COMMAND+ALT+R"
+            contextId="com.cisco.yangide.ui.Context"
+            commandId="com.cisco.yangide.ext.rename.element"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+    
+    </extension>
+    
+    <extension point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation targetID="com.cisco.yangide.ext.actionSet">
+         <part id="com.cisco.yangide.editor.editors.YANGEditor"/>
+      </actionSetPartAssociation>
+   </extension>
+   
+    <extension point="org.eclipse.ltk.core.refactoring.refactoringContributions">
+        <contribution id="com.cisco.yangide.ext.refactoring.rename.grouping" class="com.cisco.yangide.ext.refactoring.scripting.RenameGroupingRefactoringContribution"/>
+    </extension>
+   
 </plugin>

@@ -5,12 +5,21 @@ Bundle-SymbolicName: com.cisco.yangide.ext.refactoring;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: com.cisco.yangide.ext.refactoring.YangRefactoringPlugin
 Bundle-Vendor: Cisco Systems, Inc.
+Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.jdt.core;visibility:=reexport,
  org.eclipse.text,
  org.eclipse.core.resources,
  org.eclipse.core.filesystem,
- com.cisco.yangide.core
+ com.cisco.yangide.editor,
+ org.eclipse.ui.workbench,
+ org.eclipse.jface,
+ com.cisco.yangide.core,
+ org.eclipse.jface.text,
+ org.eclipse.ui.editors,
+ org.eclipse.ltk.core.refactoring,
+ org.eclipse.ltk.ui.refactoring,
+ org.eclipse.ui.ide
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
