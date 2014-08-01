@@ -129,4 +129,19 @@ public class ElementIndexReferenceInfo implements Serializable, Comparable<Eleme
     public int compareTo(ElementIndexReferenceInfo o) {
         return o.toString().compareTo(this.toString());
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        return obj instanceof ElementIndexInfo && this.toString().equals(((ElementIndexInfo) obj).toString());
+    }
+
+    @Override
+    public int hashCode() {
+        return 31 * this.toString().hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return project + " - " + path + " - " + startPosition + " - " + length + " - " + type;
+    }
 }

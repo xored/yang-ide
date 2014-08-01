@@ -467,7 +467,10 @@ public class IndexManager extends JobManager {
             if (infos == null) {
                 infos = new ArrayList<ElementIndexReferenceInfo>();
             }
-            infos.add(entry.d);
+
+            if (!infos.contains(entry.d)) {
+                infos.add(entry.d);
+            }
         }
 
         if (infos != null) {
