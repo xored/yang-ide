@@ -23,16 +23,23 @@ import org.mapdb.DB;
 import org.mapdb.DBMaker;
 import org.mapdb.Fun;
 import org.mapdb.Fun.Tuple3;
+import org.mapdb.Fun.Tuple4;
 import org.mapdb.Fun.Tuple6;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.ASTVisitor;
+import com.cisco.yangide.core.dom.BaseReference;
 import com.cisco.yangide.core.dom.GroupingDefinition;
 import com.cisco.yangide.core.dom.IdentitySchemaNode;
 import com.cisco.yangide.core.dom.Module;
+import com.cisco.yangide.core.dom.ModuleImport;
+import com.cisco.yangide.core.dom.QName;
 import com.cisco.yangide.core.dom.SubModule;
+import com.cisco.yangide.core.dom.SubModuleInclude;
 import com.cisco.yangide.core.dom.TypeDefinition;
+import com.cisco.yangide.core.dom.TypeReference;
+import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.core.model.YangProjectInfo;
 
 /**
@@ -47,7 +54,7 @@ public class IndexManager extends JobManager {
      * Stores index version, it is required increment version on each major changes of indexing
      * algorithm or indexed data.
      */
-    private static final int INDEX_VERSION = 6;
+    private static final int INDEX_VERSION = 7;
 
     /**
      * Index DB file path.
@@ -58,6 +65,11 @@ public class IndexManager extends JobManager {
      * Empty result array.
      */
     private static final ElementIndexInfo[] NO_ELEMENTS = new ElementIndexInfo[0];
+
+    /**
+     * Empty result array.
+     */
+    private static final ElementIndexReferenceInfo[] NO_REF_ELEMENTS = new ElementIndexReferenceInfo[0];
 
     /**
      * Index database.
@@ -76,6 +88,17 @@ public class IndexManager extends JobManager {
      * </ul>
      */
     private NavigableSet<Fun.Tuple6<String, String, String, ElementIndexType, String, ElementIndexInfo>> idxKeywords;
+
+    /**
+     * References index contains the following values:
+     * <ul>
+     * <li>qname</li>
+     * <li>type</li>
+     * <li>file path (scope, for JAR entries path to project)</li>
+     * <li>ast info</li>
+     * </ul>
+     */
+    private NavigableSet<Fun.Tuple4<QName, ElementIndexReferenceType, String, ElementIndexReferenceInfo>> idxReferences;
 
     /**
      * Resources index that contains relation of indexed resource and modification stamp of resource
@@ -122,6 +145,7 @@ public class IndexManager extends JobManager {
         }
         this.db = DBMaker.newFileDB(indexFile).closeOnJvmShutdown().make();
         this.idxKeywords = db.getTreeSet("keywords");
+        this.idxReferences = db.getTreeSet("references");
         this.idxResources = db.getTreeSet("resources");
         indexAllProjects();
     }
@@ -191,6 +215,15 @@ public class IndexManager extends JobManager {
             }
         }
 
+        Iterator<Tuple4<QName, ElementIndexReferenceType, String, ElementIndexReferenceInfo>> itRef = idxReferences
+                .iterator();
+        while (itRef.hasNext()) {
+            Tuple4<QName, ElementIndexReferenceType, String, ElementIndexReferenceInfo> entry = itRef.next();
+            if (project.getName().equals(entry.d.getProject())) {
+                itRef.remove();
+            }
+        }
+
         Iterator<Long> it = Fun.filter(idxResources, project.getName(), null).iterator();
         while (it.hasNext()) {
             it.next();
@@ -214,6 +247,16 @@ public class IndexManager extends JobManager {
                 iterator.remove();
             }
         }
+
+        Iterator<Tuple4<QName, ElementIndexReferenceType, String, ElementIndexReferenceInfo>> itRef = idxReferences
+                .iterator();
+        while (itRef.hasNext()) {
+            Tuple4<QName, ElementIndexReferenceType, String, ElementIndexReferenceInfo> entry = itRef.next();
+            if (project.getName().equals(entry.d.getProject()) && containerPath.isPrefixOf(new Path(entry.c))) {
+                itRef.remove();
+            }
+        }
+
         Iterator<Tuple3<String, String, Long>> it = idxResources.iterator();
         while (it.hasNext()) {
             Tuple3<String, String, Long> idxr = it.next();
@@ -228,6 +271,12 @@ public class IndexManager extends JobManager {
                 + info.getType());
         idxKeywords.add(Fun.t6(info.getModule(), info.getRevision(), info.getName(), info.getType(), info.getPath(),
                 info));
+    }
+
+    public synchronized void addElementIndexReferenceInfo(ElementIndexReferenceInfo info) {
+        System.err.println("[IR] " + info.getReference() + " : " + info.getType() + " - " + info.getProject() + "@"
+                + info.getPath());
+        idxReferences.add(Fun.t4(info.getReference(), info.getType(), info.getPath(), info));
     }
 
     public void addModule(Module module, final IProject project, final IPath path, final String entry) {
@@ -267,6 +316,60 @@ public class IndexManager extends JobManager {
                 public boolean visit(IdentitySchemaNode identity) {
                     addElementIndexInfo(new ElementIndexInfo(identity, moduleName, revision, ElementIndexType.IDENTITY,
                             project, path, entry));
+                    return true;
+                }
+
+                @Override
+                public boolean visit(UsesNode uses) {
+                    // index in case if not JAR
+                    if (entry == null || entry.isEmpty()) {
+                        addElementIndexReferenceInfo(new ElementIndexReferenceInfo(uses, uses.getGrouping(),
+                                ElementIndexReferenceType.USES, project, path));
+                    }
+                    return true;
+                }
+
+                @Override
+                public boolean visit(TypeReference ref) {
+                    // index in case if not JAR
+                    if (entry == null || entry.isEmpty()) {
+                        addElementIndexReferenceInfo(new ElementIndexReferenceInfo(ref, ref.getType(),
+                                ElementIndexReferenceType.TYPE_REF, project, path));
+                    }
+                    return true;
+                }
+
+                @Override
+                public boolean visit(BaseReference ref) {
+                    // index in case if not JAR
+                    if (entry == null || entry.isEmpty()) {
+                        addElementIndexReferenceInfo(new ElementIndexReferenceInfo(ref, ref.getType(),
+                                ElementIndexReferenceType.IDENTITY_REF, project, path));
+                    }
+                    return true;
+                }
+
+                @Override
+                public boolean visit(ModuleImport moduleImport) {
+                    // index in case if not JAR
+                    if (entry == null || entry.isEmpty()) {
+                        QName qname = new QName(moduleImport.getName(), moduleImport.getPrefix(), moduleImport
+                                .getName(), moduleImport.getRevision());
+                        addElementIndexReferenceInfo(new ElementIndexReferenceInfo(moduleImport, qname,
+                                ElementIndexReferenceType.IMPORT, project, path));
+                    }
+                    return true;
+                }
+
+                @Override
+                public boolean visit(SubModuleInclude subModuleInclude) {
+                    // index in case if not JAR
+                    if (entry == null || entry.isEmpty()) {
+                        QName qname = new QName(subModuleInclude.getName(), null, subModuleInclude.getName(),
+                                subModuleInclude.getRevision());
+                        addElementIndexReferenceInfo(new ElementIndexReferenceInfo(subModuleInclude, qname,
+                                ElementIndexReferenceType.INCLUDE, project, path));
+                    }
                     return true;
                 }
             });
@@ -323,6 +426,54 @@ public class IndexManager extends JobManager {
             return infos.toArray(new ElementIndexInfo[infos.size()]);
         }
         return NO_ELEMENTS;
+    }
+
+    public synchronized ElementIndexReferenceInfo[] searchReference(QName reference, ElementIndexReferenceType type,
+            IProject project) {
+        ArrayList<ElementIndexReferenceInfo> infos = null;
+        Set<String> indirectScope = null;
+
+        if (project != null) {
+            try {
+                indirectScope = ((YangProjectInfo) YangCorePlugin.create(project).getElementInfo(null))
+                        .getIndirectScope();
+            } catch (YangModelException e) {
+                // ignore
+            }
+        }
+
+        for (Tuple4<QName, ElementIndexReferenceType, String, ElementIndexReferenceInfo> entry : idxReferences) {
+            if (type != null && type != entry.b) {
+                continue;
+            }
+
+            if (indirectScope != null && !indirectScope.contains(entry.d.getProject())) {
+                continue;
+            }
+
+            if (reference.getModule() != null && !reference.getModule().equals(entry.a.getModule())) {
+                continue;
+            }
+
+            if (reference.getRevision() != null && entry.a.getRevision() != null
+                    && !reference.getRevision().equals(entry.a.getRevision())) {
+                continue;
+            }
+
+            if (reference.getName() != null && !reference.getName().equals(entry.a.getName())) {
+                continue;
+            }
+
+            if (infos == null) {
+                infos = new ArrayList<ElementIndexReferenceInfo>();
+            }
+            infos.add(entry.d);
+        }
+
+        if (infos != null) {
+            return infos.toArray(new ElementIndexReferenceInfo[infos.size()]);
+        }
+        return NO_REF_ELEMENTS;
     }
 
     private void indexAllProjects() {

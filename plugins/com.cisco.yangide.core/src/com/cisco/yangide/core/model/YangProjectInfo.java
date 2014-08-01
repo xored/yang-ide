@@ -19,6 +19,9 @@ public class YangProjectInfo extends OpenableElementInfo {
     /** Contains list of project names that uses by this project. */
     private Set<String> projectScope;
 
+    /** Contains list of project names that uses this project. */
+    private Set<String> indirectScope;
+
     /**
      * @return the projectScope
      */
@@ -30,7 +33,20 @@ public class YangProjectInfo extends OpenableElementInfo {
      * @param projectScope the projectScope to set
      */
     public void setProjectScope(Set<String> projectScope) {
-        System.err.println("set " + projectScope);
         this.projectScope = projectScope;
+    }
+
+    /**
+     * @return the indirectScope
+     */
+    public Set<String> getIndirectScope() {
+        return indirectScope;
+    }
+
+    /**
+     * @param indirectScope the indirectScope to set
+     */
+    public void setIndirectScope(Set<String> indirectScope) {
+        this.indirectScope = indirectScope;
     }
 }

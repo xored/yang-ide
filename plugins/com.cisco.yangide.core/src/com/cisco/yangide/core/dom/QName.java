@@ -7,11 +7,17 @@
  */
 package com.cisco.yangide.core.dom;
 
+import java.io.Serializable;
+
 /**
  * @author Konstantin Zaitsev
  * @date Jul 4, 2014
  */
-public class QName {
+public class QName implements Serializable, Comparable<QName> {
+
+    /** Serial version UID. */
+    private static final long serialVersionUID = 8322735104475690634L;
+
     private String module;
     private String prefix;
     private String name;
@@ -89,5 +95,10 @@ public class QName {
     @Override
     public String toString() {
         return "QName [module=" + module + ", prefix=" + prefix + ", name=" + name + ", revision=" + revision + "]";
+    }
+
+    @Override
+    public int compareTo(QName o) {
+        return toString().compareTo(o.toString());
     }
 }

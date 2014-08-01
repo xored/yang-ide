@@ -8,6 +8,15 @@
 <!-- and is available at http://www.eclipse.org/legal/epl-v10.html                  -->
 <!-- ============================================================================== -->
 <plugin>
+    <extension point="org.eclipse.core.contenttype.contentTypes">
+        <content-type 
+            id="yangFile" 
+            name="YANG File" 
+            base-type="org.eclipse.core.runtime.text"
+            priority="high"/>
+        <file-association content-type="yangFile" file-extensions="yang"/>
+    </extension>
+    
    <extension point="org.eclipse.core.resources.markers"
          id="problem"
          name="YANG Problem">

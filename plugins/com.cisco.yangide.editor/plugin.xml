@@ -13,12 +13,14 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="com.cisco.yangide.editor.editors.YangEditor"
+            class="com.cisco.yangide.editor.editors.YangEditor" 
+            default="true"
             contributorClass="com.cisco.yangide.editor.editors.YangEditorActionContributor"
             extensions="yang"
             icon="icons/yang_file.png"
             id="com.cisco.yangide.editor.editors.YANGEditor"
             name="YANG Editor">
+            <contentTypeBinding contentTypeId="yangFile"/>
       </editor>
    </extension>
    <extension
@@ -264,4 +266,27 @@
             </with>
         </definition>
     </extension>
+    
+    <extension point="org.eclipse.compare.contentViewers">
+        <viewer
+            id="com.cisco.yangide.editor.compare.YangFileViewer" 
+            extensions="yang"
+            class="com.cisco.yangide.editor.compare.YangFileViewerCreator"/>
+
+        <contentTypeBinding 
+            contentTypeId="yangFile" 
+            contentViewerId="com.cisco.yangide.editor.compare.YangFileViewer"/>
+    </extension>
+    
+    <extension point="org.eclipse.compare.contentMergeViewers">
+        <viewer
+            id="com.cisco.yangide.editor.compare.YangFileMergeViewer" 
+            extensions="yang"
+            label="YANG File Merge Viewer"
+            class="com.cisco.yangide.editor.compare.YangFileMergeViewerCreator"/>
+
+        <contentTypeBinding
+            contentTypeId="yangFile"
+            contentMergeViewerId="com.cisco.yangide.editor.compare.YangFileMergeViewer"/>
+    </extension>    
 </plugin>

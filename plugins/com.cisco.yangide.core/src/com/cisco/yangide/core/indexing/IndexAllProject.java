@@ -22,6 +22,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IClasspathEntry;
+import org.eclipse.jdt.core.IJavaProject;
 import org.eclipse.jdt.core.IPackageFragmentRoot;
 import org.eclipse.jdt.core.JavaCore;
 import org.eclipse.jdt.core.JavaModelException;
@@ -84,7 +85,8 @@ public class IndexAllProject extends IndexRequest {
 
                     // index dependencies projects
                     if (entry.getEntryKind() == IClasspathEntry.CPE_PROJECT) {
-                        IProject prj = ResourcesPlugin.getWorkspace().getRoot().getProject(entry.getPath().segment(0));
+                        IProject prj = ResourcesPlugin.getWorkspace().getRoot()
+                                .getProject(entry.getPath().lastSegment());
                         if (prj != null && prj.exists()) {
                             this.manager.indexAll(prj);
                             projectScope.add(prj.getName());
@@ -100,7 +102,21 @@ public class IndexAllProject extends IndexRequest {
                     }
                 }
                 // Update project information with set of project dependencies
-                ((YangProjectInfo) YangCorePlugin.create(project).getElementInfo(null)).setProjectScope(projectScope);
+                YangProjectInfo yangProjectInfo = (YangProjectInfo) YangCorePlugin.create(project).getElementInfo(null);
+                yangProjectInfo.setProjectScope(projectScope);
+                // fill indirect scope
+                HashSet<String> indirectScope = new HashSet<String>();
+                indirectScope.add(project.getName());
+                for (IJavaProject jproj : JavaCore.create(ResourcesPlugin.getWorkspace().getRoot()).getJavaProjects()) {
+                    if (jproj != proj) {
+                        for (String name : jproj.getRequiredProjectNames()) {
+                            if (name.equals(project.getName())) {
+                                indirectScope.add(jproj.getProject().getName());
+                            }
+                        }
+                    }
+                }
+                yangProjectInfo.setIndirectScope(indirectScope);
             }
         } catch (JavaModelException | YangModelException e) {
             // java project doesn't exist: ignore

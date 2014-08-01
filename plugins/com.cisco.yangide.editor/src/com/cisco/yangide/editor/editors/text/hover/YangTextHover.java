@@ -83,14 +83,16 @@ public class YangTextHover extends DefaultTextHover implements ITextHoverExtensi
 
         String hoverInfo = null;
         YangEditor editor = (YangEditor) getEditor();
-        try {
-            Module module = editor.getModule();
-            if (module != null) {
-                ASTNode node = module.getNodeAtPosition(hoverRegion.getOffset());
-                hoverInfo = getHoverInfo(node);
+        if (editor != null) {
+            try {
+                Module module = editor.getModule();
+                if (module != null) {
+                    ASTNode node = module.getNodeAtPosition(hoverRegion.getOffset());
+                    hoverInfo = getHoverInfo(node);
+                }
+            } catch (YangModelException e) {
+                YangCorePlugin.log(e);
             }
-        } catch (YangModelException e) {
-            YangCorePlugin.log(e);
         }
         return hoverInfo;
     }

@@ -25,13 +25,7 @@ public class YangDocumentSetupParticipant implements IDocumentSetupParticipant {
     public YangDocumentSetupParticipant() {
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see
-     * org.eclipse.core.filebuffers.IDocumentSetupParticipant#setup(org.eclipse.jface.text.IDocument
-     * )
-     */
+    @Override
     public void setup(IDocument document) {
         if (document instanceof IDocumentExtension3) {
             IDocumentExtension3 extension3 = (IDocumentExtension3) document;
@@ -41,10 +35,8 @@ public class YangDocumentSetupParticipant implements IDocumentSetupParticipant {
         }
     }
 
-    private IDocumentPartitioner createDocumentPartitioner() {
-        return new FastPartitioner(new YangPartitionScanner(), new String[] {
-                // XXX undetermined behaviour
-                // IDocument.DEFAULT_CONTENT_TYPE,
-                YangPartitionScanner.YANG_COMMENT, YangPartitionScanner.YANG_STRING, YangPartitionScanner.YANG_STRING_SQ });
+    public static IDocumentPartitioner createDocumentPartitioner() {
+        return new FastPartitioner(new YangPartitionScanner(), new String[] { YangPartitionScanner.YANG_COMMENT,
+                YangPartitionScanner.YANG_STRING, YangPartitionScanner.YANG_STRING_SQ });
     }
 }
