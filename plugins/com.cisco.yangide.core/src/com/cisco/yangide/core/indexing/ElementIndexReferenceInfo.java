@@ -132,7 +132,12 @@ public class ElementIndexReferenceInfo implements Serializable, Comparable<Eleme
 
     @Override
     public boolean equals(Object obj) {
-        return obj instanceof ElementIndexInfo && this.toString().equals(((ElementIndexInfo) obj).toString());
+        if (!(obj instanceof ElementIndexReferenceInfo)) {
+            return false;
+        }
+        ElementIndexReferenceInfo i = (ElementIndexReferenceInfo) obj;
+        return this.project.equals(i.project) && this.path.equals(i.path) && this.startPosition == i.startPosition
+                && this.length == i.length && this.type == i.type;
     }
 
     @Override
