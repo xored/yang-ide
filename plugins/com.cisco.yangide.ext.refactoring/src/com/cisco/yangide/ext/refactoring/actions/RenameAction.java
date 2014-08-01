@@ -7,6 +7,10 @@
  */
 package com.cisco.yangide.ext.refactoring.actions;
 
+import org.eclipse.core.resources.IFile;
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.Path;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
@@ -14,11 +18,23 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
 
 import com.cisco.yangide.core.YangModelException;
+import com.cisco.yangide.core.YangTypeUtil;
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
+import com.cisco.yangide.core.dom.BaseReference;
 import com.cisco.yangide.core.dom.GroupingDefinition;
+import com.cisco.yangide.core.dom.IdentitySchemaNode;
+import com.cisco.yangide.core.dom.Module;
+import com.cisco.yangide.core.dom.SubModule;
+import com.cisco.yangide.core.dom.TypeDefinition;
+import com.cisco.yangide.core.dom.TypeReference;
+import com.cisco.yangide.core.dom.UsesNode;
+import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.editor.editors.YangEditor;
+import com.cisco.yangide.ext.refactoring.RefactorUtil;
 import com.cisco.yangide.ext.refactoring.rename.RenameGroupingProcessor;
+import com.cisco.yangide.ext.refactoring.rename.RenameTypeProcessor;
+import com.cisco.yangide.ext.refactoring.rename.YangRenameProcessor;
 import com.cisco.yangide.ext.refactoring.ui.RenameRefactoringWizard;
 
 /**
@@ -57,9 +73,7 @@ public class RenameAction extends SelectionDispatchAction {
                 ASTNamedNode nnode = (ASTNamedNode) node;
                 if (nnode.getNameStartPosition() <= selection.getOffset()
                         && (nnode.getNameStartPosition() + nnode.getNameLength()) >= selection.getOffset()) {
-                    if (nnode instanceof GroupingDefinition) {
-                        enabled = true;
-                    }
+                    enabled = isDirectRename(nnode) || isIndirectRename(nnode);
                 }
             }
         }
@@ -68,13 +82,42 @@ public class RenameAction extends SelectionDispatchAction {
 
     @Override
     public void run(ITextSelection selection) {
-        if (node != null && node instanceof GroupingDefinition) {
-            RenameGroupingProcessor processor = new RenameGroupingProcessor((GroupingDefinition) node);
+        if (node != null && (isDirectRename(node) || isIndirectRename(node))) {
+            YangRenameProcessor processor = null;
+            IFile file = ((IFileEditorInput) editor.getEditorInput()).getFile();
+            ASTNode originalNode = null;
+            if (isIndirectRename(node)) {
+                ElementIndexInfo info = RefactorUtil.getByReference(file.getProject(), node);
+                if (info != null) {
+                    if (info.getEntry() != null && !info.getEntry().isEmpty()) {
+                        MessageDialog.openInformation(getShell(), "Rename",
+                                "Operation unavailable on the current selection.\n"
+                                        + "The original element is located in JAR file and cannot be renamed.");
+                        return;
+                    }
+                    originalNode = RefactorUtil.resolveIndexInfo(info);
+                }
+                if (originalNode == null) {
+                    MessageDialog.openInformation(getShell(), "Rename",
+                            "Operation unavailable on the current selection.\n"
+                                    + "Cannot find the original element for the reference.");
+                    return;
+                }
+                file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(info.getPath()));
+            } else {
+                originalNode = node;
+            }
+
+            if (originalNode instanceof GroupingDefinition) {
+                processor = new RenameGroupingProcessor((GroupingDefinition) originalNode);
+            } else if (originalNode instanceof TypeDefinition) {
+                processor = new RenameTypeProcessor((TypeDefinition) originalNode);
+            }
             RenameRefactoring refactoring = new RenameRefactoring(processor);
-            processor.setNewName(((GroupingDefinition) node).getName());
+            processor.setNewName(((ASTNamedNode) originalNode).getName());
             processor.setUpdateReferences(true);
-            processor.setFile(((IFileEditorInput) editor.getEditorInput()).getFile());
-            processor.setDocument(editor.getDocument());
+            processor.setFile(file);
+            processor.setDocument(null);
             RenameRefactoringWizard wizard = new RenameRefactoringWizard(refactoring);
             RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(wizard);
             try {
@@ -82,177 +125,28 @@ public class RenameAction extends SelectionDispatchAction {
             } catch (InterruptedException e) {
                 // do nothing
             }
+        } else {
+            MessageDialog.openInformation(getShell(), "Rename", "Operation unavailable on the current selection.\n"
+                    + "Select a grouping name, module name, type name or identify name.");
         }
     }
 
-    // // ---- Structured selection ------------------------------------------------
-    //
-    // @Override
-    // public void selectionChanged(IStructuredSelection selection) {
-    // try {
-    // if (selection.size() == 1) {
-    // setEnabled(canEnable(selection));
-    // return;
-    // }
-    // } catch (CoreException e) {
-    // YangRefactoringPlugin.log(e);
-    // }
-    // setEnabled(false);
-    // }
-    //
-    // private static boolean canEnable(IStructuredSelection selection) throws CoreException {
-    // IJavaElement element = getJavaElement(selection);
-    // if (element == null) {
-    // return false;
-    // }
-    // return RefactoringAvailabilityTester.isRenameElementAvailable(element);
-    // }
-    //
-    // private static IJavaElement getJavaElement(IStructuredSelection selection) {
-    // if (selection.size() != 1) {
-    // return null;
-    // }
-    // Object first = selection.getFirstElement();
-    // if (!(first instanceof IJavaElement)) {
-    // return null;
-    // }
-    // return (IJavaElement) first;
-    // }
-    //
-    // @Override
-    // public void run(IStructuredSelection selection) {
-    // IJavaElement element = getJavaElement(selection);
-    // if (element == null) {
-    // return;
-    // }
-    // if (!ActionUtil.isEditable(getShell(), element)) {
-    // return;
-    // }
-    // try {
-    // run(element, false);
-    // } catch (CoreException e) {
-    // ExceptionHandler.handle(e, RefactoringMessages.RenameJavaElementAction_name,
-    // RefactoringMessages.RenameJavaElementAction_exception);
-    // }
-    // }
-    //
-    // // ---- text selection ------------------------------------------------------------
-    //
-    // @Override
-    // public void selectionChanged(ITextSelection selection) {
-    // if (selection instanceof JavaTextSelection) {
-    // try {
-    // JavaTextSelection javaTextSelection = (JavaTextSelection) selection;
-    // IJavaElement[] elements = javaTextSelection.resolveElementAtOffset();
-    // if (elements.length == 1) {
-    // setEnabled(RefactoringAvailabilityTester.isRenameElementAvailable(elements[0]));
-    // } else {
-    // ASTNode node = javaTextSelection.resolveCoveringNode();
-    // setEnabled(node instanceof SimpleName);
-    // }
-    // } catch (CoreException e) {
-    // setEnabled(false);
-    // }
-    // } else {
-    // setEnabled(true);
-    // }
-    // }
-    //
-    // @Override
-    // public void run(ITextSelection selection) {
-    // if (!ActionUtil.isEditable(fEditor)) {
-    // return;
-    // }
-    // if (canRunInEditor()) {
-    // doRun();
-    // } else {
-    // MessageDialog.openInformation(getShell(), RefactoringMessages.RenameAction_rename,
-    // RefactoringMessages.RenameAction_unavailable);
-    // }
-    // }
-    //
-    // public void doRun() {
-    // RenameLinkedMode activeLinkedMode = RenameLinkedMode.getActiveLinkedMode();
-    // if (activeLinkedMode != null) {
-    // if (activeLinkedMode.isCaretInLinkedPosition()) {
-    // activeLinkedMode.startFullDialog();
-    // return;
-    // } else {
-    // activeLinkedMode.cancel();
-    // }
-    // }
-    //
-    // try {
-    // IJavaElement element = getJavaElementFromEditor();
-    // IPreferenceStore store = JavaPlugin.getDefault().getPreferenceStore();
-    // boolean lightweight = store.getBoolean(PreferenceConstants.REFACTOR_LIGHTWEIGHT);
-    // if (element != null && RefactoringAvailabilityTester.isRenameElementAvailable(element)) {
-    // run(element, lightweight);
-    // return;
-    // } else if (lightweight) {
-    // // fall back to local rename:
-    // CorrectionCommandHandler handler = new CorrectionCommandHandler(fEditor,
-    // LinkedNamesAssistProposal.ASSIST_ID, true);
-    // if (handler.doExecute()) {
-    // fEditor.setStatusLineErrorMessage(RefactoringMessages.RenameJavaElementAction_started_rename_in_file);
-    // return;
-    // }
-    // }
-    // } catch (CoreException e) {
-    // ExceptionHandler.handle(e, RefactoringMessages.RenameJavaElementAction_name,
-    // RefactoringMessages.RenameJavaElementAction_exception);
-    // }
-    // MessageDialog.openInformation(getShell(), RefactoringMessages.RenameJavaElementAction_name,
-    // RefactoringMessages.RenameJavaElementAction_not_available);
-    // }
-    //
-    // public boolean canRunInEditor() {
-    // if (RenameLinkedMode.getActiveLinkedMode() != null) {
-    // return true;
-    // }
-    //
-    // try {
-    // IJavaElement element = getJavaElementFromEditor();
-    // if (element == null) {
-    // return true;
-    // }
-    //
-    // return RefactoringAvailabilityTester.isRenameElementAvailable(element);
-    // } catch (JavaModelException e) {
-    // if (JavaModelUtil.isExceptionToBeLogged(e)) {
-    // JavaPlugin.log(e);
-    // }
-    // } catch (CoreException e) {
-    // JavaPlugin.log(e);
-    // }
-    // return false;
-    // }
-    //
-    // private IJavaElement getJavaElementFromEditor() throws JavaModelException {
-    // IJavaElement[] elements = SelectionConverter.codeResolve(fEditor);
-    // if (elements == null || elements.length != 1) {
-    // return null;
-    // }
-    // return elements[0];
-    // }
-    //
-    // // ---- helper methods -------------------------------------------------------------------
-    //
-    // private void run(IJavaElement element, boolean lightweight) throws CoreException {
-    // // Work around for http://dev.eclipse.org/bugs/show_bug.cgi?id=19104
-    // if (!ActionUtil.isEditable(fEditor, getShell(), element)) {
-    // return;
-    // }
-    // // XXX workaround bug 31998
-    // if (ActionUtil.mustDisableJavaModelAction(getShell(), element)) {
-    // return;
-    // }
-    //
-    // if (lightweight && fEditor instanceof CompilationUnitEditor && !(element instanceof
-    // IPackageFragment)) {
-    // new RenameLinkedMode(element, (CompilationUnitEditor) fEditor).start();
-    // } else {
-    // RefactoringExecutionStarter.startRenameRefactoring(element, getShell());
-    // }
-    // }
+    /**
+     * @param node node to inspect
+     * @return <code>true</code> if node available to rename
+     */
+    private boolean isDirectRename(ASTNode node) {
+        return node instanceof GroupingDefinition || node instanceof TypeDefinition
+                || node instanceof IdentitySchemaNode || node instanceof Module || node instanceof SubModule;
+    }
+
+    /**
+     * @param node node to inspect
+     * @return <code>true</code> if node is reference to perform indirect renaming
+     */
+    private boolean isIndirectRename(ASTNode node) {
+        return node instanceof UsesNode
+                || (node instanceof TypeReference && !YangTypeUtil.isBuiltInType(((TypeReference) node).getName()))
+                || node instanceof BaseReference;
+    }
 }

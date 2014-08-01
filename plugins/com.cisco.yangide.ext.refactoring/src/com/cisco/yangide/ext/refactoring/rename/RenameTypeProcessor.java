@@ -7,26 +7,26 @@
  */
 package com.cisco.yangide.ext.refactoring.rename;
 
-import com.cisco.yangide.core.dom.GroupingDefinition;
+import com.cisco.yangide.core.dom.TypeDefinition;
 import com.cisco.yangide.core.indexing.ElementIndexReferenceType;
 
 /**
  * @author Konstantin Zaitsev
- * @date Jul 30, 2014
+ * @date Aug 2, 2014
  */
-public class RenameGroupingProcessor extends YangRenameProcessor {
+public class RenameTypeProcessor extends YangRenameProcessor {
 
-    public RenameGroupingProcessor(GroupingDefinition grouping) {
-        super(grouping);
+    public RenameTypeProcessor(TypeDefinition type) {
+        super(type);
     }
 
     @Override
     public String getIdentifier() {
-        return "com.cisco.yangide.ext.refactoring.rename.RenameGroupingProcessor";
+        return "com.cisco.yangide.ext.refactoring.rename.RenameTypeProcessor";
     }
 
     @Override
     protected ElementIndexReferenceType getReferenceType() {
-        return ElementIndexReferenceType.USES;
+        return ElementIndexReferenceType.TYPE_REF;
     }
 }
