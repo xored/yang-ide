@@ -7,11 +7,15 @@
  */
 package com.cisco.yangide.m2e.yang;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Plugin;
+import org.eclipse.core.runtime.Status;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 import com.cisco.yangide.core.YangCorePlugin;
+import com.cisco.yangide.ui.YangUIPlugin;
+import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
 
 /**
  * @author Konstantin Zaitsev
@@ -29,12 +33,14 @@ public class YangM2EPlugin extends Plugin implements BundleActivator {
     // The shared instance
     private static YangM2EPlugin plugin;
 
+    @Override
     public void start(BundleContext context) throws Exception {
         super.start(context);
         plugin = this;
         YangCorePlugin.getDefault();
     }
 
+    @Override
     public void stop(BundleContext context) throws Exception {
         plugin = null;
         super.stop(context);
@@ -47,5 +53,13 @@ public class YangM2EPlugin extends Plugin implements BundleActivator {
      */
     public static YangM2EPlugin getDefault() {
         return plugin;
+    }
+
+    public static void traceTime(String category, String message, long start, long end) {
+        if (YangUIPlugin.getDefault().getPreferenceStore().getBoolean(YangPreferenceConstants.ENABLE_TRACING)) {
+            Status status = new Status(IStatus.INFO, YangM2EPlugin.PLUGIN_ID, "[" + category + "] " + message + ": "
+                    + (end - start) + "ms");
+            YangM2EPlugin.getDefault().getLog().log(status);
+        }
     }
 }

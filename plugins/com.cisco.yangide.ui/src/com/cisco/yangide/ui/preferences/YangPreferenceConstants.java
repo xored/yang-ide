@@ -59,4 +59,6 @@ public class YangPreferenceConstants {
     public final static String FMT_STRING = "fmtString";
     public final static String FMT_MAX_LINE_LENGTH = "fmtMaxLineLength";
     public final static String FMT_COMPACT_IMPORT = "fmtCompactImport";
+
+    public final static String ENABLE_TRACING = "enableTracing";
 }

@@ -52,12 +52,17 @@ public class LifecycleMapping extends AbstractCustomizableLifecycleMapping {
         Map<String, AbstractProjectConfigurator> configurators = LifecycleMappingFactory
                 .getProjectConfigurators(projectFacade);
         if (!configurators.containsKey(YangProjectConfigurator.class.getName())) {
-            configurators.put(YangProjectConfigurator.class.getName(), new YangProjectConfigurator());
+            try {
+                configurators.put(YangProjectConfigurator.class.getName(), new YangProjectConfigurator());
+            } catch (UnsupportedOperationException e) {
+                // ignore error
+            }
         }
         List<MojoExecution> mojoExecutions = ((MavenProjectFacade) projectFacade).getExecutionPlan(
                 ProjectRegistryManager.LIFECYCLE_DEFAULT, monitor);
 
-        if (mojoExecutions != null) { // null if execution plan could not be calculated
+        if (mojoExecutions != null && mapping != null) { // null if execution plan could not be
+                                                         // calculated
             for (MojoExecution mojoExecution : mojoExecutions) {
                 MojoExecutionKey mojoExecutionKey = new MojoExecutionKey(mojoExecution);
                 List<IPluginExecutionMetadata> executionMetadatas = mapping.get(mojoExecutionKey);

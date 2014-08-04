@@ -20,9 +20,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.m2e.core.MavenPlugin;
 import org.eclipse.m2e.core.embedder.IMaven;
 import org.eclipse.m2e.core.project.configurator.MojoExecutionBuildParticipant;
@@ -30,6 +27,8 @@ import org.sonatype.plexus.build.incremental.BuildContext;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
+import com.cisco.yangide.core.indexing.IJob;
+import com.cisco.yangide.core.indexing.JobAdapter;
 import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.core.parser.IYangValidationListener;
 import com.cisco.yangide.core.parser.YangParserUtil;
@@ -48,8 +47,11 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
 
     @Override
     public Set<IProject> build(final int kind, IProgressMonitor monitor) throws Exception {
+        long dt = System.currentTimeMillis();
+
         IMaven maven = MavenPlugin.getMaven();
         BuildContext buildContext = getBuildContext();
+        String projectName = getMavenProjectFacade().getProject().getName();
 
         File source = maven.getMojoParameterValue(getSession().getCurrentProject(), getMojoExecution(),
                 YangM2EPlugin.YANG_FILES_ROOT_DIR, File.class, monitor);
@@ -81,6 +83,7 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
                 .getBoolean(YangPreferenceConstants.M2E_PLUGIN_CLEAN_TARGET);
 
         if (isCleanRequired) {
+            long dt2 = System.currentTimeMillis();
             for (File outputDir : outputDirs) {
                 IContainer[] containers = ResourcesPlugin.getWorkspace().getRoot()
                         .findContainersForLocationURI(URIUtil.toURI(outputDir.getAbsolutePath()));
@@ -88,6 +91,7 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
                     containers[0].delete(true, monitor);
                 }
             }
+            YangM2EPlugin.traceTime(projectName, "clean classes", dt2, System.currentTimeMillis());
         }
 
         Set<IProject> result = super.build(kind, monitor);
@@ -104,47 +108,47 @@ public class YangBuildParticipant extends MojoExecutionBuildParticipant {
         curProject.touch(monitor);
 
         final File basedir = ds.getBasedir();
-        new Job("Validating YANG files") {
+
+        // wait index job
+        long dt3 = System.currentTimeMillis();
+        if (kind == FULL_BUILD) {
+            YangModelManager.getIndexManager().indexAll(curProject);
+        }
+        YangModelManager.getIndexManager().performConcurrentJob(new JobAdapter() {
             @Override
-            protected IStatus run(IProgressMonitor monitor) {
-                // wait index job
-                if (kind == FULL_BUILD) {
-                    YangModelManager.getIndexManager().indexAll(curProject);
-
-                    try {
-                        while (YangModelManager.getIndexManager().awaitingJobsCount() > 0) {
-                            Thread.sleep(100);
-                        }
-                    } catch (InterruptedException e) {
-                        // ignore
-                    }
-                }
-
-                for (String path : includedFiles) {
-                    final IFile ifile = YangCorePlugin.getIFileFromFile(new File(basedir, path));
-                    if (ifile != null) {
-                        try {
-                            YangParserUtil.validateYangFile(YangCorePlugin.createYangFile(ifile).getBuffer()
-                                    .getContents().toCharArray(), ifile.getProject(), new IYangValidationListener() {
-
-                                @Override
-                                public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
-                                    YangCorePlugin.createProblemMarker(ifile, msg, lineNumber, charStart, charEnd);
-                                }
-
-                                @Override
-                                public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
-                                    YangCorePlugin.createProblemMarker(ifile, msg, lineNumber, charStart, charEnd);
-                                }
-                            });
-                        } catch (YangModelException e) {
-                            YangCorePlugin.log(e);
-                        }
-                    }
-                }
-                return Status.OK_STATUS;
+            public boolean execute(IProgressMonitor progress) {
+                validate(basedir, includedFiles);
+                return false;
             }
-        }.schedule();
+        }, IJob.WaitUntilReady, monitor);
+        YangM2EPlugin.traceTime(projectName, "yang index", dt3, System.currentTimeMillis());
+
+        YangM2EPlugin.traceTime(projectName, "total", dt, System.currentTimeMillis());
         return result;
+    }
+
+    private void validate(File basedir, String[] includedFiles) {
+        for (String path : includedFiles) {
+            final IFile ifile = YangCorePlugin.getIFileFromFile(new File(basedir, path));
+            if (ifile != null) {
+                try {
+                    YangParserUtil.validateYangFile(YangCorePlugin.createYangFile(ifile).getBuffer().getContents()
+                            .toCharArray(), ifile.getProject(), new IYangValidationListener() {
+
+                        @Override
+                        public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
+                            YangCorePlugin.createProblemMarker(ifile, msg, lineNumber, charStart, charEnd);
+                        }
+
+                        @Override
+                        public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
+                            YangCorePlugin.createProblemMarker(ifile, msg, lineNumber, charStart, charEnd);
+                        }
+                    });
+                } catch (YangModelException e) {
+                    YangCorePlugin.log(e);
+                }
+            }
+        }
     }
 }
