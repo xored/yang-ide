@@ -41,7 +41,6 @@ public class YangUIImages {
     private static String ICONS_PATH = "$nl$/icons/full/"; //$NON-NLS-1$
 
     // Use IPath and toOSString to build the names to ensure they have the slashes correct
-    @SuppressWarnings("unused")
     private final static String LOCALTOOL = ICONS_PATH + "elcl16/"; //basic colors - size 16x16 //$NON-NLS-1$
     private final static String OBJECT = ICONS_PATH + "obj16/"; //basic colors - size 16x16 //$NON-NLS-1$
     @SuppressWarnings("unused")
@@ -60,15 +59,15 @@ public class YangUIImages {
         declareRegistryImage(IYangUIConstants.IMG_KEYWORD_PROPOSAL, OBJECT + "keyword_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_TYPE_PROPOSAL, OBJECT + "type_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_CUSTOM_TYPE_PROPOSAL, OBJECT + "custom_type_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IYangUIConstants.IMG_GROUPING_PROPOSAL, OBJECT + "grouping_obj.gif"); //$NON-NLS-1$        
+        declareRegistryImage(IYangUIConstants.IMG_GROUPING_PROPOSAL, OBJECT + "grouping_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_CONTAINER_PROPOSAL, OBJECT + "container_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_LEAF_PROPOSAL, OBJECT + "leaf_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_MODULE_PROPOSAL, OBJECT + "module_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_SUBMODULE_PROPOSAL, OBJECT + "submodule_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_USES_PROPOSAL, OBJECT + "uses_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IYangUIConstants.IMG_INCLUDE_PROPOSAL, OBJECT + "include_obj.gif"); //$NON-NLS-1$        
+        declareRegistryImage(IYangUIConstants.IMG_INCLUDE_PROPOSAL, OBJECT + "include_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_AUGMENT_PROPOSAL, OBJECT + "augment_obj.gif"); //$NON-NLS-1$
-        declareRegistryImage(IYangUIConstants.IMG_DEVIATION_PROPOSAL, OBJECT + "deviation_obj.gif"); //$NON-NLS-1$        
+        declareRegistryImage(IYangUIConstants.IMG_DEVIATION_PROPOSAL, OBJECT + "deviation_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_EXTENSION_PROPOSAL, OBJECT + "extension_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_IDENTITY_PROPOSAL, OBJECT + "identity_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_NOTIFICATION_PROPOSAL, OBJECT + "notification_obj.gif"); //$NON-NLS-1$
@@ -83,6 +82,9 @@ public class YangUIImages {
         // Wizard images
         declareRegistryImage(IYangUIConstants.IMG_NEW_PROJECT_WIZ, WIZ + "newprj_wiz.png"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_NEW_FILE_WIZ, WIZ + "newfile_wiz.png"); //$NON-NLS-1$
+
+        // local tools
+        declareRegistryImage(IYangUIConstants.IMG_LT_VIEW_MENU, LOCALTOOL + "view_menu.gif"); //$NON-NLS-1$
     }
 
     /**

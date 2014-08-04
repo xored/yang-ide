@@ -25,7 +25,7 @@ public interface IYangUIConstants {
     public static final String IMG_MODULE_PROPOSAL = PLUGIN_ID + ".module_obj";
     public static final String IMG_SUBMODULE_PROPOSAL = PLUGIN_ID + ".submodule_obj";
     public static final String IMG_USES_PROPOSAL = PLUGIN_ID + ".uses_obj";
-    public static final String IMG_INCLUDE_PROPOSAL = PLUGIN_ID + ".include_obj";    
+    public static final String IMG_INCLUDE_PROPOSAL = PLUGIN_ID + ".include_obj";
     public static final String IMG_AUGMENT_PROPOSAL = PLUGIN_ID + ".augment_obj";
     public static final String IMG_DEVIATION_PROPOSAL = PLUGIN_ID + ".deviation_obj";
     public static final String IMG_EXTENSION_PROPOSAL = PLUGIN_ID + ".extension_obj";
@@ -34,10 +34,12 @@ public interface IYangUIConstants {
     public static final String IMG_RPC_INPUT_PROPOSAL = PLUGIN_ID + ".rpc_input_obj";
     public static final String IMG_RPC_OUTPUT_PROPOSAL = PLUGIN_ID + ".rpc_output_obj";
     public static final String IMG_RPC_PROPOSAL = PLUGIN_ID + ".rpc_obj";
-    
+
     public static final String IMG_NEW_PROJECT_WIZ = PLUGIN_ID + ".new_project_wiz";
     public static final String IMG_NEW_FILE_WIZ = PLUGIN_ID + ".new_file_wiz";
 
     public static final String IMG_ERROR_MARKER = PLUGIN_ID + ".error_marker";
     public static final String IMG_ERROR_MARKER_ALT = PLUGIN_ID + ".error_marker_alt";
+
+    public static final String IMG_LT_VIEW_MENU = PLUGIN_ID + ".lt_view_menu";
 }

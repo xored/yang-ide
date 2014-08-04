@@ -186,7 +186,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.eclipse.ui.editors.text.TextEditor#initializeEditor() Called from TextEditor.<init>
      */
     @Override
@@ -535,6 +535,10 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         return null;
     }
 
+    public ISourceViewer getViewer() {
+        return this.getSourceViewer();
+    }
+
     protected void installSemanticHighlighting() {
         if (fSemanticManager == null) {
             fSemanticManager = new SemanticHighlightingManager();
@@ -547,5 +551,16 @@ public class YangEditor extends TextEditor implements IProjectionListener {
             fSemanticManager.uninstall();
             fSemanticManager = null;
         }
+    }
+
+    public void installOccurrencesFinder(boolean b) {
+        // TODO implement mark occurrence functionality
+    }
+
+    public boolean isMarkingOccurrences() {
+        return false;
+    }
+
+    public void uninstallOccurrencesFinder() {
     }
 }

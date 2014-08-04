@@ -54,7 +54,7 @@ public class IndexManager extends JobManager {
      * Stores index version, it is required increment version on each major changes of indexing
      * algorithm or indexed data.
      */
-    private static final int INDEX_VERSION = 7;
+    private static final int INDEX_VERSION = 8;
 
     /**
      * Index DB file path.
@@ -168,7 +168,7 @@ public class IndexManager extends JobManager {
         // this workaround need in case of old project that has target copied yang file but this
         // files not ignored by JDT yet.
         String path = file.getProjectRelativePath().toString();
-        if (path.contains("/target/") || path.contains("/target-ide/")) {
+        if (path.contains("target/") || path.contains("target-ide/")) {
             return;
         }
         // in case of file not change, skip indexing
