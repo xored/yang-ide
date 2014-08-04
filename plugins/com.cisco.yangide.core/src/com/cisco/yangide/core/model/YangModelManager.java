@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.concurrent.atomic.AtomicReference;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResourceChangeEvent;
@@ -24,7 +25,6 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jdt.core.JavaCore;
@@ -39,6 +39,7 @@ import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.core.indexing.IJob;
 import com.cisco.yangide.core.indexing.IndexManager;
+import com.cisco.yangide.core.indexing.JobAdapter;
 
 /**
  * @author Konstantin Zaitsev
@@ -213,20 +214,17 @@ public final class YangModelManager implements ISaveParticipant {
         return MANAGER.indexManager;
     }
 
-    public static ElementIndexInfo[] search(String module, String revision, String name, ElementIndexType type,
-            IProject project, IPath scope) {
-        // FIXME KOS temporary workaround to wait while index finish
-        while (YangModelManager.getIndexManager().awaitingJobsCount() > 0) {
-            IJob job = YangModelManager.getIndexManager().currentJob();
-            if (job != null) {
-                try {
-                    Job.getJobManager().join(job.getJobFamily(), null);
-                } catch (OperationCanceledException | InterruptedException e) {
-                    YangCorePlugin.log(e);
-                }
+    public static ElementIndexInfo[] search(final String module, final String revision, final String name,
+            final ElementIndexType type, final IProject project, final IPath scope) {
+        final AtomicReference<ElementIndexInfo[]> search = new AtomicReference<>();
+        YangModelManager.getIndexManager().performConcurrentJob(new JobAdapter() {
+            @Override
+            public boolean execute(IProgressMonitor progress) {
+                search.set(MANAGER.indexManager.search(module, revision, name, type, project, scope));
+                return false;
             }
-        }
-        return MANAGER.indexManager.search(module, revision, name, type, project, scope);
+        }, IJob.WaitUntilReady, null);
+        return search.get();
     }
 
     protected HashSet<IOpenable> getElementsOutOfSynchWithBuffers() {

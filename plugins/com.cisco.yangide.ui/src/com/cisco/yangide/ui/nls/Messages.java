@@ -16,6 +16,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
     private static final String BUNDLE_NAME = "com.cisco.yangide.ui.nls.messages"; //$NON-NLS-1$
     public static String pref_Base_cleanCodeGen;
+    public static String pref_Base_enableTracing;
     static {
         // initialize resource bundle
         NLS.initializeMessages(BUNDLE_NAME, Messages.class);

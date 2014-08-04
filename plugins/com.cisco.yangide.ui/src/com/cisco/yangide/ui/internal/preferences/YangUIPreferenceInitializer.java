@@ -51,5 +51,7 @@ public class YangUIPreferenceInitializer extends AbstractPreferenceInitializer {
         store.setDefault(YangPreferenceConstants.FMT_COMMENT, false);
         store.setDefault(YangPreferenceConstants.FMT_STRING, true);
         store.setDefault(YangPreferenceConstants.FMT_COMPACT_IMPORT, true);
+
+        store.setDefault(YangPreferenceConstants.ENABLE_TRACING, false);
     }
 }

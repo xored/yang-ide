@@ -29,6 +29,7 @@ import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
 public class YangBasePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
 
     private Button cleanBtn;
+    private Button tracingBtn;
 
     @Override
     public void init(IWorkbench workbench) {
@@ -45,6 +46,11 @@ public class YangBasePreferencePage extends PreferencePage implements IWorkbench
         cleanBtn.setText(Messages.pref_Base_cleanCodeGen);
         cleanBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
         cleanBtn.setSelection(getPreferenceStore().getBoolean(YangPreferenceConstants.M2E_PLUGIN_CLEAN_TARGET));
+
+        tracingBtn = new Button(pageArea, SWT.CHECK);
+        tracingBtn.setText(Messages.pref_Base_enableTracing);
+        tracingBtn.setLayoutData(new GridData(SWT.LEFT, SWT.CENTER, true, false));
+        tracingBtn.setSelection(getPreferenceStore().getBoolean(YangPreferenceConstants.ENABLE_TRACING));
         Dialog.applyDialogFont(pageArea);
 
         return pageArea;
@@ -53,12 +59,14 @@ public class YangBasePreferencePage extends PreferencePage implements IWorkbench
     @Override
     public boolean performOk() {
         getPreferenceStore().setValue(YangPreferenceConstants.M2E_PLUGIN_CLEAN_TARGET, cleanBtn.getSelection());
+        getPreferenceStore().setValue(YangPreferenceConstants.ENABLE_TRACING, tracingBtn.getSelection());
         return true;
     }
 
     @Override
     protected void performDefaults() {
         cleanBtn.setSelection(getPreferenceStore().getDefaultBoolean(YangPreferenceConstants.M2E_PLUGIN_CLEAN_TARGET));
+        tracingBtn.setSelection(getPreferenceStore().getDefaultBoolean(YangPreferenceConstants.ENABLE_TRACING));
         super.performDefaults();
     }
 }
