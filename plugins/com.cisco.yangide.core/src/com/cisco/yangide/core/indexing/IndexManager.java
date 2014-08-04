@@ -144,7 +144,7 @@ public class IndexManager extends JobManager {
         // this workaround need in case of old project that has target copied yang file but this
         // files not ignored by JDT yet.
         String path = file.getProjectRelativePath().toString();
-        if (path.contains("/target/") || path.contains("/target-ide/")) {
+        if (path.contains("target/") || path.contains("target-ide/")) {
             return;
         }
         // in case of file not change, skip indexing
