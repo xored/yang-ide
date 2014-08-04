@@ -6,8 +6,8 @@ index a7788c9..2a0a57e 100644
  <feature
        id="com.cisco.yangide.feature"
        label="%featureName"
--      version="1.0.0.qualifier"
-+      version="1.0.1.qualifier"
+-      version="1.0.1.qualifier"
++      version="1.0.2.qualifier"
        provider-name="%providerName"
        plugin="com.cisco.yangide.ui">
  
@@ -19,8 +19,8 @@ index 9cbbab6..3c65244 100644
    <parent>
      <groupId>com.cisco.yangide</groupId>
      <artifactId>com.cisco.yangide.parent</artifactId>
--    <version>1.0.0-SNAPSHOT</version>
-+    <version>1.0.1-SNAPSHOT</version>
+-    <version>1.0.1-SNAPSHOT</version>
++    <version>1.0.2-SNAPSHOT</version>
      <relativePath>../..</relativePath>
    </parent>
    
@@ -32,8 +32,8 @@ index 8f8d2ba..a11960c 100644
  <feature
        id="com.cisco.yangide.m2e.yang.feature"
        label="%featureName"
--      version="1.0.0.qualifier"
-+      version="1.0.1.qualifier"
+-      version="1.0.1.qualifier"
++      version="1.0.2.qualifier"
        provider-name="%providerName"
        plugin="com.cisco.yangide.m2e.yang">
  
@@ -45,8 +45,8 @@ index eff45c0..4c265e2 100644
    <parent>
      <groupId>com.cisco.yangide</groupId>
      <artifactId>com.cisco.yangide.parent</artifactId>
--    <version>1.0.0-SNAPSHOT</version>
-+    <version>1.0.1-SNAPSHOT</version>
+-    <version>1.0.1-SNAPSHOT</version>
++    <version>1.0.2-SNAPSHOT</version>
      <relativePath>../..</relativePath>
    </parent>
    
@@ -58,8 +58,8 @@ index 9dd6de0..a448aaf 100644
  Bundle-ManifestVersion: 2
  Bundle-Name: YANG IDE Core Tests Plug-in
  Bundle-SymbolicName: com.cisco.yangide.core.tests
--Bundle-Version: 1.0.0.qualifier
-+Bundle-Version: 1.0.1.qualifier
+-Bundle-Version: 1.0.1.qualifier
++Bundle-Version: 1.0.2.qualifier
  Bundle-RequiredExecutionEnvironment: JavaSE-1.7
  Require-Bundle: org.eclipse.m2e.tests.common;bundle-version="1.4.0",
   org.junit;bundle-version="3.8.2",
@@ -71,8 +71,8 @@ index e9217be..645f715 100644
    <parent>
      <groupId>com.cisco.yangide</groupId>
      <artifactId>com.cisco.yangide.parent</artifactId>
--    <version>1.0.0-SNAPSHOT</version>
-+    <version>1.0.1-SNAPSHOT</version>
+-    <version>1.0.1-SNAPSHOT</version>
++    <version>1.0.2-SNAPSHOT</version>
      <relativePath>../..</relativePath>
    </parent>
    
@@ -84,8 +84,8 @@ index 7c6717a..5a4b232 100644
  Bundle-ManifestVersion: 2
  Bundle-Name: com.cisco.yangide.core
  Bundle-SymbolicName: com.cisco.yangide.core;singleton:=true
--Bundle-Version: 1.0.0.qualifier
-+Bundle-Version: 1.0.1.qualifier
+-Bundle-Version: 1.0.1.qualifier
++Bundle-Version: 1.0.2.qualifier
  Bundle-Activator: com.cisco.yangide.core.YangCorePlugin
  Bundle-Vendor: Cisco Systems, Inc.
  Require-Bundle: org.eclipse.core.runtime,
@@ -97,8 +97,8 @@ index eb3846d..5aa85f4 100644
    <parent>
      <groupId>com.cisco.yangide</groupId>
      <artifactId>com.cisco.yangide.parent</artifactId>
--    <version>1.0.0-SNAPSHOT</version>
-+    <version>1.0.1-SNAPSHOT</version>
+-    <version>1.0.1-SNAPSHOT</version>
++    <version>1.0.2-SNAPSHOT</version>
      <relativePath>../..</relativePath>
    </parent>
  
@@ -110,8 +110,8 @@ index bb2fe7e..56e751f 100644
  Bundle-ManifestVersion: 2
  Bundle-Name: Editor
  Bundle-SymbolicName: com.cisco.yangide.editor;singleton:=true
--Bundle-Version: 1.0.0.qualifier
-+Bundle-Version: 1.0.1.qualifier
+-Bundle-Version: 1.0.1.qualifier
++Bundle-Version: 1.0.2.qualifier
  Bundle-ClassPath: .
  Bundle-Activator: com.cisco.yangide.editor.YangEditorPlugin
  Bundle-Vendor: Cisco
@@ -123,8 +123,8 @@ index ec51cc6..7b399d9 100644
    <parent>
      <groupId>com.cisco.yangide</groupId>
      <artifactId>com.cisco.yangide.parent</artifactId>
--    <version>1.0.0-SNAPSHOT</version>
-+    <version>1.0.1-SNAPSHOT</version>
+-    <version>1.0.1-SNAPSHOT</version>
++    <version>1.0.2-SNAPSHOT</version>
      <relativePath>../..</relativePath>
    </parent>
  
@@ -136,8 +136,8 @@ index 172dbfc..4115a46 100644
  Bundle-ManifestVersion: 2
  Bundle-Name: Tests Plug-in
  Bundle-SymbolicName: com.cisco.yangide.m2e.yang.tests
--Bundle-Version: 1.0.0.qualifier
-+Bundle-Version: 1.0.1.qualifier
+-Bundle-Version: 1.0.1.qualifier
++Bundle-Version: 1.0.2.qualifier
  Bundle-RequiredExecutionEnvironment: JavaSE-1.7
  Require-Bundle: org.eclipse.m2e.tests.common;bundle-version="1.4.0",
   org.junit,
@@ -149,8 +149,8 @@ index 8542964..b2befbe 100644
    <parent>
      <groupId>com.cisco.yangide</groupId>
      <artifactId>com.cisco.yangide.parent</artifactId>
--    <version>1.0.0-SNAPSHOT</version>
-+    <version>1.0.1-SNAPSHOT</version>
+-    <version>1.0.1-SNAPSHOT</version>
++    <version>1.0.2-SNAPSHOT</version>
      <relativePath>../..</relativePath>
    </parent>
    
@@ -162,8 +162,8 @@ index 06288ad..ab68dec 100644
  Bundle-ManifestVersion: 2
  Bundle-Name: com.cisco.yangide.m2e.yang
  Bundle-SymbolicName: com.cisco.yangide.m2e.yang;singleton:=true
--Bundle-Version: 1.0.0.qualifier
-+Bundle-Version: 1.0.1.qualifier
+-Bundle-Version: 1.0.1.qualifier
++Bundle-Version: 1.0.2.qualifier
  Bundle-Vendor: Cisco Systems, Inc.
  Bundle-RequiredExecutionEnvironment: JavaSE-1.7
  Require-Bundle: org.eclipse.core.resources,
@@ -175,8 +175,8 @@ index 767756b..5907127 100644
    <parent>
      <groupId>com.cisco.yangide</groupId>
      <artifactId>com.cisco.yangide.parent</artifactId>
--    <version>1.0.0-SNAPSHOT</version>
-+    <version>1.0.1-SNAPSHOT</version>
+-    <version>1.0.1-SNAPSHOT</version>
++    <version>1.0.2-SNAPSHOT</version>
      <relativePath>../..</relativePath>
    </parent>
  
@@ -188,8 +188,8 @@ index bb72685..af757b5 100644
  Bundle-ManifestVersion: 2
  Bundle-Name: com.cisco.yangide.ui
  Bundle-SymbolicName: com.cisco.yangide.ui;singleton:=true
--Bundle-Version: 1.0.0.qualifier
-+Bundle-Version: 1.0.1.qualifier
+-Bundle-Version: 1.0.1.qualifier
++Bundle-Version: 1.0.2.qualifier
  Bundle-Activator: com.cisco.yangide.ui.YangUIPlugin
  Bundle-Vendor: Cisco Systems, Inc.
  Bundle-Localization: plugin
@@ -201,8 +201,8 @@ index c4449c9..63c0f99 100644
    <parent>
      <groupId>com.cisco.yangide</groupId>
      <artifactId>com.cisco.yangide.parent</artifactId>
--    <version>1.0.0-SNAPSHOT</version>
-+    <version>1.0.1-SNAPSHOT</version>
+-    <version>1.0.1-SNAPSHOT</version>
++    <version>1.0.2-SNAPSHOT</version>
      <relativePath>../..</relativePath>
    </parent>
  
@@ -214,8 +214,8 @@ index 5af9809..1f78c05 100644
  
    <groupId>com.cisco.yangide</groupId>
    <artifactId>com.cisco.yangide.parent</artifactId>
--  <version>1.0.0-SNAPSHOT</version>
-+  <version>1.0.1-SNAPSHOT</version>
+-  <version>1.0.1-SNAPSHOT</version>
++  <version>1.0.2-SNAPSHOT</version>
    <packaging>pom</packaging>
    <name>YANG IDE Parent</name>
  
@@ -227,8 +227,8 @@ index bf28ded..340b2a7 100644
    <parent>
      <groupId>com.cisco.yangide</groupId>
      <artifactId>com.cisco.yangide.parent</artifactId>
--    <version>1.0.0-SNAPSHOT</version>
-+    <version>1.0.1-SNAPSHOT</version>
+-    <version>1.0.1-SNAPSHOT</version>
++    <version>1.0.2-SNAPSHOT</version>
      <relativePath>../..</relativePath>
    </parent>
    
@@ -239,20 +239,20 @@ index 686ae7f..974b25e 100644
 @@ -1,15 +1,15 @@
  <?xml version="1.0" encoding="UTF-8"?>
  <site>
--   <feature url="features/com.cisco.yangide.feature_1.0.0.qualifier.jar" id="com.cisco.yangide.feature" version="1.0.0.qualifier">
-+   <feature url="features/com.cisco.yangide.feature_1.0.1.qualifier.jar" id="com.cisco.yangide.feature" version="1.0.1.qualifier">
+-   <feature url="features/com.cisco.yangide.feature_1.0.1.qualifier.jar" id="com.cisco.yangide.feature" version="1.0.1.qualifier">
++   <feature url="features/com.cisco.yangide.feature_1.0.2.qualifier.jar" id="com.cisco.yangide.feature" version="1.0.2.qualifier">
        <category name="yang-ide"/>
     </feature>
--   <feature url="features/com.cisco.yangide.m2e.yang.feature_1.0.0.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature" version="1.0.0.qualifier">
-+   <feature url="features/com.cisco.yangide.m2e.yang.feature_1.0.1.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature" version="1.0.1.qualifier">
+-   <feature url="features/com.cisco.yangide.m2e.yang.feature_1.0.1.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature" version="1.0.1.qualifier">
++   <feature url="features/com.cisco.yangide.m2e.yang.feature_1.0.2.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature" version="1.0.2.qualifier">
        <category name="yang-ide"/>
     </feature>
--   <feature url="features/com.cisco.yangide.feature.source_1.0.0.qualifier.jar" id="com.cisco.yangide.feature.source" version="1.0.0.qualifier">
-+   <feature url="features/com.cisco.yangide.feature.source_1.0.1.qualifier.jar" id="com.cisco.yangide.feature.source" version="1.0.1.qualifier">
+-   <feature url="features/com.cisco.yangide.feature.source_1.0.1.qualifier.jar" id="com.cisco.yangide.feature.source" version="1.0.1.qualifier">
++   <feature url="features/com.cisco.yangide.feature.source_1.0.2.qualifier.jar" id="com.cisco.yangide.feature.source" version="1.0.2.qualifier">
        <category name="yang-ide"/>
     </feature>
--   <feature url="features/com.cisco.yangide.m2e.yang.feature.source_1.0.0.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature.source" version="1.0.0.qualifier">
-+   <feature url="features/com.cisco.yangide.m2e.yang.feature.source_1.0.1.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature.source" version="1.0.1.qualifier">
+-   <feature url="features/com.cisco.yangide.m2e.yang.feature.source_1.0.1.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature.source" version="1.0.1.qualifier">
++   <feature url="features/com.cisco.yangide.m2e.yang.feature.source_1.0.2.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature.source" version="1.0.2.qualifier">
        <category name="yang-ide"/>
     </feature>
     <category-def name="yang-ide" label="YANG IDE"/>
@@ -264,8 +264,8 @@ index dc899b0..ab83199 100644
    <parent>
      <groupId>com.cisco.yangide</groupId>
      <artifactId>com.cisco.yangide.parent</artifactId>
--    <version>1.0.0-SNAPSHOT</version>
-+    <version>1.0.1-SNAPSHOT</version>
+-    <version>1.0.1-SNAPSHOT</version>
++    <version>1.0.2-SNAPSHOT</version>
      <relativePath>../..</relativePath>
    </parent>
    

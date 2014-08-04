@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/com.cisco.yangide.feature_1.0.1.qualifier.jar" id="com.cisco.yangide.feature" version="1.0.1.qualifier">
+   <feature url="features/com.cisco.yangide.feature_1.0.2.qualifier.jar" id="com.cisco.yangide.feature" version="1.0.2.qualifier">
       <category name="yang-ide"/>
    </feature>
-   <feature url="features/com.cisco.yangide.m2e.yang.feature_1.0.1.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature" version="1.0.1.qualifier">
+   <feature url="features/com.cisco.yangide.m2e.yang.feature_1.0.2.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature" version="1.0.2.qualifier">
       <category name="yang-ide"/>
    </feature>
-   <feature url="features/com.cisco.yangide.feature.source_1.0.1.qualifier.jar" id="com.cisco.yangide.feature.source" version="1.0.1.qualifier">
+   <feature url="features/com.cisco.yangide.feature.source_1.0.2.qualifier.jar" id="com.cisco.yangide.feature.source" version="1.0.2.qualifier">
       <category name="yang-ide"/>
    </feature>
-   <feature url="features/com.cisco.yangide.m2e.yang.feature.source_1.0.1.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature.source" version="1.0.1.qualifier">
+   <feature url="features/com.cisco.yangide.m2e.yang.feature.source_1.0.2.qualifier.jar" id="com.cisco.yangide.m2e.yang.feature.source" version="1.0.2.qualifier">
       <category name="yang-ide"/>
    </feature>
    <category-def name="yang-ide" label="YANG IDE"/>

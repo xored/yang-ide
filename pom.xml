@@ -11,7 +11,7 @@
 
   <groupId>com.cisco.yangide</groupId>
   <artifactId>com.cisco.yangide.parent</artifactId>
-  <version>1.0.1-SNAPSHOT</version>
+  <version>1.0.2-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>YANG IDE Parent</name>
 
