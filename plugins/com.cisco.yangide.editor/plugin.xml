@@ -20,7 +20,7 @@
             icon="icons/yang_file.png"
             id="com.cisco.yangide.editor.editors.YANGEditor"
             name="YANG Editor">
-            <contentTypeBinding contentTypeId="yangFile"/>
+            <contentTypeBinding contentTypeId="com.cisco.yangide.core.yangFile"/>
       </editor>
    </extension>
    <extension
@@ -274,19 +274,19 @@
             class="com.cisco.yangide.editor.compare.YangFileViewerCreator"/>
 
         <contentTypeBinding 
-            contentTypeId="yangFile" 
+            contentTypeId="com.cisco.yangide.core.yangFile" 
             contentViewerId="com.cisco.yangide.editor.compare.YangFileViewer"/>
     </extension>
     
     <extension point="org.eclipse.compare.contentMergeViewers">
-        <viewer
+        <viewer 
             id="com.cisco.yangide.editor.compare.YangFileMergeViewer" 
             extensions="yang"
             label="YANG File Merge Viewer"
             class="com.cisco.yangide.editor.compare.YangFileMergeViewerCreator"/>
 
         <contentTypeBinding
-            contentTypeId="yangFile"
+            contentTypeId="com.cisco.yangide.core.yangFile"
             contentMergeViewerId="com.cisco.yangide.editor.compare.YangFileMergeViewer"/>
     </extension>    
 </plugin>

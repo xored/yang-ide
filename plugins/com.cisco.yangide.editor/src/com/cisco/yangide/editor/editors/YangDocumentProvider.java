@@ -7,38 +7,49 @@
  */
 package com.cisco.yangide.editor.editors;
 
-import org.eclipse.core.filebuffers.IDocumentSetupParticipant;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IDocumentExtension3;
 import org.eclipse.jface.text.source.IAnnotationModel;
-import org.eclipse.ui.IFileEditorInput;
-import org.eclipse.ui.editors.text.FileDocumentProvider;
+import org.eclipse.ui.editors.text.TextFileDocumentProvider;
+import org.eclipse.ui.texteditor.IDocumentProvider;
 
 import com.cisco.yangide.editor.editors.text.YangAnnotationModel;
 import com.cisco.yangide.editor.preferences.YangDocumentSetupParticipant;
 
 /**
- * @author Alexey Kholupko
+ * @author Konstantin Zaitsev
+ * @date Aug 5, 2014
  */
-public class YangDocumentProvider extends FileDocumentProvider {
+public class YangDocumentProvider extends TextFileDocumentProvider {
 
-    @Override
-    protected IDocument createDocument(Object element) throws CoreException {
-        IDocument document = super.createDocument(element);
+    private YangDocumentSetupParticipant documentSetupParticipant;
 
-        if (document != null) {
-            IDocumentSetupParticipant partiticipant = new YangDocumentSetupParticipant();
-            partiticipant.setup(document);
-        }
-        return document;
+    public YangDocumentProvider() {
+        IDocumentProvider provider = new TextFileDocumentProvider(new YangStorageDocumentProvider());
+        setParentDocumentProvider(provider);
+        documentSetupParticipant = new YangDocumentSetupParticipant();
     }
 
     @Override
-    protected IAnnotationModel createAnnotationModel(Object element) throws CoreException {
-        if (element instanceof IFileEditorInput) {
-            IFileEditorInput input = (IFileEditorInput) element;
-            return new YangAnnotationModel(input.getFile());
-        }
-        return super.createAnnotationModel(element);
+    protected IAnnotationModel createAnnotationModel(IFile file) {
+        return new YangAnnotationModel(file);
     }
+
+    @Override
+    protected FileInfo createFileInfo(Object element) throws CoreException {
+        FileInfo info = super.createFileInfo(element);
+        if (info != null) {
+            IDocument document = info.fTextFileBuffer.getDocument();
+            if (document instanceof IDocumentExtension3) {
+                IDocumentExtension3 extension = (IDocumentExtension3) document;
+                if (extension.getDocumentPartitioner(YangDocumentSetupParticipant.YANG_PARTITIONING) == null) {
+                    documentSetupParticipant.setup(document);
+                }
+            }
+        }
+        return info;
+    }
+
 }

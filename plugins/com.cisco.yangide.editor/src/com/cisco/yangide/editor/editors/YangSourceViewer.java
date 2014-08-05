@@ -10,6 +10,7 @@ package com.cisco.yangide.editor.editors;
 import java.util.ArrayList;
 
 import org.eclipse.jface.text.ITextPresentationListener;
+import org.eclipse.jface.text.reconciler.IReconciler;
 import org.eclipse.jface.text.source.IOverviewRuler;
 import org.eclipse.jface.text.source.IVerticalRuler;
 import org.eclipse.jface.text.source.projection.ProjectionViewer;
@@ -20,7 +21,6 @@ import org.eclipse.swt.widgets.Composite;
  * @date Jul 24, 2014
  */
 public class YangSourceViewer extends ProjectionViewer {
-
     public YangSourceViewer(Composite parent, IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
             boolean showAnnotationsOverview, int styles) {
         super(parent, verticalRuler, overviewRuler, showAnnotationsOverview, styles);
@@ -41,5 +41,12 @@ public class YangSourceViewer extends ProjectionViewer {
 
         fTextPresentationListeners.remove(listener);
         fTextPresentationListeners.add(0, listener);
+    }
+
+    /**
+     * @return the reconciler
+     */
+    public IReconciler getReconciler() {
+        return fReconciler;
     }
 }

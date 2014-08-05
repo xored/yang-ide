@@ -83,6 +83,7 @@ import com.cisco.yangide.ui.preferences.IYangColorConstants;
  */
 @SuppressWarnings("restriction")
 public class YangEditor extends TextEditor implements IProjectionListener {
+    public final static String EDITOR_ID = "com.cisco.yangide.editor.editors.YANGEditor";
 
     // TODO extract logic to separate classes
     public final static String EDITOR_MATCHING_BRACKETS = "matchingBrackets";
@@ -184,11 +185,6 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         setDocumentProvider(new YangDocumentProvider());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.eclipse.ui.editors.text.TextEditor#initializeEditor() Called from TextEditor.<init>
-     */
     @Override
     protected void initializeEditor() {
         setCompatibilityMode(false);
@@ -196,7 +192,6 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         setEditorContextMenuId("#TextEditorContext"); //$NON-NLS-1$
         setRulerContextMenuId("#TextRulerContext"); //$NON-NLS-1$
         setHelpContextId(ITextEditorHelpContextIds.TEXT_EDITOR);
-        // XXX everywhere else is false, causes to instantiate new smart mode
         configureInsertMode(SMART_INSERT, true);
         setInsertMode(INSERT);
 
@@ -562,5 +557,9 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     }
 
     public void uninstallOccurrencesFinder() {
+    }
+
+    public void reconcileModel() {
+        ((YangSourceViewer) getSourceViewer()).getReconciler().getReconcilingStrategy("").reconcile(null);
     }
 }

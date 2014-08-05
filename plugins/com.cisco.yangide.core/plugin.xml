@@ -10,7 +10,7 @@
 <plugin>
     <extension point="org.eclipse.core.contenttype.contentTypes">
         <content-type 
-            id="yangFile" 
+            id="com.cisco.yangide.core.yangFile" 
             name="YANG File" 
             base-type="org.eclipse.core.runtime.text"
             priority="high"/>
