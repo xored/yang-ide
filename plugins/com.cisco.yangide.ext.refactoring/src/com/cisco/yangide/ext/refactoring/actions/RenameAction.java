@@ -7,35 +7,24 @@
  */
 package com.cisco.yangide.ext.refactoring.actions;
 
+import static com.cisco.yangide.ext.refactoring.actions.RenameSupport.isDirectRename;
+import static com.cisco.yangide.ext.refactoring.actions.RenameSupport.isIndirectRename;
+
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.text.ITextSelection;
-import org.eclipse.ltk.core.refactoring.participants.RenameRefactoring;
-import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchSite;
 
 import com.cisco.yangide.core.YangModelException;
-import com.cisco.yangide.core.YangTypeUtil;
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
-import com.cisco.yangide.core.dom.BaseReference;
-import com.cisco.yangide.core.dom.GroupingDefinition;
-import com.cisco.yangide.core.dom.IdentitySchemaNode;
-import com.cisco.yangide.core.dom.Module;
-import com.cisco.yangide.core.dom.SubModule;
-import com.cisco.yangide.core.dom.TypeDefinition;
-import com.cisco.yangide.core.dom.TypeReference;
-import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.editor.editors.YangEditor;
 import com.cisco.yangide.ext.refactoring.RefactorUtil;
-import com.cisco.yangide.ext.refactoring.rename.RenameGroupingProcessor;
-import com.cisco.yangide.ext.refactoring.rename.RenameTypeProcessor;
-import com.cisco.yangide.ext.refactoring.rename.YangRenameProcessor;
-import com.cisco.yangide.ext.refactoring.ui.RenameRefactoringWizard;
+import com.cisco.yangide.ext.refactoring.ui.RenameLinkedMode;
 
 /**
  * @author Konstantin Zaitsev
@@ -83,9 +72,18 @@ public class RenameAction extends SelectionDispatchAction {
     @Override
     public void run(ITextSelection selection) {
         if (node != null && (isDirectRename(node) || isIndirectRename(node))) {
-            YangRenameProcessor processor = null;
-            IFile file = ((IFileEditorInput) editor.getEditorInput()).getFile();
+            RenameLinkedMode activeLinkedMode = RenameLinkedMode.getActiveLinkedMode();
+            if (activeLinkedMode != null) {
+                if (activeLinkedMode.isCaretInLinkedPosition()) {
+                    activeLinkedMode.startFullDialog();
+                    return;
+                } else {
+                    activeLinkedMode.cancel();
+                }
+            }
+
             ASTNode originalNode = null;
+            IFile file = ((IFileEditorInput) editor.getEditorInput()).getFile();
             if (isIndirectRename(node)) {
                 ElementIndexInfo info = RefactorUtil.getByReference(file.getProject(), node);
                 if (info != null) {
@@ -107,46 +105,10 @@ public class RenameAction extends SelectionDispatchAction {
             } else {
                 originalNode = node;
             }
-
-            if (originalNode instanceof GroupingDefinition) {
-                processor = new RenameGroupingProcessor((GroupingDefinition) originalNode);
-            } else if (originalNode instanceof TypeDefinition) {
-                processor = new RenameTypeProcessor((TypeDefinition) originalNode);
-            }
-            RenameRefactoring refactoring = new RenameRefactoring(processor);
-            processor.setNewName(((ASTNamedNode) originalNode).getName());
-            processor.setUpdateReferences(true);
-            processor.setFile(file);
-            processor.setDocument(null);
-            RenameRefactoringWizard wizard = new RenameRefactoringWizard(refactoring);
-            RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(wizard);
-            try {
-                op.run(editor.getSite().getShell(), "Rename");
-            } catch (InterruptedException e) {
-                // do nothing
-            }
+            new RenameLinkedMode((ASTNamedNode) originalNode, file, (ASTNamedNode) node, editor).start();
         } else {
             MessageDialog.openInformation(getShell(), "Rename", "Operation unavailable on the current selection.\n"
                     + "Select a grouping name, module name, type name or identify name.");
         }
-    }
-
-    /**
-     * @param node node to inspect
-     * @return <code>true</code> if node available to rename
-     */
-    private boolean isDirectRename(ASTNode node) {
-        return node instanceof GroupingDefinition || node instanceof TypeDefinition
-                || node instanceof IdentitySchemaNode || node instanceof Module || node instanceof SubModule;
-    }
-
-    /**
-     * @param node node to inspect
-     * @return <code>true</code> if node is reference to perform indirect renaming
-     */
-    private boolean isIndirectRename(ASTNode node) {
-        return node instanceof UsesNode
-                || (node instanceof TypeReference && !YangTypeUtil.isBuiltInType(((TypeReference) node).getName()))
-                || node instanceof BaseReference;
     }
 }

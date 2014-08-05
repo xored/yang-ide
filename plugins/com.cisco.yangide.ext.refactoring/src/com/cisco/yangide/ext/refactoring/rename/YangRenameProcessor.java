@@ -15,10 +15,11 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.jface.text.IDocument;
 import org.eclipse.ltk.core.refactoring.Change;
 import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
+import org.eclipse.ltk.core.refactoring.TextChange;
+import org.eclipse.ltk.core.refactoring.TextFileChange;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
@@ -33,7 +34,6 @@ import com.cisco.yangide.core.dom.QName;
 import com.cisco.yangide.core.indexing.ElementIndexReferenceInfo;
 import com.cisco.yangide.core.indexing.ElementIndexReferenceType;
 import com.cisco.yangide.core.model.YangModelManager;
-import com.cisco.yangide.ext.refactoring.YangFileChange;
 
 /**
  * @author Konstantin Zaitsev
@@ -43,7 +43,6 @@ public abstract class YangRenameProcessor extends RenameProcessor {
     private String newName;
     private boolean updateReferences;
     private IFile file;
-    private IDocument document;
     private ASTNamedNode node;
 
     public YangRenameProcessor(ASTNamedNode node) {
@@ -76,20 +75,6 @@ public abstract class YangRenameProcessor extends RenameProcessor {
      */
     public boolean isUpdateReferences() {
         return updateReferences;
-    }
-
-    /**
-     * @return the document
-     */
-    public IDocument getDocument() {
-        return document;
-    }
-
-    /**
-     * @param document the document to set
-     */
-    public void setDocument(IDocument document) {
-        this.document = document;
     }
 
     /**
@@ -149,7 +134,7 @@ public abstract class YangRenameProcessor extends RenameProcessor {
         CompositeChange composite = new CompositeChange("Rename");
         composite.markAsSynthetic();
 
-        HashMap<String, YangFileChange> map = new HashMap<String, YangFileChange>();
+        HashMap<String, TextChange> map = new HashMap<>();
         addEdit(composite, map, file.getFullPath().toString(), node.getNameStartPosition(), node.getNameLength(),
                 getNewName());
         for (ElementIndexReferenceInfo info : infos) {
@@ -162,18 +147,24 @@ public abstract class YangRenameProcessor extends RenameProcessor {
         return composite;
     }
 
-    private void addEdit(CompositeChange composite, HashMap<String, YangFileChange> map, String path, int pos, int len,
+    private void addEdit(CompositeChange composite, HashMap<String, TextChange> map, String path, int pos, int len,
             String name) {
-        YangFileChange change = getChangeOrCreate(composite, map, path);
+        TextChange change = getChangeOrCreate(composite, map, path);
         ReplaceEdit child = new ReplaceEdit(pos, len, name);
         change.getEdit().addChild(child);
         change.addTextEditGroup(new TextEditGroup("Update reference", child));
     }
 
-    private YangFileChange getChangeOrCreate(CompositeChange composite, HashMap<String, YangFileChange> map, String path) {
+    private TextChange getChangeOrCreate(CompositeChange composite, HashMap<String, TextChange> map, String path) {
         if (!map.containsKey(path)) {
             IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
-            YangFileChange change = new YangFileChange("Rename element in file", file, null);
+            TextChange change = null;
+            // if (document != null) {
+            // change = new DocumentChange(file.getName(), document);
+            // } else {
+            change = new TextFileChange("Rename element in file", file);
+            change.setTextType("yang");
+            // }
             MultiTextEdit edit = new MultiTextEdit();
             change.setEdit(edit);
             change.setKeepPreviewEdits(true);
@@ -184,4 +175,39 @@ public abstract class YangRenameProcessor extends RenameProcessor {
     }
 
     protected abstract ElementIndexReferenceType getReferenceType();
+
+    /**
+     * @return the node
+     */
+    public ASTNamedNode getNode() {
+        return node;
+    }
+    // /**
+    // * @param file
+    // * @return look up opened editors and try to get document.
+    // */
+    // private IDocument getDocumentByPath(IFile file) {
+    // IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+    // if (window != null) {
+    // IWorkbenchPage page = window.getActivePage();
+    // if (page != null) {
+    // for (IEditorReference ref : page.getEditorReferences()) {
+    // if (YangEditor.EDITOR_ID.equals(ref.getId())) {
+    // try {
+    // IEditorInput input = ref.getEditorInput();
+    // if (input instanceof IFileEditorInput && ((IFileEditorInput) input).getFile().equals(file)) {
+    // IEditorPart editor = ref.getEditor(false);
+    // if (editor != null) {
+    // return ((YangEditor) editor).getDocument();
+    // }
+    // }
+    // } catch (PartInitException e) {
+    // // ignore
+    // }
+    // }
+    // }
+    // }
+    // }
+    // return null;
+    // }
 }

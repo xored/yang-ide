@@ -8,8 +8,9 @@
 package com.cisco.yangide.ext.refactoring;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Plugin;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
 /**
@@ -18,7 +19,7 @@ import org.osgi.framework.BundleContext;
  * @author Konstantin Zaitsev
  * @date Jul 29, 2014
  */
-public class YangRefactoringPlugin extends Plugin {
+public class YangRefactoringPlugin extends AbstractUIPlugin {
 
     /** The plug-in ID */
     public static final String PLUGIN_ID = "com.cisco.yangide.ext.refactoring"; //$NON-NLS-1$
@@ -44,6 +45,15 @@ public class YangRefactoringPlugin extends Plugin {
      */
     public static YangRefactoringPlugin getDefault() {
         return plugin;
+    }
+
+    public IDialogSettings getDialogSettingsSection(String name) {
+        IDialogSettings dialogSettings = getDialogSettings();
+        IDialogSettings section = dialogSettings.getSection(name);
+        if (section == null) {
+            section = dialogSettings.addNewSection(name);
+        }
+        return section;
     }
 
     /**

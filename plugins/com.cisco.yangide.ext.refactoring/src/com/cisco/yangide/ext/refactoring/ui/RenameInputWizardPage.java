@@ -14,11 +14,8 @@ import org.eclipse.ltk.ui.refactoring.UserInputWizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
-import org.eclipse.swt.events.SelectionAdapter;
-import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -30,7 +27,7 @@ import com.cisco.yangide.ext.refactoring.rename.YangRenameProcessor;
  * @date Jul 30, 2014
  */
 public class RenameInputWizardPage extends UserInputWizardPage {
-    private Button updateReferences;
+    // private Button updateReferences;
     private Text newNameTxt;
     private String initialValue;
 
@@ -60,21 +57,22 @@ public class RenameInputWizardPage extends UserInputWizardPage {
 
         new Label(content, SWT.NONE).setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 2, 1));
 
-        updateReferences = new Button(content, SWT.CHECK);
-        updateReferences.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 2, 1));
-        updateReferences.setText("Update references");
-        updateReferences.setSelection(true);
+        // updateReferences = new Button(content, SWT.CHECK);
+        // updateReferences.setLayoutData(new GridData(SWT.LEFT, SWT.TOP, true, false, 2, 1));
+        // updateReferences.setText("Update references");
+        // updateReferences.setSelection(true);
 
-        final YangRenameProcessor processor = (YangRenameProcessor) ((RenameRefactoring) getRefactoring())
-                .getProcessor();
+        // final YangRenameProcessor processor = (YangRenameProcessor) ((RenameRefactoring)
+        // getRefactoring())
+        // .getProcessor();
 
-        processor.setUpdateReferences(updateReferences.getSelection());
-        updateReferences.addSelectionListener(new SelectionAdapter() {
-            @Override
-            public void widgetSelected(SelectionEvent e) {
-                processor.setUpdateReferences(updateReferences.getSelection());
-            }
-        });
+        // processor.setUpdateReferences(updateReferences.getSelection());
+        // updateReferences.addSelectionListener(new SelectionAdapter() {
+        // @Override
+        // public void widgetSelected(SelectionEvent e) {
+        // processor.setUpdateReferences(updateReferences.getSelection());
+        // }
+        // });
 
         Dialog.applyDialogFont(content);
         setControl(content);
