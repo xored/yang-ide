@@ -25,6 +25,7 @@ public class ElementIndexReferenceInfo implements Serializable, Comparable<Eleme
     private static final long serialVersionUID = 8090385352032844152L;
 
     private ElementIndexReferenceType type;
+    private String name;
     private int startPosition = -1;
     private int length = 0;
     private String project;
@@ -35,6 +36,7 @@ public class ElementIndexReferenceInfo implements Serializable, Comparable<Eleme
             IProject project, IPath path) {
         this.reference = reference;
         this.type = type;
+        this.name = node.getName();
         this.startPosition = node.getNameStartPosition();
         this.length = node.getNameLength();
         this.project = project.getName();
@@ -125,6 +127,20 @@ public class ElementIndexReferenceInfo implements Serializable, Comparable<Eleme
         this.reference = reference;
     }
 
+    /**
+     * @return the name
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * @param name the name to set
+     */
+    public void setName(String name) {
+        this.name = name;
+    }
+
     @Override
     public int compareTo(ElementIndexReferenceInfo o) {
         return o.toString().compareTo(this.toString());
@@ -147,6 +163,6 @@ public class ElementIndexReferenceInfo implements Serializable, Comparable<Eleme
 
     @Override
     public String toString() {
-        return project + " - " + path + " - " + startPosition + " - " + length + " - " + type;
+        return project + " - " + path + " - " + name + " - " + startPosition + " - " + length + " - " + type;
     }
 }

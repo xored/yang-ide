@@ -267,13 +267,11 @@ public abstract class ASTNode {
         if (child == null) {
             return;
         }
-        visitor.preVisit(child);
         child.accept(visitor);
     }
 
     final void acceptChildren(ASTVisitor visitor, Collection<? extends ASTNode> children) {
         for (ASTNode child : children) {
-            visitor.preVisit(child);
             child.accept(visitor);
         }
     }
