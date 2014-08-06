@@ -28,12 +28,17 @@ import com.cisco.yangide.core.dom.BaseReference;
 import com.cisco.yangide.core.dom.GroupingDefinition;
 import com.cisco.yangide.core.dom.IdentitySchemaNode;
 import com.cisco.yangide.core.dom.Module;
+import com.cisco.yangide.core.dom.ModuleImport;
 import com.cisco.yangide.core.dom.SubModule;
+import com.cisco.yangide.core.dom.SubModuleInclude;
 import com.cisco.yangide.core.dom.TypeDefinition;
 import com.cisco.yangide.core.dom.TypeReference;
 import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.ext.refactoring.YangRefactoringPlugin;
 import com.cisco.yangide.ext.refactoring.rename.RenameGroupingProcessor;
+import com.cisco.yangide.ext.refactoring.rename.RenameIdentityProcessor;
+import com.cisco.yangide.ext.refactoring.rename.RenameModuleProcessor;
+import com.cisco.yangide.ext.refactoring.rename.RenameSubModuleProcessor;
 import com.cisco.yangide.ext.refactoring.rename.RenameTypeProcessor;
 import com.cisco.yangide.ext.refactoring.rename.YangRenameProcessor;
 import com.cisco.yangide.ext.refactoring.ui.RenameRefactoringWizard;
@@ -75,7 +80,7 @@ public class RenameSupport {
      */
     public boolean openDialog(Shell shell, boolean showPreview) {
 
-        YangRenameProcessor processor = getProcessor(shell);
+        YangRenameProcessor<?> processor = getProcessor(shell);
         if (processor == null) {
             return false;
         }
@@ -110,7 +115,7 @@ public class RenameSupport {
      * @param window
      */
     public void perform(Shell shell, IWorkbenchWindow window) {
-        YangRenameProcessor processor = getProcessor(shell);
+        YangRenameProcessor<?> processor = getProcessor(shell);
         if (processor != null) {
             RenameRefactoring refactoring = new RenameRefactoring(processor);
             processor.setNewName(newName);
@@ -130,13 +135,19 @@ public class RenameSupport {
      * @param shell shell
      * @return create appropriate refactor processor by node type
      */
-    private YangRenameProcessor getProcessor(Shell shell) {
-        YangRenameProcessor processor = null;
+    private YangRenameProcessor<?> getProcessor(Shell shell) {
+        YangRenameProcessor<?> processor = null;
 
         if (node instanceof GroupingDefinition) {
             processor = new RenameGroupingProcessor((GroupingDefinition) node);
         } else if (node instanceof TypeDefinition) {
             processor = new RenameTypeProcessor((TypeDefinition) node);
+        } else if (node instanceof IdentitySchemaNode) {
+            processor = new RenameIdentityProcessor((IdentitySchemaNode) node);
+        } else if (node instanceof SubModule) {
+            processor = new RenameSubModuleProcessor((SubModule) node);
+        } else if (node instanceof Module) {
+            processor = new RenameModuleProcessor((Module) node);
         }
 
         return processor;
@@ -158,7 +169,7 @@ public class RenameSupport {
     public static boolean isIndirectRename(ASTNode node) {
         return node instanceof UsesNode
                 || (node instanceof TypeReference && !YangTypeUtil.isBuiltInType(((TypeReference) node).getName()))
-                || node instanceof BaseReference;
+                || node instanceof BaseReference || node instanceof ModuleImport || node instanceof SubModuleInclude;
     }
 
     /**
@@ -174,11 +185,19 @@ public class RenameSupport {
             public void preVisit(ASTNode n) {
                 if (n instanceof ASTNamedNode) {
                     ASTNamedNode nn = (ASTNamedNode) n;
-                    if ((nn instanceof TypeDefinition || nn instanceof GroupingDefinition) && nn.getName().equals(name)) {
+                    if ((nn instanceof TypeDefinition || nn instanceof GroupingDefinition || nn instanceof Module
+                            || nn instanceof SubModule || nn instanceof IdentitySchemaNode)
+                            && nn.getName().equals(name)) {
                         nodes.add(nn);
                     } else if (nn instanceof TypeReference && ((TypeReference) nn).getType().getName().equals(name)) {
                         nodes.add(nn);
                     } else if (nn instanceof UsesNode && ((UsesNode) nn).getGrouping().getName().equals(name)) {
+                        nodes.add(nn);
+                    } else if (nn instanceof BaseReference && ((BaseReference) nn).getType().getName().equals(name)) {
+                        nodes.add(nn);
+                    } else if (nn instanceof ModuleImport && ((ModuleImport) nn).getName().equals(name)) {
+                        nodes.add(nn);
+                    } else if (nn instanceof SubModuleInclude && ((SubModuleInclude) nn).getName().equals(name)) {
                         nodes.add(nn);
                     }
                 }

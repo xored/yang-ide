@@ -14,9 +14,11 @@ import org.eclipse.core.runtime.Path;
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.ASTNode;
+import com.cisco.yangide.core.dom.BaseReference;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
 import com.cisco.yangide.core.dom.QName;
+import com.cisco.yangide.core.dom.SubModuleInclude;
 import com.cisco.yangide.core.dom.TypeReference;
 import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
@@ -52,11 +54,18 @@ public final class RefactorUtil {
         } else if (node instanceof TypeReference) {
             qname = ((TypeReference) node).getType();
             type = ElementIndexType.TYPE;
+        } else if (node instanceof BaseReference) {
+            qname = ((BaseReference) node).getType();
+            type = ElementIndexType.IDENTITY;
         } else if (node instanceof ModuleImport) {
             ModuleImport moduleImport = (ModuleImport) node;
             qname = new QName(moduleImport.getName(), moduleImport.getPrefix(), moduleImport.getName(),
                     moduleImport.getRevision());
             type = ElementIndexType.MODULE;
+        } else if (node instanceof SubModuleInclude) {
+            SubModuleInclude include = (SubModuleInclude) node;
+            qname = new QName(include.getName(), null, include.getName(), include.getRevision());
+            type = ElementIndexType.SUBMODULE;
         }
 
         if (qname != null) {

@@ -14,7 +14,7 @@ import com.cisco.yangide.core.indexing.ElementIndexReferenceType;
  * @author Konstantin Zaitsev
  * @date Jul 30, 2014
  */
-public class RenameGroupingProcessor extends YangRenameProcessor {
+public class RenameGroupingProcessor extends YangRenameProcessor<GroupingDefinition> {
 
     public RenameGroupingProcessor(GroupingDefinition grouping) {
         super(grouping);

@@ -7,26 +7,26 @@
  */
 package com.cisco.yangide.ext.refactoring.rename;
 
-import com.cisco.yangide.core.dom.TypeDefinition;
+import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.indexing.ElementIndexReferenceType;
 
 /**
  * @author Konstantin Zaitsev
- * @date Aug 2, 2014
+ * @date Aug 6, 2014
  */
-public class RenameTypeProcessor extends YangRenameProcessor<TypeDefinition> {
+public class RenameModuleProcessor extends YangRenameProcessor<Module> {
 
-    public RenameTypeProcessor(TypeDefinition type) {
-        super(type);
+    public RenameModuleProcessor(Module module) {
+        super(module);
     }
 
     @Override
     public String getIdentifier() {
-        return "com.cisco.yangide.ext.refactoring.rename.RenameTypeProcessor";
+        return "com.cisco.yangide.ext.refactoring.rename.RenameModuleProcessor";
     }
 
     @Override
     protected ElementIndexReferenceType getReferenceType() {
-        return ElementIndexReferenceType.TYPE_REF;
+        return ElementIndexReferenceType.IMPORT;
     }
 }

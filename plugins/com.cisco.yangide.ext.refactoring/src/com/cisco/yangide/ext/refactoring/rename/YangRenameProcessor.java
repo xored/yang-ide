@@ -37,15 +37,16 @@ import com.cisco.yangide.core.model.YangModelManager;
 
 /**
  * @author Konstantin Zaitsev
+ * @param <T> original AST node to rename
  * @date Jul 30, 2014
  */
-public abstract class YangRenameProcessor extends RenameProcessor {
+public abstract class YangRenameProcessor<T extends ASTNamedNode> extends RenameProcessor {
     private String newName;
     private boolean updateReferences;
     private IFile file;
-    private ASTNamedNode node;
+    private T node;
 
-    public YangRenameProcessor(ASTNamedNode node) {
+    public YangRenameProcessor(T node) {
         this.node = node;
     }
 
@@ -126,10 +127,7 @@ public abstract class YangRenameProcessor extends RenameProcessor {
 
     @Override
     public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
-        Module module = (Module) node.getModule();
-        QName qname = new QName(module.getName(), null, node.getName(), module.getRevision());
-        ElementIndexReferenceInfo[] infos = YangModelManager.getIndexManager().searchReference(qname,
-                getReferenceType(), getFile().getProject());
+        ElementIndexReferenceInfo[] infos = getReferences();
 
         CompositeChange composite = new CompositeChange("Rename");
         composite.markAsSynthetic();
@@ -139,7 +137,9 @@ public abstract class YangRenameProcessor extends RenameProcessor {
                 getNewName());
         for (ElementIndexReferenceInfo info : infos) {
             String name = getNewName();
-            if (!info.getPath().equals(file.getFullPath().toString())) {
+            if (!info.getPath().equals(file.getFullPath().toString())
+                    && info.getType() != ElementIndexReferenceType.IMPORT
+                    && info.getType() != ElementIndexReferenceType.INCLUDE) {
                 String newName = getNewName();
                 if (newName.startsWith("\"")) {
                     name = '"' + info.getReference().getPrefix() + ":" + newName.substring(1, newName.length() - 2)
@@ -153,7 +153,13 @@ public abstract class YangRenameProcessor extends RenameProcessor {
         return composite;
     }
 
-    private void addEdit(CompositeChange composite, HashMap<String, TextChange> map, String path, int pos, int len,
+    protected ElementIndexReferenceInfo[] getReferences() {
+        Module module = (Module) node.getModule();
+        QName qname = new QName(module.getName(), null, node.getName(), module.getRevision());
+        return YangModelManager.getIndexManager().searchReference(qname, getReferenceType(), getFile().getProject());
+    }
+
+    protected void addEdit(CompositeChange composite, HashMap<String, TextChange> map, String path, int pos, int len,
             String newName) {
         TextChange change = getChangeOrCreate(composite, map, path);
         ReplaceEdit child = new ReplaceEdit(pos, len, newName);
@@ -161,7 +167,7 @@ public abstract class YangRenameProcessor extends RenameProcessor {
         change.addTextEditGroup(new TextEditGroup("Update reference", child));
     }
 
-    private TextChange getChangeOrCreate(CompositeChange composite, HashMap<String, TextChange> map, String path) {
+    protected TextChange getChangeOrCreate(CompositeChange composite, HashMap<String, TextChange> map, String path) {
         if (!map.containsKey(path)) {
             IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
             TextChange change = new TextFileChange("Rename element in file", file);
@@ -180,7 +186,7 @@ public abstract class YangRenameProcessor extends RenameProcessor {
     /**
      * @return the node
      */
-    public ASTNamedNode getNode() {
+    public T getNode() {
         return node;
     }
 }
