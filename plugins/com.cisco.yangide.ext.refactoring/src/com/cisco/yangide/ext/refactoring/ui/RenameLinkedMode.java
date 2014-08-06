@@ -246,6 +246,11 @@ public class RenameLinkedMode {
                 int elPos = elem.getNameStartPosition();
                 int elLength = elem.getNameLength();
 
+                // normalize quote
+                if (name.length() + 2 == elLength) {
+                    elPos++;
+                    elLength -= 2;
+                }
                 // normalize prefixes
                 if (elPrefixOffset > 0) {
                     elPos += elPrefixOffset + 1;

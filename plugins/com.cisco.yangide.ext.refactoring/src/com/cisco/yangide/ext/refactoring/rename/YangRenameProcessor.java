@@ -140,7 +140,13 @@ public abstract class YangRenameProcessor extends RenameProcessor {
         for (ElementIndexReferenceInfo info : infos) {
             String name = getNewName();
             if (!info.getPath().equals(file.getFullPath().toString())) {
-                name = info.getReference().getPrefix() + ":" + getNewName();
+                String newName = getNewName();
+                if (newName.startsWith("\"")) {
+                    name = '"' + info.getReference().getPrefix() + ":" + newName.substring(1, newName.length() - 2)
+                            + '"';
+                } else {
+                    name = info.getReference().getPrefix() + ":" + newName;
+                }
             }
             addEdit(composite, map, info.getPath(), info.getStartPosition(), info.getLength(), name);
         }
@@ -148,9 +154,9 @@ public abstract class YangRenameProcessor extends RenameProcessor {
     }
 
     private void addEdit(CompositeChange composite, HashMap<String, TextChange> map, String path, int pos, int len,
-            String name) {
+            String newName) {
         TextChange change = getChangeOrCreate(composite, map, path);
-        ReplaceEdit child = new ReplaceEdit(pos, len, name);
+        ReplaceEdit child = new ReplaceEdit(pos, len, newName);
         change.getEdit().addChild(child);
         change.addTextEditGroup(new TextEditGroup("Update reference", child));
     }
@@ -158,13 +164,8 @@ public abstract class YangRenameProcessor extends RenameProcessor {
     private TextChange getChangeOrCreate(CompositeChange composite, HashMap<String, TextChange> map, String path) {
         if (!map.containsKey(path)) {
             IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
-            TextChange change = null;
-            // if (document != null) {
-            // change = new DocumentChange(file.getName(), document);
-            // } else {
-            change = new TextFileChange("Rename element in file", file);
+            TextChange change = new TextFileChange("Rename element in file", file);
             change.setTextType("yang");
-            // }
             MultiTextEdit edit = new MultiTextEdit();
             change.setEdit(edit);
             change.setKeepPreviewEdits(true);
@@ -182,32 +183,4 @@ public abstract class YangRenameProcessor extends RenameProcessor {
     public ASTNamedNode getNode() {
         return node;
     }
-    // /**
-    // * @param file
-    // * @return look up opened editors and try to get document.
-    // */
-    // private IDocument getDocumentByPath(IFile file) {
-    // IWorkbenchWindow window = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
-    // if (window != null) {
-    // IWorkbenchPage page = window.getActivePage();
-    // if (page != null) {
-    // for (IEditorReference ref : page.getEditorReferences()) {
-    // if (YangEditor.EDITOR_ID.equals(ref.getId())) {
-    // try {
-    // IEditorInput input = ref.getEditorInput();
-    // if (input instanceof IFileEditorInput && ((IFileEditorInput) input).getFile().equals(file)) {
-    // IEditorPart editor = ref.getEditor(false);
-    // if (editor != null) {
-    // return ((YangEditor) editor).getDocument();
-    // }
-    // }
-    // } catch (PartInitException e) {
-    // // ignore
-    // }
-    // }
-    // }
-    // }
-    // }
-    // return null;
-    // }
 }
