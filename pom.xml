@@ -1,25 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- ============================================================================== -->
 <!-- Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.       -->
-<!--                                                                                -->
-<!-- This program and the accompanying materials are made available under the       -->
-<!-- terms of the Eclipse Public License v1.0 which accompanies this distribution,  -->
-<!-- and is available at http://www.eclipse.org/legal/epl-v10.html                  -->
 <!-- ============================================================================== -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <groupId>com.cisco.yangide.ext</groupId>
   <artifactId>com.cisco.yangide.ext.parent</artifactId>
-  <version>1.0.0-SNAPSHOT</version>
+  <version>1.1.0-SNAPSHOT</version>
   <packaging>pom</packaging>
   <name>YANG IDE Extension Parent</name>
-
   <properties>
     <tycho-version>0.21.0</tycho-version>
     <tycho-extras-version>0.21.0</tycho-extras-version>
+    <yang-ide-repository>http://dl.xored.com/yang/releases/</yang-ide-repository>
   </properties>
-
   <modules>
     <!-- plugins -->
     <module>plugins/com.cisco.yangide.ext.refactoring</module>
@@ -27,10 +21,9 @@
     <module>features/com.cisco.yangide.ext.feature</module>
     <!-- tests -->
     <!-- other -->
-    <module>product/target-platform</module>
+    <!-- <module>product/target-platform</module> -->
     <module>product/update-site</module>
   </modules>
-
   <pluginRepositories>
     <pluginRepository>
       <snapshots>
@@ -41,7 +34,33 @@
       <url>http://maven.xored.com/nexus/content/repositories/snapshots/</url>
     </pluginRepository>
   </pluginRepositories>
-
+  <repositories>
+    <repository>
+      <layout>p2</layout>
+      <id>indigo</id>
+      <url>http://download.eclipse.org/releases/indigo/</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>m2e</id>
+      <url>http://download.eclipse.org/technology/m2e/releases-for-indigo/1.4/</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>orbit</id>
+      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>sonatype</id>
+      <url>https://repository.sonatype.org/content/repositories/forge-sites/m2e-extras/0.15.0/N/0.15.0.201206251206/</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>yang-ide</id>
+      <url>${yang-ide-repository}</url>
+    </repository>
+  </repositories>
   <build>
     <plugins>
       <plugin>
@@ -69,13 +88,13 @@
         <artifactId>target-platform-configuration</artifactId>
         <version>${tycho-version}</version>
         <configuration>
-          <target>
+          <!-- <target>
             <artifact>
               <groupId>com.cisco.yangide.ext</groupId>
               <artifactId>com.cisco.yangide.ext.target-platform</artifactId>
-              <version>1.0.0-SNAPSHOT</version>
+              <version>1.1.0-SNAPSHOT</version>
             </artifact>
-          </target>
+          </target> -->
           <environments>
             <environment>
               <os>linux</os>
@@ -107,7 +126,6 @@
       </plugin>
     </plugins>
   </build>
-
   <profiles>
     <profile>
       <id>test</id>
