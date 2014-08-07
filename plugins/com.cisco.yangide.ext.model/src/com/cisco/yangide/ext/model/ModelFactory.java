@@ -202,6 +202,42 @@ public interface ModelFactory extends EFactory {
     Augment createAugment();
 
     /**
+     * Returns a new object of class '<em>Extension</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Extension</em>'.
+     * @generated
+     */
+    Extension createExtension();
+
+    /**
+     * Returns a new object of class '<em>Feature</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Feature</em>'.
+     * @generated
+     */
+    Feature createFeature();
+
+    /**
+     * Returns a new object of class '<em>Deviation</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Deviation</em>'.
+     * @generated
+     */
+    Deviation createDeviation();
+
+    /**
+     * Returns a new object of class '<em>Identity</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Identity</em>'.
+     * @generated
+     */
+    Identity createIdentity();
+
+    /**
      * Returns the package supported by this factory.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

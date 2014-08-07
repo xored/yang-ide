@@ -25,6 +25,8 @@ public class YangDiagramImageProvider extends AbstractImageProvider {
         addImageFilePath(IYangImageConstants.IMG_RPC_INPUT_PROPOSAL, PATH_PREFIX + "rpc_input_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IYangImageConstants.IMG_RPC_OUTPUT_PROPOSAL, PATH_PREFIX + "rpc_output_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IYangImageConstants.IMG_RPC_PROPOSAL, PATH_PREFIX + "rpc_obj.gif"); //$NON-NLS-1$
+        addImageFilePath(IYangImageConstants.IMG_ANYXML_PROPOSAL, PATH_PREFIX + "anyxml_obj.gif"); //$NON-NLS-1$
+        addImageFilePath(IYangImageConstants.IMG_FEATURE_PROPOSAL, PATH_PREFIX + "feature_obj.gif"); //$NON-NLS-1$
     }
 
 }

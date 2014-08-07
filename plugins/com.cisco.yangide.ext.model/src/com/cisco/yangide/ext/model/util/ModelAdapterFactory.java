@@ -168,6 +168,22 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
                 return createAugmentAdapter();
             }
             @Override
+            public Adapter caseExtension(Extension object) {
+                return createExtensionAdapter();
+            }
+            @Override
+            public Adapter caseFeature(Feature object) {
+                return createFeatureAdapter();
+            }
+            @Override
+            public Adapter caseDeviation(Deviation object) {
+                return createDeviationAdapter();
+            }
+            @Override
+            public Adapter caseIdentity(Identity object) {
+                return createIdentityAdapter();
+            }
+            @Override
             public Adapter defaultCase(EObject object) {
                 return createEObjectAdapter();
             }
@@ -534,6 +550,62 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createAugmentAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link com.cisco.yangide.ext.model.Extension <em>Extension</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see com.cisco.yangide.ext.model.Extension
+     * @generated
+     */
+    public Adapter createExtensionAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link com.cisco.yangide.ext.model.Feature <em>Feature</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see com.cisco.yangide.ext.model.Feature
+     * @generated
+     */
+    public Adapter createFeatureAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link com.cisco.yangide.ext.model.Deviation <em>Deviation</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see com.cisco.yangide.ext.model.Deviation
+     * @generated
+     */
+    public Adapter createDeviationAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link com.cisco.yangide.ext.model.Identity <em>Identity</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see com.cisco.yangide.ext.model.Identity
+     * @generated
+     */
+    public Adapter createIdentityAdapter() {
         return null;
     }
 

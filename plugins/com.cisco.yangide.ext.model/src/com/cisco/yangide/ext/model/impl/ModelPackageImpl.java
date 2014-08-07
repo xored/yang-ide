@@ -7,7 +7,11 @@ import com.cisco.yangide.ext.model.Augment;
 import com.cisco.yangide.ext.model.BelongsTo;
 import com.cisco.yangide.ext.model.Choice;
 import com.cisco.yangide.ext.model.ContainingNode;
+import com.cisco.yangide.ext.model.Deviation;
+import com.cisco.yangide.ext.model.Extension;
+import com.cisco.yangide.ext.model.Feature;
 import com.cisco.yangide.ext.model.Grouping;
+import com.cisco.yangide.ext.model.Identity;
 import com.cisco.yangide.ext.model.Import;
 import com.cisco.yangide.ext.model.Include;
 import com.cisco.yangide.ext.model.Leaf;
@@ -219,6 +223,34 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EClass augmentEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass extensionEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass featureEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass deviationEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass identityEClass = null;
 
     /**
      * Creates an instance of the model <b>Package</b>, registered with
@@ -649,6 +681,51 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EClass getExtension() {
+        return extensionEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getFeature() {
+        return featureEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getDeviation() {
+        return deviationEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getIdentity() {
+        return identityEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EReference getIdentity_Base() {
+        return (EReference)identityEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public ModelFactory getModelFactory() {
         return (ModelFactory)getEFactoryInstance();
     }
@@ -736,6 +813,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         notificationEClass = createEClass(NOTIFICATION);
 
         augmentEClass = createEClass(AUGMENT);
+
+        extensionEClass = createEClass(EXTENSION);
+
+        featureEClass = createEClass(FEATURE);
+
+        deviationEClass = createEClass(DEVIATION);
+
+        identityEClass = createEClass(IDENTITY);
+        createEReference(identityEClass, IDENTITY__BASE);
     }
 
     /**
@@ -792,6 +878,10 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         rpcIOEClass.getESuperTypes().add(this.getContainingNode());
         notificationEClass.getESuperTypes().add(this.getNamedContainingNode());
         augmentEClass.getESuperTypes().add(this.getNamedContainingNode());
+        extensionEClass.getESuperTypes().add(this.getNamedNode());
+        featureEClass.getESuperTypes().add(this.getNamedNode());
+        deviationEClass.getESuperTypes().add(this.getNamedNode());
+        identityEClass.getESuperTypes().add(this.getNamedNode());
 
         // Initialize classes, features, and operations; add parameters
         initEClass(moduleEClass, Module.class, "Module", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -858,6 +948,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEClass(notificationEClass, Notification.class, "Notification", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         initEClass(augmentEClass, Augment.class, "Augment", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(extensionEClass, Extension.class, "Extension", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(featureEClass, Feature.class, "Feature", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(deviationEClass, Deviation.class, "Deviation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(identityEClass, Identity.class, "Identity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getIdentity_Base(), this.getIdentity(), null, "base", null, 0, 1, Identity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         // Create resource
         createResource(eNS_URI);

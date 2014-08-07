@@ -1332,6 +1332,199 @@ public interface ModelPackage extends EPackage {
      */
     int AUGMENT_OPERATION_COUNT = NAMED_CONTAINING_NODE_OPERATION_COUNT + 0;
 
+    /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.ExtensionImpl <em>Extension</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.impl.ExtensionImpl
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getExtension()
+     * @generated
+     */
+    int EXTENSION = 25;
+
+    /**
+     * The feature id for the '<em><b>Parent</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int EXTENSION__PARENT = NAMED_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int EXTENSION__NAME = NAMED_NODE__NAME;
+
+    /**
+     * The number of structural features of the '<em>Extension</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int EXTENSION_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Extension</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int EXTENSION_OPERATION_COUNT = NAMED_NODE_OPERATION_COUNT + 0;
+
+    /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.FeatureImpl <em>Feature</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.impl.FeatureImpl
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getFeature()
+     * @generated
+     */
+    int FEATURE = 26;
+
+    /**
+     * The feature id for the '<em><b>Parent</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int FEATURE__PARENT = NAMED_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int FEATURE__NAME = NAMED_NODE__NAME;
+
+    /**
+     * The number of structural features of the '<em>Feature</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int FEATURE_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Feature</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int FEATURE_OPERATION_COUNT = NAMED_NODE_OPERATION_COUNT + 0;
+
+    /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.DeviationImpl <em>Deviation</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.impl.DeviationImpl
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getDeviation()
+     * @generated
+     */
+    int DEVIATION = 27;
+
+    /**
+     * The feature id for the '<em><b>Parent</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DEVIATION__PARENT = NAMED_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DEVIATION__NAME = NAMED_NODE__NAME;
+
+    /**
+     * The number of structural features of the '<em>Deviation</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DEVIATION_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Deviation</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DEVIATION_OPERATION_COUNT = NAMED_NODE_OPERATION_COUNT + 0;
+
+    /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.IdentityImpl <em>Identity</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.impl.IdentityImpl
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getIdentity()
+     * @generated
+     */
+    int IDENTITY = 28;
+
+    /**
+     * The feature id for the '<em><b>Parent</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IDENTITY__PARENT = NAMED_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IDENTITY__NAME = NAMED_NODE__NAME;
+
+    /**
+     * The feature id for the '<em><b>Base</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IDENTITY__BASE = NAMED_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of structural features of the '<em>Identity</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IDENTITY_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Identity</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IDENTITY_OPERATION_COUNT = NAMED_NODE_OPERATION_COUNT + 0;
+
 
     /**
      * Returns the meta object for class '{@link com.cisco.yangide.ext.model.Module <em>Module</em>}'.
@@ -1749,6 +1942,57 @@ public interface ModelPackage extends EPackage {
     EClass getAugment();
 
     /**
+     * Returns the meta object for class '{@link com.cisco.yangide.ext.model.Extension <em>Extension</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Extension</em>'.
+     * @see com.cisco.yangide.ext.model.Extension
+     * @generated
+     */
+    EClass getExtension();
+
+    /**
+     * Returns the meta object for class '{@link com.cisco.yangide.ext.model.Feature <em>Feature</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Feature</em>'.
+     * @see com.cisco.yangide.ext.model.Feature
+     * @generated
+     */
+    EClass getFeature();
+
+    /**
+     * Returns the meta object for class '{@link com.cisco.yangide.ext.model.Deviation <em>Deviation</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Deviation</em>'.
+     * @see com.cisco.yangide.ext.model.Deviation
+     * @generated
+     */
+    EClass getDeviation();
+
+    /**
+     * Returns the meta object for class '{@link com.cisco.yangide.ext.model.Identity <em>Identity</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Identity</em>'.
+     * @see com.cisco.yangide.ext.model.Identity
+     * @generated
+     */
+    EClass getIdentity();
+
+    /**
+     * Returns the meta object for the reference '{@link com.cisco.yangide.ext.model.Identity#getBase <em>Base</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the reference '<em>Base</em>'.
+     * @see com.cisco.yangide.ext.model.Identity#getBase()
+     * @see #getIdentity()
+     * @generated
+     */
+    EReference getIdentity_Base();
+
+    /**
      * Returns the factory that creates the instances of the model.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2140,6 +2384,54 @@ public interface ModelPackage extends EPackage {
          * @generated
          */
         EClass AUGMENT = eINSTANCE.getAugment();
+
+        /**
+         * The meta object literal for the '{@link com.cisco.yangide.ext.model.impl.ExtensionImpl <em>Extension</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see com.cisco.yangide.ext.model.impl.ExtensionImpl
+         * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getExtension()
+         * @generated
+         */
+        EClass EXTENSION = eINSTANCE.getExtension();
+
+        /**
+         * The meta object literal for the '{@link com.cisco.yangide.ext.model.impl.FeatureImpl <em>Feature</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see com.cisco.yangide.ext.model.impl.FeatureImpl
+         * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getFeature()
+         * @generated
+         */
+        EClass FEATURE = eINSTANCE.getFeature();
+
+        /**
+         * The meta object literal for the '{@link com.cisco.yangide.ext.model.impl.DeviationImpl <em>Deviation</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see com.cisco.yangide.ext.model.impl.DeviationImpl
+         * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getDeviation()
+         * @generated
+         */
+        EClass DEVIATION = eINSTANCE.getDeviation();
+
+        /**
+         * The meta object literal for the '{@link com.cisco.yangide.ext.model.impl.IdentityImpl <em>Identity</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see com.cisco.yangide.ext.model.impl.IdentityImpl
+         * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getIdentity()
+         * @generated
+         */
+        EClass IDENTITY = eINSTANCE.getIdentity();
+
+        /**
+         * The meta object literal for the '<em><b>Base</b></em>' reference feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference IDENTITY__BASE = eINSTANCE.getIdentity_Base();
 
     }
 

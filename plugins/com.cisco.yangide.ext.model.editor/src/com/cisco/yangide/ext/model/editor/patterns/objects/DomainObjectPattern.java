@@ -39,6 +39,10 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
     }
 
     protected abstract EClass getObjectEClass();
+    
+    protected String getHeaderText(Object obj) {
+        return getCreateName();
+    }
 
     @Override
     public boolean canCreate(ICreateContext context) {
@@ -125,7 +129,7 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
 
     @Override
     public PictogramElement add(IAddContext context) {        
-        return YangModelUIUtil.drawPictogramElement(context, getFeatureProvider(), getCreateImageId(), getCreateName());
+        return YangModelUIUtil.drawPictogramElement(context, getFeatureProvider(), getCreateImageId(), getHeaderText(context.getNewObject()));
     }
 
     protected boolean checkEClass(Object obj) {

@@ -76,6 +76,10 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
             case ModelPackage.RPC_IO: return createRpcIO();
             case ModelPackage.NOTIFICATION: return createNotification();
             case ModelPackage.AUGMENT: return createAugment();
+            case ModelPackage.EXTENSION: return createExtension();
+            case ModelPackage.FEATURE: return createFeature();
+            case ModelPackage.DEVIATION: return createDeviation();
+            case ModelPackage.IDENTITY: return createIdentity();
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
         }
@@ -279,6 +283,46 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public Augment createAugment() {
         AugmentImpl augment = new AugmentImpl();
         return augment;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Extension createExtension() {
+        ExtensionImpl extension = new ExtensionImpl();
+        return extension;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Feature createFeature() {
+        FeatureImpl feature = new FeatureImpl();
+        return feature;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Deviation createDeviation() {
+        DeviationImpl deviation = new DeviationImpl();
+        return deviation;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Identity createIdentity() {
+        IdentityImpl identity = new IdentityImpl();
+        return identity;
     }
 
     /**

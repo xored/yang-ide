@@ -64,4 +64,10 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Notification" eSuperTypes="#//NamedContainingNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Augment" eSuperTypes="#//NamedContainingNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Extension" eSuperTypes="#//NamedNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Feature" eSuperTypes="#//NamedNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Deviation" eSuperTypes="#//NamedNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Identity" eSuperTypes="#//NamedNode">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//Identity"/>
+  </eClassifiers>
 </ecore:EPackage>

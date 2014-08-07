@@ -71,3 +71,12 @@ Package model <http://www.example.org/model>
   Class Notification -> NamedContainingNode
 
   Class Augment -> NamedContainingNode
+
+  Class Extension -> NamedNode
+
+  Class Feature -> NamedNode
+
+  Class Deviation -> NamedNode
+
+  Class Identity -> NamedNode
+    Reference base : Identity

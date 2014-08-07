@@ -24,5 +24,7 @@ public interface IYangImageConstants {
     public static final String IMG_RPC_INPUT_PROPOSAL = PLUGIN_ID + ".rpc_input_obj";
     public static final String IMG_RPC_OUTPUT_PROPOSAL = PLUGIN_ID + ".rpc_output_obj";
     public static final String IMG_RPC_PROPOSAL = PLUGIN_ID + ".rpc_obj";
+    public static final String IMG_ANYXML_PROPOSAL = PLUGIN_ID + ".anyxml_obj";
+    public static final String IMG_FEATURE_PROPOSAL = PLUGIN_ID + ".feature_obj";
 
 }

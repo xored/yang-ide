@@ -25,7 +25,11 @@ import com.cisco.yangide.ext.model.editor.features.UpdateTextFeature;
 import com.cisco.yangide.ext.model.editor.patterns.objects.AnyxmlPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.AugmentPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.ContainerPattern;
+import com.cisco.yangide.ext.model.editor.patterns.objects.DeviationPattern;
+import com.cisco.yangide.ext.model.editor.patterns.objects.ExtensionPattern;
+import com.cisco.yangide.ext.model.editor.patterns.objects.FeaturePattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.GroupingPattern;
+import com.cisco.yangide.ext.model.editor.patterns.objects.IdentityPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.LeafPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.NotificationPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.RpcIOPattern;
@@ -44,10 +48,14 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
 		addPattern(new AnyxmlPattern());
 		addPattern(new SubmodulePattern());
 		addPattern(new RpcPattern());		
-		addPattern(new UsesPattern());
-		addPattern(new RpcIOPattern());
+		addPattern(new UsesPattern());		
 		addPattern(new NotificationPattern());
 		addPattern(new AugmentPattern());
+		addPattern(new DeviationPattern());
+		addPattern(new ExtensionPattern());
+		addPattern(new FeaturePattern());
+		addPattern(new IdentityPattern());
+		addPattern(new RpcIOPattern());
 	}
     
 

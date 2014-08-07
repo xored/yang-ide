@@ -59,5 +59,11 @@
     </genClasses>
     <genClasses ecoreClass="model.ecore#//Notification"/>
     <genClasses ecoreClass="model.ecore#//Augment"/>
+    <genClasses ecoreClass="model.ecore#//Extension"/>
+    <genClasses ecoreClass="model.ecore#//Feature"/>
+    <genClasses ecoreClass="model.ecore#//Deviation"/>
+    <genClasses ecoreClass="model.ecore#//Identity">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference model.ecore#//Identity/base"/>
+    </genClasses>
   </genPackages>
 </genmodel:GenModel>

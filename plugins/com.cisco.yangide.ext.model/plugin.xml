@@ -7,7 +7,7 @@
       <package
             uri="http://www.example.org/model"
             class="com.cisco.yangide.ext.model.ModelPackage"
-            genModel="model.genmodel"/>
+            genModel="model/model.genmodel"/>
    </extension>
 
 </plugin>

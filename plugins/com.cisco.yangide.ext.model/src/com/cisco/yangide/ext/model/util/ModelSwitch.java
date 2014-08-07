@@ -274,6 +274,38 @@ public class ModelSwitch<T> extends Switch<T> {
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
+            case ModelPackage.EXTENSION: {
+                Extension extension = (Extension)theEObject;
+                T result = caseExtension(extension);
+                if (result == null) result = caseNamedNode(extension);
+                if (result == null) result = caseNode(extension);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case ModelPackage.FEATURE: {
+                Feature feature = (Feature)theEObject;
+                T result = caseFeature(feature);
+                if (result == null) result = caseNamedNode(feature);
+                if (result == null) result = caseNode(feature);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case ModelPackage.DEVIATION: {
+                Deviation deviation = (Deviation)theEObject;
+                T result = caseDeviation(deviation);
+                if (result == null) result = caseNamedNode(deviation);
+                if (result == null) result = caseNode(deviation);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case ModelPackage.IDENTITY: {
+                Identity identity = (Identity)theEObject;
+                T result = caseIdentity(identity);
+                if (result == null) result = caseNamedNode(identity);
+                if (result == null) result = caseNode(identity);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
             default: return defaultCase(theEObject);
         }
     }
@@ -650,6 +682,66 @@ public class ModelSwitch<T> extends Switch<T> {
      * @generated
      */
     public T caseAugment(Augment object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Extension</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Extension</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseExtension(Extension object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Feature</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Feature</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseFeature(Feature object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Deviation</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Deviation</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseDeviation(Deviation object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Identity</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Identity</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseIdentity(Identity object) {
         return null;
     }
 

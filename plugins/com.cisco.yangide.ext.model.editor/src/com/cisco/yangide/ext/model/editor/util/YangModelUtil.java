@@ -18,7 +18,11 @@ import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.AugmentationSchema;
 import com.cisco.yangide.core.dom.ContrainerSchemaNode;
+import com.cisco.yangide.core.dom.Deviation;
+import com.cisco.yangide.core.dom.ExtensionDefinition;
+import com.cisco.yangide.core.dom.FeatureDefinition;
 import com.cisco.yangide.core.dom.GroupingDefinition;
+import com.cisco.yangide.core.dom.IdentitySchemaNode;
 import com.cisco.yangide.core.dom.LeafSchemaNode;
 import com.cisco.yangide.core.dom.NotificationDefinition;
 import com.cisco.yangide.core.dom.RpcDefinition;
@@ -58,7 +62,7 @@ public class YangModelUtil {
                 MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getLeaf(),  MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
         
         compositeNodeMap.put(MODEL_PACKAGE.getModule(), Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getAugment(), MODEL_PACKAGE.getChoice(),
-                MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getNotification(), MODEL_PACKAGE.getRpc(), MODEL_PACKAGE.getUses()));        
+                MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getDeviation(), MODEL_PACKAGE.getExtension(), MODEL_PACKAGE.getFeature(), MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getIdentity(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getNotification(), MODEL_PACKAGE.getRpc(), MODEL_PACKAGE.getUses()));        
         compositeNodeMap.put(MODEL_PACKAGE.getNotification(), Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoice(),
                 MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
                 MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));     
@@ -76,6 +80,10 @@ public class YangModelUtil {
         astNodes.put(UsesNode.class, MODEL_PACKAGE.getUses());
         astNodes.put(NotificationDefinition.class, MODEL_PACKAGE.getNotification());
         astNodes.put(AugmentationSchema.class, MODEL_PACKAGE.getAugment());
+        astNodes.put(Deviation.class, MODEL_PACKAGE.getDeviation());
+        astNodes.put(ExtensionDefinition.class, MODEL_PACKAGE.getExtension());
+        astNodes.put(FeatureDefinition.class, MODEL_PACKAGE.getFeature());
+        astNodes.put(IdentitySchemaNode.class, MODEL_PACKAGE.getIdentity());
         
         connections.add(YangModelUtil.MODEL_PACKAGE.getUses());
     }
@@ -143,6 +151,7 @@ public class YangModelUtil {
         }
         return false;
     }
+    
     public static boolean checkType(EClass parent, Object tested) {
         return null != tested && tested instanceof EObject && checkType(parent, ((EObject) tested).eClass());
     }
