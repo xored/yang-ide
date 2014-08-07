@@ -22,8 +22,11 @@ import com.cisco.yangide.ext.model.impl.ModelFactoryImpl;
 
 public class DiagramImportSupport {
 
+    private static boolean drawExternalLinks = false;
+    
     public static Map<EObject, PictogramElement> elements = new HashMap<EObject, PictogramElement>();
     public static Map<String, Grouping> groupings = new HashMap<String, Grouping>();
+    
     public static void importDiagram(Diagram diagram, IFeatureProvider fp) {
         EObject obj = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(diagram);
         if (null == obj) {
@@ -42,10 +45,12 @@ public class DiagramImportSupport {
     }
     
     public static void drawShapes(List<Node> list, ContainerShape cs, IFeatureProvider fp) {
-        //int pos = 0;
         for (Node n : list) {
-            //pos += 100;
-            PictogramElement pe = YangModelUIUtil.drawObject(n, cs, fp, 0, cs.getGraphicsAlgorithm().getHeight());
+            int pos = cs.getGraphicsAlgorithm().getHeight();
+            if (cs instanceof Diagram) {
+                pos = 0;
+            }
+            PictogramElement pe = YangModelUIUtil.drawObject(n, cs, fp, 0, pos);
             additionalProcessing(n, pe, fp);
             
             if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), n) && null != pe && pe instanceof ContainerShape) {
@@ -68,7 +73,9 @@ public class DiagramImportSupport {
                     newG.setName(uses.getQName());
                     uses.setGrouping(newG);
                     groupings.put(newG.getName(), newG);
-                    elements.put(newG, YangModelUIUtil.drawObject(newG, fp.getDiagramTypeProvider().getDiagram(), fp, 100, 100));
+                    if (drawExternalLinks) {
+                        elements.put(newG, YangModelUIUtil.drawObject(newG, fp.getDiagramTypeProvider().getDiagram(), fp, 100, 100));
+                    }
                 }
             }
         }
@@ -88,7 +95,9 @@ public class DiagramImportSupport {
         Anchor start = YangModelUIUtil.getChopboxAnchor(elements.get(n));
         Anchor finish = null;
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getUses(), n)) {
-            finish = YangModelUIUtil.getChopboxAnchor(elements.get(((Uses) n).getGrouping()));
+            if (elements.containsKey(((Uses) n).getGrouping())) {
+                finish = YangModelUIUtil.getChopboxAnchor(elements.get(((Uses) n).getGrouping()));
+            }
         }
         AddConnectionContext acc = new AddConnectionContext(start, finish);
         acc.setNewObject(n);

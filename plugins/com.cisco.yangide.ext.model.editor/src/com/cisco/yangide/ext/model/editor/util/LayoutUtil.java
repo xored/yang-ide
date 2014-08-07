@@ -9,6 +9,7 @@ import org.eclipse.emf.common.util.EList;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.impl.LayoutContext;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
+import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
@@ -279,20 +280,6 @@ public class LayoutUtil {
         }
     }
     
-    private static class DomainCompositeObjectLayoutAlgorithm extends VerticalLayoutAlgorithm {
-        public DomainCompositeObjectLayoutAlgorithm() {
-            super(LayoutStyles.ENFORCE_BOUNDS);
-            rowPadding = 2;
-        }
-
-        @Override
-        protected double[] calculateNodeSize(double colWidth, double rowHeight) {
-            return new double[] {colWidth - 2 * YangModelUIUtil.DEFAULT_V_ALIGN, rowHeight - 2 * YangModelUIUtil.DEFAULT_H_ALIGN};
-        }
-        
-        
-    }
-    
     public static void layoutDiagram(IFeatureProvider fp, int type) {
      // get a map of the self connection anchor locations
         final Map<Connection, Point> selves = getSelfConnections(fp.getDiagramTypeProvider().getDiagram());
@@ -334,19 +321,8 @@ public class LayoutUtil {
         layoutDiagram(fp, DEFAULT_DIAGRAM_LAYOUT_TYPE);
     }
     
-    private static List<LayoutEntity> getLayoutEntities(ContainerShape cs, IFeatureProvider fp) {
-        List<LayoutEntity> result= new ArrayList<LayoutEntity>();
-        for (Shape shape : cs.getChildren()) {
-            if (null != fp.getBusinessObjectForPictogramElement(shape) && fp.getBusinessObjectForPictogramElement(shape) != fp.getBusinessObjectForPictogramElement(cs)) {
-                GraphicsAlgorithm ga = shape.getGraphicsAlgorithm();
-                result.add(new SimpleNode(shape, ga.getX(), ga.getY(), ga.getWidth(), ga.getHeight()));
-            }
-        }
-        return result;
-    }
-    
     public static void layoutContainerShape(ContainerShape cs, IFeatureProvider fp) {
-        /*EList<Shape> elements = cs.getChildren();
+        EList<Shape> elements = cs.getChildren();
         YangModelUIUtil.sortPictogramElements(elements);
         int y = 0;
         int x = 0;
@@ -376,34 +352,7 @@ public class LayoutUtil {
             if (1 < points.size()) {
                 points.get(1).setX(cs.getGraphicsAlgorithm().getWidth());
             }               
-        }*/
-        
-        try {
-            for(Shape shape : cs.getChildren()) {
-                layoutPictogramElement(shape, fp);
-            }
-            LayoutAlgorithm layoutAlgorithm = new DomainCompositeObjectLayoutAlgorithm();
-            
-            // Get the array of Connection LayoutRelationships
-            LayoutRelationship[] connections = new LayoutRelationship[]{};
-
-            // Setup the array of Shape LayoutEntity
-            LayoutEntity[] entities = getLayoutEntities(cs, fp).toArray(new LayoutEntity[0]);
-
-            // Get the diagram GraphicsAlgorithmn (we need the graph dimensions)
-            GraphicsAlgorithm ga = cs.getGraphicsAlgorithm();//fp.getDiagramTypeProvider().getDiagram().getGraphicsAlgorithm();
-
-            // Apply the LayoutAlgorithmn
-        
-            layoutAlgorithm.applyLayout(entities, connections, 0, YangModelUIUtil.DEFAULT_TEXT_HEIGHT, ga.getWidth(), ga.getHeight() - YangModelUIUtil.DEFAULT_TEXT_HEIGHT, false, false);
-            
-         // Update the Graphiti Shapes and Connections locations
-            updateGraphCoordinates(entities, connections);
-        } catch (InvalidLayoutConfiguration e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }           
-
+        }
     }
 
     /**
