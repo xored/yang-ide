@@ -10,6 +10,11 @@ import org.eclipse.graphiti.util.IColorConstant;
 import org.eclipse.graphiti.util.PredefinedColoredAreas;
 
 public class StyleUtil {
+    
+    private StyleUtil() {
+        super();
+    }
+    
     public static final IColorConstant DOMAIN_OBJECT_TEXT_FOREGROUND =
             new ColorConstant(0, 0, 0);
         public static final IColorConstant DOMAIN_OBJECT_FOREGROUND =
@@ -86,6 +91,7 @@ public class StyleUtil {
         }
 
         
+        @SuppressWarnings("deprecation")
         private static void setCommonTextValues(Diagram diagram,
             IGaService gaService, Style style) {
             style.setFilled(false);            

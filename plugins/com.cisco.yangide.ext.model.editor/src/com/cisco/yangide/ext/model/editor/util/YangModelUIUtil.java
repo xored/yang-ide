@@ -10,6 +10,7 @@ import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.LayoutContext;
+import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Image;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Rectangle;
@@ -20,6 +21,7 @@ import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
+import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
@@ -132,7 +134,9 @@ public class YangModelUIUtil {
         fp.link(result, context.getNewObject());
         Graphiti.getPeCreateService().createChopboxAnchor(result);
         // call the layout feature
-        layoutPictogramElement(context.getTargetContainer(), fp);
+        if (!(context.getTargetContainer() instanceof Diagram)) {
+            layoutPictogramElement(context.getTargetContainer(), fp);
+        }
         return result;
     }
     
@@ -171,7 +175,7 @@ public class YangModelUIUtil {
         gaService.setLocationAndSize(image, DEFAULT_V_ALIGN, 0, DEFAULT_TEXT_HEIGHT, DEFAULT_TEXT_HEIGHT);
         final Shape textShape = peCreateService.createShape(containerShape, false);
         Text text;
-        if (context.getNewObject() instanceof NamedNode) {
+        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getNamedNode(), context.getNewObject())) {
             if (null == ((NamedNode) context.getNewObject()).getName()) {
                 ((NamedNode) context.getNewObject()).setName("<name>");
             }
@@ -197,7 +201,12 @@ public class YangModelUIUtil {
         final int width = context.getWidth() <= 0 ? DEFAULT_WIDTH : context.getWidth();
         final int height = context.getHeight() <= 0 ? DEFAULT_TEXT_HEIGHT : context.getHeight();
 
-        Rectangle rectangle = gaService.createInvisibleRectangle(containerShape);
+        GraphicsAlgorithm rectangle;
+        if (context.getTargetContainer() instanceof Diagram) {
+            rectangle = gaService.createPlainRoundedRectangle(containerShape, 5, 5);
+        } else {
+            rectangle = gaService.createInvisibleRectangle(containerShape);
+        }
         rectangle.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
         gaService.setLocationAndSize(rectangle, context.getX(), context.getY(), width, height);
 
@@ -212,7 +221,7 @@ public class YangModelUIUtil {
         gaService.setLocationAndSize(image, 0, 0, height, height);
         final Shape textShape = peCreateService.createShape(containerShape, false);
         Text text;
-        if (context.getNewObject() instanceof NamedNode) {
+        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getNamedNode(), context.getNewObject())) {
             if (null == ((NamedNode) context.getNewObject()).getName()) {
                 ((NamedNode) context.getNewObject()).setName("<name>");
             }

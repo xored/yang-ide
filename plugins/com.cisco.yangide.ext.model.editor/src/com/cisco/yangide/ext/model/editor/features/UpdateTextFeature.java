@@ -26,22 +26,28 @@ public class UpdateTextFeature extends AbstractUpdateFeature {
     @Override
     public IReason updateNeeded(IUpdateContext context) {
         Object[] objects = getAllBusinessObjectsForPictogramElement(context.getPictogramElement());
-        String pictogramValue = null;
-        String objectValue = null;
-        if (context.getPictogramElement() instanceof Shape) {
-            if (((Shape) context.getPictogramElement()).getGraphicsAlgorithm() instanceof Text) {
-                pictogramValue = ((Text)((Shape) context.getPictogramElement()).getGraphicsAlgorithm()).getValue();
+        if (null != objects && 1 < objects.length) {
+            String pictogramValue = null;
+            String objectValue = null;
+            if (context.getPictogramElement() instanceof Shape) {
+                if (((Shape) context.getPictogramElement()).getGraphicsAlgorithm() instanceof Text) {
+                    pictogramValue = ((Text) ((Shape) context.getPictogramElement()).getGraphicsAlgorithm()).getValue();
+                }
+            }
+            if (null != objects && 2 == objects.length && objects[0] instanceof EObject
+                    && objects[1] instanceof EStructuralFeature) {
+                objectValue = null == ((EObject) objects[0]).eGet((EStructuralFeature) objects[1]) ? null
+                        : ((EObject) objects[0]).eGet((EStructuralFeature) objects[1]).toString();
+            }
+            boolean updateNeeded = (null == pictogramValue && null != objectValue)
+                    || (null != pictogramValue && !pictogramValue.equals(objectValue));
+            if (updateNeeded) {
+                return Reason.createTrueReason("Name is out of date"); //$NON-NLS-1$
+            } else {
+                return Reason.createFalseReason();
             }
         }
-        if (null != objects && 2 == objects.length && objects[0] instanceof EObject && objects[1] instanceof EStructuralFeature) {
-            objectValue = null == ((EObject) objects[0]).eGet((EStructuralFeature) objects[1]) ? null : ((EObject) objects[0]).eGet((EStructuralFeature) objects[1]).toString();
-        }
-        boolean updateNeeded = (null == pictogramValue && null != objectValue) || (null != pictogramValue && !pictogramValue.equals(objectValue));
-        if (updateNeeded) {
-            return Reason.createTrueReason("Name is out of date"); //$NON-NLS-1$
-        } else {
-            return Reason.createFalseReason();
-        }
+        return Reason.createFalseReason();
     }
 
     @Override

@@ -4,6 +4,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.IDeleteContext;
+import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.IRemoveContext;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
@@ -53,6 +54,11 @@ public class RpcIOPattern extends DomainObjectPattern {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public boolean canMoveShape(IMoveShapeContext context) {
+        return context.getTargetContainer() == context.getSourceContainer();
     }
 
     @Override
