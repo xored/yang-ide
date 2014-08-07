@@ -3,26 +3,16 @@
  */
 package com.cisco.yangide.ext.refactoring.rename;
 
-import java.util.HashMap;
-
 import org.eclipse.core.resources.IFile;
-import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.OperationCanceledException;
-import org.eclipse.core.runtime.Path;
 import org.eclipse.ltk.core.refactoring.Change;
-import org.eclipse.ltk.core.refactoring.CompositeChange;
 import org.eclipse.ltk.core.refactoring.RefactoringStatus;
-import org.eclipse.ltk.core.refactoring.TextChange;
-import org.eclipse.ltk.core.refactoring.TextFileChange;
 import org.eclipse.ltk.core.refactoring.participants.CheckConditionsContext;
 import org.eclipse.ltk.core.refactoring.participants.RefactoringParticipant;
 import org.eclipse.ltk.core.refactoring.participants.RenameProcessor;
 import org.eclipse.ltk.core.refactoring.participants.SharableParticipants;
-import org.eclipse.text.edits.MultiTextEdit;
-import org.eclipse.text.edits.ReplaceEdit;
-import org.eclipse.text.edits.TextEditGroup;
 
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.Module;
@@ -30,6 +20,7 @@ import com.cisco.yangide.core.dom.QName;
 import com.cisco.yangide.core.indexing.ElementIndexReferenceInfo;
 import com.cisco.yangide.core.indexing.ElementIndexReferenceType;
 import com.cisco.yangide.core.model.YangModelManager;
+import com.cisco.yangide.ext.refactoring.YangCompositeChange;
 
 /**
  * @author Konstantin Zaitsev
@@ -105,7 +96,7 @@ public abstract class YangRenameProcessor<T extends ASTNamedNode> extends Rename
 
     @Override
     public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
-            OperationCanceledException {
+    OperationCanceledException {
         return new RefactoringStatus();
     }
 
@@ -123,14 +114,16 @@ public abstract class YangRenameProcessor<T extends ASTNamedNode> extends Rename
 
     @Override
     public Change createChange(IProgressMonitor pm) throws CoreException, OperationCanceledException {
+        String changeName = "Rename element in file";
+        String editName = "Update reference";
+
         ElementIndexReferenceInfo[] infos = getReferences();
 
-        CompositeChange composite = new CompositeChange("Rename");
+        YangCompositeChange composite = new YangCompositeChange("Rename");
         composite.markAsSynthetic();
 
-        HashMap<String, TextChange> map = new HashMap<>();
-        addEdit(composite, map, file.getFullPath().toString(), node.getNameStartPosition(), node.getNameLength(),
-                getNewName());
+        composite.addTextEdit(file.getFullPath().toString(), changeName, editName, node.getNameStartPosition(),
+                node.getNameLength(), getNewName());
         for (ElementIndexReferenceInfo info : infos) {
             String name = getNewName();
             if (!info.getPath().equals(file.getFullPath().toString())
@@ -144,7 +137,8 @@ public abstract class YangRenameProcessor<T extends ASTNamedNode> extends Rename
                     name = info.getReference().getPrefix() + ":" + newName;
                 }
             }
-            addEdit(composite, map, info.getPath(), info.getStartPosition(), info.getLength(), name);
+            composite
+            .addTextEdit(info.getPath(), changeName, editName, info.getStartPosition(), info.getLength(), name);
         }
         return composite;
     }
@@ -153,28 +147,6 @@ public abstract class YangRenameProcessor<T extends ASTNamedNode> extends Rename
         Module module = (Module) node.getModule();
         QName qname = new QName(module.getName(), null, node.getName(), module.getRevision());
         return YangModelManager.getIndexManager().searchReference(qname, getReferenceType(), getFile().getProject());
-    }
-
-    protected void addEdit(CompositeChange composite, HashMap<String, TextChange> map, String path, int pos, int len,
-            String newName) {
-        TextChange change = getChangeOrCreate(composite, map, path);
-        ReplaceEdit child = new ReplaceEdit(pos, len, newName);
-        change.getEdit().addChild(child);
-        change.addTextEditGroup(new TextEditGroup("Update reference", child));
-    }
-
-    protected TextChange getChangeOrCreate(CompositeChange composite, HashMap<String, TextChange> map, String path) {
-        if (!map.containsKey(path)) {
-            IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
-            TextChange change = new TextFileChange("Rename element in file", file);
-            change.setTextType("yang");
-            MultiTextEdit edit = new MultiTextEdit();
-            change.setEdit(edit);
-            change.setKeepPreviewEdits(true);
-            composite.add(change);
-            map.put(path, change);
-        }
-        return map.get(path);
     }
 
     protected abstract ElementIndexReferenceType getReferenceType();

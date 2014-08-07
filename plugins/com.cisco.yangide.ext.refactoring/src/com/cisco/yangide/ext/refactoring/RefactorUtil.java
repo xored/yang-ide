@@ -11,7 +11,9 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Status;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
@@ -24,6 +26,7 @@ import com.cisco.yangide.core.dom.SubModuleInclude;
 import com.cisco.yangide.core.dom.TypeReference;
 import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
+import com.cisco.yangide.core.indexing.ElementIndexReferenceInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.core.model.YangModelManager;
 
@@ -101,9 +104,24 @@ public final class RefactorUtil {
 
     /**
      * @param info index info
-     * @return string content of AST node or <code>null</code> if node not found
+     * @return resolved AST node or <code>null</code> if node not found
      */
-    public static String loadIndexInfoContent(ElementIndexInfo info) {
+    public static ASTNode resolveIndexInfo(ElementIndexReferenceInfo info) {
+        try {
+            Module module = YangCorePlugin.createYangFile(
+                    ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(info.getPath()))).getModule();
+            return module.getNodeAtPosition(info.getStartPosition());
+        } catch (YangModelException e) {
+            return null;
+        }
+    }
+
+    /**
+     * @param info index info
+     * @return string content of AST node or <code>null</code> if node not found
+     * @throws CoreException IO errors
+     */
+    public static String loadIndexInfoContent(ElementIndexInfo info) throws CoreException {
         ASTNode node = resolveIndexInfo(info);
         if (node != null) {
             if (info.getEntry() != null && !info.getEntry().isEmpty()) {
@@ -116,21 +134,31 @@ public final class RefactorUtil {
                         return new String(cbuf);
                     }
                 } catch (IOException e) {
-                    return null;
+                    throw new CoreException(new Status(IStatus.ERROR, YangRefactoringPlugin.PLUGIN_ID, "Error", e));
                 }
             } else {
                 IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(info.getPath()));
-                try (InputStreamReader reader = new InputStreamReader(file.getContents(), "UTF-8")) {
-                    char[] cbuf = new char[node.getBodyLength()];
-                    reader.skip(node.getBodyStartPosition());
-                    reader.read(cbuf, 0, node.getBodyLength());
-                    return new String(cbuf);
-                } catch (IOException | CoreException e) {
-                    return null;
-                }
+                return loadNodeContent(node, file);
             }
         }
         return null;
+    }
+
+    /**
+     * @param node AST node
+     * @param file file where node located
+     * @return string content of node body
+     * @throws CoreException IO errors
+     */
+    public static String loadNodeContent(ASTNode node, IFile file) throws CoreException {
+        try (InputStreamReader reader = new InputStreamReader(file.getContents(), "UTF-8")) {
+            char[] cbuf = new char[node.getBodyLength()];
+            reader.skip(node.getBodyStartPosition());
+            reader.read(cbuf, 0, node.getBodyLength());
+            return new String(cbuf);
+        } catch (IOException | CoreException e) {
+            throw new CoreException(new Status(IStatus.ERROR, YangRefactoringPlugin.PLUGIN_ID, "Error", e));
+        }
     }
 
 }
