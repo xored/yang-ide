@@ -46,6 +46,7 @@ public class RenameAction extends SelectionDispatchAction {
 
     @Override
     public void selectionChanged(ITextSelection selection) {
+
         try {
             if (editor.getModule() != null) {
                 this.node = editor.getModule().getNodeAtPosition(selection.getOffset());
