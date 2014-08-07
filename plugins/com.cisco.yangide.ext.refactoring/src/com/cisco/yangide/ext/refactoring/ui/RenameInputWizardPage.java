@@ -101,7 +101,8 @@ public class RenameInputWizardPage extends UserInputWizardPage {
     }
 
     private RefactoringStatus validateTextField(String txt) {
-        YangRenameProcessor processor = (YangRenameProcessor) ((RenameRefactoring) getRefactoring()).getProcessor();
+        YangRenameProcessor<?> processor = (YangRenameProcessor<?>) ((RenameRefactoring) getRefactoring())
+                .getProcessor();
         processor.setNewName(txt);
         return null;
     }
@@ -109,7 +110,8 @@ public class RenameInputWizardPage extends UserInputWizardPage {
     @Override
     public void setVisible(boolean visible) {
         if (visible) {
-            YangRenameProcessor processor = (YangRenameProcessor) ((RenameRefactoring) getRefactoring()).getProcessor();
+            YangRenameProcessor<?> processor = (YangRenameProcessor<?>) ((RenameRefactoring) getRefactoring())
+                    .getProcessor();
             if (processor != null) {
                 String newName = processor.getNewName();
                 if (newName != null && newName.length() > 0 && !newName.equals(initialValue)) {

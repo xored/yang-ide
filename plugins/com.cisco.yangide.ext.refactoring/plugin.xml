@@ -26,6 +26,12 @@
                retarget="true"
                menubarPath="com.cisco.yangide.ext.refactoring.menu/reorgGroup">
             </action>
+            <action id="com.cisco.yangide.ui.actions.Inline"
+               definitionId="com.cisco.yangide.ext.group.inline.element"
+               label="Inline Grouping..."
+               retarget="true"
+               menubarPath="com.cisco.yangide.ext.refactoring.menu/reorgGroup">
+            </action>
        </actionSet>
     </extension>
 
@@ -37,6 +43,12 @@
             description="Rename the selected element"
             categoryId="com.cisco.yangide.ext.refactoring"
             id="com.cisco.yangide.ext.rename.element">
+        </command>
+        <command
+            name="Inline Grouping - Refactoring"
+            description="Inline grouping element in place of reference"
+            categoryId="com.cisco.yangide.ext.refactoring"
+            id="com.cisco.yangide.ext.group.inline.element">
         </command>
     </extension>
       
@@ -59,7 +71,26 @@
             contextId="com.cisco.yangide.ui.Context"
             commandId="com.cisco.yangide.ext.rename.element"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
-    
+
+        <!-- inline grouping -->
+        <key
+            sequence="M2+M3+I"
+            commandId="com.cisco.yangide.ext.group.inline.element"
+            contextId="com.cisco.yangide.ui.Context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <key
+            platform="carbon"
+            sequence="M2+M3+I"
+            contextId="com.cisco.yangide.ui.Context"
+            commandId=""
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <key
+            platform="carbon"
+            sequence="COMMAND+ALT+I"
+            contextId="com.cisco.yangide.ui.Context"
+            commandId="com.cisco.yangide.ext.group.inline.element"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+            
     </extension>
     
     <extension point="org.eclipse.ui.actionSetPartAssociations">

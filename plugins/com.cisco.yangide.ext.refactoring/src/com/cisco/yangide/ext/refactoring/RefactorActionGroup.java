@@ -29,6 +29,7 @@ import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.editor.editors.IActionGroup;
 import com.cisco.yangide.editor.editors.YangEditor;
+import com.cisco.yangide.ext.refactoring.actions.InlineGroupingAction;
 import com.cisco.yangide.ext.refactoring.actions.RenameAction;
 import com.cisco.yangide.ext.refactoring.actions.SelectionDispatchAction;
 
@@ -41,6 +42,7 @@ public class RefactorActionGroup extends ActionGroup implements IActionGroup {
     private String groupName;
     private ISelectionProvider selectionProvider;
     private SelectionDispatchAction renameAction;
+    private SelectionDispatchAction inlineAction;
 
     private final List<SelectionDispatchAction> actions = new ArrayList<SelectionDispatchAction>();
 
@@ -73,6 +75,7 @@ public class RefactorActionGroup extends ActionGroup implements IActionGroup {
     @Override
     public void fillActionBars(IActionBars actionBars) {
         actionBars.setGlobalActionHandler("com.cisco.yangide.ui.actions.Rename", renameAction);
+        actionBars.setGlobalActionHandler("com.cisco.yangide.ui.actions.Inline", inlineAction);
     }
 
     /**
@@ -132,6 +135,7 @@ public class RefactorActionGroup extends ActionGroup implements IActionGroup {
         int added = 0;
         refactorSubmenu.add(new Separator("reorgGroup"));
         added += addAction(refactorSubmenu, renameAction);
+        added += addAction(refactorSubmenu, inlineAction);
         return added;
     }
 
@@ -191,6 +195,10 @@ public class RefactorActionGroup extends ActionGroup implements IActionGroup {
         renameAction = new RenameAction(editor);
         initAction(renameAction, selection, "com.cisco.yangide.ext.rename.element");
         editor.setAction("RenameElement", renameAction); //$NON-NLS-1$
+
+        inlineAction = new InlineGroupingAction(editor);
+        initAction(inlineAction, selection, "com.cisco.yangide.ext.group.inline.element");
+        editor.setAction("InlineElement", inlineAction); //$NON-NLS-1$
     }
 
 }

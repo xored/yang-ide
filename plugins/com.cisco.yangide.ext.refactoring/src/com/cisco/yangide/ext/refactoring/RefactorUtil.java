@@ -3,8 +3,14 @@
  */
 package com.cisco.yangide.ext.refactoring;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.jar.JarFile;
+
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.Path;
 
 import com.cisco.yangide.core.YangCorePlugin;
@@ -92,4 +98,39 @@ public final class RefactorUtil {
             return null;
         }
     }
+
+    /**
+     * @param info index info
+     * @return string content of AST node or <code>null</code> if node not found
+     */
+    public static String loadIndexInfoContent(ElementIndexInfo info) {
+        ASTNode node = resolveIndexInfo(info);
+        if (node != null) {
+            if (info.getEntry() != null && !info.getEntry().isEmpty()) {
+                try (JarFile jarFile = new JarFile(new Path(info.getPath()).toFile())) {
+                    try (InputStreamReader reader = new InputStreamReader(jarFile.getInputStream(jarFile.getEntry(info
+                            .getEntry())), "UTF-8")) {
+                        char[] cbuf = new char[node.getBodyLength()];
+                        reader.skip(node.getBodyStartPosition());
+                        reader.read(cbuf, 0, node.getBodyLength());
+                        return new String(cbuf);
+                    }
+                } catch (IOException e) {
+                    return null;
+                }
+            } else {
+                IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(info.getPath()));
+                try (InputStreamReader reader = new InputStreamReader(file.getContents(), "UTF-8")) {
+                    char[] cbuf = new char[node.getBodyLength()];
+                    reader.skip(node.getBodyStartPosition());
+                    reader.read(cbuf, 0, node.getBodyLength());
+                    return new String(cbuf);
+                } catch (IOException | CoreException e) {
+                    return null;
+                }
+            }
+        }
+        return null;
+    }
+
 }

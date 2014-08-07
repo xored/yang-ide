@@ -21,7 +21,8 @@ public class RenameRefactoringWizard extends RefactoringWizard {
 
     @Override
     protected void addUserInputPages() {
-        YangRenameProcessor processor = (YangRenameProcessor) ((RenameRefactoring) getRefactoring()).getProcessor();
+        YangRenameProcessor<?> processor = (YangRenameProcessor<?>) ((RenameRefactoring) getRefactoring())
+                .getProcessor();
         String initialSetting = processor.getNewName();
         RenameInputWizardPage inputPage = new RenameInputWizardPage("Rename Element", initialSetting);
         // inputPage.setImageDescriptor(fInputPageImageDescriptor);
