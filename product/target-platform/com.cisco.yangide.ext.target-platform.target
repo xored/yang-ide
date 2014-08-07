@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target includeMode="feature" name="YANG IDE Extensions Target Platform" sequenceNumber="19">
+<?pde version="3.8"?><target includeMode="feature" name="YANG IDE Extensions Target Platform" sequenceNumber="29">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.m2e.feature.feature.group" version="1.4.1.20140328-1905"/>
@@ -32,6 +32,21 @@
 <unit id="com.cisco.yangide.feature.feature.group" version="1.0.1.201407310755"/>
 <unit id="com.cisco.yangide.m2e.yang.feature.feature.group" version="1.0.1.201407310755"/>
 <repository location="http://dl.xored.com/yang/releases/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.graphiti.export.feature.feature.group" version="0.11.0.v20140528-0646"/>
+<unit id="org.eclipse.graphiti.feature.examples.feature.group" version="0.11.0.v20140528-0646"/>
+<unit id="org.eclipse.graphiti.sdk.plus.feature.feature.group" version="0.11.0.v20140528-0646"/>
+<unit id="org.eclipse.graphiti.feature.feature.group" version="0.11.0.v20140528-0646"/>
+<unit id="org.eclipse.graphiti.feature.tools.feature.group" version="0.11.0.v20140528-0646"/>
+<unit id="org.eclipse.graphiti.sdk.feature.feature.group" version="0.11.0.v20140528-0646"/>
+<repository location="http://download.eclipse.org/graphiti/updates/0.11.0"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.zest.source.feature.group" version="1.5.100.201405261516"/>
+<unit id="org.eclipse.zest.sdk.feature.group" version="1.5.100.201405261516"/>
+<unit id="org.eclipse.zest.feature.group" version="1.5.100.201405261516"/>
+<repository location="http://download.eclipse.org/tools/gef/updates/releases"/>
 </location>
 </locations>
 </target>
