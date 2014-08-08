@@ -27,11 +27,12 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="com.cisco.yangide.ext.model.editor.editors.YangDiagramEditor"
-            default="false"
+            class="com.cisco.yangide.ext.model.editor.YangMultiPageEditorPart"
+            default="true"
+            icon="icons/yang_file.png"
             extensions="yang"
-            id="com.cisco.yangide.ext.model.editor.YangDiagramEditor"
-            name="Yang Model Editor">
+            id="com.cisco.yangide.ext.model.editor.YangMultiPageEditor"
+            name="Yang Editor">
       </editor>
    </extension>
    <extension
