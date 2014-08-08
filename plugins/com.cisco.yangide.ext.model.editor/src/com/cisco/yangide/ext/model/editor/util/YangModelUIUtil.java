@@ -10,14 +10,15 @@ import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.LayoutContext;
+import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Image;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
-import org.eclipse.graphiti.mm.algorithms.Rectangle;
 import org.eclipse.graphiti.mm.algorithms.RoundedRectangle;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
+import org.eclipse.graphiti.mm.pictograms.BoxRelativeAnchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -36,10 +37,12 @@ public class YangModelUIUtil {
         super();
     }
     
-    public static int DEFAULT_WIDTH = 150;
-    public static int DEFAULT_TEXT_HEIGHT = 20;
-    public static int DEFAULT_V_ALIGN = 5;
-    public static int DEFAULT_H_ALIGN = 3;
+    public static final int DEFAULT_WIDTH = 150;
+    public static final int DEFAULT_TEXT_HEIGHT = 20;
+    public static final int DEFAULT_V_ALIGN = 5;
+    public static final int DEFAULT_H_ALIGN = 3;
+    
+    public static final int DEFAULT_BOX_ANCHOR_RADIUS = 2;
 
     public static final int DEFAULT_COMPOSITE_HEIGHT = 100;
     
@@ -77,6 +80,16 @@ public class YangModelUIUtil {
     public static Anchor getChopboxAnchor(PictogramElement pe) {
         return Graphiti.getPeService().getChopboxAnchor((AnchorContainer) pe);
     }
+    
+    public static Anchor getBoxRelativeAnchor(AnchorContainer ac) {
+        for (Anchor a : ac.getAnchors()) {
+            if (a instanceof BoxRelativeAnchor) {
+                return a;
+            }
+        }
+        return null;
+    }
+    
     
     public static PictogramElement drawObject(EObject obj, ContainerShape cs, IFeatureProvider fp, int x, int y) {
         AddContext ac = new AddContext();
@@ -123,7 +136,44 @@ public class YangModelUIUtil {
         polyline.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
         return polyline;
     }    
-    
+    public static void drawPictogramElementHeader(ContainerShape containerShape, IAddContext context, IFeatureProvider fp, String imageId, String title, int width, int height) {
+        // create shape for text
+        final Shape imageShape = Graphiti.getPeCreateService().createShape(containerShape, false);
+        // create and set text graphics algorithm
+        final Image image = Graphiti.getGaService().createImage(imageShape, imageId);
+        image.setHeight(height);
+        image.setWidth(height);
+        image.setStretchH(true);
+        image.setStretchH(true);
+        image.setProportional(true);
+        Graphiti.getGaService().setLocationAndSize(image, DEFAULT_V_ALIGN, 0, height, height);
+        final Shape textShape = Graphiti.getPeCreateService().createShape(containerShape, false);
+        Text text;
+        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getNamedNode(), context.getNewObject())) {
+            if (null == ((NamedNode) context.getNewObject()).getName()) {
+                ((NamedNode) context.getNewObject()).setName("<name>");
+            }
+            text = Graphiti.getGaService().createPlainText(textShape, ((NamedNode) context.getNewObject()).getName());
+            fp.link(textShape, new Object[] { context.getNewObject(), YangModelUtil.MODEL_PACKAGE.getNamedNode_Name() });
+        } else {
+            text = Graphiti.getGaService().createPlainText(textShape, title);
+        }
+        text.setStyle(StyleUtil.getStyleForDomainObjectText(fp.getDiagramTypeProvider().getDiagram()));
+        Graphiti.getGaService().setLocationAndSize(text, height + DEFAULT_V_ALIGN, 0, width, height);       
+        
+    }
+    public static void drawBoxRelativeAnchor(ContainerShape containerShape, IAddContext context, IFeatureProvider fp) {
+        final BoxRelativeAnchor boxAnchor = Graphiti.getPeCreateService().createBoxRelativeAnchor(containerShape);
+        boxAnchor.setRelativeWidth(1.0);
+        boxAnchor.setRelativeHeight(0.5);
+
+        boxAnchor.setReferencedGraphicsAlgorithm(containerShape.getGraphicsAlgorithm());
+        final Ellipse ellipse = Graphiti.getGaService().createPlainEllipse(boxAnchor);
+
+        Graphiti.getGaService().setLocationAndSize(ellipse, -2 * DEFAULT_BOX_ANCHOR_RADIUS,
+                -2 * DEFAULT_BOX_ANCHOR_RADIUS, 2 * DEFAULT_BOX_ANCHOR_RADIUS, 2 * DEFAULT_BOX_ANCHOR_RADIUS);
+        ellipse.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
+    }
     public static ContainerShape drawPictogramElement(IAddContext context, IFeatureProvider fp, String imageId, String title) {
         ContainerShape result = null;
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), context.getNewObject())) {
@@ -133,6 +183,10 @@ public class YangModelUIUtil {
         }
         fp.link(result, context.getNewObject());
         Graphiti.getPeCreateService().createChopboxAnchor(result);
+        // create BoxRelativeAnchor for references
+        if (context.getNewObject() instanceof EObject && YangModelUtil.hasConnection((EObject) context.getNewObject())){
+            drawBoxRelativeAnchor(result, context, fp);
+        }
         // call the layout feature
         if (!(context.getTargetContainer() instanceof Diagram)) {
             layoutPictogramElement(context.getTargetContainer(), fp);
@@ -162,31 +216,7 @@ public class YangModelUIUtil {
         final Polyline polyline = gaService.createPlainPolyline(shape, new int[] { 0, DEFAULT_TEXT_HEIGHT, width,
                 DEFAULT_TEXT_HEIGHT });
         polyline.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
-
-        // create shape for text
-        final Shape imageShape = peCreateService.createShape(containerShape, false);
-        // create and set text graphics algorithm
-        final Image image = gaService.createImage(imageShape, imageId);
-        image.setHeight(DEFAULT_TEXT_HEIGHT);
-        image.setWidth(DEFAULT_TEXT_HEIGHT);
-        image.setStretchH(true);
-        image.setStretchH(true);
-        image.setProportional(true);
-        gaService.setLocationAndSize(image, DEFAULT_V_ALIGN, 0, DEFAULT_TEXT_HEIGHT, DEFAULT_TEXT_HEIGHT);
-        final Shape textShape = peCreateService.createShape(containerShape, false);
-        Text text;
-        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getNamedNode(), context.getNewObject())) {
-            if (null == ((NamedNode) context.getNewObject()).getName()) {
-                ((NamedNode) context.getNewObject()).setName("<name>");
-            }
-            text = gaService.createPlainText(textShape, ((NamedNode) context.getNewObject()).getName());
-            fp.link(textShape, new Object[] { context.getNewObject(), YangModelUtil.MODEL_PACKAGE.getNamedNode_Name() });
-        } else {
-            text = gaService.createPlainText(textShape, title);
-        }
-        text.setStyle(StyleUtil.getStyleForDomainObjectText(fp.getDiagramTypeProvider().getDiagram()));
-        gaService.setLocationAndSize(text, DEFAULT_TEXT_HEIGHT + DEFAULT_V_ALIGN, 0, width, DEFAULT_TEXT_HEIGHT);
-            
+        drawPictogramElementHeader(containerShape, context, fp, imageId, title, width, DEFAULT_TEXT_HEIGHT);            
         return containerShape;
 
     }
@@ -209,30 +239,7 @@ public class YangModelUIUtil {
         }
         rectangle.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
         gaService.setLocationAndSize(rectangle, context.getX(), context.getY(), width, height);
-
-        final Shape imageShape = peCreateService.createShape(containerShape, false);
-        // create and set text graphics algorithm
-        final Image image = gaService.createImage(imageShape, imageId);
-        image.setHeight(height);
-        image.setWidth(height);
-        image.setStretchH(true);
-        image.setStretchH(true);
-        image.setProportional(true);
-        gaService.setLocationAndSize(image, 0, 0, height, height);
-        final Shape textShape = peCreateService.createShape(containerShape, false);
-        Text text;
-        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getNamedNode(), context.getNewObject())) {
-            if (null == ((NamedNode) context.getNewObject()).getName()) {
-                ((NamedNode) context.getNewObject()).setName("<name>");
-            }
-            text = gaService.createPlainText(textShape, ((NamedNode) context.getNewObject()).getName());
-            fp.link(textShape, new Object[] { context.getNewObject(), YangModelUtil.MODEL_PACKAGE.getNamedNode_Name() });
-        } else {
-            text = gaService.createPlainText(textShape, title);
-        }
-        text.setStyle(StyleUtil.getStyleForDomainObjectText(fp.getDiagramTypeProvider().getDiagram()));
-        gaService.setLocationAndSize(text, DEFAULT_TEXT_HEIGHT + DEFAULT_V_ALIGN, 0, width, height);
-        
+        drawPictogramElementHeader(containerShape, context, fp, imageId, title, width, DEFAULT_TEXT_HEIGHT);        
         return containerShape;
 
     }

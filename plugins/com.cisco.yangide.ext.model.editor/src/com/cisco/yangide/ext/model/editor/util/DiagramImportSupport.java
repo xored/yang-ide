@@ -8,6 +8,7 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
+import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -93,6 +94,9 @@ public class DiagramImportSupport {
     
     public static void drawLine(Node n, IFeatureProvider fp) {
         Anchor start = YangModelUIUtil.getChopboxAnchor(elements.get(n));
+        if (YangModelUtil.hasConnection(n)) {
+            start = YangModelUIUtil.getBoxRelativeAnchor((AnchorContainer) elements.get(n));
+        }
         Anchor finish = null;
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getUses(), n)) {
             if (elements.containsKey(((Uses) n).getGrouping())) {

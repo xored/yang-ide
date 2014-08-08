@@ -96,7 +96,7 @@ public class StyleUtil {
             IGaService gaService, Style style) {
             style.setFilled(false);            
             style.setAngle(0);
-            style.setHorizontalAlignment(Orientation.ALIGNMENT_CENTER);
+            style.setHorizontalAlignment(Orientation.ALIGNMENT_LEFT);
             style.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
             style.setForeground(gaService.manageColor(diagram,
                 DOMAIN_OBJECT_TEXT_FOREGROUND));

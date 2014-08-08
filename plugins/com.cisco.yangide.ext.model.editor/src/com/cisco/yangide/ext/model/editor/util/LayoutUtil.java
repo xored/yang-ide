@@ -48,7 +48,8 @@ public class LayoutUtil {
         super();
     }
     
-    public static final int DEFAULT_DIAGRAM_LAYOUT_TYPE = 11; //CompositeLayoutAlgorithm [RadialLayoutAlgorithm+HorizontalShift]
+    public static final int DEFAULT_DIAGRAM_LAYOUT_TYPE = 9; //CompositeLayoutAlgorithm [DirectedGraphLayoutAlgorithm+HorizontalShift]
+    public static final int GRID_LAYOUT_TYPE = 3;
 
     /**
      * Used to keep track of the initial Connection locations for self connections<br/>
@@ -157,6 +158,42 @@ public class LayoutUtil {
             }
         }
         return map;
+    }
+    
+    private static List<SimpleNode> filterDiagramLayoutEntities(Map<Shape, SimpleNode> map) {
+        List<SimpleNode> result = new ArrayList<SimpleNode>();
+        for (Map.Entry<Shape, SimpleNode> entry : map.entrySet()) {
+            if (entry.getKey().getContainer() instanceof Diagram) {
+                result.add(entry.getValue());
+            }
+        }
+        return result;
+    }
+    
+    private static double[] getPreferedLayoutAreaSize(List<SimpleNode> entities, LayoutAlgorithm layout) {
+        double maxW = 0D;
+        double maxH = 0D;
+        double fullW = 0D;
+        double fullH = 0D;
+        
+        for (SimpleNode node : entities) {
+            fullW += node.getWidth();
+            if (maxW < node.getWidth()) {
+                maxW = node.getWidth();
+            }
+            fullH += node.getHeight();
+            if (maxH < node.getHeight()) {
+                maxH = node.getHeight();
+            }
+        }
+        if (layout instanceof VerticalLayoutAlgorithm) {
+            return new double[] {maxW + 2 * YangModelUIUtil.DEFAULT_V_ALIGN, fullH + entities.size() * YangModelUIUtil.DEFAULT_V_ALIGN};
+        }
+        if (layout instanceof HorizontalLayoutAlgorithm) {
+            return new double[] {fullW + entities.size() * YangModelUIUtil.DEFAULT_V_ALIGN, maxH + 2 * YangModelUIUtil.DEFAULT_H_ALIGN};
+        }
+        Double n = Math.ceil(Math.sqrt(entities.size()));
+        return new double[] {(maxW + YangModelUIUtil.DEFAULT_V_ALIGN) * n, (maxH + YangModelUIUtil.DEFAULT_H_ALIGN) * n};
     }
 
     /**
@@ -297,13 +334,12 @@ public class LayoutUtil {
                 LayoutRelationship[] connections = getConnectionEntities(fp.getDiagramTypeProvider().getDiagram(), map);
 
                 // Setup the array of Shape LayoutEntity
-                LayoutEntity[] entities = map.values().toArray(new LayoutEntity[0]);
-
-                // Get the diagram GraphicsAlgorithmn (we need the graph dimensions)
-                GraphicsAlgorithm ga = fp.getDiagramTypeProvider().getDiagram().getGraphicsAlgorithm();
+                List<SimpleNode> diagramEntities = filterDiagramLayoutEntities(map);
+                LayoutEntity[] entities = diagramEntities.toArray(new LayoutEntity[0]);//map.values().toArray(new LayoutEntity[0]);
+                double[] preferedSize = getPreferedLayoutAreaSize(diagramEntities, layoutAlgorithm);
 
                 // Apply the LayoutAlgorithmn
-                layoutAlgorithm.applyLayout(entities, connections, 0, 0, ga.getWidth(), ga.getHeight(), false, false);
+                layoutAlgorithm.applyLayout(entities, connections, 0, 0, preferedSize[0], preferedSize[1],/*Math.min(preferedSize[0], ga.getWidth()), Math.min(preferedSize[1], ga.getHeight()),*/ false, false);
 
                 // Update the Graphiti Shapes and Connections locations
                 updateGraphCoordinates(entities, connections);
@@ -318,7 +354,11 @@ public class LayoutUtil {
     }
     
     public static void layoutDiagram(IFeatureProvider fp) {
-        layoutDiagram(fp, DEFAULT_DIAGRAM_LAYOUT_TYPE);
+        if (null == fp.getDiagramTypeProvider().getDiagram().getConnections() || fp.getDiagramTypeProvider().getDiagram().getConnections().isEmpty()) {
+            layoutDiagram(fp, GRID_LAYOUT_TYPE); // if no connections layout as grid
+        } else {
+            layoutDiagram(fp, DEFAULT_DIAGRAM_LAYOUT_TYPE);
+        }
     }
     
     public static void layoutContainerShape(ContainerShape cs, IFeatureProvider fp) {
@@ -333,16 +373,18 @@ public class LayoutUtil {
                 line = (Polyline) sh.getGraphicsAlgorithm();
             }
             if (null != fp.getBusinessObjectForPictogramElement(sh) && fp.getBusinessObjectForPictogramElement(sh) != fp.getBusinessObjectForPictogramElement(cs)) {
-                sh.getGraphicsAlgorithm().setX(2 * YangModelUIUtil.DEFAULT_V_ALIGN);
+                sh.getGraphicsAlgorithm().setX(YangModelUIUtil.DEFAULT_V_ALIGN);
                 sh.getGraphicsAlgorithm().setY(y + YangModelUIUtil.DEFAULT_H_ALIGN);
+                sh.getGraphicsAlgorithm().setWidth(sh.getContainer().getGraphicsAlgorithm().getWidth() - 2 * YangModelUIUtil.DEFAULT_V_ALIGN);
             }
+            
             if (x < sh.getGraphicsAlgorithm().getWidth()) {
                 x = sh.getGraphicsAlgorithm().getWidth();
             }
             y = sh.getGraphicsAlgorithm().getY() + sh.getGraphicsAlgorithm().getHeight();
         }
-        if (x + 3 * YangModelUIUtil.DEFAULT_V_ALIGN > cs.getGraphicsAlgorithm().getWidth()) {
-            cs.getGraphicsAlgorithm().setWidth(x + 3 * YangModelUIUtil.DEFAULT_V_ALIGN);
+        if (x + 2 * YangModelUIUtil.DEFAULT_V_ALIGN > cs.getGraphicsAlgorithm().getWidth()) {
+            cs.getGraphicsAlgorithm().setWidth(x + 2 * YangModelUIUtil.DEFAULT_V_ALIGN);
         }
         if (y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN > cs.getGraphicsAlgorithm().getHeight()) {
             cs.getGraphicsAlgorithm().setHeight(y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN);
