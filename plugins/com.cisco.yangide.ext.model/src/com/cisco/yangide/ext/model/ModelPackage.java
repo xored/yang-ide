@@ -76,13 +76,22 @@ public interface ModelPackage extends EPackage {
     int NODE__PARENT = 0;
 
     /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int NODE__REF_ID = 1;
+
+    /**
      * The number of structural features of the '<em>Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int NODE_FEATURE_COUNT = 1;
+    int NODE_FEATURE_COUNT = 2;
 
     /**
      * The number of operations of the '<em>Node</em>' class.
@@ -111,6 +120,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int NAMED_NODE__PARENT = NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int NAMED_NODE__REF_ID = NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -157,6 +175,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int NAMED_CONTAINING_NODE__PARENT = NAMED_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int NAMED_CONTAINING_NODE__REF_ID = NAMED_NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -212,6 +239,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int MODULE__PARENT = NAMED_CONTAINING_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int MODULE__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -287,6 +323,15 @@ public interface ModelPackage extends EPackage {
     int GROUPING__PARENT = NAMED_CONTAINING_NODE__PARENT;
 
     /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GROUPING__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
+
+    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -351,6 +396,15 @@ public interface ModelPackage extends EPackage {
     int LEAF__PARENT = NAMED_NODE__PARENT;
 
     /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LEAF__REF_ID = NAMED_NODE__REF_ID;
+
+    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -404,6 +458,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int CONTAINER__PARENT = NAMED_CONTAINING_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CONTAINER__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -470,6 +533,15 @@ public interface ModelPackage extends EPackage {
     int CONTAINING_NODE__PARENT = NODE__PARENT;
 
     /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CONTAINING_NODE__REF_ID = NODE__REF_ID;
+
+    /**
      * The feature id for the '<em><b>Children</b></em>' containment reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -514,6 +586,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int SUBMODULE__PARENT = MODULE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUBMODULE__REF_ID = MODULE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -626,6 +707,15 @@ public interface ModelPackage extends EPackage {
     int CHOICE__PARENT = NAMED_CONTAINING_NODE__PARENT;
 
     /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CHOICE__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
+
+    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -679,6 +769,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int LEAF_LIST__PARENT = NAMED_CONTAINING_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LEAF_LIST__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -736,6 +835,15 @@ public interface ModelPackage extends EPackage {
     int ANYXML__PARENT = NAMED_NODE__PARENT;
 
     /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ANYXML__REF_ID = NAMED_NODE__REF_ID;
+
+    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -782,6 +890,15 @@ public interface ModelPackage extends EPackage {
     int IMPORT__PARENT = NODE__PARENT;
 
     /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IMPORT__REF_ID = NODE__REF_ID;
+
+    /**
      * The feature id for the '<em><b>Module</b></em>' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -826,6 +943,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int INCLUDE__PARENT = NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INCLUDE__REF_ID = NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Submodule</b></em>' containment reference.
@@ -937,6 +1063,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int LIST__PARENT = NAMED_CONTAINING_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LIST__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1077,6 +1212,15 @@ public interface ModelPackage extends EPackage {
     int USES__PARENT = NODE__PARENT;
 
     /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int USES__REF_ID = NODE__REF_ID;
+
+    /**
      * The feature id for the '<em><b>Grouping</b></em>' reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1130,6 +1274,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int RPC__PARENT = NAMED_CONTAINING_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int RPC__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1187,6 +1340,15 @@ public interface ModelPackage extends EPackage {
     int RPC_IO__PARENT = CONTAINING_NODE__PARENT;
 
     /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int RPC_IO__REF_ID = CONTAINING_NODE__REF_ID;
+
+    /**
      * The feature id for the '<em><b>Children</b></em>' containment reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1240,6 +1402,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int NOTIFICATION__PARENT = NAMED_CONTAINING_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int NOTIFICATION__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1297,6 +1468,15 @@ public interface ModelPackage extends EPackage {
     int AUGMENT__PARENT = NAMED_CONTAINING_NODE__PARENT;
 
     /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int AUGMENT__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
+
+    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1352,6 +1532,15 @@ public interface ModelPackage extends EPackage {
     int EXTENSION__PARENT = NAMED_NODE__PARENT;
 
     /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int EXTENSION__REF_ID = NAMED_NODE__REF_ID;
+
+    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1396,6 +1585,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int FEATURE__PARENT = NAMED_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int FEATURE__REF_ID = NAMED_NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1444,6 +1642,15 @@ public interface ModelPackage extends EPackage {
     int DEVIATION__PARENT = NAMED_NODE__PARENT;
 
     /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DEVIATION__REF_ID = NAMED_NODE__REF_ID;
+
+    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1488,6 +1695,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int IDENTITY__PARENT = NAMED_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IDENTITY__REF_ID = NAMED_NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1608,6 +1824,17 @@ public interface ModelPackage extends EPackage {
      * @generated
      */
     EReference getNode_Parent();
+
+    /**
+     * Returns the meta object for the attribute '{@link com.cisco.yangide.ext.model.Node#getRefId <em>Ref Id</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Ref Id</em>'.
+     * @see com.cisco.yangide.ext.model.Node#getRefId()
+     * @see #getNode()
+     * @generated
+     */
+    EAttribute getNode_RefId();
 
     /**
      * Returns the meta object for class '{@link com.cisco.yangide.ext.model.NamedNode <em>Named Node</em>}'.
@@ -2088,6 +2315,14 @@ public interface ModelPackage extends EPackage {
          * @generated
          */
         EReference NODE__PARENT = eINSTANCE.getNode_Parent();
+
+        /**
+         * The meta object literal for the '<em><b>Ref Id</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute NODE__REF_ID = eINSTANCE.getNode_RefId();
 
         /**
          * The meta object literal for the '{@link com.cisco.yangide.ext.model.NamedNode <em>Named Node</em>}' class.

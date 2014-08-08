@@ -31,6 +31,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ChoiceImpl#getParent <em>Parent</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.ChoiceImpl#getRefId <em>Ref Id</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ChoiceImpl#getName <em>Name</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ChoiceImpl#getChildren <em>Children</em>}</li>
  * </ul>
@@ -48,6 +49,26 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
      * @ordered
      */
     protected Node parent;
+
+    /**
+     * The default value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getRefId()
+     * @generated
+     * @ordered
+     */
+    protected static final String REF_ID_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getRefId()
+     * @generated
+     * @ordered
+     */
+    protected String refId = REF_ID_EDEFAULT;
 
     /**
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -141,6 +162,27 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
      * <!-- end-user-doc -->
      * @generated
      */
+    public String getRefId() {
+        return refId;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setRefId(String newRefId) {
+        String oldRefId = refId;
+        refId = newRefId;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.CHOICE__REF_ID, oldRefId, refId));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public String getName() {
         return name;
     }
@@ -194,6 +236,8 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
             case ModelPackage.CHOICE__PARENT:
                 if (resolve) return getParent();
                 return basicGetParent();
+            case ModelPackage.CHOICE__REF_ID:
+                return getRefId();
             case ModelPackage.CHOICE__NAME:
                 return getName();
             case ModelPackage.CHOICE__CHILDREN:
@@ -213,6 +257,9 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
         switch (featureID) {
             case ModelPackage.CHOICE__PARENT:
                 setParent((Node)newValue);
+                return;
+            case ModelPackage.CHOICE__REF_ID:
+                setRefId((String)newValue);
                 return;
             case ModelPackage.CHOICE__NAME:
                 setName((String)newValue);
@@ -236,6 +283,9 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
             case ModelPackage.CHOICE__PARENT:
                 setParent((Node)null);
                 return;
+            case ModelPackage.CHOICE__REF_ID:
+                setRefId(REF_ID_EDEFAULT);
+                return;
             case ModelPackage.CHOICE__NAME:
                 setName(NAME_EDEFAULT);
                 return;
@@ -256,6 +306,8 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
         switch (featureID) {
             case ModelPackage.CHOICE__PARENT:
                 return parent != null;
+            case ModelPackage.CHOICE__REF_ID:
+                return REF_ID_EDEFAULT == null ? refId != null : !REF_ID_EDEFAULT.equals(refId);
             case ModelPackage.CHOICE__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.CHOICE__CHILDREN:
@@ -306,7 +358,9 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
         if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (name: ");
+        result.append(" (refId: ");
+        result.append(refId);
+        result.append(", name: ");
         result.append(name);
         result.append(')');
         return result.toString();

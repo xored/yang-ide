@@ -12,6 +12,8 @@
   <eClassifiers xsi:type="ecore:EClass" name="Container" eSuperTypes="#//NamedContainingNode #//TaggedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Node" abstract="true" interface="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//Node"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="refId" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"
+        transient="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="NamedNode" abstract="true" interface="true"
       eSuperTypes="#//Node">

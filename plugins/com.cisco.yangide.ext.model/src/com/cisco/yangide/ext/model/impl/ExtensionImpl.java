@@ -22,6 +22,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * The following features are implemented:
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ExtensionImpl#getParent <em>Parent</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.ExtensionImpl#getRefId <em>Ref Id</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ExtensionImpl#getName <em>Name</em>}</li>
  * </ul>
  * </p>
@@ -38,6 +39,26 @@ public class ExtensionImpl extends MinimalEObjectImpl.Container implements Exten
      * @ordered
      */
     protected Node parent;
+
+    /**
+     * The default value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getRefId()
+     * @generated
+     * @ordered
+     */
+    protected static final String REF_ID_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getRefId()
+     * @generated
+     * @ordered
+     */
+    protected String refId = REF_ID_EDEFAULT;
 
     /**
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -121,6 +142,27 @@ public class ExtensionImpl extends MinimalEObjectImpl.Container implements Exten
      * <!-- end-user-doc -->
      * @generated
      */
+    public String getRefId() {
+        return refId;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setRefId(String newRefId) {
+        String oldRefId = refId;
+        refId = newRefId;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.EXTENSION__REF_ID, oldRefId, refId));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public String getName() {
         return name;
     }
@@ -148,6 +190,8 @@ public class ExtensionImpl extends MinimalEObjectImpl.Container implements Exten
             case ModelPackage.EXTENSION__PARENT:
                 if (resolve) return getParent();
                 return basicGetParent();
+            case ModelPackage.EXTENSION__REF_ID:
+                return getRefId();
             case ModelPackage.EXTENSION__NAME:
                 return getName();
         }
@@ -164,6 +208,9 @@ public class ExtensionImpl extends MinimalEObjectImpl.Container implements Exten
         switch (featureID) {
             case ModelPackage.EXTENSION__PARENT:
                 setParent((Node)newValue);
+                return;
+            case ModelPackage.EXTENSION__REF_ID:
+                setRefId((String)newValue);
                 return;
             case ModelPackage.EXTENSION__NAME:
                 setName((String)newValue);
@@ -183,6 +230,9 @@ public class ExtensionImpl extends MinimalEObjectImpl.Container implements Exten
             case ModelPackage.EXTENSION__PARENT:
                 setParent((Node)null);
                 return;
+            case ModelPackage.EXTENSION__REF_ID:
+                setRefId(REF_ID_EDEFAULT);
+                return;
             case ModelPackage.EXTENSION__NAME:
                 setName(NAME_EDEFAULT);
                 return;
@@ -200,6 +250,8 @@ public class ExtensionImpl extends MinimalEObjectImpl.Container implements Exten
         switch (featureID) {
             case ModelPackage.EXTENSION__PARENT:
                 return parent != null;
+            case ModelPackage.EXTENSION__REF_ID:
+                return REF_ID_EDEFAULT == null ? refId != null : !REF_ID_EDEFAULT.equals(refId);
             case ModelPackage.EXTENSION__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
         }
@@ -216,7 +268,9 @@ public class ExtensionImpl extends MinimalEObjectImpl.Container implements Exten
         if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (name: ");
+        result.append(" (refId: ");
+        result.append(refId);
+        result.append(", name: ");
         result.append(name);
         result.append(')');
         return result.toString();
