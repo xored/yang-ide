@@ -40,36 +40,47 @@ import com.cisco.yangide.ext.model.impl.ModelFactoryImpl;
 import com.cisco.yangide.ext.model.impl.ModelPackageImpl;
 
 public class YangModelUtil {
-    
+
     private YangModelUtil() {
         super();
     }
 
     private static Map<EClass, List<EClass>> compositeNodeMap = new HashMap<EClass, List<EClass>>();
     private static final List<EClass> connections = new ArrayList<EClass>();
-    
+
     private static Map<Class<? extends ASTNode>, EClass> astNodes = new HashMap<Class<? extends ASTNode>, EClass>();
     public static final ModelPackage MODEL_PACKAGE = ModelPackageImpl.init();
 
     static {
-        compositeNodeMap.put(MODEL_PACKAGE.getAugment(), Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoice(),
-                MODEL_PACKAGE.getContainer(),  MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
-                 MODEL_PACKAGE.getUses()));
-        compositeNodeMap.put(MODEL_PACKAGE.getContainer(), Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoice(),
-                MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
+        compositeNodeMap.put(MODEL_PACKAGE.getAugment(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
+                MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getLeaf(),
+                MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getUses()));
+        compositeNodeMap.put(MODEL_PACKAGE.getContainer(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
+                MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(),
+                MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
                 MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
-        compositeNodeMap.put(MODEL_PACKAGE.getGrouping(), Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoice(),
-                MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getLeaf(),  MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
-        
-        compositeNodeMap.put(MODEL_PACKAGE.getModule(), Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getAugment(), MODEL_PACKAGE.getChoice(),
-                MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getDeviation(), MODEL_PACKAGE.getExtension(), MODEL_PACKAGE.getFeature(), MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getIdentity(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getNotification(), MODEL_PACKAGE.getRpc(), MODEL_PACKAGE.getUses()));        
-        compositeNodeMap.put(MODEL_PACKAGE.getNotification(), Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoice(),
-                MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
-                MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));     
-        compositeNodeMap.put(MODEL_PACKAGE.getRpc(), Arrays.asList(MODEL_PACKAGE.getRpcIO(), MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getTypedef()));
-        compositeNodeMap.put(MODEL_PACKAGE.getRpcIO(), Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(),
-                MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
-        
+        compositeNodeMap.put(MODEL_PACKAGE.getGrouping(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
+                MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getContainer(),
+                MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
+                MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
+
+        compositeNodeMap.put(MODEL_PACKAGE.getModule(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
+                MODEL_PACKAGE.getAugment(), MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(),
+                MODEL_PACKAGE.getDeviation(), MODEL_PACKAGE.getExtension(), MODEL_PACKAGE.getFeature(),
+                MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getIdentity(), MODEL_PACKAGE.getLeaf(),
+                MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getNotification(),
+                MODEL_PACKAGE.getRpc(), MODEL_PACKAGE.getUses()));
+        compositeNodeMap.put(MODEL_PACKAGE.getNotification(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
+                MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(),
+                MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
+                MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
+        compositeNodeMap.put(MODEL_PACKAGE.getRpc(),
+                Arrays.asList(MODEL_PACKAGE.getRpcIO(), MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getTypedef()));
+        compositeNodeMap.put(MODEL_PACKAGE.getRpcIO(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
+                MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(),
+                MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
+                MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
+
         astNodes.put(com.cisco.yangide.core.dom.Module.class, MODEL_PACKAGE.getModule());
         astNodes.put(GroupingDefinition.class, MODEL_PACKAGE.getGrouping());
         astNodes.put(ContrainerSchemaNode.class, MODEL_PACKAGE.getContainer());
@@ -84,7 +95,7 @@ public class YangModelUtil {
         astNodes.put(ExtensionDefinition.class, MODEL_PACKAGE.getExtension());
         astNodes.put(FeatureDefinition.class, MODEL_PACKAGE.getFeature());
         astNodes.put(IdentitySchemaNode.class, MODEL_PACKAGE.getIdentity());
-        
+
         connections.add(YangModelUtil.MODEL_PACKAGE.getUses());
     }
 
@@ -108,28 +119,30 @@ public class YangModelUtil {
         }
         return false;
     }
-    
+
     public static void move(Object source, Object target, Object obj) {
         remove(source, obj);
         add(target, obj);
     }
-    
+
     public static void add(Object source, Object obj) {
-        if (null != source && null != obj && checkType(MODEL_PACKAGE.getContainingNode(), source) && checkType(MODEL_PACKAGE.getNode(), obj)) {
+        if (null != source && null != obj && checkType(MODEL_PACKAGE.getContainingNode(), source)
+                && checkType(MODEL_PACKAGE.getNode(), obj)) {
             ((ContainingNode) source).getChildren().add((Node) obj);
             ((Node) obj).setParent((ContainingNode) source);
         }
     }
-    
+
     public static void remove(Object source, Object obj) {
         if (null != source && null != obj && checkType(MODEL_PACKAGE.getContainingNode(), source)) {
             ((ContainingNode) source).getChildren().remove(obj);
         }
-        
+
         if (null != obj && checkType(MODEL_PACKAGE.getNode(), obj)) {
             ((Node) obj).setParent(null);
         }
     }
+
     public static boolean hasConnection(EObject tested) {
         if (!connections.contains(tested.eClass())) {
             for (EClass c : connections) {
@@ -142,7 +155,7 @@ public class YangModelUtil {
             return true;
         }
     }
-    
+
     public static boolean hasReference(EClass parent, EClass ref) {
         for (EStructuralFeature esf : parent.getEAllStructuralFeatures()) {
             if (esf.getEType().getClassifierID() == ref.getClassifierID()) {
@@ -151,15 +164,15 @@ public class YangModelUtil {
         }
         return false;
     }
-    
+
     public static boolean checkType(EClass parent, Object tested) {
         return null != tested && tested instanceof EObject && checkType(parent, ((EObject) tested).eClass());
     }
-    
+
     public static boolean checkType(EClass parent, EClass tested) {
         return parent.isSuperTypeOf(tested);
     }
-    
+
     private static boolean hasCircles(ContainingNode parent, Node child) {
         Set<Node> checked = new HashSet<Node>();
         List<Node> descendants = new ArrayList<Node>();
@@ -178,19 +191,21 @@ public class YangModelUtil {
     }
 
     private static List<EClass> getPossibleChildren(EClass e) {
-        return (null != compositeNodeMap.get(e) ? compositeNodeMap.get(e) : Collections
-                .<EClass> emptyList());
+        return (null != compositeNodeMap.get(e) ? compositeNodeMap.get(e) : Collections.<EClass> emptyList());
     }
-   
-    public static Module exportModel(com.cisco.yangide.core.dom.Module module) {
-        return (Module) createEObject(module, null);
+
+    public static Module exportModel(com.cisco.yangide.core.dom.Module module, Map<Node, ASTNode> relations) {
+        return (Module) createEObject(module, null, relations);
     }
-    
-    private static EObject createEObject(ASTNode n, ContainingNode parent) {
+
+    private static EObject createEObject(ASTNode n, ContainingNode parent, Map<Node, ASTNode> relations) {
         EClass cl = getEClass(n.getClass());
         if (null != cl) {
             EObject o = ModelFactoryImpl.eINSTANCE.create(cl);
             if (null != o) {
+                if (o instanceof Node) {
+                    relations.put((Node) o, n);
+                }
                 setName(o, n);
                 setTags(o, n);
                 setAdditionalInfo(o, n);
@@ -200,7 +215,7 @@ public class YangModelUtil {
                 if (checkType(MODEL_PACKAGE.getContainingNode(), o)) {
                     if (n instanceof ASTCompositeNode) {
                         for (ASTNode c : ((ASTCompositeNode) n).getChildren()) {
-                            createEObject(c, (ContainingNode) o);
+                            createEObject(c, (ContainingNode) o, relations);
                         }
                     }
                 }
@@ -209,7 +224,7 @@ public class YangModelUtil {
         }
         return null;
     }
-    
+
     private static void setAdditionalInfo(EObject o, ASTNode n) {
         if (checkType(MODEL_PACKAGE.getRpcIO(), o)) {
             ((RpcIO) o).setInput(n instanceof RpcInputNode);
@@ -220,9 +235,11 @@ public class YangModelUtil {
             }
         }
     }
+
     private static void setTags(EObject o, ASTNode n) {
         // TODO
     }
+
     private static void setName(EObject o, ASTNode n) {
         if (checkType(MODEL_PACKAGE.getNamedNode(), o)) {
             if (n instanceof ASTNamedNode) {
@@ -230,11 +247,11 @@ public class YangModelUtil {
             }
         }
     }
-    
-    private static EClass getEClass(Class<? extends ASTNode> c) {
+
+    public static EClass getEClass(Class<? extends ASTNode> c) {
         EClass ec = astNodes.get(c);
         if (null == ec) {
-            for(Map.Entry<Class<? extends ASTNode>, EClass> entry : astNodes.entrySet()) {
+            for (Map.Entry<Class<? extends ASTNode>, EClass> entry : astNodes.entrySet()) {
                 if (c.isAssignableFrom(entry.getKey())) {
                     return entry.getValue();
                 }
@@ -242,8 +259,8 @@ public class YangModelUtil {
         }
         return ec;
     }
-    
-    public static<T extends EObject> List<T> filter(List<T> list, EClass ec) {
+
+    public static <T extends EObject> List<T> filter(List<T> list, EClass ec) {
         List<T> result = new ArrayList<T>();
         for (T n : list) {
             if (checkType(ec, n)) {
@@ -252,5 +269,5 @@ public class YangModelUtil {
         }
         return result;
     }
-    
+
 }

@@ -8,6 +8,7 @@ import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Revision;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -32,7 +33,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ModuleImpl#getParent <em>Parent</em>}</li>
- *   <li>{@link com.cisco.yangide.ext.model.impl.ModuleImpl#getRefId <em>Ref Id</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ModuleImpl#getName <em>Name</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ModuleImpl#getChildren <em>Children</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ModuleImpl#getNamespace <em>Namespace</em>}</li>
@@ -52,26 +52,6 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
      * @ordered
      */
     protected Node parent;
-
-    /**
-     * The default value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getRefId()
-     * @generated
-     * @ordered
-     */
-    protected static final String REF_ID_EDEFAULT = null;
-
-    /**
-     * The cached value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getRefId()
-     * @generated
-     * @ordered
-     */
-    protected String refId = REF_ID_EDEFAULT;
 
     /**
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -195,27 +175,6 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String getRefId() {
-        return refId;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setRefId(String newRefId) {
-        String oldRefId = refId;
-        refId = newRefId;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.MODULE__REF_ID, oldRefId, refId));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public String getName() {
         return name;
     }
@@ -282,6 +241,17 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
      * <!-- end-user-doc -->
      * @generated
      */
+    public String toYangString() {
+        // TODO: implement this method
+        // Ensure that you remove @generated or mark it @generated NOT
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -304,8 +274,6 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
             case ModelPackage.MODULE__PARENT:
                 if (resolve) return getParent();
                 return basicGetParent();
-            case ModelPackage.MODULE__REF_ID:
-                return getRefId();
             case ModelPackage.MODULE__NAME:
                 return getName();
             case ModelPackage.MODULE__CHILDREN:
@@ -329,9 +297,6 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
         switch (featureID) {
             case ModelPackage.MODULE__PARENT:
                 setParent((Node)newValue);
-                return;
-            case ModelPackage.MODULE__REF_ID:
-                setRefId((String)newValue);
                 return;
             case ModelPackage.MODULE__NAME:
                 setName((String)newValue);
@@ -362,9 +327,6 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
             case ModelPackage.MODULE__PARENT:
                 setParent((Node)null);
                 return;
-            case ModelPackage.MODULE__REF_ID:
-                setRefId(REF_ID_EDEFAULT);
-                return;
             case ModelPackage.MODULE__NAME:
                 setName(NAME_EDEFAULT);
                 return;
@@ -391,8 +353,6 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
         switch (featureID) {
             case ModelPackage.MODULE__PARENT:
                 return parent != null;
-            case ModelPackage.MODULE__REF_ID:
-                return REF_ID_EDEFAULT == null ? refId != null : !REF_ID_EDEFAULT.equals(refId);
             case ModelPackage.MODULE__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MODULE__CHILDREN:
@@ -443,13 +403,25 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
      * @generated
      */
     @Override
+    public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
+        switch (operationID) {
+            case ModelPackage.MODULE___TO_YANG_STRING:
+                return toYangString();
+        }
+        return super.eInvoke(operationID, arguments);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
     public String toString() {
         if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (refId: ");
-        result.append(refId);
-        result.append(", name: ");
+        result.append(" (name: ");
         result.append(name);
         result.append(", namespace: ");
         result.append(namespace);

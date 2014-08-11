@@ -4,6 +4,7 @@ package com.cisco.yangide.ext.model;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -76,22 +77,22 @@ public interface ModelPackage extends EPackage {
     int NODE__PARENT = 0;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int NODE__REF_ID = 1;
-
-    /**
      * The number of structural features of the '<em>Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int NODE_FEATURE_COUNT = 2;
+    int NODE_FEATURE_COUNT = 1;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int NODE___TO_YANG_STRING = 0;
 
     /**
      * The number of operations of the '<em>Node</em>' class.
@@ -100,7 +101,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int NODE_OPERATION_COUNT = 0;
+    int NODE_OPERATION_COUNT = 1;
 
     /**
      * The meta object id for the '{@link com.cisco.yangide.ext.model.NamedNode <em>Named Node</em>}' class.
@@ -122,15 +123,6 @@ public interface ModelPackage extends EPackage {
     int NAMED_NODE__PARENT = NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int NAMED_NODE__REF_ID = NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -147,6 +139,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int NAMED_NODE_FEATURE_COUNT = NODE_FEATURE_COUNT + 1;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int NAMED_NODE___TO_YANG_STRING = NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Named Node</em>' class.
@@ -177,15 +178,6 @@ public interface ModelPackage extends EPackage {
     int NAMED_CONTAINING_NODE__PARENT = NAMED_NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int NAMED_CONTAINING_NODE__REF_ID = NAMED_NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -211,6 +203,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int NAMED_CONTAINING_NODE_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 1;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int NAMED_CONTAINING_NODE___TO_YANG_STRING = NAMED_NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Named Containing Node</em>' class.
@@ -239,15 +240,6 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int MODULE__PARENT = NAMED_CONTAINING_NODE__PARENT;
-
-    /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int MODULE__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -295,6 +287,15 @@ public interface ModelPackage extends EPackage {
     int MODULE_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 2;
 
     /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int MODULE___TO_YANG_STRING = NAMED_CONTAINING_NODE___TO_YANG_STRING;
+
+    /**
      * The number of operations of the '<em>Module</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -321,15 +322,6 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int GROUPING__PARENT = NAMED_CONTAINING_NODE__PARENT;
-
-    /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int GROUPING__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -368,6 +360,15 @@ public interface ModelPackage extends EPackage {
     int GROUPING_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 1;
 
     /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int GROUPING___TO_YANG_STRING = NAMED_CONTAINING_NODE___TO_YANG_STRING;
+
+    /**
      * The number of operations of the '<em>Grouping</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -394,15 +395,6 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int LEAF__PARENT = NAMED_NODE__PARENT;
-
-    /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int LEAF__REF_ID = NAMED_NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -432,6 +424,15 @@ public interface ModelPackage extends EPackage {
     int LEAF_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 1;
 
     /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LEAF___TO_YANG_STRING = NAMED_NODE___TO_YANG_STRING;
+
+    /**
      * The number of operations of the '<em>Leaf</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -458,15 +459,6 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int CONTAINER__PARENT = NAMED_CONTAINING_NODE__PARENT;
-
-    /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int CONTAINER__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -505,6 +497,15 @@ public interface ModelPackage extends EPackage {
     int CONTAINER_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 1;
 
     /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CONTAINER___TO_YANG_STRING = NAMED_CONTAINING_NODE___TO_YANG_STRING;
+
+    /**
      * The number of operations of the '<em>Container</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -533,15 +534,6 @@ public interface ModelPackage extends EPackage {
     int CONTAINING_NODE__PARENT = NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int CONTAINING_NODE__REF_ID = NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Children</b></em>' containment reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -558,6 +550,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int CONTAINING_NODE_FEATURE_COUNT = NODE_FEATURE_COUNT + 1;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CONTAINING_NODE___TO_YANG_STRING = NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Containing Node</em>' class.
@@ -586,15 +587,6 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int SUBMODULE__PARENT = MODULE__PARENT;
-
-    /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int SUBMODULE__REF_ID = MODULE__REF_ID;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -649,6 +641,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int SUBMODULE_FEATURE_COUNT = MODULE_FEATURE_COUNT + 1;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUBMODULE___TO_YANG_STRING = MODULE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Submodule</em>' class.
@@ -707,15 +708,6 @@ public interface ModelPackage extends EPackage {
     int CHOICE__PARENT = NAMED_CONTAINING_NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int CHOICE__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -741,6 +733,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int CHOICE_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CHOICE___TO_YANG_STRING = NAMED_CONTAINING_NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Choice</em>' class.
@@ -771,15 +772,6 @@ public interface ModelPackage extends EPackage {
     int LEAF_LIST__PARENT = NAMED_CONTAINING_NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int LEAF_LIST__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -805,6 +797,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int LEAF_LIST_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LEAF_LIST___TO_YANG_STRING = NAMED_CONTAINING_NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Leaf List</em>' class.
@@ -835,15 +836,6 @@ public interface ModelPackage extends EPackage {
     int ANYXML__PARENT = NAMED_NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int ANYXML__REF_ID = NAMED_NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -860,6 +852,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int ANYXML_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ANYXML___TO_YANG_STRING = NAMED_NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Anyxml</em>' class.
@@ -890,15 +891,6 @@ public interface ModelPackage extends EPackage {
     int IMPORT__PARENT = NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int IMPORT__REF_ID = NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Module</b></em>' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -915,6 +907,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int IMPORT_FEATURE_COUNT = NODE_FEATURE_COUNT + 1;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IMPORT___TO_YANG_STRING = NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Import</em>' class.
@@ -945,15 +946,6 @@ public interface ModelPackage extends EPackage {
     int INCLUDE__PARENT = NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int INCLUDE__REF_ID = NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Submodule</b></em>' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -970,6 +962,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int INCLUDE_FEATURE_COUNT = NODE_FEATURE_COUNT + 1;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int INCLUDE___TO_YANG_STRING = NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Include</em>' class.
@@ -1065,15 +1066,6 @@ public interface ModelPackage extends EPackage {
     int LIST__PARENT = NAMED_CONTAINING_NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int LIST__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1099,6 +1091,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int LIST_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LIST___TO_YANG_STRING = NAMED_CONTAINING_NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>List</em>' class.
@@ -1212,15 +1213,6 @@ public interface ModelPackage extends EPackage {
     int USES__PARENT = NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int USES__REF_ID = NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Grouping</b></em>' reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1246,6 +1238,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int USES_FEATURE_COUNT = NODE_FEATURE_COUNT + 2;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int USES___TO_YANG_STRING = NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Uses</em>' class.
@@ -1276,15 +1277,6 @@ public interface ModelPackage extends EPackage {
     int RPC__PARENT = NAMED_CONTAINING_NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int RPC__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1310,6 +1302,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int RPC_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int RPC___TO_YANG_STRING = NAMED_CONTAINING_NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Rpc</em>' class.
@@ -1340,15 +1341,6 @@ public interface ModelPackage extends EPackage {
     int RPC_IO__PARENT = CONTAINING_NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int RPC_IO__REF_ID = CONTAINING_NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Children</b></em>' containment reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1374,6 +1366,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int RPC_IO_FEATURE_COUNT = CONTAINING_NODE_FEATURE_COUNT + 1;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int RPC_IO___TO_YANG_STRING = CONTAINING_NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Rpc IO</em>' class.
@@ -1404,15 +1405,6 @@ public interface ModelPackage extends EPackage {
     int NOTIFICATION__PARENT = NAMED_CONTAINING_NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int NOTIFICATION__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1438,6 +1430,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int NOTIFICATION_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int NOTIFICATION___TO_YANG_STRING = NAMED_CONTAINING_NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Notification</em>' class.
@@ -1468,15 +1469,6 @@ public interface ModelPackage extends EPackage {
     int AUGMENT__PARENT = NAMED_CONTAINING_NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int AUGMENT__REF_ID = NAMED_CONTAINING_NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1502,6 +1494,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int AUGMENT_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int AUGMENT___TO_YANG_STRING = NAMED_CONTAINING_NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Augment</em>' class.
@@ -1532,15 +1533,6 @@ public interface ModelPackage extends EPackage {
     int EXTENSION__PARENT = NAMED_NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int EXTENSION__REF_ID = NAMED_NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1557,6 +1549,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int EXTENSION_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int EXTENSION___TO_YANG_STRING = NAMED_NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Extension</em>' class.
@@ -1587,15 +1588,6 @@ public interface ModelPackage extends EPackage {
     int FEATURE__PARENT = NAMED_NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int FEATURE__REF_ID = NAMED_NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1612,6 +1604,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int FEATURE_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int FEATURE___TO_YANG_STRING = NAMED_NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Feature</em>' class.
@@ -1642,15 +1643,6 @@ public interface ModelPackage extends EPackage {
     int DEVIATION__PARENT = NAMED_NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int DEVIATION__REF_ID = NAMED_NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1667,6 +1659,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int DEVIATION_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int DEVIATION___TO_YANG_STRING = NAMED_NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Deviation</em>' class.
@@ -1697,15 +1698,6 @@ public interface ModelPackage extends EPackage {
     int IDENTITY__PARENT = NAMED_NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Ref Id</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int IDENTITY__REF_ID = NAMED_NODE__REF_ID;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1731,6 +1723,15 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int IDENTITY_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 1;
+
+    /**
+     * The operation id for the '<em>To Yang String</em>' operation.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IDENTITY___TO_YANG_STRING = NAMED_NODE___TO_YANG_STRING;
 
     /**
      * The number of operations of the '<em>Identity</em>' class.
@@ -1826,15 +1827,14 @@ public interface ModelPackage extends EPackage {
     EReference getNode_Parent();
 
     /**
-     * Returns the meta object for the attribute '{@link com.cisco.yangide.ext.model.Node#getRefId <em>Ref Id</em>}'.
+     * Returns the meta object for the '{@link com.cisco.yangide.ext.model.Node#toYangString() <em>To Yang String</em>}' operation.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Ref Id</em>'.
-     * @see com.cisco.yangide.ext.model.Node#getRefId()
-     * @see #getNode()
+     * @return the meta object for the '<em>To Yang String</em>' operation.
+     * @see com.cisco.yangide.ext.model.Node#toYangString()
      * @generated
      */
-    EAttribute getNode_RefId();
+    EOperation getNode__ToYangString();
 
     /**
      * Returns the meta object for class '{@link com.cisco.yangide.ext.model.NamedNode <em>Named Node</em>}'.
@@ -2317,12 +2317,12 @@ public interface ModelPackage extends EPackage {
         EReference NODE__PARENT = eINSTANCE.getNode_Parent();
 
         /**
-         * The meta object literal for the '<em><b>Ref Id</b></em>' attribute feature.
+         * The meta object literal for the '<em><b>To Yang String</b></em>' operation.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
          */
-        EAttribute NODE__REF_ID = eINSTANCE.getNode_RefId();
+        EOperation NODE___TO_YANG_STRING = eINSTANCE.getNode__ToYangString();
 
         /**
          * The meta object literal for the '{@link com.cisco.yangide.ext.model.NamedNode <em>Named Node</em>}' class.

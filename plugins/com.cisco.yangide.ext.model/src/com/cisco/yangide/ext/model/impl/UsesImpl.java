@@ -7,8 +7,10 @@ import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Uses;
 
+import java.lang.reflect.InvocationTargetException;
 import org.eclipse.emf.common.notify.Notification;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -23,7 +25,6 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * The following features are implemented:
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.UsesImpl#getParent <em>Parent</em>}</li>
- *   <li>{@link com.cisco.yangide.ext.model.impl.UsesImpl#getRefId <em>Ref Id</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.UsesImpl#getGrouping <em>Grouping</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.UsesImpl#getQName <em>QName</em>}</li>
  * </ul>
@@ -41,26 +42,6 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
      * @ordered
      */
     protected Node parent;
-
-    /**
-     * The default value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getRefId()
-     * @generated
-     * @ordered
-     */
-    protected static final String REF_ID_EDEFAULT = null;
-
-    /**
-     * The cached value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getRefId()
-     * @generated
-     * @ordered
-     */
-    protected String refId = REF_ID_EDEFAULT;
 
     /**
      * The cached value of the '{@link #getGrouping() <em>Grouping</em>}' reference.
@@ -154,27 +135,6 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String getRefId() {
-        return refId;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setRefId(String newRefId) {
-        String oldRefId = refId;
-        refId = newRefId;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.USES__REF_ID, oldRefId, refId));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public Grouping getGrouping() {
         if (grouping != null && grouping.eIsProxy()) {
             InternalEObject oldGrouping = (InternalEObject)grouping;
@@ -234,14 +194,23 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
      * <!-- end-user-doc -->
      * @generated
      */
+    public String toYangString() {
+        // TODO: implement this method
+        // Ensure that you remove @generated or mark it @generated NOT
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
             case ModelPackage.USES__PARENT:
                 if (resolve) return getParent();
                 return basicGetParent();
-            case ModelPackage.USES__REF_ID:
-                return getRefId();
             case ModelPackage.USES__GROUPING:
                 if (resolve) return getGrouping();
                 return basicGetGrouping();
@@ -261,9 +230,6 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
         switch (featureID) {
             case ModelPackage.USES__PARENT:
                 setParent((Node)newValue);
-                return;
-            case ModelPackage.USES__REF_ID:
-                setRefId((String)newValue);
                 return;
             case ModelPackage.USES__GROUPING:
                 setGrouping((Grouping)newValue);
@@ -286,9 +252,6 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
             case ModelPackage.USES__PARENT:
                 setParent((Node)null);
                 return;
-            case ModelPackage.USES__REF_ID:
-                setRefId(REF_ID_EDEFAULT);
-                return;
             case ModelPackage.USES__GROUPING:
                 setGrouping((Grouping)null);
                 return;
@@ -309,8 +272,6 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
         switch (featureID) {
             case ModelPackage.USES__PARENT:
                 return parent != null;
-            case ModelPackage.USES__REF_ID:
-                return REF_ID_EDEFAULT == null ? refId != null : !REF_ID_EDEFAULT.equals(refId);
             case ModelPackage.USES__GROUPING:
                 return grouping != null;
             case ModelPackage.USES__QNAME:
@@ -325,13 +286,25 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
      * @generated
      */
     @Override
+    public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
+        switch (operationID) {
+            case ModelPackage.USES___TO_YANG_STRING:
+                return toYangString();
+        }
+        return super.eInvoke(operationID, arguments);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
     public String toString() {
         if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (refId: ");
-        result.append(refId);
-        result.append(", qName: ");
+        result.append(" (qName: ");
         result.append(qName);
         result.append(')');
         return result.toString();

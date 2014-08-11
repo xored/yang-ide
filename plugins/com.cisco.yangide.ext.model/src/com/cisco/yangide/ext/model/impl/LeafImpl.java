@@ -8,6 +8,7 @@ import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.TaggedNode;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -32,7 +33,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.LeafImpl#getParent <em>Parent</em>}</li>
- *   <li>{@link com.cisco.yangide.ext.model.impl.LeafImpl#getRefId <em>Ref Id</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.LeafImpl#getName <em>Name</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.LeafImpl#getTags <em>Tags</em>}</li>
  * </ul>
@@ -50,26 +50,6 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
      * @ordered
      */
     protected Node parent;
-
-    /**
-     * The default value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getRefId()
-     * @generated
-     * @ordered
-     */
-    protected static final String REF_ID_EDEFAULT = null;
-
-    /**
-     * The cached value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getRefId()
-     * @generated
-     * @ordered
-     */
-    protected String refId = REF_ID_EDEFAULT;
 
     /**
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
@@ -163,27 +143,6 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String getRefId() {
-        return refId;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setRefId(String newRefId) {
-        String oldRefId = refId;
-        refId = newRefId;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LEAF__REF_ID, oldRefId, refId));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public String getName() {
         return name;
     }
@@ -215,6 +174,18 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
+     * @generated NOT
+     */
+    public String toYangString() {
+        StringBuilder sb = new StringBuilder("leaf ").append(getName()).append(" {\n");
+        sb.append("  type string;\n");
+        sb.append("}\n");
+        return sb.toString();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
      * @generated
      */
     @Override
@@ -237,8 +208,6 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
             case ModelPackage.LEAF__PARENT:
                 if (resolve) return getParent();
                 return basicGetParent();
-            case ModelPackage.LEAF__REF_ID:
-                return getRefId();
             case ModelPackage.LEAF__NAME:
                 return getName();
             case ModelPackage.LEAF__TAGS:
@@ -258,9 +227,6 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
         switch (featureID) {
             case ModelPackage.LEAF__PARENT:
                 setParent((Node)newValue);
-                return;
-            case ModelPackage.LEAF__REF_ID:
-                setRefId((String)newValue);
                 return;
             case ModelPackage.LEAF__NAME:
                 setName((String)newValue);
@@ -284,9 +250,6 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
             case ModelPackage.LEAF__PARENT:
                 setParent((Node)null);
                 return;
-            case ModelPackage.LEAF__REF_ID:
-                setRefId(REF_ID_EDEFAULT);
-                return;
             case ModelPackage.LEAF__NAME:
                 setName(NAME_EDEFAULT);
                 return;
@@ -307,8 +270,6 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
         switch (featureID) {
             case ModelPackage.LEAF__PARENT:
                 return parent != null;
-            case ModelPackage.LEAF__REF_ID:
-                return REF_ID_EDEFAULT == null ? refId != null : !REF_ID_EDEFAULT.equals(refId);
             case ModelPackage.LEAF__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.LEAF__TAGS:
@@ -355,13 +316,25 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
      * @generated
      */
     @Override
+    public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
+        switch (operationID) {
+            case ModelPackage.LEAF___TO_YANG_STRING:
+                return toYangString();
+        }
+        return super.eInvoke(operationID, arguments);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
     public String toString() {
         if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (refId: ");
-        result.append(refId);
-        result.append(", name: ");
+        result.append(" (name: ");
         result.append(name);
         result.append(')');
         return result.toString();

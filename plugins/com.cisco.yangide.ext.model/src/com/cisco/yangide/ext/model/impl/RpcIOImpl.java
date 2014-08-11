@@ -6,6 +6,7 @@ import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.RpcIO;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -30,7 +31,6 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.RpcIOImpl#getParent <em>Parent</em>}</li>
- *   <li>{@link com.cisco.yangide.ext.model.impl.RpcIOImpl#getRefId <em>Ref Id</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.RpcIOImpl#getChildren <em>Children</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.RpcIOImpl#isInput <em>Input</em>}</li>
  * </ul>
@@ -48,26 +48,6 @@ public class RpcIOImpl extends MinimalEObjectImpl.Container implements RpcIO {
      * @ordered
      */
     protected Node parent;
-
-    /**
-     * The default value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getRefId()
-     * @generated
-     * @ordered
-     */
-    protected static final String REF_ID_EDEFAULT = null;
-
-    /**
-     * The cached value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getRefId()
-     * @generated
-     * @ordered
-     */
-    protected String refId = REF_ID_EDEFAULT;
 
     /**
      * The cached value of the '{@link #getChildren() <em>Children</em>}' containment reference list.
@@ -161,27 +141,6 @@ public class RpcIOImpl extends MinimalEObjectImpl.Container implements RpcIO {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String getRefId() {
-        return refId;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setRefId(String newRefId) {
-        String oldRefId = refId;
-        refId = newRefId;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.RPC_IO__REF_ID, oldRefId, refId));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public EList<Node> getChildren() {
         if (children == null) {
             children = new EObjectContainmentEList<Node>(Node.class, this, ModelPackage.RPC_IO__CHILDREN);
@@ -215,6 +174,17 @@ public class RpcIOImpl extends MinimalEObjectImpl.Container implements RpcIO {
      * <!-- end-user-doc -->
      * @generated
      */
+    public String toYangString() {
+        // TODO: implement this method
+        // Ensure that you remove @generated or mark it @generated NOT
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -235,8 +205,6 @@ public class RpcIOImpl extends MinimalEObjectImpl.Container implements RpcIO {
             case ModelPackage.RPC_IO__PARENT:
                 if (resolve) return getParent();
                 return basicGetParent();
-            case ModelPackage.RPC_IO__REF_ID:
-                return getRefId();
             case ModelPackage.RPC_IO__CHILDREN:
                 return getChildren();
             case ModelPackage.RPC_IO__INPUT:
@@ -256,9 +224,6 @@ public class RpcIOImpl extends MinimalEObjectImpl.Container implements RpcIO {
         switch (featureID) {
             case ModelPackage.RPC_IO__PARENT:
                 setParent((Node)newValue);
-                return;
-            case ModelPackage.RPC_IO__REF_ID:
-                setRefId((String)newValue);
                 return;
             case ModelPackage.RPC_IO__CHILDREN:
                 getChildren().clear();
@@ -282,9 +247,6 @@ public class RpcIOImpl extends MinimalEObjectImpl.Container implements RpcIO {
             case ModelPackage.RPC_IO__PARENT:
                 setParent((Node)null);
                 return;
-            case ModelPackage.RPC_IO__REF_ID:
-                setRefId(REF_ID_EDEFAULT);
-                return;
             case ModelPackage.RPC_IO__CHILDREN:
                 getChildren().clear();
                 return;
@@ -305,8 +267,6 @@ public class RpcIOImpl extends MinimalEObjectImpl.Container implements RpcIO {
         switch (featureID) {
             case ModelPackage.RPC_IO__PARENT:
                 return parent != null;
-            case ModelPackage.RPC_IO__REF_ID:
-                return REF_ID_EDEFAULT == null ? refId != null : !REF_ID_EDEFAULT.equals(refId);
             case ModelPackage.RPC_IO__CHILDREN:
                 return children != null && !children.isEmpty();
             case ModelPackage.RPC_IO__INPUT:
@@ -321,13 +281,25 @@ public class RpcIOImpl extends MinimalEObjectImpl.Container implements RpcIO {
      * @generated
      */
     @Override
+    public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
+        switch (operationID) {
+            case ModelPackage.RPC_IO___TO_YANG_STRING:
+                return toYangString();
+        }
+        return super.eInvoke(operationID, arguments);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
     public String toString() {
         if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (refId: ");
-        result.append(refId);
-        result.append(", input: ");
+        result.append(" (input: ");
         result.append(input);
         result.append(')');
         return result.toString();

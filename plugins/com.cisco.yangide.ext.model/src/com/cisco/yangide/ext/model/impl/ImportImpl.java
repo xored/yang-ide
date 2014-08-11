@@ -7,9 +7,11 @@ import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Node;
 
+import java.lang.reflect.InvocationTargetException;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
 
+import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -24,7 +26,6 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * The following features are implemented:
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getParent <em>Parent</em>}</li>
- *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getRefId <em>Ref Id</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getModule <em>Module</em>}</li>
  * </ul>
  * </p>
@@ -41,26 +42,6 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
      * @ordered
      */
     protected Node parent;
-
-    /**
-     * The default value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getRefId()
-     * @generated
-     * @ordered
-     */
-    protected static final String REF_ID_EDEFAULT = null;
-
-    /**
-     * The cached value of the '{@link #getRefId() <em>Ref Id</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getRefId()
-     * @generated
-     * @ordered
-     */
-    protected String refId = REF_ID_EDEFAULT;
 
     /**
      * The cached value of the '{@link #getModule() <em>Module</em>}' containment reference.
@@ -134,27 +115,6 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String getRefId() {
-        return refId;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setRefId(String newRefId) {
-        String oldRefId = refId;
-        refId = newRefId;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.IMPORT__REF_ID, oldRefId, refId));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public Module getModule() {
         return module;
     }
@@ -198,6 +158,17 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
      * <!-- end-user-doc -->
      * @generated
      */
+    public String toYangString() {
+        // TODO: implement this method
+        // Ensure that you remove @generated or mark it @generated NOT
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -218,8 +189,6 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
             case ModelPackage.IMPORT__PARENT:
                 if (resolve) return getParent();
                 return basicGetParent();
-            case ModelPackage.IMPORT__REF_ID:
-                return getRefId();
             case ModelPackage.IMPORT__MODULE:
                 return getModule();
         }
@@ -236,9 +205,6 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
         switch (featureID) {
             case ModelPackage.IMPORT__PARENT:
                 setParent((Node)newValue);
-                return;
-            case ModelPackage.IMPORT__REF_ID:
-                setRefId((String)newValue);
                 return;
             case ModelPackage.IMPORT__MODULE:
                 setModule((Module)newValue);
@@ -258,9 +224,6 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
             case ModelPackage.IMPORT__PARENT:
                 setParent((Node)null);
                 return;
-            case ModelPackage.IMPORT__REF_ID:
-                setRefId(REF_ID_EDEFAULT);
-                return;
             case ModelPackage.IMPORT__MODULE:
                 setModule((Module)null);
                 return;
@@ -278,8 +241,6 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
         switch (featureID) {
             case ModelPackage.IMPORT__PARENT:
                 return parent != null;
-            case ModelPackage.IMPORT__REF_ID:
-                return REF_ID_EDEFAULT == null ? refId != null : !REF_ID_EDEFAULT.equals(refId);
             case ModelPackage.IMPORT__MODULE:
                 return module != null;
         }
@@ -292,14 +253,12 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
      * @generated
      */
     @Override
-    public String toString() {
-        if (eIsProxy()) return super.toString();
-
-        StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (refId: ");
-        result.append(refId);
-        result.append(')');
-        return result.toString();
+    public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
+        switch (operationID) {
+            case ModelPackage.IMPORT___TO_YANG_STRING:
+                return toYangString();
+        }
+        return super.eInvoke(operationID, arguments);
     }
 
 } //ImportImpl

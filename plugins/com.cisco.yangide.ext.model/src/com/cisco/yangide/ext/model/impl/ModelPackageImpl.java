@@ -35,6 +35,7 @@ import com.cisco.yangide.ext.model.Uses;
 
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EOperation;
 import org.eclipse.emf.ecore.EPackage;
 import org.eclipse.emf.ecore.EReference;
 
@@ -393,8 +394,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getNode_RefId() {
-        return (EAttribute)nodeEClass.getEStructuralFeatures().get(1);
+    public EOperation getNode__ToYangString() {
+        return nodeEClass.getEOperations().get(0);
     }
 
     /**
@@ -770,7 +771,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         nodeEClass = createEClass(NODE);
         createEReference(nodeEClass, NODE__PARENT);
-        createEAttribute(nodeEClass, NODE__REF_ID);
+        createEOperation(nodeEClass, NODE___TO_YANG_STRING);
 
         namedNodeEClass = createEClass(NAMED_NODE);
         createEAttribute(namedNodeEClass, NAMED_NODE__NAME);
@@ -906,7 +907,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         initEClass(nodeEClass, Node.class, "Node", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getNode_Parent(), this.getNode(), null, "parent", null, 0, 1, Node.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
-        initEAttribute(getNode_RefId(), theXMLTypePackage.getString(), "refId", null, 0, 1, Node.class, IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEOperation(getNode__ToYangString(), theXMLTypePackage.getString(), "toYangString", 0, 1, IS_UNIQUE, IS_ORDERED);
 
         initEClass(namedNodeEClass, NamedNode.class, "NamedNode", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEAttribute(getNamedNode_Name(), ecorePackage.getEString(), "name", null, 0, 1, NamedNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
