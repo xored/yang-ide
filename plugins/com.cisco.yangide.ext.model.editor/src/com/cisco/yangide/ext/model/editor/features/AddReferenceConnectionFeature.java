@@ -1,6 +1,5 @@
 package com.cisco.yangide.ext.model.editor.features;
 
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -26,7 +25,7 @@ public class AddReferenceConnectionFeature extends AbstractAddFeature {
 
     @Override
     public PictogramElement add(IAddContext context) {
-        return YangModelUIUtil.drawPictogramConnectionElement((IAddConnectionContext) context, getFeatureProvider(), ((EObject) context.getNewObject()).eClass().getName().toLowerCase());
+        return YangModelUIUtil.drawPictogramConnectionElement((IAddConnectionContext) context, getFeatureProvider(), /*((EObject) context.getNewObject()).eClass().getName().toLowerCase()*/ "");
     }
 
 }

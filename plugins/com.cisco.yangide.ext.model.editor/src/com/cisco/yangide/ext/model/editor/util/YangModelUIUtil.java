@@ -19,6 +19,7 @@ import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.Anchor;
 import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.BoxRelativeAnchor;
+import org.eclipse.graphiti.mm.pictograms.ChopboxAnchor;
 import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -77,8 +78,8 @@ public class YangModelUIUtil {
     }
    
    
-    public static Anchor getChopboxAnchor(PictogramElement pe) {
-        return Graphiti.getPeService().getChopboxAnchor((AnchorContainer) pe);
+    public static Anchor getChopboxAnchor(AnchorContainer ac) {
+        return Graphiti.getPeService().getChopboxAnchor(ac);
     }
     
     public static Anchor getBoxRelativeAnchor(AnchorContainer ac) {
@@ -182,7 +183,8 @@ public class YangModelUIUtil {
             result = drawAttributePictogramElement(context, fp, imageId, title);
         }
         fp.link(result, context.getNewObject());
-        Graphiti.getPeCreateService().createChopboxAnchor(result);
+        ChopboxAnchor anchor = Graphiti.getPeCreateService().createChopboxAnchor(result);
+        anchor.setReferencedGraphicsAlgorithm(result.getGraphicsAlgorithm());
         // create BoxRelativeAnchor for references
         if (context.getNewObject() instanceof EObject && YangModelUtil.hasConnection((EObject) context.getNewObject())){
             drawBoxRelativeAnchor(result, context, fp);

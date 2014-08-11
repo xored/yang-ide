@@ -98,5 +98,4 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         return new ICustomFeature[] { new DiagramLayoutCustomFeature(this) };
     }
     
-    
 }

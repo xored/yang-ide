@@ -93,14 +93,14 @@ public class DiagramImportSupport {
     }
     
     public static void drawLine(Node n, IFeatureProvider fp) {
-        Anchor start = YangModelUIUtil.getChopboxAnchor(elements.get(n));
+        Anchor start = YangModelUIUtil.getChopboxAnchor((AnchorContainer) elements.get(n));
         if (YangModelUtil.hasConnection(n)) {
             start = YangModelUIUtil.getBoxRelativeAnchor((AnchorContainer) elements.get(n));
         }
         Anchor finish = null;
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getUses(), n)) {
             if (elements.containsKey(((Uses) n).getGrouping())) {
-                finish = YangModelUIUtil.getChopboxAnchor(elements.get(((Uses) n).getGrouping()));
+                finish = YangModelUIUtil.getChopboxAnchor((AnchorContainer) elements.get(((Uses) n).getGrouping()));
             }
         }
         AddConnectionContext acc = new AddConnectionContext(start, finish);

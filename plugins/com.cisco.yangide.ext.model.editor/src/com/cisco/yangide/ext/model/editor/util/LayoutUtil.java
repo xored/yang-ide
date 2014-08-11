@@ -5,8 +5,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.context.impl.AddBendpointContext;
 import org.eclipse.graphiti.features.context.impl.LayoutContext;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
@@ -40,23 +43,33 @@ import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.VerticalLayoutAlgorithm;
 import org.eclipse.zest.layouts.dataStructures.BendPoint;
+import org.eclipse.zest.layouts.dataStructures.InternalNode;
+import org.eclipse.zest.layouts.dataStructures.InternalRelationship;
 import org.eclipse.zest.layouts.exampleStructures.SimpleNode;
 
+import com.cisco.yangide.ext.model.editor.util.connection.Position;
+import com.cisco.yangide.ext.model.editor.util.connection.RectilinearAvoidObstaclesPathFinder;
+import com.cisco.yangide.ext.model.editor.util.connection.RoutePath;
+
 public class LayoutUtil {
-    
+
     private LayoutUtil() {
         super();
     }
-    
-    public static final int DEFAULT_DIAGRAM_LAYOUT_TYPE = 9; //CompositeLayoutAlgorithm [DirectedGraphLayoutAlgorithm+HorizontalShift]
+
+    public static final int DEFAULT_DIAGRAM_LAYOUT_TYPE = 13;
     public static final int GRID_LAYOUT_TYPE = 3;
+    public static final double DEFAULT_DIAGRAM_LAYOUT_V_SHIFT = 10;
 
     /**
      * Used to keep track of the initial Connection locations for self connections<br/>
-     * The self connections cannot be computed by the LayoutAlgorithmn but the Nodes will probably be moved<br/>
-     * So we need to recompute the bend points locations based on the offset of the Anchor from the initial location
+     * The self connections cannot be computed by the LayoutAlgorithmn but the Nodes will probably
+     * be moved<br/>
+     * So we need to recompute the bend points locations based on the offset of the Anchor from the
+     * initial location
      * 
-     * @return a {@link Map} of initial {@link Anchor} location {@link Point} per {@link Connection}s
+     * @return a {@link Map} of initial {@link Anchor} location {@link Point} per {@link Connection}
+     * s
      */
     private static Map<Connection, Point> getSelfConnections(Diagram diagram) {
         IGaService gaService = Graphiti.getGaService();
@@ -75,10 +88,11 @@ public class LayoutUtil {
     }
 
     /**
-     * Reposition the bendpoints based on the offset from the initial {@link Anchor} location to the new location
+     * Reposition the bendpoints based on the offset from the initial {@link Anchor} location to the
+     * new location
      * 
-     * @param selves
-     *            The {@link Map} of initial {@link Anchor} location {@link Point} per {@link Connection}s
+     * @param selves The {@link Map} of initial {@link Anchor} location {@link Point} per
+     * {@link Connection}s
      */
     private static void adaptSelfBendPoints(Map<Connection, Point> selves) {
         for (Connection connection : selves.keySet()) {
@@ -100,8 +114,8 @@ public class LayoutUtil {
     }
 
     /**
-     * Reposition the Graphiti {@link PictogramElement}s and {@link Connection}s based on the
-     * Zest {@link LayoutAlgorithm} computed locations
+     * Reposition the Graphiti {@link PictogramElement}s and {@link Connection}s based on the Zest
+     * {@link LayoutAlgorithm} computed locations
      * 
      * @param entities
      * @param connections
@@ -123,7 +137,8 @@ public class LayoutUtil {
         IGaService gaService = Graphiti.getGaService();
         for (LayoutRelationship relationship : connections) {
             SimpleRelationship rel = (SimpleRelationship) relationship;
-            // Using FreeFormConnections with BendPoints, we reset them to the Zest computed locations
+            // Using FreeFormConnections with BendPoints, we reset them to the Zest computed
+            // locations
             FreeFormConnection connection = (FreeFormConnection) rel.getGraphData();
             connection.getBendpoints().clear();
             LayoutBendPoint[] bendPoints = rel.getBendPoints();
@@ -142,7 +157,9 @@ public class LayoutUtil {
     private static Map<Shape, SimpleNode> getLayoutEntities(IFeatureProvider fp) {
         return getLayoutEntities(fp, fp.getDiagramTypeProvider().getDiagram(), null, new HashMap<Shape, SimpleNode>());
     }
-    private static Map<Shape, SimpleNode> getLayoutEntities(IFeatureProvider fp, ContainerShape parent, SimpleNode entity, Map<Shape, SimpleNode> map) {
+
+    private static Map<Shape, SimpleNode> getLayoutEntities(IFeatureProvider fp, ContainerShape parent,
+            SimpleNode entity, Map<Shape, SimpleNode> map) {
         EList<Shape> children = parent.getChildren();
         for (Shape shape : children) {
             if (null != fp.getBusinessObjectForPictogramElement(shape)) {
@@ -159,7 +176,7 @@ public class LayoutUtil {
         }
         return map;
     }
-    
+
     private static List<SimpleNode> filterDiagramLayoutEntities(Map<Shape, SimpleNode> map) {
         List<SimpleNode> result = new ArrayList<SimpleNode>();
         for (Map.Entry<Shape, SimpleNode> entry : map.entrySet()) {
@@ -169,13 +186,13 @@ public class LayoutUtil {
         }
         return result;
     }
-    
+
     private static double[] getPreferedLayoutAreaSize(List<SimpleNode> entities, LayoutAlgorithm layout) {
         double maxW = 0D;
         double maxH = 0D;
         double fullW = 0D;
         double fullH = 0D;
-        
+        double screenW = 1000;
         for (SimpleNode node : entities) {
             fullW += node.getWidth();
             if (maxW < node.getWidth()) {
@@ -187,18 +204,27 @@ public class LayoutUtil {
             }
         }
         if (layout instanceof VerticalLayoutAlgorithm) {
-            return new double[] {maxW + 2 * YangModelUIUtil.DEFAULT_V_ALIGN, fullH + entities.size() * YangModelUIUtil.DEFAULT_V_ALIGN};
+            return new double[] { maxW + 2 * YangModelUIUtil.DEFAULT_V_ALIGN,
+                    fullH + entities.size() * YangModelUIUtil.DEFAULT_V_ALIGN };
         }
         if (layout instanceof HorizontalLayoutAlgorithm) {
-            return new double[] {fullW + entities.size() * YangModelUIUtil.DEFAULT_V_ALIGN, maxH + 2 * YangModelUIUtil.DEFAULT_H_ALIGN};
+            return new double[] { fullW + entities.size() * YangModelUIUtil.DEFAULT_V_ALIGN,
+                    maxH + 2 * YangModelUIUtil.DEFAULT_H_ALIGN };
+        }
+        if (layout instanceof YangDiagramLayoutAlgorithm) {
+            ((YangDiagramLayoutAlgorithm) layout).setMaxW(maxW);
+            ((YangDiagramLayoutAlgorithm) layout).setMaxH(maxH);
+            double h = Math.max(1, Math.ceil(entities.size() / (screenW / maxW))) * maxH;
+            return new double[] { screenW, h };
         }
         Double n = Math.ceil(Math.sqrt(entities.size()));
-        return new double[] {(maxW + YangModelUIUtil.DEFAULT_V_ALIGN) * n, (maxH + YangModelUIUtil.DEFAULT_H_ALIGN) * n};
+        return new double[] { (maxW + YangModelUIUtil.DEFAULT_V_ALIGN) * n,
+                (maxH + YangModelUIUtil.DEFAULT_H_ALIGN) * n };
     }
 
     /**
-     * @param map
-     *            a {@link Map} of {@link SimpleNode} per {@link Shape} - used to link {@link SimpleRelationship} to source and target entities
+     * @param map a {@link Map} of {@link SimpleNode} per {@link Shape} - used to link
+     * {@link SimpleRelationship} to source and target entities
      * @return the array of {@link LayoutRelationship}s to compute
      */
     private static LayoutRelationship[] getConnectionEntities(Diagram diagram, Map<Shape, SimpleNode> map) {
@@ -243,7 +269,7 @@ public class LayoutUtil {
         }
         return liste.toArray(new LayoutRelationship[0]);
     }
-    
+
     /**
      * @param current
      * @return
@@ -253,50 +279,61 @@ public class LayoutUtil {
         int style = LayoutStyles.NO_LAYOUT_NODE_RESIZING;
         switch (current) {
         case 1:
-            layout = new SpringLayoutAlgorithm(style); //SpringLayoutAlgorithmn
+            layout = new SpringLayoutAlgorithm(style); // SpringLayoutAlgorithmn
             break;
         case 2:
-            layout = new TreeLayoutAlgorithm(style); //TreeLayoutAlgorithm
+            layout = new TreeLayoutAlgorithm(style); // TreeLayoutAlgorithm
             break;
         case 3:
-            layout = new GridLayoutAlgorithm(style); //GridLayoutAlgorithm
+            layout = new GridLayoutAlgorithm(style); // GridLayoutAlgorithm
             break;
         case 4:
-            layout = new HorizontalLayoutAlgorithm(style); //HorizontalLayoutAlgorithm
+            layout = new HorizontalLayoutAlgorithm(style); // HorizontalLayoutAlgorithm
             break;
         case 5:
-            layout = new HorizontalTreeLayoutAlgorithm(style); //HorizontalTreeLayoutAlgorithm
+            layout = new HorizontalTreeLayoutAlgorithm(style); // HorizontalTreeLayoutAlgorithm
             break;
         case 6:
-            layout = new VerticalLayoutAlgorithm(style); //VerticalLayoutAlgorithm
+            layout = new VerticalLayoutAlgorithm(style); // VerticalLayoutAlgorithm
             break;
         case 7:
-            layout = new RadialLayoutAlgorithm(style); //RadialLayoutAlgorithm
+            layout = new RadialLayoutAlgorithm(style); // RadialLayoutAlgorithm
             break;
         case 8:
-            layout = new DirectedGraphLayoutAlgorithm(style); //DirectedGraphLayoutAlgorithm
+            layout = new DirectedGraphLayoutAlgorithm(style); // DirectedGraphLayoutAlgorithm
             break;
         case 9:
-            layout = new CompositeLayoutAlgorithm(new LayoutAlgorithm[]{new DirectedGraphLayoutAlgorithm(style), new HorizontalShift(style)}); //CompositeLayoutAlgorithm [DirectedGraphLayoutAlgorithm+HorizontalShift]
+            layout = new CompositeLayoutAlgorithm(new LayoutAlgorithm[] { new DirectedGraphLayoutAlgorithm(style),
+                    new HorizontalShift(style) }); // CompositeLayoutAlgorithm
+                                                   // [DirectedGraphLayoutAlgorithm+HorizontalShift]
             break;
         case 10:
-            layout = new CompositeLayoutAlgorithm(new LayoutAlgorithm[]{new SpringLayoutAlgorithm(style), new HorizontalShift(style)}); //CompositeLayoutAlgorithm [SpringLayoutAlgorithm+HorizontalShift]
+            layout = new CompositeLayoutAlgorithm(new LayoutAlgorithm[] { new SpringLayoutAlgorithm(style),
+                    new HorizontalShift(style) }); // CompositeLayoutAlgorithm
+                                                   // [SpringLayoutAlgorithm+HorizontalShift]
             break;
         case 11:
-            layout = new CompositeLayoutAlgorithm(new LayoutAlgorithm[]{new RadialLayoutAlgorithm(style), new HorizontalShift(style)}); //CompositeLayoutAlgorithm [RadialLayoutAlgorithm+HorizontalShift]
+            layout = new CompositeLayoutAlgorithm(new LayoutAlgorithm[] { new RadialLayoutAlgorithm(style),
+                    new HorizontalShift(style) }); // CompositeLayoutAlgorithm
+                                                   // [RadialLayoutAlgorithm+HorizontalShift]
             break;
         case 12:
-            layout = new HorizontalShift(style); //HorizontalShift
+            layout = new HorizontalShift(style); // HorizontalShift
+            break;
+        case 13:
+            layout = new YangDiagramLayoutAlgorithm(style); // YangDiagramLayoutAlgorithm
             break;
         default:
-            layout = new CompositeLayoutAlgorithm(new LayoutAlgorithm[]{new TreeLayoutAlgorithm(style), new HorizontalShift(style)}); //CompositeLayoutAlgorithm [TreeLayoutAlgorithm+HorizontalShift]
+            layout = new CompositeLayoutAlgorithm(new LayoutAlgorithm[] { new TreeLayoutAlgorithm(style),
+                    new HorizontalShift(style) }); // CompositeLayoutAlgorithm
+                                                   // [TreeLayoutAlgorithm+HorizontalShift]
         }
         return layout;
     }
 
     /**
-     * A {@link org.eclipse.zest.layouts.exampleStructures.SimpleRelationship} subclass
-     * used to hold the Graphiti connection reference
+     * A {@link org.eclipse.zest.layouts.exampleStructures.SimpleRelationship} subclass used to hold
+     * the Graphiti connection reference
      */
     private static class SimpleRelationship extends org.eclipse.zest.layouts.exampleStructures.SimpleRelationship {
 
@@ -316,9 +353,123 @@ public class LayoutUtil {
             this.graphData = o;
         }
     }
-    
+
+    private static class YangDiagramLayoutAlgorithm extends GridLayoutAlgorithm {
+        protected double maxW = YangModelUIUtil.DEFAULT_WIDTH;
+        protected double maxH = YangModelUIUtil.DEFAULT_COMPOSITE_HEIGHT;
+        protected int cols;
+        protected int rows;
+        protected int numChildren;
+        private static final int OFFSET = 20;
+
+        public YangDiagramLayoutAlgorithm(int styles) {
+            super(styles);
+        }
+
+        @Override
+        protected int[] calculateNumberOfRowsAndCols(int numChildren, double boundX, double boundY, double boundWidth,
+                double boundHeight) {
+            cols = Math.max(1, (int) Math.min(numChildren, boundWidth / (getMaxW() + OFFSET)));
+            rows = Math.max(1, (int) Math.ceil(numChildren / cols)) + 1;
+            this.numChildren = numChildren;
+
+            return new int[] { cols, rows };
+        }
+
+        @Override
+        protected double[] calculateNodeSize(double colWidth, double rowHeight) {
+            return new double[] { getMaxW(), getMaxH() };
+        }
+
+        @Override
+        protected synchronized void applyLayoutInternal(InternalNode[] entitiesToLayout,
+                InternalRelationship[] relationshipsToConsider, double boundsX, double boundsY, double boundsWidth,
+                double boundsHeight) {
+            int index = 0;
+            int totalProgress = rows + 2;
+            for (int i = 0; i < rows; i++) {
+                for (int j = 0; j < cols; j++) {
+
+                    if ((i * cols + j) < numChildren) {
+                        double y = index - cols < 0 ? 0 : entitiesToLayout[index - cols].getInternalHeight()
+                                + entitiesToLayout[index - cols].getInternalY();
+                        InternalNode sn = entitiesToLayout[index++];
+                        double xmove = boundsX + j * (getMaxW() + 2 * OFFSET) + OFFSET;
+                        double ymove = boundsY + y + OFFSET;
+                        sn.setInternalLocation(xmove, ymove);
+                        sn.setInternalSize(Math.max(getMaxW() + 2 * OFFSET, MIN_ENTITY_SIZE),
+                                Math.max(sn.getHeightInLayout() + 2 * OFFSET, MIN_ENTITY_SIZE));
+                    }
+                }
+                fireProgressEvent(2 + i, totalProgress);
+            }
+            updateLayoutLocations(entitiesToLayout);
+            fireProgressEvent(totalProgress, totalProgress);
+        }
+
+        public double getMaxW() {
+            return maxW;
+        }
+
+        public void setMaxW(double maxW) {
+            this.maxW = maxW;
+        }
+
+        public double getMaxH() {
+            return maxH;
+        }
+
+        public void setMaxH(double maxH) {
+            this.maxH = maxH;
+        }
+
+    }
+
+    private static void setShapes(Shape cs, Rectangle r, Map<GraphicsAlgorithm, Rectangle> map) {
+        map.put(cs.getGraphicsAlgorithm(), r);
+        if (cs instanceof ContainerShape) {
+            for (Shape shape : ((ContainerShape) cs).getChildren()) {
+                setShapes(shape, r, map);
+            }
+        }
+    }
+
+    public static void layoutDiagramConnections(IFeatureProvider fp) {
+        RectilinearAvoidObstaclesPathFinder finder = new RectilinearAvoidObstaclesPathFinder();
+        Map<GraphicsAlgorithm, Rectangle> map = new HashMap<GraphicsAlgorithm, Rectangle>();
+        for (Shape shape : fp.getDiagramTypeProvider().getDiagram().getChildren()) {
+            Rectangle r = new Rectangle(shape.getGraphicsAlgorithm().getX(), shape.getGraphicsAlgorithm().getY(), shape
+                    .getGraphicsAlgorithm().getWidth(), shape.getGraphicsAlgorithm().getHeight());
+            finder.addObstacle(r);
+            setShapes(shape, r, map);
+        }
+        for (Connection connection : fp.getDiagramTypeProvider().getDiagram().getConnections()) {
+            org.eclipse.draw2d.geometry.Point start, end;
+            Rectangle source = map.get(connection.getStart().getReferencedGraphicsAlgorithm());
+            Rectangle target = map.get(connection.getEnd().getReferencedGraphicsAlgorithm());
+            start = new org.eclipse.draw2d.geometry.Point(source.x + source.width, 
+                    Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart()).getY() - YangModelUIUtil.DEFAULT_H_ALIGN);
+            if (source.x < target.x) {                
+                end = new org.eclipse.draw2d.geometry.Point(target.x - RectilinearAvoidObstaclesPathFinder.DEFAULT_SPACING,
+                        target.y + target.height / 2);
+            } else {
+                end = new org.eclipse.draw2d.geometry.Point(target.x + target.width + RectilinearAvoidObstaclesPathFinder.DEFAULT_SPACING, 
+                        target.y + target.height / 2);
+            }
+            RoutePath route = finder.find(Position.create(map.get(connection.getStart().getReferencedGraphicsAlgorithm()), start),
+                    Position.create(map.get(connection.getEnd().getReferencedGraphicsAlgorithm()), end), false);
+            //route.path.insertPoint(start, 0);
+            AddBendpointContext context1 = new AddBendpointContext((FreeFormConnection) connection, start.x, start.y, 0);
+            fp.getAddBendpointFeature(context1).addBendpoint(context1);
+            for (int i = 0; i < route.path.size(); i++) {
+                AddBendpointContext context = new AddBendpointContext((FreeFormConnection) connection, route.path.getPoint(i).x, route.path.getPoint(i).y, i + 1);
+                fp.getAddBendpointFeature(context).addBendpoint(context);
+            }
+        }
+    }
+
     public static void layoutDiagram(IFeatureProvider fp, int type) {
-     // get a map of the self connection anchor locations
+        // get a map of the self connection anchor locations
         final Map<Connection, Point> selves = getSelfConnections(fp.getDiagramTypeProvider().getDiagram());
 
         // get the chosen LayoutAlgorithmn instance
@@ -335,11 +486,13 @@ public class LayoutUtil {
 
                 // Setup the array of Shape LayoutEntity
                 List<SimpleNode> diagramEntities = filterDiagramLayoutEntities(map);
-                LayoutEntity[] entities = diagramEntities.toArray(new LayoutEntity[0]);//map.values().toArray(new LayoutEntity[0]);
+                LayoutEntity[] entities = diagramEntities.toArray(new LayoutEntity[0]);// map.values().toArray(new
+                                                                                       // LayoutEntity[0]);
                 double[] preferedSize = getPreferedLayoutAreaSize(diagramEntities, layoutAlgorithm);
 
                 // Apply the LayoutAlgorithmn
-                layoutAlgorithm.applyLayout(entities, connections, 0, 0, preferedSize[0], preferedSize[1],/*Math.min(preferedSize[0], ga.getWidth()), Math.min(preferedSize[1], ga.getHeight()),*/ false, false);
+                layoutAlgorithm
+                        .applyLayout(entities, connections, 0, 0, preferedSize[0], preferedSize[1], false, false);
 
                 // Update the Graphiti Shapes and Connections locations
                 updateGraphCoordinates(entities, connections);
@@ -351,16 +504,13 @@ public class LayoutUtil {
                 e.printStackTrace();
             }
         }
+        layoutDiagramConnections(fp);
     }
-    
+
     public static void layoutDiagram(IFeatureProvider fp) {
-        if (null == fp.getDiagramTypeProvider().getDiagram().getConnections() || fp.getDiagramTypeProvider().getDiagram().getConnections().isEmpty()) {
-            layoutDiagram(fp, GRID_LAYOUT_TYPE); // if no connections layout as grid
-        } else {
-            layoutDiagram(fp, DEFAULT_DIAGRAM_LAYOUT_TYPE);
-        }
+        layoutDiagram(fp, DEFAULT_DIAGRAM_LAYOUT_TYPE);
     }
-    
+
     public static void layoutContainerShape(ContainerShape cs, IFeatureProvider fp) {
         EList<Shape> elements = cs.getChildren();
         YangModelUIUtil.sortPictogramElements(elements);
@@ -372,12 +522,14 @@ public class LayoutUtil {
             if (sh.getGraphicsAlgorithm() instanceof Polyline) {
                 line = (Polyline) sh.getGraphicsAlgorithm();
             }
-            if (null != fp.getBusinessObjectForPictogramElement(sh) && fp.getBusinessObjectForPictogramElement(sh) != fp.getBusinessObjectForPictogramElement(cs)) {
+            if (null != fp.getBusinessObjectForPictogramElement(sh)
+                    && fp.getBusinessObjectForPictogramElement(sh) != fp.getBusinessObjectForPictogramElement(cs)) {
                 sh.getGraphicsAlgorithm().setX(YangModelUIUtil.DEFAULT_V_ALIGN);
                 sh.getGraphicsAlgorithm().setY(y + YangModelUIUtil.DEFAULT_H_ALIGN);
-                sh.getGraphicsAlgorithm().setWidth(sh.getContainer().getGraphicsAlgorithm().getWidth() - 2 * YangModelUIUtil.DEFAULT_V_ALIGN);
+                sh.getGraphicsAlgorithm().setWidth(
+                        sh.getContainer().getGraphicsAlgorithm().getWidth() - 2 * YangModelUIUtil.DEFAULT_V_ALIGN);
             }
-            
+
             if (x < sh.getGraphicsAlgorithm().getWidth()) {
                 x = sh.getGraphicsAlgorithm().getWidth();
             }
@@ -393,12 +545,13 @@ public class LayoutUtil {
             EList<Point> points = line.getPoints();
             if (1 < points.size()) {
                 points.get(1).setX(cs.getGraphicsAlgorithm().getWidth());
-            }               
+            }
         }
     }
 
     /**
      * calls layout feature for {@link PictogramElement}
+     * 
      * @param pe
      * @param fp
      */
@@ -406,5 +559,5 @@ public class LayoutUtil {
         LayoutContext context = new LayoutContext(pe);
         fp.layoutIfPossible(context);
     }
-    
+
 }
