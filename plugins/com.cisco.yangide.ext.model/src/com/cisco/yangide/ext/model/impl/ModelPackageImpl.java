@@ -520,6 +520,24 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EAttribute getImport_Prefix() {
+        return (EAttribute)importEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getImport_RevisionDate() {
+        return (EAttribute)importEClass.getEStructuralFeatures().get(2);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getInclude() {
         return includeEClass;
     }
@@ -794,6 +812,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         importEClass = createEClass(IMPORT);
         createEReference(importEClass, IMPORT__MODULE);
+        createEAttribute(importEClass, IMPORT__PREFIX);
+        createEAttribute(importEClass, IMPORT__REVISION_DATE);
 
         includeEClass = createEClass(INCLUDE);
         createEReference(includeEClass, INCLUDE__SUBMODULE);
@@ -867,6 +887,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         // Add supertypes to classes
         moduleEClass.getESuperTypes().add(this.getNamedContainingNode());
+        moduleEClass.getESuperTypes().add(this.getTaggedNode());
         groupingEClass.getESuperTypes().add(this.getNamedContainingNode());
         groupingEClass.getESuperTypes().add(this.getTaggedNode());
         leafEClass.getESuperTypes().add(this.getNamedNode());
@@ -931,6 +952,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         initEClass(importEClass, Import.class, "Import", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getImport_Module(), this.getModule(), null, "module", null, 1, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getImport_Prefix(), theXMLTypePackage.getString(), "prefix", null, 1, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getImport_RevisionDate(), theXMLTypePackage.getString(), "revisionDate", null, 0, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(includeEClass, Include.class, "Include", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getInclude_Submodule(), this.getSubmodule(), null, "submodule", null, 1, 1, Include.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

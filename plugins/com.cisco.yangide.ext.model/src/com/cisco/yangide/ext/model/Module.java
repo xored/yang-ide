@@ -21,7 +21,7 @@ import org.eclipse.emf.common.util.EList;
  * @model
  * @generated
  */
-public interface Module extends NamedContainingNode {
+public interface Module extends NamedContainingNode, TaggedNode {
     /**
      * Returns the value of the '<em><b>Namespace</b></em>' attribute.
      * <!-- begin-user-doc -->

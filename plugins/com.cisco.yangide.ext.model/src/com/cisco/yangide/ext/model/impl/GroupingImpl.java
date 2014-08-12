@@ -123,9 +123,8 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
             InternalEObject oldParent = (InternalEObject)parent;
             parent = (Node)eResolveProxy(oldParent);
             if (parent != oldParent) {
-                if (eNotificationRequired()) {
+                if (eNotificationRequired())
                     eNotify(new ENotificationImpl(this, Notification.RESOLVE, ModelPackage.GROUPING__PARENT, oldParent, parent));
-                }
             }
         }
         return parent;
@@ -149,9 +148,8 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
     public void setParent(Node newParent) {
         Node oldParent = parent;
         parent = newParent;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.GROUPING__PARENT, oldParent, parent));
-        }
     }
 
     /**
@@ -173,9 +171,8 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
     public void setName(String newName) {
         String oldName = name;
         name = newName;
-        if (eNotificationRequired()) {
+        if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.GROUPING__NAME, oldName, name));
-        }
     }
 
     /**
@@ -229,10 +226,10 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-        case ModelPackage.GROUPING__CHILDREN:
-            return ((InternalEList<?>)getChildren()).basicRemove(otherEnd, msgs);
-        case ModelPackage.GROUPING__TAGS:
-            return ((InternalEList<?>)getTags()).basicRemove(otherEnd, msgs);
+            case ModelPackage.GROUPING__CHILDREN:
+                return ((InternalEList<?>)getChildren()).basicRemove(otherEnd, msgs);
+            case ModelPackage.GROUPING__TAGS:
+                return ((InternalEList<?>)getTags()).basicRemove(otherEnd, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
@@ -245,17 +242,15 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-        case ModelPackage.GROUPING__PARENT:
-            if (resolve) {
-                return getParent();
-            }
-            return basicGetParent();
-        case ModelPackage.GROUPING__NAME:
-            return getName();
-        case ModelPackage.GROUPING__CHILDREN:
-            return getChildren();
-        case ModelPackage.GROUPING__TAGS:
-            return getTags();
+            case ModelPackage.GROUPING__PARENT:
+                if (resolve) return getParent();
+                return basicGetParent();
+            case ModelPackage.GROUPING__NAME:
+                return getName();
+            case ModelPackage.GROUPING__CHILDREN:
+                return getChildren();
+            case ModelPackage.GROUPING__TAGS:
+                return getTags();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -269,20 +264,20 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-        case ModelPackage.GROUPING__PARENT:
-            setParent((Node)newValue);
-            return;
-        case ModelPackage.GROUPING__NAME:
-            setName((String)newValue);
-            return;
-        case ModelPackage.GROUPING__CHILDREN:
-            getChildren().clear();
-            getChildren().addAll((Collection<? extends Node>)newValue);
-            return;
-        case ModelPackage.GROUPING__TAGS:
-            getTags().clear();
-            getTags().addAll((Collection<? extends Tag>)newValue);
-            return;
+            case ModelPackage.GROUPING__PARENT:
+                setParent((Node)newValue);
+                return;
+            case ModelPackage.GROUPING__NAME:
+                setName((String)newValue);
+                return;
+            case ModelPackage.GROUPING__CHILDREN:
+                getChildren().clear();
+                getChildren().addAll((Collection<? extends Node>)newValue);
+                return;
+            case ModelPackage.GROUPING__TAGS:
+                getTags().clear();
+                getTags().addAll((Collection<? extends Tag>)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -295,18 +290,18 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
-        case ModelPackage.GROUPING__PARENT:
-            setParent((Node)null);
-            return;
-        case ModelPackage.GROUPING__NAME:
-            setName(NAME_EDEFAULT);
-            return;
-        case ModelPackage.GROUPING__CHILDREN:
-            getChildren().clear();
-            return;
-        case ModelPackage.GROUPING__TAGS:
-            getTags().clear();
-            return;
+            case ModelPackage.GROUPING__PARENT:
+                setParent((Node)null);
+                return;
+            case ModelPackage.GROUPING__NAME:
+                setName(NAME_EDEFAULT);
+                return;
+            case ModelPackage.GROUPING__CHILDREN:
+                getChildren().clear();
+                return;
+            case ModelPackage.GROUPING__TAGS:
+                getTags().clear();
+                return;
         }
         super.eUnset(featureID);
     }
@@ -319,14 +314,14 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
     @Override
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-        case ModelPackage.GROUPING__PARENT:
-            return parent != null;
-        case ModelPackage.GROUPING__NAME:
-            return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-        case ModelPackage.GROUPING__CHILDREN:
-            return children != null && !children.isEmpty();
-        case ModelPackage.GROUPING__TAGS:
-            return tags != null && !tags.isEmpty();
+            case ModelPackage.GROUPING__PARENT:
+                return parent != null;
+            case ModelPackage.GROUPING__NAME:
+                return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+            case ModelPackage.GROUPING__CHILDREN:
+                return children != null && !children.isEmpty();
+            case ModelPackage.GROUPING__TAGS:
+                return tags != null && !tags.isEmpty();
         }
         return super.eIsSet(featureID);
     }
@@ -340,14 +335,14 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
     public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
         if (baseClass == ContainingNode.class) {
             switch (derivedFeatureID) {
-            case ModelPackage.GROUPING__CHILDREN: return ModelPackage.CONTAINING_NODE__CHILDREN;
-            default: return -1;
+                case ModelPackage.GROUPING__CHILDREN: return ModelPackage.CONTAINING_NODE__CHILDREN;
+                default: return -1;
             }
         }
         if (baseClass == TaggedNode.class) {
             switch (derivedFeatureID) {
-            case ModelPackage.GROUPING__TAGS: return ModelPackage.TAGGED_NODE__TAGS;
-            default: return -1;
+                case ModelPackage.GROUPING__TAGS: return ModelPackage.TAGGED_NODE__TAGS;
+                default: return -1;
             }
         }
         return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
@@ -362,14 +357,14 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
     public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
         if (baseClass == ContainingNode.class) {
             switch (baseFeatureID) {
-            case ModelPackage.CONTAINING_NODE__CHILDREN: return ModelPackage.GROUPING__CHILDREN;
-            default: return -1;
+                case ModelPackage.CONTAINING_NODE__CHILDREN: return ModelPackage.GROUPING__CHILDREN;
+                default: return -1;
             }
         }
         if (baseClass == TaggedNode.class) {
             switch (baseFeatureID) {
-            case ModelPackage.TAGGED_NODE__TAGS: return ModelPackage.GROUPING__TAGS;
-            default: return -1;
+                case ModelPackage.TAGGED_NODE__TAGS: return ModelPackage.GROUPING__TAGS;
+                default: return -1;
             }
         }
         return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
@@ -383,8 +378,8 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
     @Override
     public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
         switch (operationID) {
-        case ModelPackage.GROUPING___TO_YANG_STRING:
-            return toYangString();
+            case ModelPackage.GROUPING___TO_YANG_STRING:
+                return toYangString();
         }
         return super.eInvoke(operationID, arguments);
     }
@@ -396,9 +391,7 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
      */
     @Override
     public String toString() {
-        if (eIsProxy()) {
-            return super.toString();
-        }
+        if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (name: ");

@@ -8,6 +8,8 @@ import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Revision;
 
+import com.cisco.yangide.ext.model.Tag;
+import com.cisco.yangide.ext.model.TaggedNode;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
@@ -35,6 +37,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link com.cisco.yangide.ext.model.impl.ModuleImpl#getParent <em>Parent</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ModuleImpl#getName <em>Name</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ModuleImpl#getChildren <em>Children</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.ModuleImpl#getTags <em>Tags</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ModuleImpl#getNamespace <em>Namespace</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ModuleImpl#getRevisions <em>Revisions</em>}</li>
  * </ul>
@@ -82,6 +85,16 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
      * @ordered
      */
     protected EList<Node> children;
+
+    /**
+     * The cached value of the '{@link #getTags() <em>Tags</em>}' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getTags()
+     * @generated
+     * @ordered
+     */
+    protected EList<Tag> tags;
 
     /**
      * The default value of the '{@link #getNamespace() <em>Namespace</em>}' attribute.
@@ -208,6 +221,18 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EList<Tag> getTags() {
+        if (tags == null) {
+            tags = new EObjectContainmentEList<Tag>(Tag.class, this, ModelPackage.MODULE__TAGS);
+        }
+        return tags;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public String getNamespace() {
         return namespace;
     }
@@ -257,6 +282,8 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
         switch (featureID) {
             case ModelPackage.MODULE__CHILDREN:
                 return ((InternalEList<?>)getChildren()).basicRemove(otherEnd, msgs);
+            case ModelPackage.MODULE__TAGS:
+                return ((InternalEList<?>)getTags()).basicRemove(otherEnd, msgs);
             case ModelPackage.MODULE__REVISIONS:
                 return ((InternalEList<?>)getRevisions()).basicRemove(otherEnd, msgs);
         }
@@ -278,6 +305,8 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
                 return getName();
             case ModelPackage.MODULE__CHILDREN:
                 return getChildren();
+            case ModelPackage.MODULE__TAGS:
+                return getTags();
             case ModelPackage.MODULE__NAMESPACE:
                 return getNamespace();
             case ModelPackage.MODULE__REVISIONS:
@@ -304,6 +333,10 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
             case ModelPackage.MODULE__CHILDREN:
                 getChildren().clear();
                 getChildren().addAll((Collection<? extends Node>)newValue);
+                return;
+            case ModelPackage.MODULE__TAGS:
+                getTags().clear();
+                getTags().addAll((Collection<? extends Tag>)newValue);
                 return;
             case ModelPackage.MODULE__NAMESPACE:
                 setNamespace((String)newValue);
@@ -333,6 +366,9 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
             case ModelPackage.MODULE__CHILDREN:
                 getChildren().clear();
                 return;
+            case ModelPackage.MODULE__TAGS:
+                getTags().clear();
+                return;
             case ModelPackage.MODULE__NAMESPACE:
                 setNamespace(NAMESPACE_EDEFAULT);
                 return;
@@ -357,6 +393,8 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.MODULE__CHILDREN:
                 return children != null && !children.isEmpty();
+            case ModelPackage.MODULE__TAGS:
+                return tags != null && !tags.isEmpty();
             case ModelPackage.MODULE__NAMESPACE:
                 return NAMESPACE_EDEFAULT == null ? namespace != null : !NAMESPACE_EDEFAULT.equals(namespace);
             case ModelPackage.MODULE__REVISIONS:
@@ -378,6 +416,12 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
                 default: return -1;
             }
         }
+        if (baseClass == TaggedNode.class) {
+            switch (derivedFeatureID) {
+                case ModelPackage.MODULE__TAGS: return ModelPackage.TAGGED_NODE__TAGS;
+                default: return -1;
+            }
+        }
         return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
     }
 
@@ -391,6 +435,12 @@ public class ModuleImpl extends MinimalEObjectImpl.Container implements Module {
         if (baseClass == ContainingNode.class) {
             switch (baseFeatureID) {
                 case ModelPackage.CONTAINING_NODE__CHILDREN: return ModelPackage.MODULE__CHILDREN;
+                default: return -1;
+            }
+        }
+        if (baseClass == TaggedNode.class) {
+            switch (baseFeatureID) {
+                case ModelPackage.TAGGED_NODE__TAGS: return ModelPackage.MODULE__TAGS;
                 default: return -1;
             }
         }

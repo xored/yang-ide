@@ -451,7 +451,7 @@ public class LayoutUtil {
             
             // start always with right side because of box relative anchor
             start = new org.eclipse.draw2d.geometry.Point(source.x + source.width, 
-                    Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart()).getY() - YangModelUIUtil.DEFAULT_H_ALIGN);
+                    Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart()).getY() - 3);
             if (source.x < target.x) {                
                 end = new org.eclipse.draw2d.geometry.Point(target.x, target.y + target.height / 2);
             } else {

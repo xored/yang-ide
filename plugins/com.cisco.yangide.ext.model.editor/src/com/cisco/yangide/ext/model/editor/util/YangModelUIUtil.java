@@ -39,13 +39,13 @@ public class YangModelUIUtil {
     }
     
     public static final int DEFAULT_WIDTH = 150;
-    public static final int DEFAULT_TEXT_HEIGHT = 20;
+    public static final int DEFAULT_TEXT_HEIGHT = 16;
     public static final int DEFAULT_V_ALIGN = 5;
-    public static final int DEFAULT_H_ALIGN = 3;
+    public static final int DEFAULT_H_ALIGN = 2;
     
     public static final int DEFAULT_BOX_ANCHOR_RADIUS = 2;
 
-    public static final int DEFAULT_COMPOSITE_HEIGHT = 100;
+    public static final int DEFAULT_COMPOSITE_HEIGHT = 30;
     
     private static final ShapeVerticalComparator COMPARATOR = new ShapeVerticalComparator();
     

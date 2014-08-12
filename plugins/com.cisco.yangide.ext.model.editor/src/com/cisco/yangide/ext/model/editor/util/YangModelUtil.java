@@ -25,6 +25,7 @@ import com.cisco.yangide.core.dom.FeatureDefinition;
 import com.cisco.yangide.core.dom.GroupingDefinition;
 import com.cisco.yangide.core.dom.IdentitySchemaNode;
 import com.cisco.yangide.core.dom.LeafSchemaNode;
+import com.cisco.yangide.core.dom.ModuleImport;
 import com.cisco.yangide.core.dom.NotificationDefinition;
 import com.cisco.yangide.core.dom.RpcDefinition;
 import com.cisco.yangide.core.dom.RpcInputNode;
@@ -32,6 +33,8 @@ import com.cisco.yangide.core.dom.RpcOutputNode;
 import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.ext.model.ContainingNode;
+import com.cisco.yangide.ext.model.Import;
+import com.cisco.yangide.ext.model.ModelFactory;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.NamedNode;
@@ -71,7 +74,7 @@ public class YangModelUtil {
         compositeNodeMap.put(MODEL_PACKAGE.getModule(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
                 MODEL_PACKAGE.getAugment(), MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(),
                 MODEL_PACKAGE.getDeviation(), MODEL_PACKAGE.getExtension(), MODEL_PACKAGE.getFeature(),
-                MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getIdentity(), MODEL_PACKAGE.getLeaf(),
+                MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getIdentity(), MODEL_PACKAGE.getImport(), MODEL_PACKAGE.getLeaf(),
                 MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getNotification(),
                 MODEL_PACKAGE.getRpc(), MODEL_PACKAGE.getUses()));
         compositeNodeMap.put(MODEL_PACKAGE.getNotification(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
@@ -86,6 +89,9 @@ public class YangModelUtil {
                 MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
         
         taggedNodeMap.put(MODEL_PACKAGE.getContainer(), Arrays.asList(YangTag.CONFIG, YangTag.DESCRIPTION, YangTag.PRESENCE, YangTag.REFERENCE, YangTag.STATUS));
+        taggedNodeMap.put(MODEL_PACKAGE.getGrouping(), Arrays.asList(YangTag.DESCRIPTION, YangTag.REFERENCE, YangTag.STATUS));
+        taggedNodeMap.put(MODEL_PACKAGE.getLeaf(), Arrays.asList(YangTag.CONFIG, YangTag.DEFAULT, YangTag.DESCRIPTION, YangTag.MANDATORY, YangTag.REFERENCE, YangTag.STATUS, YangTag.UNITS));
+        taggedNodeMap.put(MODEL_PACKAGE.getModule(), Arrays.asList(YangTag.CONTACT, YangTag.DESCRIPTION, YangTag.NAMESPACE, YangTag.ORGANIZATION, YangTag.PREFIX, YangTag.REFERENCE, YangTag.YANG_VERSION));
 
         astNodes.put(com.cisco.yangide.core.dom.Module.class, MODEL_PACKAGE.getModule());
         astNodes.put(GroupingDefinition.class, MODEL_PACKAGE.getGrouping());
@@ -101,6 +107,7 @@ public class YangModelUtil {
         astNodes.put(ExtensionDefinition.class, MODEL_PACKAGE.getExtension());
         astNodes.put(FeatureDefinition.class, MODEL_PACKAGE.getFeature());
         astNodes.put(IdentitySchemaNode.class, MODEL_PACKAGE.getIdentity());
+        astNodes.put(ModuleImport.class, MODEL_PACKAGE.getImport());
 
         connections.add(YangModelUtil.MODEL_PACKAGE.getUses());
     }
@@ -297,6 +304,15 @@ public class YangModelUtil {
                 ((Uses) o).setQName(((UsesNode) n).getName());
             }
         }
+        if (checkType(MODEL_PACKAGE.getImport(), o)) {
+            if (n instanceof ModuleImport) {
+                Module module = ModelFactory.eINSTANCE.createModule();
+                module.setName(((ModuleImport) n).getName());
+                ((Import) o).setModule(module);
+                ((Import) o).setPrefix(((ModuleImport) n).getPrefix());
+                ((Import) o).setRevisionDate(((ModuleImport) n).getRevision());
+            }
+        }
     }
 
     private static void setTags(EObject o, ASTNode n) {
@@ -337,5 +353,4 @@ public class YangModelUtil {
         }
         return result;
     }
-
 }

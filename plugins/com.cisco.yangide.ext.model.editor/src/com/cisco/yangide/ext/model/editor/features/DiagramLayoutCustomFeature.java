@@ -1,8 +1,5 @@
 package com.cisco.yangide.ext.model.editor.features;
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.custom.AbstractCustomFeature;
@@ -12,11 +9,12 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 
+import com.cisco.yangide.ext.model.editor.dialog.DiagramLayoutAlgorithmChoiceDialog;
 import com.cisco.yangide.ext.model.editor.util.LayoutUtil;
 
 public class DiagramLayoutCustomFeature extends AbstractCustomFeature {
     
-    static List<String> layouts = Arrays.asList("Spring Layout", "Tree Layout", "Grid Layout", "Horizontal Layout", "Horizontal Tree Layout", "Vertical Layout", "Radial Layout", "Directed Graph Layout", "Composite Layout [Directed Graph + Horizontal Shift]", "Composite Layout [Spring Layout + Horizontal Shift]", "Composite Layout [Radial Layout + Horizontal Shift]", "Composite Layout [Tree Layout + Horizontal Shift]");
+    
 
 
     public DiagramLayoutCustomFeature(IFeatureProvider fp) {

@@ -27,6 +27,8 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getParent <em>Parent</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getModule <em>Module</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getPrefix <em>Prefix</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getRevisionDate <em>Revision Date</em>}</li>
  * </ul>
  * </p>
  *
@@ -52,6 +54,46 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
      * @ordered
      */
     protected Module module;
+
+    /**
+     * The default value of the '{@link #getPrefix() <em>Prefix</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getPrefix()
+     * @generated
+     * @ordered
+     */
+    protected static final String PREFIX_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getPrefix() <em>Prefix</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getPrefix()
+     * @generated
+     * @ordered
+     */
+    protected String prefix = PREFIX_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getRevisionDate() <em>Revision Date</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getRevisionDate()
+     * @generated
+     * @ordered
+     */
+    protected static final String REVISION_DATE_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getRevisionDate() <em>Revision Date</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getRevisionDate()
+     * @generated
+     * @ordered
+     */
+    protected String revisionDate = REVISION_DATE_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -158,6 +200,48 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
      * <!-- end-user-doc -->
      * @generated
      */
+    public String getPrefix() {
+        return prefix;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setPrefix(String newPrefix) {
+        String oldPrefix = prefix;
+        prefix = newPrefix;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.IMPORT__PREFIX, oldPrefix, prefix));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String getRevisionDate() {
+        return revisionDate;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setRevisionDate(String newRevisionDate) {
+        String oldRevisionDate = revisionDate;
+        revisionDate = newRevisionDate;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.IMPORT__REVISION_DATE, oldRevisionDate, revisionDate));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public String toYangString() {
         // TODO: implement this method
         // Ensure that you remove @generated or mark it @generated NOT
@@ -191,6 +275,10 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
                 return basicGetParent();
             case ModelPackage.IMPORT__MODULE:
                 return getModule();
+            case ModelPackage.IMPORT__PREFIX:
+                return getPrefix();
+            case ModelPackage.IMPORT__REVISION_DATE:
+                return getRevisionDate();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -208,6 +296,12 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
                 return;
             case ModelPackage.IMPORT__MODULE:
                 setModule((Module)newValue);
+                return;
+            case ModelPackage.IMPORT__PREFIX:
+                setPrefix((String)newValue);
+                return;
+            case ModelPackage.IMPORT__REVISION_DATE:
+                setRevisionDate((String)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -227,6 +321,12 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
             case ModelPackage.IMPORT__MODULE:
                 setModule((Module)null);
                 return;
+            case ModelPackage.IMPORT__PREFIX:
+                setPrefix(PREFIX_EDEFAULT);
+                return;
+            case ModelPackage.IMPORT__REVISION_DATE:
+                setRevisionDate(REVISION_DATE_EDEFAULT);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -243,6 +343,10 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
                 return parent != null;
             case ModelPackage.IMPORT__MODULE:
                 return module != null;
+            case ModelPackage.IMPORT__PREFIX:
+                return PREFIX_EDEFAULT == null ? prefix != null : !PREFIX_EDEFAULT.equals(prefix);
+            case ModelPackage.IMPORT__REVISION_DATE:
+                return REVISION_DATE_EDEFAULT == null ? revisionDate != null : !REVISION_DATE_EDEFAULT.equals(revisionDate);
         }
         return super.eIsSet(featureID);
     }
@@ -259,6 +363,24 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
                 return toYangString();
         }
         return super.eInvoke(operationID, arguments);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public String toString() {
+        if (eIsProxy()) return super.toString();
+
+        StringBuffer result = new StringBuffer(super.toString());
+        result.append(" (prefix: ");
+        result.append(prefix);
+        result.append(", revisionDate: ");
+        result.append(revisionDate);
+        result.append(')');
+        return result.toString();
     }
 
 } //ImportImpl

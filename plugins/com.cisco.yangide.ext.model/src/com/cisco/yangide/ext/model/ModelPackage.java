@@ -260,13 +260,22 @@ public interface ModelPackage extends EPackage {
     int MODULE__CHILDREN = NAMED_CONTAINING_NODE__CHILDREN;
 
     /**
+     * The feature id for the '<em><b>Tags</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int MODULE__TAGS = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+
+    /**
      * The feature id for the '<em><b>Namespace</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int MODULE__NAMESPACE = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+    int MODULE__NAMESPACE = NAMED_CONTAINING_NODE_FEATURE_COUNT + 1;
 
     /**
      * The feature id for the '<em><b>Revisions</b></em>' containment reference list.
@@ -275,7 +284,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MODULE__REVISIONS = NAMED_CONTAINING_NODE_FEATURE_COUNT + 1;
+    int MODULE__REVISIONS = NAMED_CONTAINING_NODE_FEATURE_COUNT + 2;
 
     /**
      * The number of structural features of the '<em>Module</em>' class.
@@ -284,7 +293,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int MODULE_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 2;
+    int MODULE_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 3;
 
     /**
      * The operation id for the '<em>To Yang String</em>' operation.
@@ -607,6 +616,15 @@ public interface ModelPackage extends EPackage {
     int SUBMODULE__CHILDREN = MODULE__CHILDREN;
 
     /**
+     * The feature id for the '<em><b>Tags</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int SUBMODULE__TAGS = MODULE__TAGS;
+
+    /**
      * The feature id for the '<em><b>Namespace</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -900,13 +918,31 @@ public interface ModelPackage extends EPackage {
     int IMPORT__MODULE = NODE_FEATURE_COUNT + 0;
 
     /**
+     * The feature id for the '<em><b>Prefix</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IMPORT__PREFIX = NODE_FEATURE_COUNT + 1;
+
+    /**
+     * The feature id for the '<em><b>Revision Date</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IMPORT__REVISION_DATE = NODE_FEATURE_COUNT + 2;
+
+    /**
      * The number of structural features of the '<em>Import</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int IMPORT_FEATURE_COUNT = NODE_FEATURE_COUNT + 1;
+    int IMPORT_FEATURE_COUNT = NODE_FEATURE_COUNT + 3;
 
     /**
      * The operation id for the '<em>To Yang String</em>' operation.
@@ -1971,6 +2007,28 @@ public interface ModelPackage extends EPackage {
     EReference getImport_Module();
 
     /**
+     * Returns the meta object for the attribute '{@link com.cisco.yangide.ext.model.Import#getPrefix <em>Prefix</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Prefix</em>'.
+     * @see com.cisco.yangide.ext.model.Import#getPrefix()
+     * @see #getImport()
+     * @generated
+     */
+    EAttribute getImport_Prefix();
+
+    /**
+     * Returns the meta object for the attribute '{@link com.cisco.yangide.ext.model.Import#getRevisionDate <em>Revision Date</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Revision Date</em>'.
+     * @see com.cisco.yangide.ext.model.Import#getRevisionDate()
+     * @see #getImport()
+     * @generated
+     */
+    EAttribute getImport_RevisionDate();
+
+    /**
      * Returns the meta object for class '{@link com.cisco.yangide.ext.model.Include <em>Include</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2445,6 +2503,22 @@ public interface ModelPackage extends EPackage {
          * @generated
          */
         EReference IMPORT__MODULE = eINSTANCE.getImport_Module();
+
+        /**
+         * The meta object literal for the '<em><b>Prefix</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute IMPORT__PREFIX = eINSTANCE.getImport_Prefix();
+
+        /**
+         * The meta object literal for the '<em><b>Revision Date</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute IMPORT__REVISION_DATE = eINSTANCE.getImport_RevisionDate();
 
         /**
          * The meta object literal for the '{@link com.cisco.yangide.ext.model.impl.IncludeImpl <em>Include</em>}' class.

@@ -70,6 +70,7 @@ public class ModelSwitch<T> extends Switch<T> {
                 Module module = (Module)theEObject;
                 T result = caseModule(module);
                 if (result == null) result = caseNamedContainingNode(module);
+                if (result == null) result = caseTaggedNode(module);
                 if (result == null) result = caseNamedNode(module);
                 if (result == null) result = caseContainingNode(module);
                 if (result == null) result = caseNode(module);
@@ -141,6 +142,7 @@ public class ModelSwitch<T> extends Switch<T> {
                 T result = caseSubmodule(submodule);
                 if (result == null) result = caseModule(submodule);
                 if (result == null) result = caseNamedContainingNode(submodule);
+                if (result == null) result = caseTaggedNode(submodule);
                 if (result == null) result = caseNamedNode(submodule);
                 if (result == null) result = caseContainingNode(submodule);
                 if (result == null) result = caseNode(submodule);

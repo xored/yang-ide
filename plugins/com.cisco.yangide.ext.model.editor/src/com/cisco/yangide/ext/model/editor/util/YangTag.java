@@ -9,7 +9,7 @@ import org.eclipse.ui.views.properties.PropertyDescriptor;
 public enum YangTag {
     DESCRIPTION, YANG_VERSION("yang-version"), NAMESPACE, PREFIX, ORGANIZATION(true), CONTACT, REFERENCE, CONFIG(Arrays.asList(Boolean.TRUE, Boolean.FALSE)), 
     MANDATORY(Arrays.asList(Boolean.TRUE, Boolean.FALSE)), STATUS(Arrays.asList("current", "deprecated", "obsolete")), PRESENCE(Arrays.asList(Boolean.TRUE, Boolean.FALSE)), 
-    ORDERED_BY("ordered-by", Arrays.asList("user", "system", "obsolete"));
+    ORDERED_BY("ordered-by", Arrays.asList("user", "system", "obsolete")), DEFAULT, UNITS;
     private String name;
     private boolean required;
     private List<?> possibleValues;

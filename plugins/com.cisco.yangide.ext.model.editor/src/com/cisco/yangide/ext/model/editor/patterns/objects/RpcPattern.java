@@ -9,7 +9,6 @@ import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Rpc;
 import com.cisco.yangide.ext.model.RpcIO;
 import com.cisco.yangide.ext.model.editor.util.IYangImageConstants;
-import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 import com.cisco.yangide.ext.model.impl.ModelFactoryImpl;
 
@@ -56,9 +55,6 @@ public class RpcPattern extends DomainObjectPattern {
     private void addIO(boolean isInput, Rpc rpc, ContainerShape cs) {
         RpcIO o = ModelFactoryImpl.eINSTANCE.createRpcIO();
         o.setInput(isInput);
-        YangModelUtil.add(rpc, o);
-        rpc.getChildren().add(o);        
-        YangModelUIUtil.drawObject(o, cs, getFeatureProvider(), 0, cs.getGraphicsAlgorithm().getHeight());
-        
+        YangModelUtil.add(rpc, o);                
     }
 }
