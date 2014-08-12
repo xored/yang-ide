@@ -1,6 +1,7 @@
 package com.cisco.yangide.ext.model.editor.editors;
 
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -10,10 +11,29 @@ import org.eclipse.graphiti.ui.editor.IDiagramEditorInput;
 import org.eclipse.ui.IEditorInput;
 
 import com.cisco.yangide.ext.model.Module;
+import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.editor.util.DiagramImportSupport;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 
 public class YangDiagramEditor extends DiagramEditor {
+
+    private IModelChangeHandler modelChangeHandler = new IModelChangeHandler() {
+
+        @Override
+        public void nodeRemoved(Node node) {
+            System.out.println("Removed " + node);
+        }
+
+        @Override
+        public void nodeChanged(Node node, EAttribute attribute, Object newValue) {
+            System.out.println("Changed " + node);
+        }
+
+        @Override
+        public void nodeAdded(Node parent, Node child, int position) {
+            System.out.println("Added " + child);
+        }
+    };
 
     @Override
     protected DiagramBehavior createDiagramBehavior() {
@@ -53,5 +73,12 @@ public class YangDiagramEditor extends DiagramEditor {
             DiagramImportSupport.importDiagram(diagram, getDiagramTypeProvider().getFeatureProvider());
         }
 
+    }
+
+    /**
+     * @return
+     */
+    public IModelChangeHandler getModelChangeHandler() {
+        return modelChangeHandler;
     }
 }
