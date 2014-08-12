@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target includeMode="feature" name="YANG IDE Extensions Target Platform" sequenceNumber="29">
+<?pde version="3.8"?><target includeMode="feature" name="YANG IDE Extensions Target Platform" sequenceNumber="31">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.m2e.feature.feature.group" version="1.4.1.20140328-1905"/>
@@ -47,6 +47,10 @@
 <unit id="org.eclipse.zest.sdk.feature.group" version="1.5.100.201405261516"/>
 <unit id="org.eclipse.zest.feature.group" version="1.5.100.201405261516"/>
 <repository location="http://download.eclipse.org/tools/gef/updates/releases"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.emf.compare.feature.group" version="3.0.0.201406111328"/>
+<repository location="http://download.eclipse.org/modeling/emf/compare/updates/releases/"/>
 </location>
 </locations>
 </target>

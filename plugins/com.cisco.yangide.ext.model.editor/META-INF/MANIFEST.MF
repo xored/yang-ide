@@ -25,7 +25,7 @@ Require-Bundle: org.eclipse.ui,
  com.cisco.yangide.editor,
  org.eclipse.jface.text,
  org.eclipse.ui.editors,
- org.eclipse.emf.common,
- com.google.guava;bundle-version="15.0.0"
+ com.google.guava;bundle-version="15.0.0",
+ org.eclipse.emf.compare;bundle-version="3.1.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
