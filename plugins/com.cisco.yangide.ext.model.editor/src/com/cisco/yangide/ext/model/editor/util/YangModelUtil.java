@@ -12,6 +12,7 @@ import java.util.Set;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 import com.cisco.yangide.core.dom.ASTCompositeNode;
 import com.cisco.yangide.core.dom.ASTNamedNode;
@@ -28,6 +29,7 @@ import com.cisco.yangide.core.dom.NotificationDefinition;
 import com.cisco.yangide.core.dom.RpcDefinition;
 import com.cisco.yangide.core.dom.RpcInputNode;
 import com.cisco.yangide.core.dom.RpcOutputNode;
+import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.ModelPackage;
@@ -35,6 +37,8 @@ import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.NamedNode;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.RpcIO;
+import com.cisco.yangide.ext.model.Tag;
+import com.cisco.yangide.ext.model.TaggedNode;
 import com.cisco.yangide.ext.model.Uses;
 import com.cisco.yangide.ext.model.impl.ModelFactoryImpl;
 import com.cisco.yangide.ext.model.impl.ModelPackageImpl;
@@ -46,6 +50,7 @@ public class YangModelUtil {
     }
 
     private static Map<EClass, List<EClass>> compositeNodeMap = new HashMap<EClass, List<EClass>>();
+    private static Map<EClass, List<YangTag>> taggedNodeMap = new HashMap<EClass, List<YangTag>>();
     private static final List<EClass> connections = new ArrayList<EClass>();
 
     private static Map<Class<? extends ASTNode>, EClass> astNodes = new HashMap<Class<? extends ASTNode>, EClass>();
@@ -63,7 +68,6 @@ public class YangModelUtil {
                 MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getContainer(),
                 MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
                 MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
-
         compositeNodeMap.put(MODEL_PACKAGE.getModule(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
                 MODEL_PACKAGE.getAugment(), MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(),
                 MODEL_PACKAGE.getDeviation(), MODEL_PACKAGE.getExtension(), MODEL_PACKAGE.getFeature(),
@@ -80,6 +84,8 @@ public class YangModelUtil {
                 MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(),
                 MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
                 MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
+        
+        taggedNodeMap.put(MODEL_PACKAGE.getContainer(), Arrays.asList(YangTag.CONFIG, YangTag.DESCRIPTION, YangTag.PRESENCE, YangTag.REFERENCE, YangTag.STATUS));
 
         astNodes.put(com.cisco.yangide.core.dom.Module.class, MODEL_PACKAGE.getModule());
         astNodes.put(GroupingDefinition.class, MODEL_PACKAGE.getGrouping());
@@ -190,6 +196,63 @@ public class YangModelUtil {
         return false;
     }
 
+    public static List<IPropertyDescriptor> getPropertyDescriptors(EClass c) {
+        List<IPropertyDescriptor> result = new ArrayList<IPropertyDescriptor>();
+        if (taggedNodeMap.containsKey(c)) {
+            for (YangTag tag : taggedNodeMap.get(c)) {
+                result.add(tag.getPropertyDescriptor());
+            }
+        }
+        return result;
+    }
+    
+    public static Object getValue(YangTag id, TaggedNode node) {
+        for (Tag tag : node.getTags()) {
+            if (id.getName().equals(tag.getName())) {
+                return tag.getValue();
+            }
+        }
+        return null;
+    }
+    
+    public static Object getValue(YangTag id, ASTNode node) {
+        if (YangTag.DESCRIPTION == id) {
+            return node.getDescription();
+        }
+        if (YangTag.REFERENCE == id) {
+            return node.getReference();
+        }
+        if (YangTag.STATUS == id) {
+            return node.getStatus();
+        }
+        if (node instanceof ASTCompositeNode) {
+            for (ASTNode n : ((ASTCompositeNode) node).getChildren()) {
+                if (n instanceof SimpleNode<?>) {
+                    if (id.getName().equals(((SimpleNode<?>) n).getNodeName())) {
+                        return ((SimpleNode<?>) n).getValue();
+                    }
+                }
+            }
+        }
+        return null;
+    }
+    
+    public static void setValue(YangTag id, TaggedNode node, Object value) {
+        boolean set = false;
+        for (Tag tag : node.getTags()) {
+            if (id.getName().equals(tag.getName())) {
+                tag.setValue(value);
+                set = true;
+            }
+        }
+        if (!set) {
+            Tag t = ModelFactoryImpl.eINSTANCE.createTag();
+            t.setName(id.getName());
+            t.setValue(value);
+            node.getTags().add(t);
+        }
+    }
+    
     private static List<EClass> getPossibleChildren(EClass e) {
         return (null != compositeNodeMap.get(e) ? compositeNodeMap.get(e) : Collections.<EClass> emptyList());
     }
@@ -237,7 +300,12 @@ public class YangModelUtil {
     }
 
     private static void setTags(EObject o, ASTNode n) {
-        // TODO
+        List<YangTag> tags = taggedNodeMap.get(o.eClass());
+        if (null != tags && checkType(YangModelUtil.MODEL_PACKAGE.getTaggedNode(), o)) {
+            for (YangTag t : tags) {
+                setValue(t, (TaggedNode) o, getValue(t, n));
+            }
+        }
     }
 
     private static void setName(EObject o, ASTNode n) {

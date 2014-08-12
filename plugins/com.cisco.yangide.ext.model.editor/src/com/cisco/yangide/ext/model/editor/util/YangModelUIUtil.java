@@ -133,7 +133,7 @@ public class YangModelUIUtil {
     public static Polyline createConnectionArrow(Connection connection, IFeatureProvider fp) {
         ConnectionDecorator cd = Graphiti.getPeCreateService().createConnectionDecorator(connection, false, 1.0, true);
         Polyline polyline = Graphiti.getGaCreateService().createPlainPolyline(cd,
-                new int[] { -15, 10, 0, 0, -15, -10 });
+                new int[] { -10, 5, 0, 0, -10, -5});
         polyline.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
         return polyline;
     }    

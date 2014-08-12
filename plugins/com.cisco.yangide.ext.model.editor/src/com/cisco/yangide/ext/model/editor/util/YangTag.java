@@ -51,7 +51,7 @@ public enum YangTag {
     }
     public PropertyDescriptor getPropertyDescriptor() {
         if (null == pd) {
-            pd = new PropertyDescriptor(toString(), getName());
+            pd = new PropertyDescriptor(this, getName());
         }
         return pd;
     }

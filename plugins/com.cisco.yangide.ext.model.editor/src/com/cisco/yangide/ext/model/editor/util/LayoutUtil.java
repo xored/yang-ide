@@ -7,7 +7,6 @@ import java.util.Map;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.graphiti.datatypes.ILocation;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.impl.AddBendpointContext;
 import org.eclipse.graphiti.features.context.impl.LayoutContext;
@@ -58,8 +57,8 @@ public class LayoutUtil {
     }
 
     public static final int DEFAULT_DIAGRAM_LAYOUT_TYPE = 13;
-    public static final int GRID_LAYOUT_TYPE = 3;
     public static final double DEFAULT_DIAGRAM_LAYOUT_V_SHIFT = 10;
+    public static final double DEFAULT_SCREEN_WIDTH = 1000;
 
     /**
      * Used to keep track of the initial Connection locations for self connections<br/>
@@ -187,12 +186,12 @@ public class LayoutUtil {
         return result;
     }
 
-    private static double[] getPreferedLayoutAreaSize(List<SimpleNode> entities, LayoutAlgorithm layout) {
+    private static double[] getAreaSizeAndArrangeLayout(List<SimpleNode> entities, LayoutAlgorithm layout) {
         double maxW = 0D;
         double maxH = 0D;
         double fullW = 0D;
         double fullH = 0D;
-        double screenW = 1000;
+        
         for (SimpleNode node : entities) {
             fullW += node.getWidth();
             if (maxW < node.getWidth()) {
@@ -214,8 +213,8 @@ public class LayoutUtil {
         if (layout instanceof YangDiagramLayoutAlgorithm) {
             ((YangDiagramLayoutAlgorithm) layout).setMaxW(maxW);
             ((YangDiagramLayoutAlgorithm) layout).setMaxH(maxH);
-            double h = Math.max(1, Math.ceil(entities.size() / (screenW / maxW))) * maxH;
-            return new double[] { screenW, h };
+            double h = Math.max(1, Math.ceil(entities.size() / (DEFAULT_SCREEN_WIDTH / maxW))) * maxH;
+            return new double[] { DEFAULT_SCREEN_WIDTH, h };
         }
         Double n = Math.ceil(Math.sqrt(entities.size()));
         return new double[] { (maxW + YangModelUIUtil.DEFAULT_V_ALIGN) * n,
@@ -427,7 +426,7 @@ public class LayoutUtil {
 
     private static void setShapes(Shape cs, Rectangle r, Map<GraphicsAlgorithm, Rectangle> map) {
         map.put(cs.getGraphicsAlgorithm(), r);
-        if (cs instanceof ContainerShape) {
+        if (cs instanceof ContainerShape) { // connect inner shapes with outer rectangles on diagram
             for (Shape shape : ((ContainerShape) cs).getChildren()) {
                 setShapes(shape, r, map);
             }
@@ -444,25 +443,24 @@ public class LayoutUtil {
             setShapes(shape, r, map);
         }
         for (Connection connection : fp.getDiagramTypeProvider().getDiagram().getConnections()) {
+            // remove all bendpoints
+            ((FreeFormConnection) connection).getBendpoints().clear();
             org.eclipse.draw2d.geometry.Point start, end;
             Rectangle source = map.get(connection.getStart().getReferencedGraphicsAlgorithm());
             Rectangle target = map.get(connection.getEnd().getReferencedGraphicsAlgorithm());
+            
+            // start always with right side because of box relative anchor
             start = new org.eclipse.draw2d.geometry.Point(source.x + source.width, 
                     Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart()).getY() - YangModelUIUtil.DEFAULT_H_ALIGN);
             if (source.x < target.x) {                
-                end = new org.eclipse.draw2d.geometry.Point(target.x - RectilinearAvoidObstaclesPathFinder.DEFAULT_SPACING,
-                        target.y + target.height / 2);
+                end = new org.eclipse.draw2d.geometry.Point(target.x, target.y + target.height / 2);
             } else {
-                end = new org.eclipse.draw2d.geometry.Point(target.x + target.width + RectilinearAvoidObstaclesPathFinder.DEFAULT_SPACING, 
-                        target.y + target.height / 2);
+                end = new org.eclipse.draw2d.geometry.Point(target.x + target.width, target.y + target.height / 2);
             }
             RoutePath route = finder.find(Position.create(map.get(connection.getStart().getReferencedGraphicsAlgorithm()), start),
                     Position.create(map.get(connection.getEnd().getReferencedGraphicsAlgorithm()), end), false);
-            //route.path.insertPoint(start, 0);
-            AddBendpointContext context1 = new AddBendpointContext((FreeFormConnection) connection, start.x, start.y, 0);
-            fp.getAddBendpointFeature(context1).addBendpoint(context1);
             for (int i = 0; i < route.path.size(); i++) {
-                AddBendpointContext context = new AddBendpointContext((FreeFormConnection) connection, route.path.getPoint(i).x, route.path.getPoint(i).y, i + 1);
+                AddBendpointContext context = new AddBendpointContext((FreeFormConnection) connection, route.path.getPoint(i).x, route.path.getPoint(i).y, i);
                 fp.getAddBendpointFeature(context).addBendpoint(context);
             }
         }
@@ -488,7 +486,7 @@ public class LayoutUtil {
                 List<SimpleNode> diagramEntities = filterDiagramLayoutEntities(map);
                 LayoutEntity[] entities = diagramEntities.toArray(new LayoutEntity[0]);// map.values().toArray(new
                                                                                        // LayoutEntity[0]);
-                double[] preferedSize = getPreferedLayoutAreaSize(diagramEntities, layoutAlgorithm);
+                double[] preferedSize = getAreaSizeAndArrangeLayout(diagramEntities, layoutAlgorithm);
 
                 // Apply the LayoutAlgorithmn
                 layoutAlgorithm
@@ -547,6 +545,7 @@ public class LayoutUtil {
                 points.get(1).setX(cs.getGraphicsAlgorithm().getWidth());
             }
         }
+        layoutDiagramConnections(fp);
     }
 
     /**

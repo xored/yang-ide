@@ -107,10 +107,13 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
         super.moveShape(context);
         if (!(context.getTargetContainer() instanceof Diagram)) {
             layoutPictogramElement(context.getTargetContainer());
+        } else {
+            LayoutUtil.layoutDiagramConnections(getFeatureProvider());
         }
         YangModelUtil.move(getBusinessObjectForPictogramElement(context.getSourceContainer()),
                 getBusinessObjectForPictogramElement(context.getTargetContainer()),
                 getBusinessObjectForPictogramElement(context.getPictogramElement()));
+        
     }
 
     @Override
