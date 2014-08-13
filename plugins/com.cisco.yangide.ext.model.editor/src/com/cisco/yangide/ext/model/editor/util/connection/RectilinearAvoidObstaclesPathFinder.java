@@ -20,7 +20,7 @@ public class RectilinearAvoidObstaclesPathFinder
      * @see #getSpacing()
      * @see #setSpacing(int)
      */
-    public static final int DEFAULT_SPACING = 10;
+    public static final int DEFAULT_SPACING = 5;
 
     /**
      * The spacing maintained between figure and path.

@@ -40,9 +40,10 @@ public class YangModelUIUtil {
     }
     
     public static final int DEFAULT_WIDTH = 150;
-    public static final int DEFAULT_TEXT_HEIGHT = 16;
+    public static final int DEFAULT_TEXT_HEIGHT = 18;
     public static final int DEFAULT_V_ALIGN = 5;
     public static final int DEFAULT_H_ALIGN = 2;
+    public static final int DEFAULT_OBJECT_NUMBER_IND = 2;
     
     public static final int DEFAULT_BOX_ANCHOR_RADIUS = 2;
 
@@ -63,7 +64,8 @@ public class YangModelUIUtil {
             if (null == o1 && null != o2) {
                 return -1;
             }
-            return o1.getGraphicsAlgorithm().getY() > o2.getGraphicsAlgorithm().getY() ? 1 : o1.getGraphicsAlgorithm().getY() == o2.getGraphicsAlgorithm().getY() ? 0 : -1;
+            return o1.getGraphicsAlgorithm().getY() + o1.getGraphicsAlgorithm().getHeight() > o2.getGraphicsAlgorithm().getY() + o2.getGraphicsAlgorithm().getHeight() ? 1 
+                    : o1.getGraphicsAlgorithm().getY() + o1.getGraphicsAlgorithm().getHeight() == o2.getGraphicsAlgorithm().getY() + o2.getGraphicsAlgorithm().getHeight() ? 0 : -1;
         }
 
     }
@@ -168,9 +170,22 @@ public class YangModelUIUtil {
                 new int[] { -10, 5, 0, 0, -10, -5});
         polyline.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
         return polyline;
-    }    
+    }
+    
+    public static void drawBoxRelativeAnchor(ContainerShape containerShape, IAddContext context, IFeatureProvider fp) {
+        final BoxRelativeAnchor boxAnchor = Graphiti.getPeCreateService().createBoxRelativeAnchor(containerShape);
+        boxAnchor.setRelativeWidth(1.0);
+        boxAnchor.setRelativeHeight(0.5);
+
+        boxAnchor.setReferencedGraphicsAlgorithm(containerShape.getGraphicsAlgorithm());
+        final Ellipse ellipse = Graphiti.getGaService().createPlainEllipse(boxAnchor);
+
+        Graphiti.getGaService().setLocationAndSize(ellipse, -2 * DEFAULT_BOX_ANCHOR_RADIUS,
+                -2 * DEFAULT_BOX_ANCHOR_RADIUS, 2 * DEFAULT_BOX_ANCHOR_RADIUS, 2 * DEFAULT_BOX_ANCHOR_RADIUS);
+        ellipse.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
+    }
+    
     public static void drawPictogramElementHeader(ContainerShape containerShape, IAddContext context, IFeatureProvider fp, String imageId, String title, int width, int height) {
-        // create shape for text
         final Shape imageShape = Graphiti.getPeCreateService().createShape(containerShape, false);
         // create and set text graphics algorithm
         final Image image = Graphiti.getGaService().createImage(imageShape, imageId);
@@ -180,6 +195,7 @@ public class YangModelUIUtil {
         image.setStretchH(true);
         image.setProportional(true);
         Graphiti.getGaService().setLocationAndSize(image, DEFAULT_V_ALIGN, 0, height, height);
+        PropertyUtil.setObjectShapeProp(imageShape, PropertyUtil.OBJECT_IMAGE_SHAPE_KEY, true);
         final Shape textShape = Graphiti.getPeCreateService().createShape(containerShape, false);
         Text text;
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getNamedNode(), context.getNewObject())) {
@@ -192,20 +208,21 @@ public class YangModelUIUtil {
             text = Graphiti.getGaService().createPlainText(textShape, title);
         }
         text.setStyle(StyleUtil.getStyleForDomainObjectText(fp.getDiagramTypeProvider().getDiagram()));
+        PropertyUtil.setObjectShapeProp(textShape, PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY, true);
         Graphiti.getGaService().setLocationAndSize(text, height + DEFAULT_V_ALIGN, 0, width, height);       
         
     }
-    public static void drawBoxRelativeAnchor(ContainerShape containerShape, IAddContext context, IFeatureProvider fp) {
-        final BoxRelativeAnchor boxAnchor = Graphiti.getPeCreateService().createBoxRelativeAnchor(containerShape);
-        boxAnchor.setRelativeWidth(1.0);
-        boxAnchor.setRelativeHeight(0.5);
-
-        boxAnchor.setReferencedGraphicsAlgorithm(containerShape.getGraphicsAlgorithm());
-        final Ellipse ellipse = Graphiti.getGaService().createPlainEllipse(boxAnchor);
-
-        Graphiti.getGaService().setLocationAndSize(ellipse, -2 * DEFAULT_BOX_ANCHOR_RADIUS,
-                -2 * DEFAULT_BOX_ANCHOR_RADIUS, 2 * DEFAULT_BOX_ANCHOR_RADIUS, 2 * DEFAULT_BOX_ANCHOR_RADIUS);
-        ellipse.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
+    
+    public static void drawPictogramElementPositionInParent(ContainerShape shape, IFeatureProvider fp) {
+        Integer pos = YangModelUtil.getPositionInParent(fp.getBusinessObjectForPictogramElement(shape.getContainer()), fp.getBusinessObjectForPictogramElement(shape));
+        if (0 <= pos) {
+            pos++;
+            final Shape textShape = Graphiti.getPeCreateService().createShape(shape, false);
+            Text text = Graphiti.getGaService().createPlainText(textShape, pos.toString());
+            text.setStyle(StyleUtil.getStyleForDomainObjectNumberText(fp.getDiagramTypeProvider().getDiagram()));
+            Graphiti.getGaService().setLocationAndSize(text, shape.getGraphicsAlgorithm().getWidth() - DEFAULT_OBJECT_NUMBER_IND, DEFAULT_OBJECT_NUMBER_IND, 10, 10);      
+            PropertyUtil.setObjectShapeProp(textShape, PropertyUtil.OBJECT_NUMBER_SHAPE_KEY, true);
+        }
     }
     public static ContainerShape drawPictogramElement(IAddContext context, IFeatureProvider fp, String imageId, String title) {
         ContainerShape result = null;
@@ -224,7 +241,10 @@ public class YangModelUIUtil {
         // call the layout feature
         if (!(context.getTargetContainer() instanceof Diagram)) {
             layoutPictogramElement(context.getTargetContainer(), fp);
+        } else {
+            drawPictogramElementPositionInParent(result, fp);
         }
+        PropertyUtil.setObjectShapeProp(result, PropertyUtil.BUSINESS_OBJECT_SHAPE_KEY, true);
         return result;
     }
     

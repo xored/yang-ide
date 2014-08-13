@@ -1,6 +1,7 @@
 package com.cisco.yangide.ext.model.editor.util;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -211,8 +212,8 @@ public class LayoutUtil {
                     maxH + 2 * YangModelUIUtil.DEFAULT_H_ALIGN };
         }
         if (layout instanceof YangDiagramLayoutAlgorithm) {
-            ((YangDiagramLayoutAlgorithm) layout).setMaxW(maxW);
-            ((YangDiagramLayoutAlgorithm) layout).setMaxH(maxH);
+            ((YangDiagramLayoutAlgorithm) layout).setMaxElementSizes(maxW, maxH);
+            ((YangDiagramLayoutAlgorithm) layout).setFullElementSizes(fullW, fullH);
             double h = Math.max(1, Math.ceil(entities.size() / (DEFAULT_SCREEN_WIDTH / maxW))) * maxH;
             return new double[] { DEFAULT_SCREEN_WIDTH, h };
         }
@@ -352,6 +353,24 @@ public class LayoutUtil {
             this.graphData = o;
         }
     }
+    
+    private static class LayoutEntityHeightComparator implements Comparator<LayoutEntity> {
+
+        @Override
+        public int compare(LayoutEntity o1, LayoutEntity o2) {
+            if (null == o1 && null == o2) {
+                return 0;
+            }
+            if (null != o1 && null == o2) {
+                return 1;
+            }
+            if (null == o1 && null != o2) {
+                return -1;
+            }
+            return o1.getHeightInLayout() > o2.getHeightInLayout() ? 1 : o1.getHeightInLayout() == o2.getHeightInLayout() ? 0 : -1;
+        }
+        
+    }
 
     private static class YangDiagramLayoutAlgorithm extends GridLayoutAlgorithm {
         protected double maxW = YangModelUIUtil.DEFAULT_WIDTH;
@@ -359,10 +378,13 @@ public class LayoutUtil {
         protected int cols;
         protected int rows;
         protected int numChildren;
+        @SuppressWarnings("unused") protected double fullW = YangModelUIUtil.DEFAULT_WIDTH;
+        protected double fullH = YangModelUIUtil.DEFAULT_COMPOSITE_HEIGHT;
         private static final int OFFSET = 20;
 
         public YangDiagramLayoutAlgorithm(int styles) {
             super(styles);
+            setComparator(new LayoutEntityHeightComparator());
         }
 
         @Override
@@ -385,22 +407,25 @@ public class LayoutUtil {
                 InternalRelationship[] relationshipsToConsider, double boundsX, double boundsY, double boundsWidth,
                 double boundsHeight) {
             int index = 0;
-            int totalProgress = rows + 2;
-            for (int i = 0; i < rows; i++) {
-                for (int j = 0; j < cols; j++) {
-
-                    if ((i * cols + j) < numChildren) {
-                        double y = index - cols < 0 ? 0 : entitiesToLayout[index - cols].getInternalHeight()
-                                + entitiesToLayout[index - cols].getInternalY();
+            int totalProgress = cols + 2;
+            double averageH = fullH / cols;
+            double leftH = fullH;
+            if (cols >= numChildren) {
+                leftH = 0;
+            }
+            for (int j = 0; j < cols; j++) {
+                double y = 0;
+                do {               
+                    if (index < numChildren) {
                         InternalNode sn = entitiesToLayout[index++];
-                        double xmove = boundsX + j * (getMaxW() + 2 * OFFSET) + OFFSET;
+                        double xmove = boundsX + j * (getMaxW() + OFFSET) + OFFSET;
                         double ymove = boundsY + y + OFFSET;
                         sn.setInternalLocation(xmove, ymove);
-                        sn.setInternalSize(Math.max(getMaxW() + 2 * OFFSET, MIN_ENTITY_SIZE),
-                                Math.max(sn.getHeightInLayout() + 2 * OFFSET, MIN_ENTITY_SIZE));
+                        y += sn.getHeightInLayout() + OFFSET;
+                        leftH -= sn.getHeightInLayout();
                     }
-                }
-                fireProgressEvent(2 + i, totalProgress);
+                } while ((j == cols - 1 || leftH / (cols - j - 1) > averageH) && index < numChildren);
+                fireProgressEvent(2 + j, totalProgress);
             }
             updateLayoutLocations(entitiesToLayout);
             fireProgressEvent(totalProgress, totalProgress);
@@ -410,16 +435,18 @@ public class LayoutUtil {
             return maxW;
         }
 
-        public void setMaxW(double maxW) {
+        public void setMaxElementSizes(double maxW, double maxH) {
             this.maxW = maxW;
+            this.maxH = maxH;
         }
 
         public double getMaxH() {
             return maxH;
         }
 
-        public void setMaxH(double maxH) {
-            this.maxH = maxH;
+        public void setFullElementSizes(double fullW, double fullH) {
+            this.fullW = fullW;
+            this.fullH = fullH;
         }
 
     }
@@ -515,13 +542,16 @@ public class LayoutUtil {
         int y = 0;
         int x = 0;
         Polyline line = null;
+        GraphicsAlgorithm number = null;
         for (Shape sh : elements) {
             layoutPictogramElement(sh, fp);
             if (sh.getGraphicsAlgorithm() instanceof Polyline) {
                 line = (Polyline) sh.getGraphicsAlgorithm();
             }
-            if (null != fp.getBusinessObjectForPictogramElement(sh)
-                    && fp.getBusinessObjectForPictogramElement(sh) != fp.getBusinessObjectForPictogramElement(cs)) {
+            if (PropertyUtil.isObjectShapeProp(sh, PropertyUtil.OBJECT_NUMBER_SHAPE_KEY)) {
+                number = sh.getGraphicsAlgorithm();
+            }
+            if (PropertyUtil.isBusinessObjectShape(sh)) {
                 sh.getGraphicsAlgorithm().setX(YangModelUIUtil.DEFAULT_V_ALIGN);
                 sh.getGraphicsAlgorithm().setY(y + YangModelUIUtil.DEFAULT_H_ALIGN);
                 sh.getGraphicsAlgorithm().setWidth(
@@ -544,6 +574,9 @@ public class LayoutUtil {
             if (1 < points.size()) {
                 points.get(1).setX(cs.getGraphicsAlgorithm().getWidth());
             }
+        }
+        if (null != number) {
+            number.setX(cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND - 10);
         }
         layoutDiagramConnections(fp);
     }

@@ -10,6 +10,7 @@ import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.ui.editor.DiagramBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.IDiagramEditorInput;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
@@ -218,12 +219,14 @@ public class YangDiagramEditor extends DiagramEditor {
                 super.widgetSelected(e);
                 if (importTable.getSelection() instanceof IStructuredSelection) {
                     Iterator<Object> iter = ((IStructuredSelection) importTable.getSelection()).iterator();
-                   if (iter.hasNext()) {
-                       Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                    Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                    if (iter.hasNext()) {
                        AddImportDialog dialog = new AddImportDialog(shell, module, (Import) iter.next());
                        if (0 <= dialog.open()) {
                            importTable.refresh();
                        }  
+                    } else {
+                        MessageDialog.openWarning(shell, "Warning", "No module was choosen");
                     }
                 }
             }

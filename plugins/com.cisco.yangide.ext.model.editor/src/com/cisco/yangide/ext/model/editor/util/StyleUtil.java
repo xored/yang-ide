@@ -1,5 +1,6 @@
 package com.cisco.yangide.ext.model.editor.util;
 
+import org.eclipse.graphiti.mm.algorithms.styles.Font;
 import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.algorithms.styles.Style;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -70,6 +71,22 @@ public class StyleUtil {
                 style = gaService.createPlainStyle(parentStyle, styleId);
                 setCommonTextValues(diagram, gaService, style);
                 style.setFont(gaService.manageDefaultFont(diagram, false, false));
+            }
+            return style;
+        }
+        public static Style getStyleForDomainObjectNumberText(Diagram diagram) {
+            final String styleId = "DOMAIL-OBJECT-NUMBER-TEXT";
+            IGaService gaService = Graphiti.getGaService();
+
+            // this is a child style of the common-values-style
+            Style parentStyle = getStyleForCommonValues(diagram);
+            Style style = gaService.findStyle(parentStyle, styleId);
+
+            if (style == null) { // style not found - create new style
+                style = gaService.createPlainStyle(parentStyle, styleId);
+                setCommonTextValues(diagram, gaService, style);
+                Font defaultFont = gaService.manageDefaultFont(diagram, false, false);               
+                style.setFont(gaService.manageFont(diagram, defaultFont.getName(), Math.max(6, defaultFont.getSize() - 2)));
             }
             return style;
         }
