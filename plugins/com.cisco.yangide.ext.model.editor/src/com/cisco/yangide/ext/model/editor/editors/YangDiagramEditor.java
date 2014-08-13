@@ -49,7 +49,8 @@ public class YangDiagramEditor extends DiagramEditor {
     private Button add;
     private Button delete;
     private Button edit;
-    private Module module;    private IModelChangeHandler modelChangeHandler = new IModelChangeHandler() {
+    private Module module;
+    private IModelChangeHandler modelChangeHandler = new IModelChangeHandler() {
 
         @Override
         public void nodeRemoved(Node node) {
@@ -66,6 +67,7 @@ public class YangDiagramEditor extends DiagramEditor {
             System.out.println("Added " + child);
         }
     };
+    private ISourceElementCreator sourceElementCreator;
 
     @Override
     protected DiagramBehavior createDiagramBehavior() {
@@ -81,10 +83,10 @@ public class YangDiagramEditor extends DiagramEditor {
         layout.marginTop = 0;
         layout.marginBottom = 0;
         layout.marginHeight = 0;
-        parent.setLayout(layout);     
-        
-        Composite content = createModuleInfoPanel(parent);        
- 
+        parent.setLayout(layout);
+
+        Composite content = createModuleInfoPanel(parent);
+
         super.createPartControl(parent);
 
         for (Control c : parent.getChildren()) {
@@ -94,12 +96,12 @@ public class YangDiagramEditor extends DiagramEditor {
         }
         addListeners();
     }
-    
+
     private Composite createModuleInfoPanel(Composite parent) {
         Composite content = new Composite(parent, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(1).applyTo(content);
         GridDataFactory.fillDefaults().hint(200, 20).applyTo(content);
-        
+
         Composite header = new Composite(content, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(2).applyTo(header);
         GridDataFactory.fillDefaults().hint(200, 20).align(SWT.FILL, SWT.FILL).indent(0, 5).applyTo(header);
@@ -112,17 +114,17 @@ public class YangDiagramEditor extends DiagramEditor {
             nameText.setText(module.getName());
         }
         GridDataFactory.fillDefaults().hint(160, 20).applyTo(nameText);
-        
+
         createImportPane(content);
         return content;
-        
+
     }
-    
+
     private Composite createImportPane(Composite parent) {
         CLabel importLabel = new CLabel(parent, SWT.NONE);
         importLabel.setText("Imports:");
         GridDataFactory.fillDefaults().span(1, 2).align(SWT.FILL, SWT.END).applyTo(importLabel);
-        
+
         Composite imports = new Composite(parent, SWT.NONE);
         GridLayoutFactory.fillDefaults().numColumns(2).applyTo(imports);
         Composite table = createImportTable(imports);
@@ -132,7 +134,7 @@ public class YangDiagramEditor extends DiagramEditor {
         refreshImportTable();
         return imports;
     }
-    
+
     private Composite createImportTable(Composite parent) {
         Table t = new Table(parent, SWT.FULL_SELECTION | SWT.V_SCROLL);
         t.setLinesVisible(false);
@@ -153,7 +155,7 @@ public class YangDiagramEditor extends DiagramEditor {
                 }
                 return super.getText(element);
             }
-            
+
         });
         return t;
     }
@@ -165,37 +167,37 @@ public class YangDiagramEditor extends DiagramEditor {
         add = new Button(comp, SWT.NONE);
         add.setText("Add");
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.BEGINNING).applyTo(add);
-        
+
         edit = new Button(comp, SWT.NONE);
         edit.setText("Edit");
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.BEGINNING).applyTo(edit);
-        
+
         delete = new Button(comp, SWT.NONE);
-        delete.setText("Del");      
+        delete.setText("Del");
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.BEGINNING).applyTo(delete);
         return comp;
     }
-    
+
     private void refreshImportTable() {
         if (null != module) {
             importTable.setInput(YangModelUtil.filter(module.getChildren(), YangModelUtil.MODEL_PACKAGE.getImport()));
         }
     }
-    
+
     @SuppressWarnings("unchecked")
     private void addListeners() {
         add.addSelectionListener(new SelectionAdapter() {
 
             @Override
-            public void widgetSelected(SelectionEvent e) {          
+            public void widgetSelected(SelectionEvent e) {
                 super.widgetSelected(e);
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
                 AddImportDialog dialog = new AddImportDialog(shell, module);
                 if (0 <= dialog.open()) {
                     refreshImportTable();
-                }                
+                }
             }
-            
+
         });
 
         delete.addSelectionListener(new SelectionAdapter() {
@@ -211,7 +213,7 @@ public class YangDiagramEditor extends DiagramEditor {
                 }
             }
         });
-        
+
         edit.addSelectionListener(new SelectionAdapter() {
 
             @Override
@@ -230,10 +232,10 @@ public class YangDiagramEditor extends DiagramEditor {
                     }
                 }
             }
-            
+
         });
     }
-    
+
     @Override
     protected void setInput(IEditorInput input) {
         super.setInput(input);
@@ -274,5 +276,12 @@ public class YangDiagramEditor extends DiagramEditor {
      */
     public IModelChangeHandler getModelChangeHandler() {
         return modelChangeHandler;
+    }
+
+    /**
+     * @param sourceElementCreator the sourceElementCreator to set
+     */
+    public void setSourceElementCreator(ISourceElementCreator sourceElementCreator) {
+        this.sourceElementCreator = sourceElementCreator;
     }
 }
