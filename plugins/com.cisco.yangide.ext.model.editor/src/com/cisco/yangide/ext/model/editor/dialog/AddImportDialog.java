@@ -76,13 +76,13 @@ public class AddImportDialog extends ElementListSelectionDialog {
         CLabel label = new CLabel(appendix, SWT.NONE);
         label.setText("Prefix");
         prefix = new Text(appendix, SWT.NONE);
+        prefix.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         if (null != obj) {
             prefix.setText(obj.getPrefix());
-        }
-        prefix.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
-        ElementIndexInfo info = find(obj);
-        if (null != info) {
-            setSelection(new Object[] {info});
+            ElementIndexInfo info = find(obj);
+            if (null != info) {
+                setSelection(new Object[] {info});
+            }
         }
         return content;
     }
@@ -109,7 +109,7 @@ public class AddImportDialog extends ElementListSelectionDialog {
             Module imported = ModelFactory.eINSTANCE.createModule();
             imported.setName(choosen.getModule());
             result.setModule(imported);
-            YangModelUtil.add(module, result);
+            YangModelUtil.add(module, result, module.getChildren().size());
         } else {
             obj.setPrefix(prefix.getText());
             obj.setRevisionDate(choosen.getRevision());

@@ -30,6 +30,7 @@ import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeCreateService;
 
+import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.NamedNode;
 
 public class YangModelUIUtil {
@@ -71,6 +72,37 @@ public class YangModelUIUtil {
         ECollections.sort(elements, COMPARATOR);
     }
 
+    public static int getPositionInParent(ContainerShape parent, Shape child, IFeatureProvider fp) {
+        EList<Shape> elements = parent.getChildren();
+        sortPictogramElements(elements);
+        int pos = 0;
+        for (Shape shape : elements) {
+            if (child == shape) {
+                return pos;
+            }
+            if (null != fp.getBusinessObjectForPictogramElement(shape) && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), fp.getBusinessObjectForPictogramElement(parent))
+                    && ((ContainingNode) fp.getBusinessObjectForPictogramElement(parent)).getChildren().contains(fp.getBusinessObjectForPictogramElement(shape))) {
+                pos++;
+            }
+        }
+        return pos;
+    }
+    
+    public static int getPositionInParent(ContainerShape parent, int y, IFeatureProvider fp) {
+        EList<Shape> elements = parent.getChildren();
+        sortPictogramElements(elements);
+        int pos = 0;
+        for (Shape shape : elements) {
+            if (null != fp.getBusinessObjectForPictogramElement(shape) && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), fp.getBusinessObjectForPictogramElement(parent))
+                    && ((ContainingNode) fp.getBusinessObjectForPictogramElement(parent)).getChildren().contains(fp.getBusinessObjectForPictogramElement(shape))) {
+                if (y < shape.getGraphicsAlgorithm().getY()) {
+                    return pos;
+                }
+                pos++;
+            }
+        }
+        return pos;
+    }
     
     public static void layoutPictogramElement(PictogramElement diagram, IFeatureProvider fp) {
         LayoutContext lc = new LayoutContext(diagram);
@@ -152,7 +184,7 @@ public class YangModelUIUtil {
         Text text;
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getNamedNode(), context.getNewObject())) {
             if (null == ((NamedNode) context.getNewObject()).getName()) {
-                ((NamedNode) context.getNewObject()).setName("<name>");
+                ((NamedNode) context.getNewObject()).setName("name");
             }
             text = Graphiti.getGaService().createPlainText(textShape, ((NamedNode) context.getNewObject()).getName());
             fp.link(textShape, new Object[] { context.getNewObject(), YangModelUtil.MODEL_PACKAGE.getNamedNode_Name() });

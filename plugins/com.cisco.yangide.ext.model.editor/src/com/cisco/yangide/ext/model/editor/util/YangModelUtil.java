@@ -132,17 +132,47 @@ public class YangModelUtil {
         }
         return false;
     }
-
-    public static void move(Object source, Object target, Object obj) {
-        remove(source, obj);
-        add(target, obj);
+    
+    public static int getPositionInParent(Object parent, Object child) {
+        if (null != parent && null != child && checkType(MODEL_PACKAGE.getContainingNode(), parent)
+                && checkType(MODEL_PACKAGE.getNode(), child)) {
+            if (((ContainingNode) parent).getChildren().contains(child)) {
+                return ((ContainingNode) parent).getChildren().indexOf(child);                
+            } 
+        }    
+        return -1;
     }
 
-    public static void add(Object source, Object obj) {
-        if (null != source && null != obj && checkType(MODEL_PACKAGE.getContainingNode(), source)
+    public static void move(Object source, Object target, Object obj, int pos) {
+        if (source != target) { 
+            remove(source, obj);    
+            add(target, obj, pos);
+        } else {
+            move(target, obj, pos);
+        }
+        
+    }
+    
+    public static void move(Object target, Object obj, int pos) {
+        if (null != target && null != obj && checkType(MODEL_PACKAGE.getContainingNode(), target)
                 && checkType(MODEL_PACKAGE.getNode(), obj)) {
-            ((ContainingNode) source).getChildren().add((Node) obj);
-            ((Node) obj).setParent((ContainingNode) source);
+            ((Node) obj).setParent((ContainingNode) target);
+            if (pos >= ((ContainingNode) target).getChildren().size() ) {
+                pos = ((ContainingNode) target).getChildren().size() - 1;                
+            } 
+            ((ContainingNode) target).getChildren().move(pos, (Node) obj);
+        }        
+    }
+
+    public static void add(Object target, Object obj, int pos) {
+        if (null != target && null != obj && checkType(MODEL_PACKAGE.getContainingNode(), target)
+                && checkType(MODEL_PACKAGE.getNode(), obj)) {
+            ((Node) obj).setParent((ContainingNode) target);
+            if (pos >= ((ContainingNode) target).getChildren().size() ) {
+                ((ContainingNode) target).getChildren().add((Node) obj);
+            } else {
+                ((ContainingNode) target).getChildren().add(pos, (Node) obj);
+            }
         }
     }
 
@@ -280,7 +310,7 @@ public class YangModelUtil {
                 setTags(o, n);
                 setAdditionalInfo(o, n);
                 if (null != parent && canContain(parent, o)) {
-                    add(parent, o);
+                    add(parent, o, parent.getChildren().size());
                 }
                 if (checkType(MODEL_PACKAGE.getContainingNode(), o)) {
                     if (n instanceof ASTCompositeNode) {

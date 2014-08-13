@@ -55,6 +55,6 @@ public class RpcPattern extends DomainObjectPattern {
     private void addIO(boolean isInput, Rpc rpc, ContainerShape cs) {
         RpcIO o = ModelFactoryImpl.eINSTANCE.createRpcIO();
         o.setInput(isInput);
-        YangModelUtil.add(rpc, o);                
+        YangModelUtil.add(rpc, o, rpc.getChildren().size());                
     }
 }

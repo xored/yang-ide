@@ -10,6 +10,7 @@ import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.pattern.AbstractPattern;
 import org.eclipse.graphiti.pattern.IPattern;
 
@@ -75,8 +76,8 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
         EObject newDomainObject = createEObject();
         ContainerShape con = context.getTargetContainer();
         addGraphicalRepresentation(context, newDomainObject);
-        YangModelUtil.add(getBusinessObjectForPictogramElement(con), newDomainObject);
         getDiagram().eResource().getContents().add(newDomainObject);
+        YangModelUtil.add(getBusinessObjectForPictogramElement(con), newDomainObject, YangModelUIUtil.getPositionInParent(context.getTargetContainer(), context.getY(), getFeatureProvider()));
         return new Object[] { newDomainObject };
     }
 
@@ -107,15 +108,19 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
         super.moveShape(context);
         if (!(context.getTargetContainer() instanceof Diagram)) {
             layoutPictogramElement(context.getTargetContainer());
-        } else {
-            LayoutUtil.layoutDiagramConnections(getFeatureProvider());
         }
-        YangModelUtil.move(getBusinessObjectForPictogramElement(context.getSourceContainer()),
-                getBusinessObjectForPictogramElement(context.getTargetContainer()),
-                getBusinessObjectForPictogramElement(context.getPictogramElement()));
+        LayoutUtil.layoutDiagramConnections(getFeatureProvider());
         
+        if (!(context.getTargetContainer() instanceof Diagram && context.getSourceContainer() instanceof Diagram)) {
+            int pos = YangModelUtil.getPositionInParent(getBusinessObjectForPictogramElement(context.getSourceContainer()), getBusinessObjectForPictogramElement(context.getPictogramElement()));
+            int newPos = YangModelUIUtil.getPositionInParent(context.getTargetContainer(), (Shape) context.getPictogramElement(), getFeatureProvider());
+            if (context.getTargetContainer() != context.getSourceContainer() || pos != newPos){ 
+                YangModelUtil.move(getBusinessObjectForPictogramElement(context.getSourceContainer()),
+                        getBusinessObjectForPictogramElement(context.getTargetContainer()),
+                        getBusinessObjectForPictogramElement(context.getPictogramElement()), newPos);
+            }
+        }
     }
-
     @Override
     public void resizeShape(IResizeShapeContext context) {
         super.resizeShape(context);
