@@ -9,7 +9,6 @@ import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.TaggedNode;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -117,7 +116,6 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
      * <!-- end-user-doc -->
      * @generated
      */
-    @Override
     public Node getParent() {
         if (parent != null && parent.eIsProxy()) {
             InternalEObject oldParent = (InternalEObject)parent;
@@ -144,7 +142,6 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
      * <!-- end-user-doc -->
      * @generated
      */
-    @Override
     public void setParent(Node newParent) {
         Node oldParent = parent;
         parent = newParent;
@@ -157,7 +154,6 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
      * <!-- end-user-doc -->
      * @generated
      */
-    @Override
     public String getName() {
         return name;
     }
@@ -167,7 +163,6 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
      * <!-- end-user-doc -->
      * @generated
      */
-    @Override
     public void setName(String newName) {
         String oldName = name;
         name = newName;
@@ -180,7 +175,6 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
      * <!-- end-user-doc -->
      * @generated
      */
-    @Override
     public EList<Node> getChildren() {
         if (children == null) {
             children = new EObjectContainmentEList<Node>(Node.class, this, ModelPackage.GROUPING__CHILDREN);
@@ -193,29 +187,11 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
      * <!-- end-user-doc -->
      * @generated
      */
-    @Override
     public EList<Tag> getTags() {
         if (tags == null) {
             tags = new EObjectContainmentEList<Tag>(Tag.class, this, ModelPackage.GROUPING__TAGS);
         }
         return tags;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated NOT
-     */
-    @Override
-    public String toYangString() {
-        StringBuilder sb = new StringBuilder("grouping ");
-        sb.append(getName());
-        sb.append(" {\n");
-        for (Node node : getChildren()) {
-            sb.append(node.toYangString());
-        }
-        sb.append("}\n");
-        return sb.toString();
     }
 
     /**
@@ -368,20 +344,6 @@ public class GroupingImpl extends MinimalEObjectImpl.Container implements Groupi
             }
         }
         return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    @Override
-    public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-        switch (operationID) {
-            case ModelPackage.GROUPING___TO_YANG_STRING:
-                return toYangString();
-        }
-        return super.eInvoke(operationID, arguments);
     }
 
     /**

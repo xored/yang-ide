@@ -6,10 +6,8 @@ import com.cisco.yangide.ext.model.Deviation;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
 
-import java.lang.reflect.InvocationTargetException;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -144,17 +142,6 @@ public class DeviationImpl extends MinimalEObjectImpl.Container implements Devia
      * <!-- end-user-doc -->
      * @generated
      */
-    public String toYangString() {
-        // TODO: implement this method
-        // Ensure that you remove @generated or mark it @generated NOT
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
@@ -217,20 +204,6 @@ public class DeviationImpl extends MinimalEObjectImpl.Container implements Devia
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
         }
         return super.eIsSet(featureID);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    @Override
-    public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-        switch (operationID) {
-            case ModelPackage.DEVIATION___TO_YANG_STRING:
-                return toYangString();
-        }
-        return super.eInvoke(operationID, arguments);
     }
 
     /**

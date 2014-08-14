@@ -56,6 +56,7 @@ public class ModelSynchronizer {
         public void createSourceElement(Node parent, int position, String content) {
             ASTNode node = mapping.get(parent);
             diagModelAdapter.addFromDiagram(node, content, position);
+            syncWithSource();
         }
     };
 

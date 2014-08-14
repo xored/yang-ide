@@ -8,7 +8,6 @@ import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.TaggedNode;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -174,18 +173,6 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @generated NOT
-     */
-    public String toYangString() {
-        StringBuilder sb = new StringBuilder("leaf ").append(getName()).append(" {\n");
-        sb.append("  type string;\n");
-        sb.append("}\n");
-        return sb.toString();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
      * @generated
      */
     @Override
@@ -308,20 +295,6 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
             }
         }
         return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    @Override
-    public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-        switch (operationID) {
-            case ModelPackage.LEAF___TO_YANG_STRING:
-                return toYangString();
-        }
-        return super.eInvoke(operationID, arguments);
     }
 
     /**

@@ -1,0 +1,3 @@
+deviation "/base:@name@" {
+    deviate not-supported;
+}

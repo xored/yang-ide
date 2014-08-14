@@ -47,12 +47,4 @@ public interface Node extends EObject {
      */
     void setParent(Node value);
 
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @model dataType="org.eclipse.emf.ecore.xml.type.String"
-     * @generated
-     */
-    String toYangString();
-
 } // Node

@@ -1,0 +1,7 @@
+rpc @name@ {
+    input {
+    }
+
+    output {
+    }
+}

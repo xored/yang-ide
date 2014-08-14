@@ -66,12 +66,10 @@ final class DiagramModelAdapter extends EContentAdapter {
                         Node newValue = (Node) notification.getNewValue();
                         String content = null;
                         if (removedBlock.containsKey(newValue)) { // block moved from another
-                                                                  // location
+                            // location
                             content = removedBlock.remove(newValue);
-                        } else {
-                            content = newValue.toYangString();
+                            addFromDiagram(node, content, notification.getPosition());
                         }
-                        addFromDiagram(node, content, notification.getPosition());
                         break;
                     case Notification.SET:
                         if (notification.getFeature() != ModelPackage.Literals.NODE__PARENT

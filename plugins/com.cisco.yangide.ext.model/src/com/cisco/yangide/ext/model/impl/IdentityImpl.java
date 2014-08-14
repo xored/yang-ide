@@ -6,10 +6,8 @@ import com.cisco.yangide.ext.model.Identity;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
 
-import java.lang.reflect.InvocationTargetException;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -193,17 +191,6 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
      * <!-- end-user-doc -->
      * @generated
      */
-    public String toYangString() {
-        // TODO: implement this method
-        // Ensure that you remove @generated or mark it @generated NOT
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
@@ -277,20 +264,6 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
                 return base != null;
         }
         return super.eIsSet(featureID);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    @Override
-    public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-        switch (operationID) {
-            case ModelPackage.IDENTITY___TO_YANG_STRING:
-                return toYangString();
-        }
-        return super.eInvoke(operationID, arguments);
     }
 
     /**

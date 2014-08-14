@@ -1,0 +1,4 @@
+extension @name@ {
+    description "";
+    argument "name";
+}

@@ -6,7 +6,10 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.graphiti.features.context.impl.AddContext;
+import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
+import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.editor.DiagramBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.IDiagramEditorInput;
@@ -38,6 +41,7 @@ import org.eclipse.ui.PlatformUI;
 import com.cisco.yangide.ext.model.Import;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Node;
+import com.cisco.yangide.ext.model.editor.diagram.EditorFeatureProvider;
 import com.cisco.yangide.ext.model.editor.dialog.AddImportDialog;
 import com.cisco.yangide.ext.model.editor.util.DiagramImportSupport;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
@@ -65,9 +69,22 @@ public class YangDiagramEditor extends DiagramEditor {
         @Override
         public void nodeAdded(Node parent, Node child, int position) {
             System.out.println("Added " + child);
+            PictogramElement[] parentShapes = getDiagramTypeProvider().getFeatureProvider()
+                    .getAllPictogramElementsForBusinessObject(parent);
+            ContainerShape shape = null;
+            for (PictogramElement parentShape : parentShapes) {
+                if (parentShape instanceof ContainerShape) {
+                    shape = (ContainerShape) parentShape;
+                    break;
+                }
+            }
+            AddContext context = new AddContext();
+            context.setTargetContainer(shape);
+            context.setNewObject(child);
+            context.setLocation(0, 0);
+            getDiagramTypeProvider().getFeatureProvider().addIfPossible(context);
         }
     };
-    private ISourceElementCreator sourceElementCreator;
 
     @Override
     protected DiagramBehavior createDiagramBehavior() {
@@ -223,10 +240,10 @@ public class YangDiagramEditor extends DiagramEditor {
                     Iterator<Object> iter = ((IStructuredSelection) importTable.getSelection()).iterator();
                     Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
                     if (iter.hasNext()) {
-                       AddImportDialog dialog = new AddImportDialog(shell, module, (Import) iter.next());
-                       if (0 <= dialog.open()) {
-                           importTable.refresh();
-                       }  
+                        AddImportDialog dialog = new AddImportDialog(shell, module, (Import) iter.next());
+                        if (0 <= dialog.open()) {
+                            importTable.refresh();
+                        }
                     } else {
                         MessageDialog.openWarning(shell, "Warning", "No module was choosen");
                     }
@@ -282,6 +299,7 @@ public class YangDiagramEditor extends DiagramEditor {
      * @param sourceElementCreator the sourceElementCreator to set
      */
     public void setSourceElementCreator(ISourceElementCreator sourceElementCreator) {
-        this.sourceElementCreator = sourceElementCreator;
+        ((EditorFeatureProvider) getDiagramTypeProvider().getFeatureProvider())
+        .setSourceElementCreator(sourceElementCreator);
     }
 }

@@ -58,11 +58,12 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
     private void initDiagramPage() {
         try {
             Module diagModule = modelSynchronizer.getDiagramModule();
-            yangDiagramEditor.setSourceElementCreator(modelSynchronizer.getSourceElementCreator());
             YangDiagramEditorInput input = new YangDiagramEditorInput(URI.createURI("tmp:/local"),
                     "com.cisco.yangide.ext.model.editor.editorDiagramTypeProvider", diagModule);
             addPage(1, yangDiagramEditor, input);
             setPageText(1, "Diagram");
+
+            yangDiagramEditor.setSourceElementCreator(modelSynchronizer.getSourceElementCreator());
         } catch (PartInitException e) {
             YangEditorPlugin.log(e);
         }

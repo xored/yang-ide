@@ -7,10 +7,8 @@ import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Uses;
 
-import java.lang.reflect.InvocationTargetException;
 import org.eclipse.emf.common.notify.Notification;
 
-import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
 
@@ -194,17 +192,6 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String toYangString() {
-        // TODO: implement this method
-        // Ensure that you remove @generated or mark it @generated NOT
-        throw new UnsupportedOperationException();
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
@@ -278,20 +265,6 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
                 return QNAME_EDEFAULT == null ? qName != null : !QNAME_EDEFAULT.equals(qName);
         }
         return super.eIsSet(featureID);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    @Override
-    public Object eInvoke(int operationID, EList<?> arguments) throws InvocationTargetException {
-        switch (operationID) {
-            case ModelPackage.USES___TO_YANG_STRING:
-                return toYangString();
-        }
-        return super.eInvoke(operationID, arguments);
     }
 
     /**
