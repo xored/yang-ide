@@ -21,6 +21,8 @@ import com.cisco.yangide.ext.model.Import;
 import com.cisco.yangide.ext.model.ModelFactory;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
+import com.cisco.yangide.ui.internal.IYangUIConstants;
+import com.cisco.yangide.ui.internal.YangUIImages;
 
 public class AddImportDialog extends ElementListSelectionDialog {
     
@@ -42,6 +44,7 @@ public class AddImportDialog extends ElementListSelectionDialog {
         list = YangModelManager.search(null, null, null, ElementIndexType.MODULE, null, null);
         setElements(list);
         setTitle("Select imported module");
+        setImage(YangUIImages.getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL));
     }
     
     public AddImportDialog(Shell parent, Module node, Import obj) {

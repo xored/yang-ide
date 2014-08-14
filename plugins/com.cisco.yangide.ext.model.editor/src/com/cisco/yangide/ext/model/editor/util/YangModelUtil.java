@@ -2,6 +2,7 @@ package com.cisco.yangide.ext.model.editor.util;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,6 +40,7 @@ import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.NamedNode;
 import com.cisco.yangide.ext.model.Node;
+import com.cisco.yangide.ext.model.Revision;
 import com.cisco.yangide.ext.model.RpcIO;
 import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.TaggedNode;
@@ -92,7 +94,8 @@ public class YangModelUtil {
         taggedNodeMap.put(MODEL_PACKAGE.getGrouping(), Arrays.asList(YangTag.DESCRIPTION, YangTag.REFERENCE, YangTag.STATUS));
         taggedNodeMap.put(MODEL_PACKAGE.getLeaf(), Arrays.asList(YangTag.CONFIG, YangTag.DEFAULT, YangTag.DESCRIPTION, YangTag.MANDATORY, YangTag.REFERENCE, YangTag.STATUS, YangTag.UNITS));
         taggedNodeMap.put(MODEL_PACKAGE.getModule(), Arrays.asList(YangTag.CONTACT, YangTag.DESCRIPTION, YangTag.NAMESPACE, YangTag.ORGANIZATION, YangTag.PREFIX, YangTag.REFERENCE, YangTag.YANG_VERSION));
-
+        taggedNodeMap.put(MODEL_PACKAGE.getRevision(), Arrays.asList(YangTag.DESCRIPTION, YangTag.REFERENCE));
+                
         astNodes.put(com.cisco.yangide.core.dom.Module.class, MODEL_PACKAGE.getModule());
         astNodes.put(GroupingDefinition.class, MODEL_PACKAGE.getGrouping());
         astNodes.put(ContrainerSchemaNode.class, MODEL_PACKAGE.getContainer());
@@ -199,13 +202,13 @@ public class YangModelUtil {
         }
     }
 
-    public static boolean hasReference(EClass parent, EClass ref) {
+    public static EStructuralFeature getReference(EClass parent, EClass ref) {
         for (EStructuralFeature esf : parent.getEAllStructuralFeatures()) {
             if (esf.getEType().getClassifierID() == ref.getClassifierID()) {
-                return true;
+                return esf;
             }
         }
-        return false;
+        return null;
     }
 
     public static boolean checkType(EClass parent, Object tested) {
@@ -293,13 +296,14 @@ public class YangModelUtil {
     private static List<EClass> getPossibleChildren(EClass e) {
         return (null != compositeNodeMap.get(e) ? compositeNodeMap.get(e) : Collections.<EClass> emptyList());
     }
+    
 
     public static Module exportModel(com.cisco.yangide.core.dom.Module module, Map<Node, ASTNode> relations) {
         return (Module) createEObject(module, null, relations);
     }
 
     private static EObject createEObject(ASTNode n, ContainingNode parent, Map<Node, ASTNode> relations) {
-        EClass cl = getEClass(n.getClass());
+        EClass cl = getEClass(n);
         if (null != cl) {
             EObject o = ModelFactoryImpl.eINSTANCE.create(cl);
             if (null != o) {
@@ -309,8 +313,8 @@ public class YangModelUtil {
                 setName(o, n);
                 setTags(o, n);
                 setAdditionalInfo(o, n);
-                if (null != parent && canContain(parent, o)) {
-                    add(parent, o, parent.getChildren().size());
+                if (null != parent) {
+                    setRelation(parent, o);
                 }
                 if (checkType(MODEL_PACKAGE.getContainingNode(), o)) {
                     if (n instanceof ASTCompositeNode) {
@@ -343,6 +347,11 @@ public class YangModelUtil {
                 ((Import) o).setRevisionDate(((ModuleImport) n).getRevision());
             }
         }
+        if (checkType(MODEL_PACKAGE.getRevision(), o)) {
+            if (n instanceof SimpleNode<?>) {
+                ((Revision) o).setDate(null == ((SimpleNode) n).getValue() ? null : ((SimpleNode) n).getValue().toString());
+            }
+        }
     }
 
     private static void setTags(EObject o, ASTNode n) {
@@ -361,14 +370,47 @@ public class YangModelUtil {
             }
         }
     }
+    
+    private static void setRelation(ContainingNode parent, EObject o) {        
+        if (canContain(parent, o)) {
+            add(parent, o, parent.getChildren().size());
+        }
+        EStructuralFeature esf = getReference(parent.eClass(), o.eClass());
+        if (null != esf) {
+            if (1 != esf.getUpperBound()) {
+                ((Collection<EObject>) parent.eGet(esf)).add(o);
+            } else {
+                parent.eSet(esf, o);
+            }
+        }
+    }
+    
+    public static String getQName(Node obj) {
+        if (checkType(MODEL_PACKAGE.getUses(), obj)) {
+            if (null != obj && null != ((Uses) obj).getGrouping() && null != ((Uses) obj).getGrouping().getName()) {
+                return ((Uses) obj).getGrouping().getName();
+            }
+            if (null != obj && null != ((Uses) obj).getQName()) {
+                return ((Uses) obj).getQName();
+            }
+        }
+        return "";
+    }
 
-    public static EClass getEClass(Class<? extends ASTNode> c) {
+    public static EClass getEClass(ASTNode obj) {
+        Class<? extends ASTNode> c = obj.getClass();
         EClass ec = astNodes.get(c);
         if (null == ec) {
             for (Map.Entry<Class<? extends ASTNode>, EClass> entry : astNodes.entrySet()) {
                 if (c.isAssignableFrom(entry.getKey())) {
                     return entry.getValue();
                 }
+            }
+        }
+        if (null == ec && obj instanceof SimpleNode<?>) {
+            String name = MODEL_PACKAGE.getRevision().getName();
+            if (MODEL_PACKAGE.getRevision().getName().equalsIgnoreCase(((SimpleNode<?>) obj).getNodeName())) {
+                return MODEL_PACKAGE.getRevision();
             }
         }
         return ec;

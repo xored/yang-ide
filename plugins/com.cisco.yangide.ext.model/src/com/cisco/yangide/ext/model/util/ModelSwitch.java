@@ -200,6 +200,7 @@ public class ModelSwitch<T> extends Switch<T> {
             case ModelPackage.REVISION: {
                 Revision revision = (Revision)theEObject;
                 T result = caseRevision(revision);
+                if (result == null) result = caseTaggedNode(revision);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }

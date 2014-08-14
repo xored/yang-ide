@@ -47,6 +47,8 @@ import org.eclipse.zest.layouts.dataStructures.InternalNode;
 import org.eclipse.zest.layouts.dataStructures.InternalRelationship;
 import org.eclipse.zest.layouts.exampleStructures.SimpleNode;
 
+import com.cisco.yangide.ext.model.ContainingNode;
+import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.editor.util.connection.Position;
 import com.cisco.yangide.ext.model.editor.util.connection.RectilinearAvoidObstaclesPathFinder;
 import com.cisco.yangide.ext.model.editor.util.connection.RoutePath;
@@ -415,7 +417,7 @@ public class LayoutUtil {
             }
             for (int j = 0; j < cols; j++) {
                 double y = 0;
-                do {               
+                do { // set at least one element in the row              
                     if (index < numChildren) {
                         InternalNode sn = entitiesToLayout[index++];
                         double xmove = boundsX + j * (getMaxW() + OFFSET) + OFFSET;
@@ -486,9 +488,12 @@ public class LayoutUtil {
             }
             RoutePath route = finder.find(Position.create(map.get(connection.getStart().getReferencedGraphicsAlgorithm()), start),
                     Position.create(map.get(connection.getEnd().getReferencedGraphicsAlgorithm()), end), false);
-            for (int i = 0; i < route.path.size(); i++) {
-                AddBendpointContext context = new AddBendpointContext((FreeFormConnection) connection, route.path.getPoint(i).x, route.path.getPoint(i).y, i);
-                fp.getAddBendpointFeature(context).addBendpoint(context);
+            if (null != route && null != route.path) {
+                for (int i = 0; i < route.path.size(); i++) {
+                    AddBendpointContext context = new AddBendpointContext((FreeFormConnection) connection,
+                            route.path.getPoint(i).x, route.path.getPoint(i).y, i);
+                    fp.getAddBendpointFeature(context).addBendpoint(context);
+                }
             }
         }
     }
@@ -511,8 +516,7 @@ public class LayoutUtil {
 
                 // Setup the array of Shape LayoutEntity
                 List<SimpleNode> diagramEntities = filterDiagramLayoutEntities(map);
-                LayoutEntity[] entities = diagramEntities.toArray(new LayoutEntity[0]);// map.values().toArray(new
-                                                                                       // LayoutEntity[0]);
+                LayoutEntity[] entities = diagramEntities.toArray(new LayoutEntity[0]);
                 double[] preferedSize = getAreaSizeAndArrangeLayout(diagramEntities, layoutAlgorithm);
 
                 // Apply the LayoutAlgorithmn
@@ -537,44 +541,42 @@ public class LayoutUtil {
     }
 
     public static void layoutContainerShape(ContainerShape cs, IFeatureProvider fp) {
-        EList<Shape> elements = cs.getChildren();
-        YangModelUIUtil.sortPictogramElements(elements);
-        int y = 0;
+        int y = YangModelUIUtil.DEFAULT_TEXT_HEIGHT;
         int x = 0;
-        Polyline line = null;
-        GraphicsAlgorithm number = null;
-        for (Shape sh : elements) {
-            layoutPictogramElement(sh, fp);
-            if (sh.getGraphicsAlgorithm() instanceof Polyline) {
-                line = (Polyline) sh.getGraphicsAlgorithm();
+        
+        
+        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), fp.getBusinessObjectForPictogramElement(cs))) {
+            for (Node child : ((ContainingNode) fp.getBusinessObjectForPictogramElement(cs)).getChildren()) {
+                PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(fp.getDiagramTypeProvider().getDiagram(), child);
+                if (cs.getChildren().contains(pe)) {
+                    layoutPictogramElement(pe, fp);
+                    pe.getGraphicsAlgorithm().setX(YangModelUIUtil.DEFAULT_V_ALIGN);
+                    pe.getGraphicsAlgorithm().setY(y + YangModelUIUtil.DEFAULT_H_ALIGN);
+                    pe.getGraphicsAlgorithm().setWidth(
+                            cs.getGraphicsAlgorithm().getWidth() - 2 * YangModelUIUtil.DEFAULT_V_ALIGN);
+                    y = pe.getGraphicsAlgorithm().getY() + pe.getGraphicsAlgorithm().getHeight();
+                    if (x < pe.getGraphicsAlgorithm().getWidth()) {
+                        x = pe.getGraphicsAlgorithm().getWidth();
+                    }
+                }
             }
-            if (PropertyUtil.isObjectShapeProp(sh, PropertyUtil.OBJECT_NUMBER_SHAPE_KEY)) {
-                number = sh.getGraphicsAlgorithm();
-            }
-            if (PropertyUtil.isBusinessObjectShape(sh)) {
-                sh.getGraphicsAlgorithm().setX(YangModelUIUtil.DEFAULT_V_ALIGN);
-                sh.getGraphicsAlgorithm().setY(y + YangModelUIUtil.DEFAULT_H_ALIGN);
-                sh.getGraphicsAlgorithm().setWidth(
-                        sh.getContainer().getGraphicsAlgorithm().getWidth() - 2 * YangModelUIUtil.DEFAULT_V_ALIGN);
-            }
-
-            if (x < sh.getGraphicsAlgorithm().getWidth()) {
-                x = sh.getGraphicsAlgorithm().getWidth();
-            }
-            y = sh.getGraphicsAlgorithm().getY() + sh.getGraphicsAlgorithm().getHeight();
         }
+
         if (x + 2 * YangModelUIUtil.DEFAULT_V_ALIGN > cs.getGraphicsAlgorithm().getWidth()) {
             cs.getGraphicsAlgorithm().setWidth(x + 2 * YangModelUIUtil.DEFAULT_V_ALIGN);
         }
         if (y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN > cs.getGraphicsAlgorithm().getHeight()) {
             cs.getGraphicsAlgorithm().setHeight(y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN);
         }
+        Polyline line = YangModelUIUtil.getPolyline(cs);
         if (null != line) {
             EList<Point> points = line.getPoints();
             if (1 < points.size()) {
                 points.get(1).setX(cs.getGraphicsAlgorithm().getWidth());
             }
         }
+        
+        GraphicsAlgorithm number = YangModelUIUtil.getObjectNumberElement(cs);
         if (null != number) {
             number.setX(cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND - 10);
         }

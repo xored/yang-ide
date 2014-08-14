@@ -62,11 +62,6 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
         return isMainBusinessObjectApplicable(domainObject);
     }
 
-    @Override
-    public boolean canAdd(IAddContext context) {
-        return canContain(context.getTargetContainer(), context.getNewObject()) && checkEClass(context.getNewObject());
-    }
-
     protected EObject createEObject() {
         return ModelFactoryImpl.eINSTANCE.create(getObjectEClass());
     }
@@ -136,7 +131,13 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
     }
 
     @Override
-    public PictogramElement add(IAddContext context) {        
+    public boolean canAdd(IAddContext context) {
+        Object parent = getBusinessObjectForPictogramElement(context.getTargetContainer());
+        return canContain(context.getTargetContainer(), context.getNewObject()) && checkEClass(context.getNewObject()) && null != parent && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), parent);
+    }
+    
+    @Override
+    public PictogramElement add(IAddContext context) {   
         return YangModelUIUtil.drawPictogramElement(context, getFeatureProvider(), getCreateImageId(), getHeaderText(context.getNewObject()));
     }
 

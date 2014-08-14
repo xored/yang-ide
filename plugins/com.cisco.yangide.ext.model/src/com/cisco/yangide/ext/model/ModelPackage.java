@@ -901,24 +901,6 @@ public interface ModelPackage extends EPackage {
     int REVISION = 15;
 
     /**
-     * The number of structural features of the '<em>Revision</em>' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int REVISION_FEATURE_COUNT = 0;
-
-    /**
-     * The number of operations of the '<em>Revision</em>' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int REVISION_OPERATION_COUNT = 0;
-
-    /**
      * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.BelongsToImpl <em>Belongs To</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -927,6 +909,99 @@ public interface ModelPackage extends EPackage {
      * @generated
      */
     int BELONGS_TO = 16;
+
+    /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.ListImpl <em>List</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.impl.ListImpl
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getList()
+     * @generated
+     */
+    int LIST = 17;
+
+    /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.TagImpl <em>Tag</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.impl.TagImpl
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getTag()
+     * @generated
+     */
+    int TAG = 18;
+
+    /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.TaggedNode <em>Tagged Node</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.TaggedNode
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getTaggedNode()
+     * @generated
+     */
+    int TAGGED_NODE = 19;
+
+    /**
+     * The feature id for the '<em><b>Tags</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TAGGED_NODE__TAGS = 0;
+
+    /**
+     * The number of structural features of the '<em>Tagged Node</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TAGGED_NODE_FEATURE_COUNT = 1;
+
+    /**
+     * The number of operations of the '<em>Tagged Node</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TAGGED_NODE_OPERATION_COUNT = 0;
+
+    /**
+     * The feature id for the '<em><b>Tags</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int REVISION__TAGS = TAGGED_NODE__TAGS;
+
+    /**
+     * The feature id for the '<em><b>Date</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int REVISION__DATE = TAGGED_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of structural features of the '<em>Revision</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int REVISION_FEATURE_COUNT = TAGGED_NODE_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Revision</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int REVISION_OPERATION_COUNT = TAGGED_NODE_OPERATION_COUNT + 0;
 
     /**
      * The feature id for the '<em><b>Owner Module</b></em>' reference.
@@ -954,16 +1029,6 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int BELONGS_TO_OPERATION_COUNT = 0;
-
-    /**
-     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.ListImpl <em>List</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see com.cisco.yangide.ext.model.impl.ListImpl
-     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getList()
-     * @generated
-     */
-    int LIST = 17;
 
     /**
      * The feature id for the '<em><b>Parent</b></em>' reference.
@@ -1011,16 +1076,6 @@ public interface ModelPackage extends EPackage {
     int LIST_OPERATION_COUNT = NAMED_CONTAINING_NODE_OPERATION_COUNT + 0;
 
     /**
-     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.TagImpl <em>Tag</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see com.cisco.yangide.ext.model.impl.TagImpl
-     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getTag()
-     * @generated
-     */
-    int TAG = 18;
-
-    /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1055,43 +1110,6 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int TAG_OPERATION_COUNT = 0;
-
-    /**
-     * The meta object id for the '{@link com.cisco.yangide.ext.model.TaggedNode <em>Tagged Node</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see com.cisco.yangide.ext.model.TaggedNode
-     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getTaggedNode()
-     * @generated
-     */
-    int TAGGED_NODE = 19;
-
-    /**
-     * The feature id for the '<em><b>Tags</b></em>' containment reference list.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int TAGGED_NODE__TAGS = 0;
-
-    /**
-     * The number of structural features of the '<em>Tagged Node</em>' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int TAGGED_NODE_FEATURE_COUNT = 1;
-
-    /**
-     * The number of operations of the '<em>Tagged Node</em>' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int TAGGED_NODE_OPERATION_COUNT = 0;
 
     /**
      * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.UsesImpl <em>Uses</em>}' class.
@@ -1833,6 +1851,17 @@ public interface ModelPackage extends EPackage {
     EClass getRevision();
 
     /**
+     * Returns the meta object for the attribute '{@link com.cisco.yangide.ext.model.Revision#getDate <em>Date</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Date</em>'.
+     * @see com.cisco.yangide.ext.model.Revision#getDate()
+     * @see #getRevision()
+     * @generated
+     */
+    EAttribute getRevision_Date();
+
+    /**
      * Returns the meta object for class '{@link com.cisco.yangide.ext.model.BelongsTo <em>Belongs To</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2312,6 +2341,14 @@ public interface ModelPackage extends EPackage {
          * @generated
          */
         EClass REVISION = eINSTANCE.getRevision();
+
+        /**
+         * The meta object literal for the '<em><b>Date</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute REVISION__DATE = eINSTANCE.getRevision_Date();
 
         /**
          * The meta object literal for the '{@link com.cisco.yangide.ext.model.impl.BelongsToImpl <em>Belongs To</em>}' class.

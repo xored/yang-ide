@@ -1,6 +1,10 @@
 package com.cisco.yangide.ext.model.editor.util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
+import java.util.List;
 
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
@@ -64,6 +68,10 @@ public class YangModelUIUtil {
             if (null == o1 && null != o2) {
                 return -1;
             }
+            if (PropertyUtil.isBusinessObjectShape(o1) && PropertyUtil.isBusinessObjectShape(o2)) {
+                return  o1.getGraphicsAlgorithm().getY() > o2.getGraphicsAlgorithm().getY() ? 1 
+                        : o1.getGraphicsAlgorithm().getY() == o2.getGraphicsAlgorithm().getY() ? 0 : -1;
+            }
             return o1.getGraphicsAlgorithm().getY() + o1.getGraphicsAlgorithm().getHeight() > o2.getGraphicsAlgorithm().getY() + o2.getGraphicsAlgorithm().getHeight() ? 1 
                     : o1.getGraphicsAlgorithm().getY() + o1.getGraphicsAlgorithm().getHeight() == o2.getGraphicsAlgorithm().getY() + o2.getGraphicsAlgorithm().getHeight() ? 0 : -1;
         }
@@ -72,6 +80,10 @@ public class YangModelUIUtil {
     
     public static void sortPictogramElements(EList<Shape> elements) {
         ECollections.sort(elements, COMPARATOR);
+    }
+    
+    public static void sortPictogramElements(List<Shape> elements) {
+        Collections.sort(elements, COMPARATOR);
     }
 
     public static int getPositionInParent(ContainerShape parent, Shape child, IFeatureProvider fp) {
@@ -125,6 +137,55 @@ public class YangModelUIUtil {
         return null;
     }
     
+    public static List<Shape> filterBusinessObjectShapes(List<Shape> shapes) {
+        List<Shape> result = new ArrayList<Shape>();
+        for(Shape shape : shapes) {
+            if (PropertyUtil.isBusinessObjectShape(shape)) {
+                result.add(shape);
+            }
+        }
+        return result;
+        
+    }
+    
+    public static PictogramElement getBusinessObjectShape(Diagram diagram, EObject obj) {
+        PictogramElement element = getBusinessObjectShape(diagram, obj, true);
+        if (null == element) {
+            element = getBusinessObjectShape(diagram, obj, false);
+        }
+        return element;
+        
+    }
+    public static PictogramElement getBusinessObjectShape(Diagram diagram, EObject obj, boolean isActive) {
+        List<PictogramElement> pe = Graphiti.getLinkService().getPictogramElements(diagram, Arrays.asList(obj), isActive);
+        for(PictogramElement shape : pe) {
+            if (PropertyUtil.isBusinessObjectShape(shape)) {
+                return shape;
+            }
+        }
+        return null;
+        
+    }
+    
+    public static Polyline getPolyline(ContainerShape cs) {
+        for(Shape shape : cs.getChildren()) {
+            if (shape.getGraphicsAlgorithm() instanceof Polyline) {
+                return (Polyline) shape.getGraphicsAlgorithm();
+            }
+        }
+        return null;
+        
+    }
+    
+    public static GraphicsAlgorithm getObjectNumberElement(ContainerShape cs) {
+        for(Shape shape : cs.getChildren()) {
+            if (PropertyUtil.isObjectShapeProp(shape, PropertyUtil.OBJECT_NUMBER_SHAPE_KEY)) {
+                return shape.getGraphicsAlgorithm();
+            }
+        }
+        return null;
+        
+    }
     
     public static PictogramElement drawObject(EObject obj, ContainerShape cs, IFeatureProvider fp, int x, int y) {
         AddContext ac = new AddContext();
@@ -237,14 +298,15 @@ public class YangModelUIUtil {
         // create BoxRelativeAnchor for references
         if (context.getNewObject() instanceof EObject && YangModelUtil.hasConnection((EObject) context.getNewObject())){
             drawBoxRelativeAnchor(result, context, fp);
-        }
+        }        
+        PropertyUtil.setObjectShapeProp(result, PropertyUtil.BUSINESS_OBJECT_SHAPE_KEY, true);
         // call the layout feature
         if (!(context.getTargetContainer() instanceof Diagram)) {
             layoutPictogramElement(context.getTargetContainer(), fp);
         } else {
             drawPictogramElementPositionInParent(result, fp);
         }
-        PropertyUtil.setObjectShapeProp(result, PropertyUtil.BUSINESS_OBJECT_SHAPE_KEY, true);
+
         return result;
     }
     

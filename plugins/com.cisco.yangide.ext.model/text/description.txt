@@ -19,7 +19,6 @@ Package model <http://www.example.org/model>
 
   Class Node
     Reference parent : Node
-    Operation toYangString() : String
 
   Class NamedNode -> Node
     Attribute name : EString
@@ -48,7 +47,8 @@ Package model <http://www.example.org/model>
   Class Include -> Node
     Reference submodule : Submodule<<1..1>>
 
-  Class Revision
+  Class Revision -> TaggedNode
+    Attribute date : String
 
   Class BelongsTo
     Reference ownerModule : Module<<1..1>>
