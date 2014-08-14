@@ -103,6 +103,7 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     private YangContentOutlinePage outlinePage;
 
     private List<ActionGroup> actionGroups = new ArrayList<ActionGroup>();
+    private List<IReconcileHandler> reconcileHandlers = new ArrayList<>();
 
     private abstract class AbstractSelectionChangedListener implements ISelectionChangedListener {
         public void install(ISelectionProvider selectionProvider) {
@@ -475,8 +476,12 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     }
 
     public void reconcile() {
+        ((YangSourceViewer) getViewer()).resetVisibleRegion();
         updateOutline();
         updateFoldingRegions();
+        for (IReconcileHandler reconcileHandler : reconcileHandlers) {
+            reconcileHandler.reconcile();
+        }
     }
 
     private void updateFoldingRegions() {
@@ -561,5 +566,13 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     public void reconcileModel() {
         ((YangSourceViewer) getSourceViewer()).getReconciler().getReconcilingStrategy("").reconcile(null);
+    }
+
+    public void addReconcileHandler(IReconcileHandler reconcileHandler) {
+        reconcileHandlers.add(reconcileHandler);
+    }
+
+    public void removeReconcileHandler(IReconcileHandler reconcileHandler) {
+        reconcileHandlers.remove(reconcileHandler);
     }
 }

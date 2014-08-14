@@ -53,11 +53,15 @@ public class YangFoldingStructureProvider {
         fEditor = editor;
     }
 
-    
+
     private void updateFoldingRegions(ProjectionAnnotationModel model, List currentRegions) {
         Annotation[] deletions = computeDifferences(model, currentRegions);
 
+        if (currentRegions.isEmpty()) {
+            return;
+        }
         Map additionsMap = new HashMap();
+
 
         Position headerCommentCandidate = (Position) currentRegions.get(0);
         ProjectionAnnotation headerCommentCandidateAnnotation = null;
@@ -75,8 +79,9 @@ public class YangFoldingStructureProvider {
             model.modifyAnnotations(deletions, additionsMap, new Annotation[] {});
         }
 
-        if (isHeaderComment(headerCommentCandidate))
+        if (isHeaderComment(headerCommentCandidate)) {
             model.collapse(headerCommentCandidateAnnotation);
+        }
 
     }
 
@@ -85,9 +90,10 @@ public class YangFoldingStructureProvider {
      * @return
      */
     private boolean isHeaderComment(Position headerCommentCandidate) {
-        if(headerCommentCandidate == null)
+        if(headerCommentCandidate == null) {
             return false;
-        
+        }
+
         YangPartitionScanner scanner = new YangPartitionScanner();
         scanner.setRange(fDocument, 0, fDocument.getLength());
 
@@ -110,8 +116,9 @@ public class YangFoldingStructureProvider {
                 int end = fDocument.getLineOffset(tokenEndLine) + fDocument.getLineLength(tokenEndLine);
                 Position tokenPosition = new Position(start, end - start);
 
-                if (headerCommentCandidate.equals(tokenPosition))
+                if (headerCommentCandidate.equals(tokenPosition)) {
                     return true;
+                }
 
             }
 
@@ -164,8 +171,8 @@ public class YangFoldingStructureProvider {
                 addFoldingNonASTregions(currentRegions);
 
                 addFoldingRegions(currentRegions, root);
-
                 updateFoldingRegions(model, currentRegions);
+
             } catch (BadLocationException be) {
                 // ignore as document has changed
             }
@@ -177,7 +184,7 @@ public class YangFoldingStructureProvider {
         // litle hack here, because of FastPartitioner odd privacy
         String[] categories = fDocument.getPositionCategories();
         for (String category : categories) {
-            if (category.startsWith("__content_types_category"))
+            if (category.startsWith("__content_types_category")) {
                 try {
                     Position[] positions = fDocument.getPositions(category);
                     for (Position position : positions) {
@@ -185,8 +192,9 @@ public class YangFoldingStructureProvider {
                         int positionOffset = position.getOffset();
                         int positionLength = position.getLength();
                         // for single line comment - EndOfLineRule
-                        if (fDocument.getChar(positionOffset + position.getLength() - 1) == '\n')
+                        if (fDocument.getChar(positionOffset + position.getLength() - 1) == '\n') {
                             positionLength--;
+                        }
 
                         int startLine = fDocument.getLineOfOffset(positionOffset);
                         int endLine = fDocument.getLineOfOffset(positionOffset + positionLength);
@@ -194,7 +202,7 @@ public class YangFoldingStructureProvider {
                             int start = fDocument.getLineOffset(startLine);
                             int end = fDocument.getLineOffset(endLine) + fDocument.getLineLength(endLine);
                             Position foldingPosition = // new Position(start, end - start);
-                            new CommentPosition(start, end - start);
+                                    new CommentPosition(start, end - start);
                             currentRegions.add(foldingPosition);
                             // fPositionToElement.put(foldingPosition, element);
                         }
@@ -204,14 +212,16 @@ public class YangFoldingStructureProvider {
                 } catch (BadPositionCategoryException | BadLocationException e) {
                     YangEditorPlugin.log(e);
                 }
+            }
         }
 
     }
 
     protected String getTokenContentType(IToken token) {
         Object data = token.getData();
-        if (data instanceof String)
+        if (data instanceof String) {
             return (String) data;
+        }
         return null;
     }
 
@@ -259,6 +269,7 @@ public class YangFoldingStructureProvider {
          * org.eclipse.jface.text.source.projection.IProjectionPosition#computeFoldingRegions(org
          * .eclipse.jface.text.IDocument)
          */
+        @Override
         public IRegion[] computeProjectionRegions(IDocument document) throws BadLocationException {
             DocumentCharacterIterator sequence = new DocumentCharacterIterator(document, offset, offset + length);
             int prefixEnd = 0;
@@ -287,14 +298,16 @@ public class YangFoldingStructureProvider {
                 int postLength = offset + length - postOffset;
                 if (postLength > 0) {
                     IRegion postRegion = new Region(postOffset, postLength);
-                    if (preRegion == null)
+                    if (preRegion == null) {
                         return new IRegion[] { postRegion };
+                    }
                     return new IRegion[] { preRegion, postRegion };
                 }
             }
 
-            if (preRegion != null)
+            if (preRegion != null) {
                 return new IRegion[] { preRegion };
+            }
 
             return null;
         }
@@ -302,7 +315,7 @@ public class YangFoldingStructureProvider {
         /**
          * Finds the offset of the first identifier part within <code>content</code>. Returns 0 if
          * none is found.
-         * 
+         *
          * @param content the content to search
          * @param prefixEnd the end of the prefix
          * @return the first index of a unicode identifier part, or zero if none can be found
@@ -310,8 +323,9 @@ public class YangFoldingStructureProvider {
         private int findFirstContent(final CharSequence content, int prefixEnd) {
             int lenght = content.length();
             for (int i = prefixEnd; i < lenght; i++) {
-                if (Character.isUnicodeIdentifierPart(content.charAt(i)))
+                if (Character.isUnicodeIdentifierPart(content.charAt(i))) {
                     return i;
+                }
             }
             return 0;
         }
@@ -321,6 +335,7 @@ public class YangFoldingStructureProvider {
          * org.eclipse.jface.text.source.projection.IProjectionPosition#computeCaptionOffset(org
          * .eclipse.jface.text.IDocument)
          */
+        @Override
         public int computeCaptionOffset(IDocument document) throws BadLocationException {
             DocumentCharacterIterator sequence = new DocumentCharacterIterator(document, offset, offset + length);
             return findFirstContent(sequence, 0);
