@@ -18,13 +18,17 @@ import org.eclipse.ltk.core.refactoring.DocumentChange;
 import org.eclipse.ltk.core.refactoring.PerformChangeOperation;
 import org.eclipse.text.edits.DeleteEdit;
 import org.eclipse.text.edits.InsertEdit;
+import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
 import org.eclipse.ui.PlatformUI;
 
+import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.dom.ASTCompositeNode;
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
+import com.cisco.yangide.core.dom.Module;
+import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.parser.YangFormattingPreferences;
 import com.cisco.yangide.core.parser.YangParserUtil;
 import com.cisco.yangide.editor.editors.YangEditor;
@@ -36,7 +40,6 @@ import com.cisco.yangide.ext.model.Node;
  * @author Konstantin Zaitsev
  * @date Aug 13, 2014
  */
-@SuppressWarnings("restriction")
 final class DiagramModelAdapter extends EContentAdapter {
     private final ModelSynchronizer modelSynchronizer;
     private Map<Node, String> removedBlock = new WeakHashMap<>();
@@ -68,27 +71,30 @@ final class DiagramModelAdapter extends EContentAdapter {
                         if (removedBlock.containsKey(newValue)) { // block moved from another
                             // location
                             content = removedBlock.remove(newValue);
-                            addFromDiagram(node, content, notification.getPosition());
+                            add(node, content, notification.getPosition());
                         }
                         break;
                     case Notification.SET:
                         if (notification.getFeature() != ModelPackage.Literals.NODE__PARENT
                         && notification.getNotifier() instanceof Node) {
-                            updateFromDiagram((Node) notification.getNotifier(),
-                                    (EAttribute) notification.getFeature(), notification.getNewValue());
+                            update((Node) notification.getNotifier(), (EAttribute) notification.getFeature(),
+                                    notification.getNewValue());
                         }
                         break;
                     case Notification.REMOVE:
                         if (notification.getOldValue() != null && notification.getOldValue() instanceof Node
                         && mapping.containsKey(notification.getOldValue())) {
-                            deleteFromDiagram((Node) notification.getOldValue());
+                            delete((Node) notification.getOldValue());
                         }
                         break;
+                    case Notification.MOVE:
+                        if (notification.getFeature() == ModelPackage.Literals.CONTAINING_NODE__CHILDREN) {
+                            move((Node) notification.getNotifier(), (Node) notification.getNewValue(),
+                                    (Integer) notification.getOldValue(), notification.getPosition());
+                        }
                     default:
                         break;
                     }
-                    this.modelSynchronizer.updateFromSource(
-                            YangParserUtil.parseYangFile(yangSourceEditor.getDocument().get().toCharArray()), false);
                 } finally {
                     this.modelSynchronizer.enableNotification();
                 }
@@ -96,7 +102,41 @@ final class DiagramModelAdapter extends EContentAdapter {
         }
     }
 
-    public void addFromDiagram(ASTNode node, String content, int position) {
+    /**
+     * @param notifier
+     * @param newValue
+     * @param oldIntValue
+     * @param position
+     */
+    private void move(Node notifier, Node newValue, int oldPosition, int position) {
+        ASTNode node = mapping.get(notifier);
+        ASTNode child = mapping.get(newValue);
+        if (!(node instanceof ASTCompositeNode)) {
+            throw new RuntimeException("Parent node should be composite");
+        }
+        ASTCompositeNode parent = (ASTCompositeNode) node;
+
+        int insertPosition = parent.getBodyStartPosition() + 2;
+        if (parent.getChildren().size() > 0) {
+            int size = parent.getChildren().size();
+            insertPosition = position < 0 || position >= size ? parent.getChildren().get(size - 1).getEndPosition() + 2
+                    : parent.getChildren().get(position).getEndPosition() + 2;
+        }
+
+        try {
+            String content = yangSourceEditor.getDocument().get(child.getStartPosition(), child.getLength() + 1);
+
+            TextEdit composite = new MultiTextEdit();
+            composite.addChild(new DeleteEdit(child.getStartPosition(), child.getLength() + 1));
+            composite.addChild(new InsertEdit(insertPosition, content));
+            performEdit(composite);
+        } catch (BadLocationException e) {
+            YangCorePlugin.log(e);
+        }
+
+    }
+
+    public void add(ASTNode node, String content, int position) {
 
         if (!(node instanceof ASTCompositeNode)) {
             throw new RuntimeException("Parent node should be composite");
@@ -110,12 +150,15 @@ final class DiagramModelAdapter extends EContentAdapter {
                     : parent.getChildren().get(position).getEndPosition() + 2;
         }
 
+        if (node instanceof Module || node instanceof SubModule) {
+            insertPosition = parent.getBodyEndPosition() - 1;
+        }
         String formattedContent = YangParserUtil.formatYangSource(new YangFormattingPreferences(),
                 content.toCharArray(), getIndentLevel(node), System.getProperty("line.separator"));
         performEdit(new InsertEdit(insertPosition, formattedContent));
     }
 
-    void deleteFromDiagram(Node node) {
+    void delete(Node node) {
         ASTNode astNode = mapping.get(node);
         try {
             removedBlock.put(node,
@@ -126,7 +169,7 @@ final class DiagramModelAdapter extends EContentAdapter {
         performEdit(new DeleteEdit(astNode.getStartPosition(), astNode.getLength() + 1));
     }
 
-    void updateFromDiagram(Node node, EAttribute feature, Object newValue) {
+    void update(Node node, EAttribute feature, Object newValue) {
         ASTNode astNode = mapping.get(node);
         if (astNode == null) {
             throw new RuntimeException("Cannot find references source block from diagram editor");
@@ -146,6 +189,7 @@ final class DiagramModelAdapter extends EContentAdapter {
         DocumentChange change = new DocumentChange("edit", yangSourceEditor.getDocument());
         change.setEdit(edit);
         change.initializeValidationData(new NullProgressMonitor());
+        ((YangSourceViewer) yangSourceEditor.getViewer()).setRedraw(true);
         PerformChangeOperation op = new PerformChangeOperation(change);
         WorkbenchRunnableAdapter adapter = new WorkbenchRunnableAdapter(op);
         try {
@@ -154,10 +198,6 @@ final class DiagramModelAdapter extends EContentAdapter {
         } catch (InvocationTargetException | InterruptedException e) {
             e.printStackTrace();
         }
-        ((YangSourceViewer) yangSourceEditor.getViewer()).resetVisibleRegion();
-        ((YangSourceViewer) yangSourceEditor.getViewer()).invalidateTextPresentation();
-        yangSourceEditor.reconcile();
-        yangSourceEditor.reconcileModel();
     }
 
     private int getIndentLevel(ASTNode node) {

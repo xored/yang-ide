@@ -3,6 +3,7 @@
  */
 package com.cisco.yangide.ext.model.editor.sync;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
@@ -19,8 +20,10 @@ import org.eclipse.emf.compare.scope.DefaultComparisonScope;
 import org.eclipse.emf.compare.scope.IComparisonScope;
 import org.eclipse.emf.ecore.EObject;
 
+import com.cisco.yangide.core.YangCorePlugin;
+import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.ASTNode;
-import com.cisco.yangide.core.parser.YangParserUtil;
+import com.cisco.yangide.editor.editors.IReconcileHandler;
 import com.cisco.yangide.editor.editors.YangEditor;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Node;
@@ -55,8 +58,7 @@ public class ModelSynchronizer {
         @Override
         public void createSourceElement(Node parent, int position, String content) {
             ASTNode node = mapping.get(parent);
-            diagModelAdapter.addFromDiagram(node, content, position);
-            syncWithSource();
+            diagModelAdapter.add(node, content, position);
         }
     };
 
@@ -66,6 +68,12 @@ public class ModelSynchronizer {
 
         this.diagModelMergeAdapter = new DiagramModelMergeAdapter(modelChangeHandler);
         this.diagModelAdapter = new DiagramModelAdapter(this, yangSourceEditor, mapping);
+        this.yangSourceEditor.addReconcileHandler(new IReconcileHandler() {
+            @Override
+            public void reconcile() {
+                syncWithSource();
+            }
+        });
     }
 
     public void disableNotification() {
@@ -87,7 +95,11 @@ public class ModelSynchronizer {
         if (isNotificationEnabled()) {
             try {
                 disableNotification();
-                updateFromSource(YangParserUtil.parseYangFile(yangSourceEditor.getDocument().get().toCharArray()), true);
+                try {
+                    updateFromSource(yangSourceEditor.getModule(), true);
+                } catch (YangModelException e) {
+                    YangCorePlugin.log(e);
+                }
             } finally {
                 enableNotification();
             }
@@ -103,7 +115,7 @@ public class ModelSynchronizer {
 
     void updateFromSource(com.cisco.yangide.core.dom.Module module, boolean notify) {
         System.out.println("from source " + notify);
-        final Map<Node, ASTNode> newMapping = new WeakHashMap<>();
+        final Map<Node, ASTNode> newMapping = new HashMap<>();
 
         astModule = module;
         Module moduleNew = YangModelUtil.exportModel(module, newMapping);
@@ -112,7 +124,6 @@ public class ModelSynchronizer {
 
         updateMappings(newMapping, comparison.getMatches());
         List<Diff> differences = comparison.getDifferences();
-        System.out.println(differences);
         IMerger.Registry mergerRegistry = IMerger.RegistryImpl.createStandaloneInstance();
         ReferenceChangeMerger refMerger = new ReferenceChangeMerger() {
             @Override
@@ -139,7 +150,7 @@ public class ModelSynchronizer {
     private void updateMappings(Map<Node, ASTNode> newMapping, Iterable<Match> matches) {
         for (Match match : matches) {
             if (newMapping.containsKey(match.getRight())) {
-                mapping.put((Node) match.getLeft(), newMapping.remove(match.getRight()));
+                mapping.put((Node) match.getLeft(), newMapping.get(match.getRight()));
             }
             updateMappings(newMapping, match.getAllSubmatches());
         }
@@ -158,7 +169,11 @@ public class ModelSynchronizer {
 
     public com.cisco.yangide.core.dom.Module getSourceModule() {
         if (astModule == null) {
-            astModule = YangParserUtil.parseYangFile(yangSourceEditor.getDocument().get().toCharArray());
+            try {
+                astModule = yangSourceEditor.getModule();
+            } catch (YangModelException e) {
+                YangCorePlugin.log(e);
+            }
         }
         return astModule;
     }

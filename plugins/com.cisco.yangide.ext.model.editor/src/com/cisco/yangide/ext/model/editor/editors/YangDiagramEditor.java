@@ -4,7 +4,9 @@ import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.context.impl.AddContext;
+import org.eclipse.graphiti.features.context.impl.RemoveContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -31,6 +33,13 @@ public class YangDiagramEditor extends DiagramEditor {
         @Override
         public void nodeRemoved(Node node) {
             System.out.println("Removed " + node);
+            PictogramElement[] elements = getDiagramTypeProvider().getFeatureProvider()
+                    .getAllPictogramElementsForBusinessObject(node);
+            for (PictogramElement element : elements) {
+                RemoveContext context = new RemoveContext(element);
+                IRemoveFeature feature = getDiagramTypeProvider().getFeatureProvider().getRemoveFeature(context);
+                getDiagramBehavior().executeFeature(feature, context);
+            }
         }
 
         @Override

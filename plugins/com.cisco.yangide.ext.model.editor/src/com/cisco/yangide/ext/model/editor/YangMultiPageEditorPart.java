@@ -78,12 +78,4 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
         }
         setPartName(yangSourceEditor.getPartName());
     }
-
-    @Override
-    protected void pageChange(int newPageIndex) {
-        if (newPageIndex == 1) {
-            modelSynchronizer.syncWithSource();
-        }
-        super.pageChange(newPageIndex);
-    }
 }
