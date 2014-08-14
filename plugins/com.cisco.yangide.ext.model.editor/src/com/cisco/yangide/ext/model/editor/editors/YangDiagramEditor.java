@@ -5,7 +5,6 @@ import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.graphiti.features.IRemoveFeature;
-import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.RemoveContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -23,6 +22,7 @@ import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.editor.diagram.EditorFeatureProvider;
 import com.cisco.yangide.ext.model.editor.util.DiagramImportSupport;
+import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 
 public class YangDiagramEditor extends DiagramEditor {
 
@@ -45,25 +45,19 @@ public class YangDiagramEditor extends DiagramEditor {
         @Override
         public void nodeChanged(Node node, EAttribute attribute, Object newValue) {
             System.out.println("Changed " + node);
+            PictogramElement pe = YangModelUIUtil.getBusinessObjectPropShape(getDiagramTypeProvider().getFeatureProvider(), node, attribute);
+            if (null != pe) {
+                YangModelUIUtil.updatePictogramElement(getDiagramTypeProvider().getFeatureProvider(), pe);
+            }
         }
 
         @Override
         public void nodeAdded(Node parent, Node child, int position) {
             System.out.println("Added " + child);
-            PictogramElement[] parentShapes = getDiagramTypeProvider().getFeatureProvider()
-                    .getAllPictogramElementsForBusinessObject(parent);
-            ContainerShape shape = null;
-            for (PictogramElement parentShape : parentShapes) {
-                if (parentShape instanceof ContainerShape) {
-                    shape = (ContainerShape) parentShape;
-                    break;
-                }
+            PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(getDiagramTypeProvider().getFeatureProvider(), parent);
+            if (null != pe && pe instanceof ContainerShape) {
+                YangModelUIUtil.drawObject(child, (ContainerShape) pe, getDiagramTypeProvider().getFeatureProvider(), 0, 0);
             }
-            AddContext context = new AddContext();
-            context.setTargetContainer(shape);
-            context.setNewObject(child);
-            context.setLocation(0, 0);
-            getDiagramTypeProvider().getFeatureProvider().addIfPossible(context);
         }
     };
 

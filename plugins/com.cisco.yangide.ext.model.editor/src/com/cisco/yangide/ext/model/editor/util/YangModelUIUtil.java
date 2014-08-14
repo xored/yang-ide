@@ -1,19 +1,22 @@
 package com.cisco.yangide.ext.model.editor.util;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
 import org.eclipse.graphiti.features.context.impl.LayoutContext;
+import org.eclipse.graphiti.features.context.impl.UpdateContext;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Image;
@@ -54,6 +57,12 @@ public class YangModelUIUtil {
     public static final int DEFAULT_COMPOSITE_HEIGHT = 30;
     
     private static final ShapeVerticalComparator COMPARATOR = new ShapeVerticalComparator();
+    
+    private static Map<EAttribute, String> attributeShapes = new HashMap<EAttribute, String>();
+    
+    static {
+        attributeShapes.put(YangModelUtil.MODEL_PACKAGE.getNamedNode_Name(), PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY);
+    }
     
     private static class ShapeVerticalComparator implements Comparator<Shape> {
 
@@ -144,27 +153,34 @@ public class YangModelUIUtil {
                 result.add(shape);
             }
         }
-        return result;
-        
+        return result;        
     }
     
-    public static PictogramElement getBusinessObjectShape(Diagram diagram, EObject obj) {
-        PictogramElement element = getBusinessObjectShape(diagram, obj, true);
-        if (null == element) {
-            element = getBusinessObjectShape(diagram, obj, false);
-        }
-        return element;
-        
-    }
-    public static PictogramElement getBusinessObjectShape(Diagram diagram, EObject obj, boolean isActive) {
-        List<PictogramElement> pe = Graphiti.getLinkService().getPictogramElements(diagram, Arrays.asList(obj), isActive);
+    public static PictogramElement getBusinessObjectShape(IFeatureProvider fp, EObject obj) {
+        PictogramElement[] pe = fp.getAllPictogramElementsForBusinessObject(obj);
         for(PictogramElement shape : pe) {
-            if (PropertyUtil.isBusinessObjectShape(shape)) {
+            if (shape instanceof Diagram || PropertyUtil.isBusinessObjectShape(shape)) {
                 return shape;
             }
         }
-        return null;
-        
+        return null;        
+    }
+    
+    public static PictogramElement getBusinessObjectPropShape(IFeatureProvider fp, EObject obj, String prop) {
+        PictogramElement[] pe = fp.getAllPictogramElementsForBusinessObject(obj);
+        for(PictogramElement shape : pe) {
+            if (PropertyUtil.isObjectShapeProp(shape, prop)) {
+                return shape;
+            }
+        }
+        return null;        
+    }
+    
+    public static PictogramElement getBusinessObjectPropShape(IFeatureProvider fp, EObject obj, EAttribute attr) {
+        if (attributeShapes.containsKey(attr)) {
+            return getBusinessObjectPropShape(fp, obj, attributeShapes.get(attr));
+        }
+        return null;        
     }
     
     public static Polyline getPolyline(ContainerShape cs) {
@@ -185,6 +201,11 @@ public class YangModelUIUtil {
         }
         return null;
         
+    }
+    
+    public static void updatePictogramElement(IFeatureProvider fp, PictogramElement pe) {
+        UpdateContext context = new UpdateContext(pe);
+        fp.updateIfPossible(context);
     }
     
     public static PictogramElement drawObject(EObject obj, ContainerShape cs, IFeatureProvider fp, int x, int y) {

@@ -547,7 +547,7 @@ public class LayoutUtil {
         
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), fp.getBusinessObjectForPictogramElement(cs))) {
             for (Node child : ((ContainingNode) fp.getBusinessObjectForPictogramElement(cs)).getChildren()) {
-                PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(fp.getDiagramTypeProvider().getDiagram(), child);
+                PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(fp, child);
                 if (cs.getChildren().contains(pe)) {
                     layoutPictogramElement(pe, fp);
                     pe.getGraphicsAlgorithm().setX(YangModelUIUtil.DEFAULT_V_ALIGN);
