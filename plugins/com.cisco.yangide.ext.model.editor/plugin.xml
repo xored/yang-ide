@@ -32,7 +32,7 @@
             icon="icons/yang_file.png"
             extensions="yang"
             id="com.cisco.yangide.ext.model.editor.YangMultiPageEditor"
-            name="Yang Editor">
+            name="Yang Model Editor">
       </editor>
    </extension>
    <extension

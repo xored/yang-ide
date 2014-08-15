@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.compare.Comparison;
 import org.eclipse.emf.compare.Diff;
 import org.eclipse.emf.compare.EMFCompare;
@@ -19,10 +20,14 @@ import org.eclipse.emf.compare.merge.ReferenceChangeMerger;
 import org.eclipse.emf.compare.scope.DefaultComparisonScope;
 import org.eclipse.emf.compare.scope.IComparisonScope;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IFileEditorInput;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.ASTNode;
+import com.cisco.yangide.core.parser.IYangValidationListener;
+import com.cisco.yangide.core.parser.YangParserUtil;
 import com.cisco.yangide.editor.editors.IReconcileHandler;
 import com.cisco.yangide.editor.editors.YangEditor;
 import com.cisco.yangide.ext.model.Module;
@@ -50,6 +55,7 @@ public class ModelSynchronizer {
     /** Diag node to AST node mapping. */
     private Map<Node, ASTNode> mapping = new WeakHashMap<>();
     private boolean notification;
+    private boolean sourceInvalid;
 
     private DiagramModelAdapter diagModelAdapter;
 
@@ -58,7 +64,8 @@ public class ModelSynchronizer {
         @Override
         public void createSourceElement(Node parent, int position, String content) {
             ASTNode node = mapping.get(parent);
-            diagModelAdapter.add(node, content, position);
+            diagModelAdapter.add(node, content + System.getProperty("line.separator"), position);
+            syncWithSource();
         }
     };
 
@@ -71,7 +78,16 @@ public class ModelSynchronizer {
         this.yangSourceEditor.addReconcileHandler(new IReconcileHandler() {
             @Override
             public void reconcile() {
-                syncWithSource();
+                YangEditor editor = ModelSynchronizer.this.yangSourceEditor;
+                try {
+                    com.cisco.yangide.core.dom.Module module = editor.getModule();
+                    sourceInvalid = module.getFlags() == ASTNode.MALFORMED;
+                    if (!isSourceInvalid()) {
+                        syncWithSource(module);
+                    }
+                } catch (YangModelException e) {
+                    YangCorePlugin.log(e);
+                }
             }
         });
     }
@@ -88,17 +104,41 @@ public class ModelSynchronizer {
         return notification;
     }
 
-    /**
-     *
-     */
+    public void syncWithSource(com.cisco.yangide.core.dom.Module module) {
+        if (isNotificationEnabled()) {
+            try {
+                disableNotification();
+                updateFromSource(module, true);
+            } finally {
+                enableNotification();
+            }
+        }
+    }
+
     public void syncWithSource() {
         if (isNotificationEnabled()) {
             try {
                 disableNotification();
-                try {
-                    updateFromSource(yangSourceEditor.getModule(), true);
-                } catch (YangModelException e) {
-                    YangCorePlugin.log(e);
+                IProject project = null;
+                IEditorInput input = yangSourceEditor.getEditorInput();
+                if (input instanceof IFileEditorInput) {
+                    project = ((IFileEditorInput) input).getFile().getProject();
+                }
+                char[] content = yangSourceEditor.getDocument().get().toCharArray();
+                com.cisco.yangide.core.dom.Module module = YangParserUtil.parseYangFile(content, project,
+                        new IYangValidationListener() {
+
+                    @Override
+                    public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
+                    }
+
+                    @Override
+                    public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
+                        sourceInvalid = true;
+                    }
+                });
+                if (!isSourceInvalid()) {
+                    updateFromSource(module, true);
                 }
             } finally {
                 enableNotification();
@@ -176,5 +216,19 @@ public class ModelSynchronizer {
             }
         }
         return astModule;
+    }
+
+    /**
+     * @return the sourceInvalid
+     */
+    public boolean isSourceInvalid() {
+        return sourceInvalid;
+    }
+
+    /**
+     * @param sourceInvalid the sourceInvalid to set
+     */
+    public void setSourceInvalid(boolean sourceInvalid) {
+        this.sourceInvalid = sourceInvalid;
     }
 }

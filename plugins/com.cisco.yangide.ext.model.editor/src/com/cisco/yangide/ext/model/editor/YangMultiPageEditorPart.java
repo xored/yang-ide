@@ -5,6 +5,7 @@ package com.cisco.yangide.ext.model.editor;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.URI;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
@@ -77,5 +78,19 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
             YangEditorPlugin.log(e);
         }
         setPartName(yangSourceEditor.getPartName());
+    }
+
+    @Override
+    protected void pageChange(int newPageIndex) {
+        if (newPageIndex == 1) {
+            modelSynchronizer.syncWithSource();
+            if (modelSynchronizer.isSourceInvalid()) {
+                MessageDialog
+                .openWarning(getSite().getShell(), "Yang source is invalid",
+                        "Yang source has syntax error and diagram view cannot be synchronized correctly.\n"
+                                + "Please correct syntax error first.");
+            }
+        }
+        super.pageChange(newPageIndex);
     }
 }

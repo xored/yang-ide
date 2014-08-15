@@ -7,9 +7,13 @@
  */
 package com.cisco.yangide.ext.model.editor.sync;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.util.EContentAdapter;
+import org.eclipse.ui.progress.UIJob;
 
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
@@ -30,28 +34,46 @@ final class DiagramModelMergeAdapter extends EContentAdapter {
     }
 
     @Override
-    public void notifyChanged(Notification notification) {
+    public void notifyChanged(final Notification notification) {
         if (notification.getEventType() != Notification.REMOVING_ADAPTER
                 && notification.getFeature() != ModelPackage.Literals.NODE__PARENT) {
             switch (notification.getEventType()) {
             case Notification.ADD:
                 if (notification.getFeature() == ModelPackage.Literals.CONTAINING_NODE__CHILDREN) {
-                    Node node = (Node) notification.getNewValue();
-                    Node parent = (Node) notification.getNotifier();
-                    modelChangeHandler.nodeAdded(parent, node, notification.getPosition());
+                    final Node node = (Node) notification.getNewValue();
+                    final Node parent = (Node) notification.getNotifier();
+                    new UIJob("Update diagram from source") {
+                        @Override
+                        public IStatus runInUIThread(IProgressMonitor monitor) {
+                            modelChangeHandler.nodeAdded(parent, node, notification.getPosition());
+                            return Status.OK_STATUS;
+                        }
+                    }.schedule();
                 }
                 break;
             case Notification.REMOVE:
                 if (notification.getOldValue() instanceof Node && notification.getOldValue() != null) {
-                    Node node = (Node) notification.getOldValue();
-                    modelChangeHandler.nodeRemoved(node);
+                    final Node node = (Node) notification.getOldValue();
+                    new UIJob("Update diagram from source") {
+                        @Override
+                        public IStatus runInUIThread(IProgressMonitor monitor) {
+                            modelChangeHandler.nodeRemoved(node);
+                            return Status.OK_STATUS;
+                        }
+                    }.schedule();
                 }
                 break;
             case Notification.SET:
                 if (notification.getNotifier() instanceof Node && notification.getFeature() instanceof EAttribute) {
-                    Node node = (Node) notification.getNotifier();
-                    modelChangeHandler.nodeChanged(node, (EAttribute) notification.getFeature(),
-                            notification.getNewValue());
+                    final Node node = (Node) notification.getNotifier();
+                    new UIJob("Update diagram from source") {
+                        @Override
+                        public IStatus runInUIThread(IProgressMonitor monitor) {
+                            modelChangeHandler.nodeChanged(node, (EAttribute) notification.getFeature(),
+                                    notification.getNewValue());
+                            return Status.OK_STATUS;
+                        }
+                    }.schedule();
                 }
                 break;
             default:

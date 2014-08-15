@@ -70,6 +70,7 @@ final class DiagramModelAdapter extends EContentAdapter {
                         String content = null;
                         if (removedBlock.containsKey(newValue)) { // block moved from another
                             // location
+                            System.out.println("block moved");
                             content = removedBlock.remove(newValue);
                             add(node, content, notification.getPosition());
                         }
