@@ -12,6 +12,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.editor.DiagramBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.IDiagramEditorInput;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -54,9 +55,14 @@ public class YangDiagramEditor extends DiagramEditor {
         @Override
         public void nodeAdded(Node parent, Node child, int position) {
             System.out.println("Added " + child);
+            Point p = new Point(0, 0);
+            if (parent instanceof Module) {
+                p = ((YangDiagramBehavior) getDiagramBehavior()).getCreatePosition();
+            }
             PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(getDiagramTypeProvider().getFeatureProvider(), parent);
             if (null != pe && pe instanceof ContainerShape) {
-                YangModelUIUtil.drawObject(child, (ContainerShape) pe, getDiagramTypeProvider().getFeatureProvider(), 0, 0);
+                YangModelUIUtil.drawObject(child, (ContainerShape) pe, getDiagramTypeProvider().getFeatureProvider(),
+                        p.x, p.y);
             }
         }
     };

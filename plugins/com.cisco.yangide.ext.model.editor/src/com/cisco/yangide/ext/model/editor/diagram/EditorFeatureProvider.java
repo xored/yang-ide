@@ -30,11 +30,13 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.pattern.CreateFeatureForPattern;
 import org.eclipse.graphiti.pattern.DefaultFeatureProviderWithPatterns;
 import org.eclipse.graphiti.pattern.IPattern;
+import org.eclipse.swt.graphics.Point;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.editor.Activator;
 import com.cisco.yangide.ext.model.editor.editors.ISourceElementCreator;
+import com.cisco.yangide.ext.model.editor.editors.YangDiagramBehavior;
 import com.cisco.yangide.ext.model.editor.features.AddReferenceConnectionFeature;
 import com.cisco.yangide.ext.model.editor.features.DiagramLayoutCustomFeature;
 import com.cisco.yangide.ext.model.editor.features.DiagramLayoutFeature;
@@ -130,6 +132,9 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
                 retList.add(new CreateFeatureForPattern(this, pattern) {
                     @Override
                     public Object[] create(ICreateContext context) {
+                        YangDiagramBehavior behavior = (YangDiagramBehavior) EditorFeatureProvider.this
+                                .getDiagramTypeProvider().getDiagramBehavior();
+                        behavior.setCreatePosition(new Point(context.getX(), context.getY()));
                         String name = this.getPattern().getCreateName();
                         if (!TEMPLATES.containsKey(name)) {
                             TEMPLATES.put(name, getTemplateContent(name));
@@ -143,6 +148,7 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
                             template = template.replaceAll("@name@", name + node.getChildren().size());
                             sourceElementCreator.createSourceElement(node, position, template);
                         }
+
                         return new Object[0];
                     }
                 });

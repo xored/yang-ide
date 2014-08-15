@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.eclipse.core.resources.IProject;
 import org.eclipse.emf.compare.Comparison;
 import org.eclipse.emf.compare.Diff;
 import org.eclipse.emf.compare.EMFCompare;
@@ -20,13 +19,9 @@ import org.eclipse.emf.compare.merge.ReferenceChangeMerger;
 import org.eclipse.emf.compare.scope.DefaultComparisonScope;
 import org.eclipse.emf.compare.scope.IComparisonScope;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.ui.IEditorInput;
-import org.eclipse.ui.IFileEditorInput;
-
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.ASTNode;
-import com.cisco.yangide.core.parser.IYangValidationListener;
 import com.cisco.yangide.core.parser.YangParserUtil;
 import com.cisco.yangide.editor.editors.IReconcileHandler;
 import com.cisco.yangide.editor.editors.YangEditor;
@@ -119,25 +114,10 @@ public class ModelSynchronizer {
         if (isNotificationEnabled()) {
             try {
                 disableNotification();
-                IProject project = null;
-                IEditorInput input = yangSourceEditor.getEditorInput();
-                if (input instanceof IFileEditorInput) {
-                    project = ((IFileEditorInput) input).getFile().getProject();
-                }
                 char[] content = yangSourceEditor.getDocument().get().toCharArray();
-                com.cisco.yangide.core.dom.Module module = YangParserUtil.parseYangFile(content, project,
-                        new IYangValidationListener() {
-
-                    @Override
-                    public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
-                    }
-
-                    @Override
-                    public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
-                        sourceInvalid = true;
-                    }
-                });
-                if (!isSourceInvalid()) {
+                com.cisco.yangide.core.dom.Module module = YangParserUtil.parseYangFile(content);
+                setSourceInvalid(!module.isSyntaxValid());
+                if (module.isSyntaxValid()) {
                     updateFromSource(module, true);
                 }
             } finally {
