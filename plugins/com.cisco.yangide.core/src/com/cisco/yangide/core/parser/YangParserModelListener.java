@@ -12,6 +12,7 @@ import java.util.Stack;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangLexer;
@@ -97,6 +98,13 @@ public class YangParserModelListener extends YangParserBaseListener {
         module.setRevision(revision);
         stack.push(module);
         updateNamedNode(module, ctx);
+    }
+
+    @Override
+    public void visitErrorNode(ErrorNode node) {
+        stack.peek().setFlags(ASTNode.MALFORMED);
+        module.setFlags(ASTNode.MALFORMED);
+        super.visitErrorNode(node);
     }
 
     @Override
@@ -508,16 +516,25 @@ public class YangParserModelListener extends YangParserBaseListener {
 
     private void setNodeDescription(ASTNode astNode, ParseTree treeNode) {
         String description = null;
+        int descriptionPosition = -1;
+
         String reference = null;
+        int referencePosition = -1;
+
         String status = null;
+        int statusPosition = -1;
+
         for (int i = 0; i < treeNode.getChildCount(); i++) {
             ParseTree child = treeNode.getChild(i);
             if (child instanceof Description_stmtContext) {
                 description = stringFromNode(child);
+                descriptionPosition = ((Description_stmtContext) child).getStart().getStartIndex();
             } else if (child instanceof Reference_stmtContext) {
                 reference = stringFromNode(child);
+                referencePosition = ((Reference_stmtContext) child).getStart().getStartIndex();
             } else if (child instanceof Status_stmtContext) {
                 status = stringFromNode(child);
+                statusPosition = ((Status_stmtContext) child).getStart().getStartIndex();
             } else {
                 if (description != null && reference != null) {
                     break;
@@ -525,8 +542,11 @@ public class YangParserModelListener extends YangParserBaseListener {
             }
         }
         astNode.setStatus(status);
+        astNode.setStatusStartPosition(statusPosition);
         astNode.setDescription(description);
+        astNode.setDescriptionStartPosition(descriptionPosition);
         astNode.setReference(reference);
+        astNode.setReferenceStartPosition(referencePosition);
     }
 
     private void updateNamedNode(ASTNamedNode astNode, ParseTree treeNode) {

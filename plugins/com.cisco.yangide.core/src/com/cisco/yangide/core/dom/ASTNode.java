@@ -17,12 +17,15 @@ public abstract class ASTNode {
 
     /** Common field "description" for Yang statement. */
     private String description;
+    private int descriptionStartPosition;
 
     /** Common field "reference" for Yang statement. */
     private String reference;
+    private int referenceStartPosition;
 
     /** Common field "status" for Yang statement. */
     private String status;
+    private int statusStartPosition;
 
     /**
      * A character index into the original source string, or <code>-1</code> if no source position
@@ -278,5 +281,47 @@ public abstract class ASTNode {
 
     public boolean isShowedInOutline() {
         return true;
+    }
+
+    /**
+     * @return the descriptionStartPosition
+     */
+    public int getDescriptionStartPosition() {
+        return descriptionStartPosition;
+    }
+
+    /**
+     * @param descriptionStartPosition the descriptionStartPosition to set
+     */
+    public void setDescriptionStartPosition(int descriptionStartPosition) {
+        this.descriptionStartPosition = descriptionStartPosition;
+    }
+
+    /**
+     * @return the referenceStartPosition
+     */
+    public int getReferenceStartPosition() {
+        return referenceStartPosition;
+    }
+
+    /**
+     * @param referenceStartPosition the referenceStartPosition to set
+     */
+    public void setReferenceStartPosition(int referenceStartPosition) {
+        this.referenceStartPosition = referenceStartPosition;
+    }
+
+    /**
+     * @return the statusStartPosition
+     */
+    public int getStatusStartPosition() {
+        return statusStartPosition;
+    }
+
+    /**
+     * @param statusStartPosition the statusStartPosition to set
+     */
+    public void setStatusStartPosition(int statusStartPosition) {
+        this.statusStartPosition = statusStartPosition;
     }
 }

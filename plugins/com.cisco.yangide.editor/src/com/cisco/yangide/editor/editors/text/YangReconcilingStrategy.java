@@ -7,8 +7,6 @@
  */
 package com.cisco.yangide.editor.editors.text;
 
-import java.util.concurrent.atomic.AtomicBoolean;
-
 import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.text.IDocument;
@@ -24,7 +22,6 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cisco.yangide.core.YangCorePlugin;
-import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.model.YangFile;
 import com.cisco.yangide.core.model.YangFileInfo;
@@ -83,21 +80,18 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
 
         YangFile yangFile = YangCorePlugin.createYangFile(file);
         try {
-            final AtomicBoolean errors = new AtomicBoolean(false);
             annotationModel.init();
             Module module = YangParserUtil.parseYangFile(document.get().toCharArray(), file.getProject(),
                     new IYangValidationListener() {
 
                 @Override
                 public void validationError(String msg, int lineNumber, int charStart, int charEnd) {
-                    errors.set(true);
                     annotationModel.addProblem(new YangProblem(new YangSyntaxAnnotation(msg), new Position(
                             charStart, charEnd - charStart)));
                 }
 
                 @Override
                 public void syntaxError(String msg, int lineNumber, int charStart, int charEnd) {
-                    errors.set(true);
                     annotationModel.addProblem(new YangProblem(new YangSyntaxAnnotation(msg), new Position(
                             charStart, charEnd - charStart)));
                 }
@@ -107,14 +101,12 @@ public class YangReconcilingStrategy implements IReconcilingStrategy, IReconcili
             YangFileInfo fileInfo = (YangFileInfo) yangFile.getElementInfo(monitor);
 
             // reindex if no errors found
-            if (!errors.get()) {
-                module.setFlags(ASTNode.VALID);
+            if (module.isSyntaxValid()) {
                 fileInfo.setModule(module);
                 fileInfo.setIsStructureKnown(true);
                 // re index content
                 YangModelManager.getIndexManager().addWorkingCopy(file);
             } else {
-                module.setFlags(ASTNode.MALFORMED);
                 fileInfo.setModule(module);
                 fileInfo.setIsStructureKnown(false);
             }

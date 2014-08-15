@@ -319,4 +319,11 @@ public class Module extends ASTCompositeNode {
 
         acceptChildren(visitor, getChildren());
     }
+
+    /**
+     * @return
+     */
+    public boolean isSyntaxValid() {
+        return getFlags() == ASTNode.VALID;
+    }
 }
