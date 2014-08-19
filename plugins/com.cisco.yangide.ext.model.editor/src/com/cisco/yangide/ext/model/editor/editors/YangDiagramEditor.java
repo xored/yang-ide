@@ -75,7 +75,7 @@ public class YangDiagramEditor extends DiagramEditor {
     @Override
     public void createPartControl(Composite parent) {
         GridLayout layout = new GridLayout();
-        layout.numColumns = 2;
+        layout.numColumns = 1;
         layout.makeColumnsEqualWidth = false;
         layout.verticalSpacing = 0;
         layout.marginTop = 0;
@@ -85,9 +85,9 @@ public class YangDiagramEditor extends DiagramEditor {
 
         infoPane = new YangDiagramModuleInfoPanel(parent, module);
 
-        super.createPartControl(parent);
+        super.createPartControl(infoPane.getDiagram());
 
-        for (Control c : parent.getChildren()) {
+        for (Control c : infoPane.getDiagram().getChildren()) {
             if (!infoPane.equals(c)) {
                 c.setLayoutData(new GridData(GridData.FILL_BOTH));
             }

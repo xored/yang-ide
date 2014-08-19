@@ -11,7 +11,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Rpc;
 import com.cisco.yangide.ext.model.RpcIO;
-import com.cisco.yangide.ext.model.editor.util.IYangImageConstants;
+import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
 import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 
@@ -64,7 +64,7 @@ public class RpcIOPattern extends DomainObjectPattern {
     @Override
     public PictogramElement add(IAddContext context) {
         RpcIO obj = (RpcIO) context.getNewObject();
-        return YangModelUIUtil.drawPictogramElement(context, getFeatureProvider(), obj.isInput() ? IYangImageConstants.IMG_RPC_INPUT_PROPOSAL : IYangImageConstants.IMG_RPC_OUTPUT_PROPOSAL, 
+        return YangModelUIUtil.drawPictogramElement(context, getFeatureProvider(), obj.isInput() ? YangDiagramImageProvider.IMG_RPC_INPUT_PROPOSAL : YangDiagramImageProvider.IMG_RPC_OUTPUT_PROPOSAL, 
                 obj.isInput() ? "input" : "output");
     }
 

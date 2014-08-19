@@ -27,7 +27,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ui.editors,
  com.google.guava;bundle-version="15.0.0",
  org.eclipse.emf.compare;bundle-version="3.1.0",
- org.eclipse.ltk.core.refactoring;bundle-version="3.5.201",
- com.cisco.yangide.ui;bundle-version="1.1.0"
+ org.eclipse.ltk.core.refactoring;bundle-version="3.5.201"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy

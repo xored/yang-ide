@@ -1,5 +1,6 @@
 package com.cisco.yangide.ext.model.editor.dialog;
 
+import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -20,9 +21,8 @@ import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.ext.model.Import;
 import com.cisco.yangide.ext.model.ModelFactory;
 import com.cisco.yangide.ext.model.Module;
+import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
-import com.cisco.yangide.ui.internal.IYangUIConstants;
-import com.cisco.yangide.ui.internal.YangUIImages;
 
 public class AddImportDialog extends ElementListSelectionDialog {
     
@@ -44,7 +44,7 @@ public class AddImportDialog extends ElementListSelectionDialog {
         list = YangModelManager.search(null, null, null, ElementIndexType.MODULE, null, null);
         setElements(list);
         setTitle("Select imported module");
-        setImage(YangUIImages.getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL));
+        setImage(GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_IMPORT_PROPOSAL));
     }
     
     public AddImportDialog(Shell parent, Module node, Import obj) {

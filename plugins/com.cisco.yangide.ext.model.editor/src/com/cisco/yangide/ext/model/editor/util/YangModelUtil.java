@@ -45,8 +45,6 @@ import com.cisco.yangide.ext.model.RpcIO;
 import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.TaggedNode;
 import com.cisco.yangide.ext.model.Uses;
-import com.cisco.yangide.ext.model.impl.ModelFactoryImpl;
-import com.cisco.yangide.ext.model.impl.ModelPackageImpl;
 
 public class YangModelUtil {
 
@@ -59,7 +57,7 @@ public class YangModelUtil {
     private static final List<EClass> connections = new ArrayList<EClass>();
 
     private static Map<Class<? extends ASTNode>, EClass> astNodes = new HashMap<Class<? extends ASTNode>, EClass>();
-    public static final ModelPackage MODEL_PACKAGE = ModelPackageImpl.init();
+    public static final ModelPackage MODEL_PACKAGE = ModelPackage.eINSTANCE;
 
     static {
         compositeNodeMap.put(MODEL_PACKAGE.getAugment(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
@@ -286,7 +284,7 @@ public class YangModelUtil {
             }
         }
         if (!set) {
-            Tag t = ModelFactoryImpl.eINSTANCE.createTag();
+            Tag t = ModelFactory.eINSTANCE.createTag();
             t.setName(id.getName());
             t.setValue(value);
             node.getTags().add(t);
@@ -305,7 +303,7 @@ public class YangModelUtil {
     private static EObject createEObject(ASTNode n, ContainingNode parent, Map<Node, ASTNode> relations) {
         EClass cl = getEClass(n);
         if (null != cl) {
-            EObject o = ModelFactoryImpl.eINSTANCE.create(cl);
+            EObject o = ModelFactory.eINSTANCE.create(cl);
             if (null != o) {
                 if (o instanceof Node) {
                     relations.put((Node) o, n);
@@ -349,7 +347,7 @@ public class YangModelUtil {
         }
         if (checkType(MODEL_PACKAGE.getRevision(), o)) {
             if (n instanceof SimpleNode<?>) {
-                ((Revision) o).setDate(null == ((SimpleNode) n).getValue() ? null : ((SimpleNode) n).getValue().toString());
+                ((Revision) o).setDate(null == ((SimpleNode<?>) n).getValue() ? null : ((SimpleNode<?>) n).getValue().toString());
             }
         }
     }
@@ -371,6 +369,7 @@ public class YangModelUtil {
         }
     }
     
+    @SuppressWarnings("unchecked")
     private static void setRelation(ContainingNode parent, EObject o) {        
         if (canContain(parent, o)) {
             add(parent, o, parent.getChildren().size());
@@ -408,7 +407,6 @@ public class YangModelUtil {
             }
         }
         if (null == ec && obj instanceof SimpleNode<?>) {
-            String name = MODEL_PACKAGE.getRevision().getName();
             if (MODEL_PACKAGE.getRevision().getName().equalsIgnoreCase(((SimpleNode<?>) obj).getNodeName())) {
                 return MODEL_PACKAGE.getRevision();
             }

@@ -3,7 +3,7 @@ package com.cisco.yangide.ext.model.editor.patterns.objects;
 import org.eclipse.emf.ecore.EClass;
 
 import com.cisco.yangide.ext.model.ModelPackage;
-import com.cisco.yangide.ext.model.editor.util.IYangImageConstants;
+import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
 
 public class LeafPattern extends DomainObjectPattern {
 
@@ -14,7 +14,7 @@ public class LeafPattern extends DomainObjectPattern {
 
     @Override
     public String getCreateImageId() {
-        return IYangImageConstants.IMG_LEAF_PROPOSAL;
+        return YangDiagramImageProvider.IMG_LEAF_PROPOSAL;
     }
 
     @Override

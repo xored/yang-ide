@@ -8,7 +8,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Rpc;
 import com.cisco.yangide.ext.model.RpcIO;
-import com.cisco.yangide.ext.model.editor.util.IYangImageConstants;
+import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 import com.cisco.yangide.ext.model.impl.ModelFactoryImpl;
 
@@ -16,7 +16,7 @@ public class RpcPattern extends DomainObjectPattern {
 
     @Override
     public String getCreateImageId() {
-        return IYangImageConstants.IMG_RPC_PROPOSAL;
+        return YangDiagramImageProvider.IMG_RPC_PROPOSAL;
     }
 
     @Override

@@ -2,7 +2,7 @@ package com.cisco.yangide.ext.model.editor.patterns.objects;
 
 import org.eclipse.emf.ecore.EClass;
 
-import com.cisco.yangide.ext.model.editor.util.IYangImageConstants;
+import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 
 public class SubmodulePattern extends DomainObjectPattern {
@@ -14,7 +14,7 @@ public class SubmodulePattern extends DomainObjectPattern {
 
     @Override
     public String getCreateImageId() {
-        return IYangImageConstants.IMG_SUBMODULE_PROPOSAL;
+        return YangDiagramImageProvider.IMG_SUBMODULE_PROPOSAL;
     }
 
     @Override

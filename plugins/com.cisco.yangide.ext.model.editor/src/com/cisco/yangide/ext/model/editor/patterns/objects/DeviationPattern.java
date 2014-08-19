@@ -2,7 +2,7 @@ package com.cisco.yangide.ext.model.editor.patterns.objects;
 
 import org.eclipse.emf.ecore.EClass;
 
-import com.cisco.yangide.ext.model.editor.util.IYangImageConstants;
+import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 
 public class DeviationPattern extends DomainObjectPattern {
@@ -14,7 +14,7 @@ public class DeviationPattern extends DomainObjectPattern {
 
     @Override
     public String getCreateImageId() {
-        return IYangImageConstants.IMG_DEVIATION_PROPOSAL;
+        return YangDiagramImageProvider.IMG_DEVIATION_PROPOSAL;
     }
 
     @Override
