@@ -29,53 +29,78 @@ import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.editor.editors.IActionGroup;
 import com.cisco.yangide.editor.editors.YangEditor;
+import com.cisco.yangide.ext.refactoring.actions.ChangeRevisionAction;
 import com.cisco.yangide.ext.refactoring.actions.InlineGroupingAction;
 import com.cisco.yangide.ext.refactoring.actions.RenameAction;
 import com.cisco.yangide.ext.refactoring.actions.SelectionDispatchAction;
+import com.cisco.yangide.ext.refactoring.nls.Messages;
 
 /**
  * @author Konstantin Zaitsev
  * @date Jul 29, 2014
  */
 public class RefactorActionGroup extends ActionGroup implements IActionGroup {
+
+    private static final String RENAME_ACTION_ID = "com.cisco.yangide.ui.actions.Rename"; //$NON-NLS-1$
+    private static final String RENAME_DEF_ID = "com.cisco.yangide.ext.rename.element"; //$NON-NLS-1$
+
+    private static final String INLINE_GROUP_ACTION_ID = "com.cisco.yangide.ui.actions.Inline"; //$NON-NLS-1$
+    private static final String INLINE_GROUP_DEF_ID = "com.cisco.yangide.ext.group.inline.element"; //$NON-NLS-1$
+
+    private static final String REVISION_ACTION_ID = "com.cisco.yangide.ui.actions.Revision"; //$NON-NLS-1$
+    private static final String REVISION_DEF_ID = "com.cisco.yangide.ext.change.revision"; //$NON-NLS-1$
+
+    private static final String REFACTORING_MENU_ID = "com.cisco.yangide.ext.refactoring.menu"; //$NON-NLS-1$
+
+    /** Context menu group id. */
+    private static final String REORG_GROUP_ID = "reorgGroup"; //$NON-NLS-1$
+
     private YangEditor editor;
     private String groupName;
     private ISelectionProvider selectionProvider;
     private SelectionDispatchAction renameAction;
     private SelectionDispatchAction inlineAction;
+    private SelectionDispatchAction revisionAction;
 
     private final List<SelectionDispatchAction> actions = new ArrayList<SelectionDispatchAction>();
 
     private static class NoActionAvailable extends Action {
         public NoActionAvailable() {
             setEnabled(true);
-            setText("<no refactor available>");
+            setText(Messages.RefactorActionGroup_noRefactorAvailable);
         }
     }
 
     private Action noActionAvailable = new NoActionAvailable();
     private StyledText control;
 
-    private void initAction(SelectionDispatchAction action, ISelection selection, String actionDefinitionId) {
-        initUpdatingAction(action, selection, actionDefinitionId);
-    }
+    @Override
+    public void init(YangEditor editor, String groupName) {
+        this.selectionProvider = editor.getSelectionProvider();
+        this.editor = editor;
+        this.groupName = groupName;
+        this.control = (StyledText) editor.getAdapter(Control.class);
 
-    private void initUpdatingAction(SelectionDispatchAction action, ISelection selection, String actionDefinitionId) {
-        action.setActionDefinitionId(actionDefinitionId);
-        action.update(selection);
-        if (selectionProvider != null) {
-            selectionProvider.addSelectionChangedListener(action);
-        }
-        if (control != null) {
-            control.addCaretListener(action);
-        }
-        actions.add(action);
+        ISelection selection = selectionProvider.getSelection();
+
+        renameAction = new RenameAction(editor);
+        initAction(renameAction, selection, RENAME_DEF_ID);
+        editor.setAction("RenameElement", renameAction); //$NON-NLS-1$
+
+        inlineAction = new InlineGroupingAction(editor);
+        initAction(inlineAction, selection, INLINE_GROUP_DEF_ID);
+        editor.setAction("InlineElement", inlineAction); //$NON-NLS-1$
+
+        revisionAction = new ChangeRevisionAction(editor);
+        initAction(revisionAction, selection, REVISION_DEF_ID);
+        editor.setAction("ChangeRevision", revisionAction); //$NON-NLS-1$
     }
 
     @Override
     public void fillActionBars(IActionBars actionBars) {
-        actionBars.setGlobalActionHandler("com.cisco.yangide.ui.actions.Rename", renameAction);
-        actionBars.setGlobalActionHandler("com.cisco.yangide.ui.actions.Inline", inlineAction);
+        actionBars.setGlobalActionHandler(RENAME_ACTION_ID, renameAction);
+        actionBars.setGlobalActionHandler(INLINE_GROUP_ACTION_ID, inlineAction);
+        actionBars.setGlobalActionHandler(REVISION_ACTION_ID, revisionAction);
     }
 
     /**
@@ -98,6 +123,22 @@ public class RefactorActionGroup extends ActionGroup implements IActionGroup {
         super.dispose();
     }
 
+    private void initAction(SelectionDispatchAction action, ISelection selection, String actionDefinitionId) {
+        initUpdatingAction(action, selection, actionDefinitionId);
+    }
+
+    private void initUpdatingAction(SelectionDispatchAction action, ISelection selection, String actionDefinitionId) {
+        action.setActionDefinitionId(actionDefinitionId);
+        action.update(selection);
+        if (selectionProvider != null) {
+            selectionProvider.addSelectionChangedListener(action);
+        }
+        if (control != null) {
+            control.addCaretListener(action);
+        }
+        actions.add(action);
+    }
+
     private void disposeAction(SelectionDispatchAction action) {
         if (action != null) {
             selectionProvider.removeSelectionChangedListener(action);
@@ -108,7 +149,7 @@ public class RefactorActionGroup extends ActionGroup implements IActionGroup {
     }
 
     private void addRefactorSubmenu(IMenuManager menu) {
-        MenuManager refactorSubmenu = new MenuManager("Refactor", "com.cisco.yangide.ext.refactoring.menu");
+        MenuManager refactorSubmenu = new MenuManager(Messages.RefactorActionGroup_Refactor, REFACTORING_MENU_ID);
         if (editor != null) {
             if (editor.isEditable() && getModule() != null) {
                 refactorSubmenu.addMenuListener(new IMenuListener() {
@@ -133,9 +174,10 @@ public class RefactorActionGroup extends ActionGroup implements IActionGroup {
 
     private int fillRefactorMenu(IMenuManager refactorSubmenu) {
         int added = 0;
-        refactorSubmenu.add(new Separator("reorgGroup"));
+        refactorSubmenu.add(new Separator(REORG_GROUP_ID));
         added += addAction(refactorSubmenu, renameAction);
         added += addAction(refactorSubmenu, inlineAction);
+        added += addAction(refactorSubmenu, revisionAction);
         return added;
     }
 
@@ -178,27 +220,8 @@ public class RefactorActionGroup extends ActionGroup implements IActionGroup {
         try {
             return editor.getModule();
         } catch (YangModelException e) {
-            e.printStackTrace();
+            // ignore exception
             return null;
         }
     }
-
-    @Override
-    public void init(YangEditor editor, String groupName) {
-        this.selectionProvider = editor.getSelectionProvider();
-        this.editor = editor;
-        this.groupName = groupName;
-        this.control = (StyledText) editor.getAdapter(Control.class);
-
-        ISelection selection = selectionProvider.getSelection();
-
-        renameAction = new RenameAction(editor);
-        initAction(renameAction, selection, "com.cisco.yangide.ext.rename.element");
-        editor.setAction("RenameElement", renameAction); //$NON-NLS-1$
-
-        inlineAction = new InlineGroupingAction(editor);
-        initAction(inlineAction, selection, "com.cisco.yangide.ext.group.inline.element");
-        editor.setAction("InlineElement", inlineAction); //$NON-NLS-1$
-    }
-
 }

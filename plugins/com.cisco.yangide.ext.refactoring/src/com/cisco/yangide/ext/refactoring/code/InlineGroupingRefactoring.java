@@ -25,8 +25,6 @@ import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexReferenceInfo;
 import com.cisco.yangide.core.indexing.ElementIndexReferenceType;
 import com.cisco.yangide.core.model.YangModelManager;
-import com.cisco.yangide.core.parser.YangFormattingPreferences;
-import com.cisco.yangide.core.parser.YangParserUtil;
 import com.cisco.yangide.ext.refactoring.RefactorUtil;
 import com.cisco.yangide.ext.refactoring.YangCompositeChange;
 import com.cisco.yangide.ext.refactoring.YangRefactoringPlugin;
@@ -55,7 +53,7 @@ public class InlineGroupingRefactoring extends Refactoring {
 
     @Override
     public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
-    OperationCanceledException {
+            OperationCanceledException {
         return new RefactoringStatus();
     }
 
@@ -185,8 +183,7 @@ public class InlineGroupingRefactoring extends Refactoring {
         if (content == null) {
             return null;
         }
-        return YangParserUtil.formatYangSource(new YangFormattingPreferences(), content.toCharArray(),
-                getIndentLevel(node), System.getProperty("line.separator"));
+        return RefactorUtil.formatCodeSnipped(content, getIndentLevel(node));
     }
 
     /**

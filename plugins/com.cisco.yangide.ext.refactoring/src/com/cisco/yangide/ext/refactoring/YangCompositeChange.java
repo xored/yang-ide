@@ -39,7 +39,7 @@ public class YangCompositeChange extends CompositeChange {
         if (!map.containsKey(path)) {
             IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
             TextChange change = new TextFileChange(name, file);
-            change.setTextType("yang");
+            change.setTextType("yang"); //$NON-NLS-1$
             MultiTextEdit edit = new MultiTextEdit();
             change.setEdit(edit);
             change.setKeepPreviewEdits(true);

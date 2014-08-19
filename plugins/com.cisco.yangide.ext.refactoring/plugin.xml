@@ -32,6 +32,12 @@
                retarget="true"
                menubarPath="com.cisco.yangide.ext.refactoring.menu/reorgGroup">
             </action>
+            <action id="com.cisco.yangide.ui.actions.Revision"
+               definitionId="com.cisco.yangide.ext.change.revision"
+               label="Change Revision..."
+               retarget="true"
+               menubarPath="com.cisco.yangide.ext.refactoring.menu/reorgGroup">
+            </action>
        </actionSet>
     </extension>
 
@@ -50,6 +56,13 @@
             categoryId="com.cisco.yangide.ext.refactoring"
             id="com.cisco.yangide.ext.group.inline.element">
         </command>
+        <command
+            name="Change Revision - Refactoring"
+            description="Change module revision number and update referenced modules"
+            categoryId="com.cisco.yangide.ext.refactoring"
+            id="com.cisco.yangide.ext.change.revision">
+        </command>
+
     </extension>
       
     <extension point="org.eclipse.ui.bindings">

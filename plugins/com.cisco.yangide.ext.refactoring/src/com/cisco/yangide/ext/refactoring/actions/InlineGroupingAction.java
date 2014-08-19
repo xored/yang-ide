@@ -69,8 +69,8 @@ public class InlineGroupingAction extends SelectionDispatchAction {
                 // do nothing
             }
         } else {
-            MessageDialog.openInformation(getShell(), "Inline", "Operation unavailable on the current selection.\n"
-                    + "Select a grouping or uses element.");
+            MessageDialog.openInformation(getShell(), "Inline",
+                    "Operation unavailable on the current selection.\nSelect a grouping or uses element.");
         }
     }
 }

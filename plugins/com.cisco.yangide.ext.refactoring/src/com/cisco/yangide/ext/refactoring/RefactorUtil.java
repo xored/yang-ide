@@ -14,6 +14,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
@@ -29,6 +30,10 @@ import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexReferenceInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.core.model.YangModelManager;
+import com.cisco.yangide.core.parser.YangFormattingPreferences;
+import com.cisco.yangide.core.parser.YangParserUtil;
+import com.cisco.yangide.ui.YangUIPlugin;
+import com.cisco.yangide.ui.preferences.YangPreferenceConstants;
 
 /**
  * @author Konstantin Zaitsev
@@ -127,14 +132,14 @@ public final class RefactorUtil {
             if (info.getEntry() != null && !info.getEntry().isEmpty()) {
                 try (JarFile jarFile = new JarFile(new Path(info.getPath()).toFile())) {
                     try (InputStreamReader reader = new InputStreamReader(jarFile.getInputStream(jarFile.getEntry(info
-                            .getEntry())), "UTF-8")) {
+                            .getEntry())), "UTF-8")) { //$NON-NLS-1$
                         char[] cbuf = new char[node.getBodyLength()];
                         reader.skip(node.getBodyStartPosition());
                         reader.read(cbuf, 0, node.getBodyLength());
                         return new String(cbuf);
                     }
                 } catch (IOException e) {
-                    throw new CoreException(new Status(IStatus.ERROR, YangRefactoringPlugin.PLUGIN_ID, "Error", e));
+                    throw new CoreException(new Status(IStatus.ERROR, YangRefactoringPlugin.PLUGIN_ID, "Error", e)); //$NON-NLS-1$
                 }
             } else {
                 IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(info.getPath()));
@@ -151,14 +156,36 @@ public final class RefactorUtil {
      * @throws CoreException IO errors
      */
     public static String loadNodeContent(ASTNode node, IFile file) throws CoreException {
-        try (InputStreamReader reader = new InputStreamReader(file.getContents(), "UTF-8")) {
+        try (InputStreamReader reader = new InputStreamReader(file.getContents(), "UTF-8")) { //$NON-NLS-1$
             char[] cbuf = new char[node.getBodyLength()];
             reader.skip(node.getBodyStartPosition());
             reader.read(cbuf, 0, node.getBodyLength());
             return new String(cbuf);
         } catch (IOException | CoreException e) {
-            throw new CoreException(new Status(IStatus.ERROR, YangRefactoringPlugin.PLUGIN_ID, "Error", e));
+            throw new CoreException(new Status(IStatus.ERROR, YangRefactoringPlugin.PLUGIN_ID, "Error", e)); //$NON-NLS-1$
         }
+    }
+
+    /**
+     * Format code snippet according formating preferences.
+     * 
+     * @param snipped code snippet
+     * @param indentationLevel indentation level
+     * @return formatted code
+     */
+    public static String formatCodeSnipped(String snipped, int indentationLevel) {
+        YangFormattingPreferences pref = new YangFormattingPreferences();
+
+        IPreferenceStore store = YangUIPlugin.getDefault().getPreferenceStore();
+        pref.setSpaceForTabs(store.getBoolean(YangPreferenceConstants.FMT_INDENT_SPACE));
+        pref.setIndentSize(store.getInt(YangPreferenceConstants.FMT_INDENT_WIDTH));
+        pref.setCompactImport(store.getBoolean(YangPreferenceConstants.FMT_COMPACT_IMPORT));
+        pref.setFormatComment(store.getBoolean(YangPreferenceConstants.FMT_COMMENT));
+        pref.setFormatStrings(store.getBoolean(YangPreferenceConstants.FMT_STRING));
+        pref.setMaxLineLength(store.getInt(YangPreferenceConstants.FMT_MAX_LINE_LENGTH));
+
+        return YangParserUtil.formatYangSource(pref, snipped.toCharArray(), indentationLevel,
+                System.getProperty("line.separator")); //$NON-NLS-1$
     }
 
 }
