@@ -24,7 +24,7 @@ public class Module extends ASTCompositeNode {
     private String revision;
 
     private SimpleNode<URI> namespaceNode;
-    private SimpleNode<String> revisionNode;
+    private ASTNamedNode revisionNode;
     private SimpleNode<String> sourcePath;
     private SimpleNode<String> prefix;
     private SimpleNode<String> yangVersion;
@@ -130,16 +130,16 @@ public class Module extends ASTCompositeNode {
     /**
      * @return the revision
      */
-    public SimpleNode<String> getRevisionNode() {
+    public ASTNamedNode getRevisionNode() {
         return revisionNode;
     }
 
     /**
      * @param revision the revision to set
      */
-    public void setRevisionNode(SimpleNode<String> revisionNode) {
+    public void setRevisionNode(ASTNamedNode revisionNode) {
         this.revisionNode = revisionNode;
-        this.revision = revisionNode.getValue();
+        this.revision = revisionNode.getName();
     }
 
     /**

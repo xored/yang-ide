@@ -42,4 +42,6 @@ public interface IYangUIConstants {
     public static final String IMG_ERROR_MARKER_ALT = PLUGIN_ID + ".error_marker_alt";
 
     public static final String IMG_LT_VIEW_MENU = PLUGIN_ID + ".lt_view_menu";
+
+    public static final String IMG_YANG_FILE = PLUGIN_ID + ".yang_file";
 }

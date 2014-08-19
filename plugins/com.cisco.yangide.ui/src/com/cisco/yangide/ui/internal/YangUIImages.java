@@ -74,6 +74,7 @@ public class YangUIImages {
         declareRegistryImage(IYangUIConstants.IMG_RPC_INPUT_PROPOSAL, OBJECT + "rpc_input_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_RPC_OUTPUT_PROPOSAL, OBJECT + "rpc_output_obj.gif"); //$NON-NLS-1$
         declareRegistryImage(IYangUIConstants.IMG_RPC_PROPOSAL, OBJECT + "rpc_obj.gif"); //$NON-NLS-1$
+        declareRegistryImage(IYangUIConstants.IMG_YANG_FILE, OBJECT + "yang_file.png"); //$NON-NLS-1$
 
         // Marker images
         declareRegistryImage(IYangUIConstants.IMG_ERROR_MARKER, OBJECT + "error_obj.gif"); //$NON-NLS-1$

@@ -69,6 +69,7 @@ import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
 import com.cisco.yangide.core.dom.NotificationDefinition;
 import com.cisco.yangide.core.dom.QName;
+import com.cisco.yangide.core.dom.RevisionNode;
 import com.cisco.yangide.core.dom.RpcDefinition;
 import com.cisco.yangide.core.dom.RpcInputNode;
 import com.cisco.yangide.core.dom.RpcOutputNode;
@@ -478,8 +479,9 @@ public class YangParserModelListener extends YangParserBaseListener {
         final String revisionDate = stringFromNode(treeNode);
         if ((revisionDate != null) && (this.revision.compareTo(revisionDate) < 0)) {
             this.revision = revisionDate;
-            SimpleNode<String> revisionNode = new SimpleNode<String>(module, "revision", revisionDate);
+            RevisionNode revisionNode = new RevisionNode(module);
             updateNodePosition(revisionNode, treeNode);
+            updateNamedNode(revisionNode, treeNode);
             module.setRevisionNode(revisionNode);
             for (int i = 0; i < treeNode.getChildCount(); ++i) {
                 ParseTree child = treeNode.getChild(i);
@@ -528,13 +530,13 @@ public class YangParserModelListener extends YangParserBaseListener {
             ParseTree child = treeNode.getChild(i);
             if (child instanceof Description_stmtContext) {
                 description = stringFromNode(child);
-                descriptionPosition = ((Description_stmtContext) child).getStart().getStartIndex();
+                descriptionPosition = getStringStartPosition(child);
             } else if (child instanceof Reference_stmtContext) {
                 reference = stringFromNode(child);
-                referencePosition = ((Reference_stmtContext) child).getStart().getStartIndex();
+                referencePosition = getStringStartPosition(child);
             } else if (child instanceof Status_stmtContext) {
                 status = stringFromNode(child);
-                statusPosition = ((Status_stmtContext) child).getStart().getStartIndex();
+                statusPosition = getStringStartPosition(child);
             } else {
                 if (description != null && reference != null) {
                     break;
@@ -563,6 +565,19 @@ public class YangParserModelListener extends YangParserBaseListener {
                 }
             }
         }
+    }
+
+    private int getStringStartPosition(ParseTree treeNode) {
+        for (int i = 0; i < treeNode.getChildCount(); ++i) {
+            if (treeNode.getChild(i) instanceof StringContext) {
+                final StringContext context = (StringContext) treeNode.getChild(i);
+                if (context != null) {
+                    Token token = context.getStart();
+                    return token.getStartIndex();
+                }
+            }
+        }
+        return -1;
     }
 
     /**
