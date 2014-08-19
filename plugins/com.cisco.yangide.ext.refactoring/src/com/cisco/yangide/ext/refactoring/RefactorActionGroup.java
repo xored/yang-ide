@@ -30,6 +30,7 @@ import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.editor.editors.IActionGroup;
 import com.cisco.yangide.editor.editors.YangEditor;
 import com.cisco.yangide.ext.refactoring.actions.ChangeRevisionAction;
+import com.cisco.yangide.ext.refactoring.actions.ExtractGroupingAction;
 import com.cisco.yangide.ext.refactoring.actions.InlineGroupingAction;
 import com.cisco.yangide.ext.refactoring.actions.RenameAction;
 import com.cisco.yangide.ext.refactoring.actions.SelectionDispatchAction;
@@ -50,6 +51,9 @@ public class RefactorActionGroup extends ActionGroup implements IActionGroup {
     private static final String REVISION_ACTION_ID = "com.cisco.yangide.ui.actions.Revision"; //$NON-NLS-1$
     private static final String REVISION_DEF_ID = "com.cisco.yangide.ext.change.revision"; //$NON-NLS-1$
 
+    private static final String EXTRACT_ACTION_ID = "com.cisco.yangide.ui.actions.ExtractGrouping"; //$NON-NLS-1$
+    private static final String EXTRACT_DEF_ID = "com.cisco.yangide.ext.extract.grouping"; //$NON-NLS-1$
+
     private static final String REFACTORING_MENU_ID = "com.cisco.yangide.ext.refactoring.menu"; //$NON-NLS-1$
 
     /** Context menu group id. */
@@ -61,6 +65,7 @@ public class RefactorActionGroup extends ActionGroup implements IActionGroup {
     private SelectionDispatchAction renameAction;
     private SelectionDispatchAction inlineAction;
     private SelectionDispatchAction revisionAction;
+    private SelectionDispatchAction extractAction;
 
     private final List<SelectionDispatchAction> actions = new ArrayList<SelectionDispatchAction>();
 
@@ -94,6 +99,10 @@ public class RefactorActionGroup extends ActionGroup implements IActionGroup {
         revisionAction = new ChangeRevisionAction(editor);
         initAction(revisionAction, selection, REVISION_DEF_ID);
         editor.setAction("ChangeRevision", revisionAction); //$NON-NLS-1$
+
+        extractAction = new ExtractGroupingAction(editor);
+        initAction(extractAction, selection, EXTRACT_DEF_ID);
+        editor.setAction("ExtractGrouping", extractAction); //$NON-NLS-1$
     }
 
     @Override
@@ -101,6 +110,7 @@ public class RefactorActionGroup extends ActionGroup implements IActionGroup {
         actionBars.setGlobalActionHandler(RENAME_ACTION_ID, renameAction);
         actionBars.setGlobalActionHandler(INLINE_GROUP_ACTION_ID, inlineAction);
         actionBars.setGlobalActionHandler(REVISION_ACTION_ID, revisionAction);
+        actionBars.setGlobalActionHandler(EXTRACT_ACTION_ID, extractAction);
     }
 
     /**
@@ -178,6 +188,7 @@ public class RefactorActionGroup extends ActionGroup implements IActionGroup {
         added += addAction(refactorSubmenu, renameAction);
         added += addAction(refactorSubmenu, inlineAction);
         added += addAction(refactorSubmenu, revisionAction);
+        added += addAction(refactorSubmenu, extractAction);
         return added;
     }
 

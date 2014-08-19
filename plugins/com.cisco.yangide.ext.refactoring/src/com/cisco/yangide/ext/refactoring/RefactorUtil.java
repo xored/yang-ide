@@ -168,7 +168,7 @@ public final class RefactorUtil {
 
     /**
      * Format code snippet according formating preferences.
-     * 
+     *
      * @param snipped code snippet
      * @param indentationLevel indentation level
      * @return formatted code
@@ -188,4 +188,17 @@ public final class RefactorUtil {
                 System.getProperty("line.separator")); //$NON-NLS-1$
     }
 
+    /**
+     * @param node node to calculate
+     * @return node level
+     */
+    public static int getNodeLevel(ASTNode node) {
+        int nodeLevel = -1;
+        ASTNode parent = node;
+        while (parent != null) {
+            parent = parent.getParent();
+            nodeLevel++;
+        }
+        return nodeLevel >= 0 ? nodeLevel : 0;
+    }
 }

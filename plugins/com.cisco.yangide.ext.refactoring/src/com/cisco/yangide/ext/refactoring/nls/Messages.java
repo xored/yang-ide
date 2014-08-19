@@ -34,6 +34,13 @@ public class Messages extends NLS {
     public static String CreateYangFileChange_fileAlreadyExists;
     public static String CreateYangFileChange_name;
     public static String CreateYangFileChange_taskName;
+    public static String ExtractGroupingAction_description;
+    public static String ExtractGroupingAction_name;
+    public static String ExtractGroupingAction_text;
+    public static String ExtractGroupingInputWizardPage_description;
+    public static String ExtractGroupingInputWizardPage_groupingNameLabel;
+    public static String ExtractGroupingRefactoring_name;
+    public static String ExtractGroupingRefactoring_updateReferenceEditName;
     public static String RefactorActionGroup_Refactor;
     public static String RefactorActionGroup_noRefactorAvailable;
     public static String RevisionDialog_title;

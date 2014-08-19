@@ -38,6 +38,12 @@
                retarget="true"
                menubarPath="com.cisco.yangide.ext.refactoring.menu/reorgGroup">
             </action>
+            <action id="com.cisco.yangide.ui.actions.ExtractGrouping"
+               definitionId="com.cisco.yangide.ext.extract.grouping"
+               label="Extract Grouping..."
+               retarget="true"
+               menubarPath="com.cisco.yangide.ext.refactoring.menu/reorgGroup">
+            </action>
        </actionSet>
     </extension>
 
@@ -61,6 +67,12 @@
             description="Change module revision number and update referenced modules"
             categoryId="com.cisco.yangide.ext.refactoring"
             id="com.cisco.yangide.ext.change.revision">
+        </command>
+        <command
+            name="Extract Grouping - Refactoring"
+            description="Extract the selected block of elelemts into reusable grouping elements"
+            categoryId="com.cisco.yangide.ext.refactoring"
+            id="com.cisco.yangide.ext.extract.grouping">
         </command>
 
     </extension>
@@ -104,6 +116,25 @@
             commandId="com.cisco.yangide.ext.group.inline.element"
             schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
             
+        <!-- extract grouping -->
+        <key
+            sequence="M2+M3+E"
+            commandId="com.cisco.yangide.ext.extract.grouping"
+            contextId="com.cisco.yangide.ui.Context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <key
+            platform="carbon"
+            sequence="M2+M3+E"
+            contextId="com.cisco.yangide.ui.Context"
+            commandId=""
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <key
+            platform="carbon"
+            sequence="COMMAND+ALT+E"
+            contextId="com.cisco.yangide.ui.Context"
+            commandId="com.cisco.yangide.ext.extract.grouping"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+
     </extension>
     
     <extension point="org.eclipse.ui.actionSetPartAssociations">

@@ -53,7 +53,7 @@ public class InlineGroupingRefactoring extends Refactoring {
 
     @Override
     public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
-            OperationCanceledException {
+    OperationCanceledException {
         return new RefactoringStatus();
     }
 
@@ -183,20 +183,6 @@ public class InlineGroupingRefactoring extends Refactoring {
         if (content == null) {
             return null;
         }
-        return RefactorUtil.formatCodeSnipped(content, getIndentLevel(node));
-    }
-
-    /**
-     * @param node node to calculate
-     * @return indentation level for given node
-     */
-    private int getIndentLevel(ASTNode node) {
-        int indentLevel = -1;
-        ASTNode parent = node;
-        while (parent != null) {
-            parent = parent.getParent();
-            indentLevel++;
-        }
-        return indentLevel >= 0 ? indentLevel : 0;
+        return RefactorUtil.formatCodeSnipped(content, RefactorUtil.getNodeLevel(node));
     }
 }
