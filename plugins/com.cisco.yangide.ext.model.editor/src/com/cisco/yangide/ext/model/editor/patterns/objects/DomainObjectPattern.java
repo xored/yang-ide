@@ -138,7 +138,9 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
     
     @Override
     public PictogramElement add(IAddContext context) {   
-        return YangModelUIUtil.drawPictogramElement(context, getFeatureProvider(), getCreateImageId(), getHeaderText(context.getNewObject()));
+        PictogramElement result = YangModelUIUtil.drawPictogramElement(context, getFeatureProvider(), getCreateImageId(), getHeaderText(context.getNewObject()));
+        YangModelUIUtil.updateConnections((EObject) context.getNewObject(), getFeatureProvider());
+        return result;
     }
 
     protected boolean checkEClass(Object obj) {

@@ -26,7 +26,7 @@ public class UsesPattern extends DomainObjectPattern {
     @Override
     protected String getHeaderText(Object obj) {
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getUses(), obj)) {
-            return getCreateName() + " " + YangModelUtil.getQName((Uses) obj);
+            return YangModelUtil.getQNamePresentation((Uses) obj);
         }
         return super.getHeaderText(obj);
     }

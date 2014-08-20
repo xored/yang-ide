@@ -18,16 +18,10 @@ public abstract class DomainConnectionPattern extends AbstractConnectionPattern 
 
     @Override
     public Connection create(ICreateConnectionContext context) {
-        Connection newConnection = null;
-
         // create the domain object connection here
-        Object newDomainObjectConnetion = createEObject(context);
-
-        AddConnectionContext addContext = new AddConnectionContext(context.getSourceAnchor(), context.getTargetAnchor());
-        addContext.setNewObject(newDomainObjectConnetion);
-        newConnection = (Connection) getFeatureProvider().addIfPossible(addContext);
-
-        return newConnection;
+        EObject newDomainObjectConnetion = createEObject(context);
+        
+        return YangModelUIUtil.drawConnection(newDomainObjectConnetion, context.getSourceAnchor(), context.getTargetAnchor(), getFeatureProvider());
     }
 
     @Override

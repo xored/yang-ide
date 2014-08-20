@@ -97,15 +97,15 @@ public class DiagramImportSupport {
         if (YangModelUtil.hasConnection(n)) {
             start = YangModelUIUtil.getBoxRelativeAnchor((AnchorContainer) elements.get(n));
         }
-        Anchor finish = null;
-        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getUses(), n)) {
-            if (elements.containsKey(((Uses) n).getGrouping())) {
-                finish = YangModelUIUtil.getChopboxAnchor((AnchorContainer) elements.get(((Uses) n).getGrouping()));
+        if (null == start.getOutgoingConnections() || start.getOutgoingConnections().isEmpty()) {
+            Anchor finish = null;
+            if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getUses(), n)) {
+                if (elements.containsKey(((Uses) n).getGrouping())) {
+                    finish = YangModelUIUtil.getChopboxAnchor((AnchorContainer) elements.get(((Uses) n).getGrouping()));
+                }
             }
+            YangModelUIUtil.drawConnection(n, start, finish, fp);
         }
-        AddConnectionContext acc = new AddConnectionContext(start, finish);
-        acc.setNewObject(n);
-        fp.addIfPossible(acc);
     }
    
 }

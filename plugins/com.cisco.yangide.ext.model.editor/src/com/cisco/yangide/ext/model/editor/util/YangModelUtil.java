@@ -13,6 +13,7 @@ import java.util.Set;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
+import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 
 import com.cisco.yangide.core.dom.ASTCompositeNode;
@@ -35,13 +36,13 @@ import com.cisco.yangide.core.dom.RpcOutputNode;
 import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.ext.model.ContainingNode;
+import com.cisco.yangide.ext.model.Grouping;
 import com.cisco.yangide.ext.model.Import;
 import com.cisco.yangide.ext.model.ModelFactory;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.NamedNode;
 import com.cisco.yangide.ext.model.Node;
-import com.cisco.yangide.ext.model.Revision;
 import com.cisco.yangide.ext.model.RpcIO;
 import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.TaggedNode;
@@ -209,6 +210,34 @@ public class YangModelUtil {
             }
         }
         return null;
+    }
+    
+    public static EObject getReferencedObject(IFeatureProvider fp, EObject obj) {
+        if (hasConnection(obj)) {
+           Object module = fp.getBusinessObjectForPictogramElement(fp.getDiagramTypeProvider().getDiagram());
+           if (checkType(MODEL_PACKAGE.getUses(), obj) && null != module && module instanceof EObject) {
+               for(EObject o : filter(getAllBusinessObjects((EObject) module, null), MODEL_PACKAGE.getGrouping())) {
+                   if (((Grouping) o).getName().equals(((Uses) obj).getQName())) {
+                       return o;
+                   }
+               }
+               
+           }
+        }
+        return null;
+    }
+    
+    public static List<EObject> getAllBusinessObjects(EObject obj, List<EObject> list) {
+        if (null == list) {
+            list = new ArrayList<EObject>();
+        }
+        list.add(obj);
+        if (checkType(MODEL_PACKAGE.getContainingNode(), obj)) {
+            for (EObject o : ((ContainingNode) obj).getChildren()) {
+                getAllBusinessObjects(o, list);
+            }
+        }
+        return list;
     }
 
     public static boolean checkType(EClass parent, Object tested) {
@@ -390,7 +419,15 @@ public class YangModelUtil {
                 return ((Uses) obj).getQName();
             }
         }
-        return "";
+        return null;
+    }
+    
+    public static String getQNamePresentation(Node obj) {
+        String result = getQName(obj);
+        if (null != result) {
+            return obj.eClass().getName().toLowerCase() + " " + result;
+        }
+        return null;
     }
 
     public static EClass getEClass(ASTNode obj) {

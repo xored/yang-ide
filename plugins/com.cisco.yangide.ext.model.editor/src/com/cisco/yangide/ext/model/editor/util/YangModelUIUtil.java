@@ -14,7 +14,9 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
+import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
+import org.eclipse.graphiti.features.context.impl.DeleteContext;
 import org.eclipse.graphiti.features.context.impl.LayoutContext;
 import org.eclipse.graphiti.features.context.impl.UpdateContext;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
@@ -62,6 +64,7 @@ public class YangModelUIUtil {
     
     static {
         attributeShapes.put(YangModelUtil.MODEL_PACKAGE.getNamedNode_Name(), PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY);
+        attributeShapes.put(YangModelUtil.MODEL_PACKAGE.getUses_QName(), PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY);
     }
     
     private static class ShapeVerticalComparator implements Comparator<Shape> {
@@ -208,12 +211,51 @@ public class YangModelUIUtil {
         fp.updateIfPossible(context);
     }
     
+    public static boolean updateConnections(EObject obj, IFeatureProvider fp) {
+        if (YangModelUtil.hasConnection(obj)) {            
+            EObject ref = YangModelUtil.getReferencedObject(fp, obj);
+            PictogramElement startPE = YangModelUIUtil.getBusinessObjectShape(fp, obj);
+            Anchor start = YangModelUIUtil.getBoxRelativeAnchor((AnchorContainer) startPE);
+            Connection con = null;
+            if (null != start.getOutgoingConnections() && !start.getOutgoingConnections().isEmpty()) {
+                con = start.getOutgoingConnections().get(0);
+            }
+            if (null == ref) { 
+                if (null != con) {
+                    DeleteContext deleteContext = new DeleteContext(con);
+                    fp.getDeleteFeature(deleteContext).delete(deleteContext);
+                    return true;
+                }
+            } else {                
+                PictogramElement finishPE = YangModelUIUtil.getBusinessObjectShape(fp, ref);                
+                Anchor finish = YangModelUIUtil.getChopboxAnchor((AnchorContainer) finishPE);
+                if (null != con && con.getEnd().equals(finish)) {
+                    return false;
+                }
+                if (null != con) {
+                    con.setEnd(finish);
+                } else {
+                    YangModelUIUtil.drawConnection(obj, start, finish, fp);
+                }
+                LayoutUtil.layoutDiagramConnections(fp);
+                return true;
+            }
+        }
+        return false;
+    }
+    
     public static PictogramElement drawObject(EObject obj, ContainerShape cs, IFeatureProvider fp, int x, int y) {
         AddContext ac = new AddContext();
         ac.setTargetContainer(cs);
         ac.setLocation(x, y);
         ac.setNewObject(obj);
         return fp.addIfPossible(ac);
+    }
+    
+    public static Connection drawConnection(EObject obj, Anchor start, Anchor finish, IFeatureProvider fp) {
+        AddConnectionContext ac = new AddConnectionContext(start, finish);
+        ac.setNewObject(obj);
+        return (Connection) fp.addIfPossible(ac);
     }
     
     public static Connection drawPictogramConnectionElement(IAddConnectionContext context, IFeatureProvider fp, String title) {
@@ -288,6 +330,7 @@ public class YangModelUIUtil {
             fp.link(textShape, new Object[] { context.getNewObject(), YangModelUtil.MODEL_PACKAGE.getNamedNode_Name() });
         } else {
             text = Graphiti.getGaService().createPlainText(textShape, title);
+            fp.link(textShape, context.getNewObject());
         }
         text.setStyle(StyleUtil.getStyleForDomainObjectText(fp.getDiagramTypeProvider().getDiagram()));
         PropertyUtil.setObjectShapeProp(textShape, PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY, true);
