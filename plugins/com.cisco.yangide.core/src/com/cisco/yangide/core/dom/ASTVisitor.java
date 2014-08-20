@@ -97,9 +97,29 @@ public abstract class ASTVisitor {
         return true;
     }
 
-    // public boolean visit(ASTCompositeNode astCompositeNode) {
-    // return true;
-    // }
+    public boolean visit(LeafListSchemaNode leafListSchemaNode) {
+        return true;
+    }
+
+    public boolean visit(ListSchemaNode listSchemaNode) {
+        return true;
+    }
+
+    public boolean visit(SimpleNamedNode simpleNamedNode) {
+        return true;
+    }
+
+    public boolean visit(ChoiceNode choiceNode) {
+        return true;
+    }
+
+    public boolean visit(ChoiceCaseNode choiceCaseNode) {
+        return true;
+    }
+
+    public boolean visit(AnyXmlSchemaNode anyXmlSchemaNode) {
+        return true;
+    }
 
     public void preVisit(ASTNode node) {
 

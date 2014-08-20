@@ -17,9 +17,12 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.TerminalNode;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangLexer;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Anyxml_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Augment_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Base_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Belongs_to_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Case_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Choice_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Contact_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Container_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Description_stmtContext;
@@ -31,7 +34,10 @@ import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Identity_stmtConte
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Import_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Include_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Input_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Key_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Leaf_list_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Leaf_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.List_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Module_header_stmtsContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Module_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Namespace_stmtContext;
@@ -56,15 +62,20 @@ import org.opendaylight.yangtools.antlrv4.code.gen.YangParserBaseListener;
 
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
+import com.cisco.yangide.core.dom.AnyXmlSchemaNode;
 import com.cisco.yangide.core.dom.AugmentationSchema;
 import com.cisco.yangide.core.dom.BaseReference;
+import com.cisco.yangide.core.dom.ChoiceCaseNode;
+import com.cisco.yangide.core.dom.ChoiceNode;
 import com.cisco.yangide.core.dom.ContrainerSchemaNode;
 import com.cisco.yangide.core.dom.Deviation;
 import com.cisco.yangide.core.dom.ExtensionDefinition;
 import com.cisco.yangide.core.dom.FeatureDefinition;
 import com.cisco.yangide.core.dom.GroupingDefinition;
 import com.cisco.yangide.core.dom.IdentitySchemaNode;
+import com.cisco.yangide.core.dom.LeafListSchemaNode;
 import com.cisco.yangide.core.dom.LeafSchemaNode;
+import com.cisco.yangide.core.dom.ListSchemaNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
 import com.cisco.yangide.core.dom.NotificationDefinition;
@@ -73,6 +84,7 @@ import com.cisco.yangide.core.dom.RevisionNode;
 import com.cisco.yangide.core.dom.RpcDefinition;
 import com.cisco.yangide.core.dom.RpcInputNode;
 import com.cisco.yangide.core.dom.RpcOutputNode;
+import com.cisco.yangide.core.dom.SimpleNamedNode;
 import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.SubModuleInclude;
@@ -442,6 +454,76 @@ public class YangParserModelListener extends YangParserBaseListener {
             updateNamedNode(baseRef, base);
             identity.setBase(baseRef);
         }
+    }
+
+    @Override
+    public void enterLeaf_list_stmt(Leaf_list_stmtContext ctx) {
+        LeafListSchemaNode leafList = new LeafListSchemaNode(stack.peek());
+        stack.push(leafList);
+        updateNamedNode(leafList, ctx);
+    }
+
+    @Override
+    public void exitLeaf_list_stmt(Leaf_list_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterList_stmt(List_stmtContext ctx) {
+        ListSchemaNode list = new ListSchemaNode(stack.peek());
+        stack.push(list);
+        updateNamedNode(list, ctx);
+    }
+
+    @Override
+    public void enterKey_stmt(Key_stmtContext ctx) {
+        ASTNode node = stack.peek();
+        if (node instanceof ListSchemaNode) {
+            SimpleNamedNode keyNode = new SimpleNamedNode(node, "key");
+            updateNamedNode(keyNode, ctx);
+            ((ListSchemaNode) node).setKey(keyNode);
+        }
+    }
+
+    @Override
+    public void exitList_stmt(List_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterAnyxml_stmt(Anyxml_stmtContext ctx) {
+        AnyXmlSchemaNode xml = new AnyXmlSchemaNode(stack.peek());
+        stack.push(xml);
+        updateNamedNode(xml, ctx);
+    }
+
+    @Override
+    public void exitAnyxml_stmt(Anyxml_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterChoice_stmt(Choice_stmtContext ctx) {
+        ChoiceNode choice = new ChoiceNode(stack.peek());
+        stack.push(choice);
+        updateNamedNode(choice, ctx);
+    }
+
+    @Override
+    public void exitChoice_stmt(Choice_stmtContext ctx) {
+        stack.pop();
+    }
+
+    @Override
+    public void enterCase_stmt(Case_stmtContext ctx) {
+        ChoiceCaseNode choiceCase = new ChoiceCaseNode(stack.peek());
+        stack.push(choiceCase);
+        updateNamedNode(choiceCase, ctx);
+    }
+
+    @Override
+    public void exitCase_stmt(Case_stmtContext ctx) {
+        stack.pop();
     }
 
     /**
