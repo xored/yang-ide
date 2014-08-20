@@ -30,7 +30,7 @@
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Typedef"/>
   <eClassifiers xsi:type="ecore:EClass" name="Choice" eSuperTypes="#//NamedContainingNode"/>
-  <eClassifiers xsi:type="ecore:EClass" name="LeafList" eSuperTypes="#//NamedContainingNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="LeafList" eSuperTypes="#//NamedNode #//TaggedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Anyxml" eSuperTypes="#//NamedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Import" eSuperTypes="#//Node">
     <eStructuralFeatures xsi:type="ecore:EReference" name="module" lowerBound="1"
@@ -48,7 +48,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="ownerModule" lowerBound="1"
         eType="#//Module"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="List" eSuperTypes="#//NamedContainingNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="List" eSuperTypes="#//NamedContainingNode #//TaggedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Tag">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="name" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EString"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="value" eType="ecore:EDataType http://www.eclipse.org/emf/2002/Ecore#//EJavaObject"/>
@@ -73,4 +73,5 @@
   <eClassifiers xsi:type="ecore:EClass" name="Identity" eSuperTypes="#//NamedNode">
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//Identity"/>
   </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="TypedNode" abstract="true" interface="true"/>
 </ecore:EPackage>

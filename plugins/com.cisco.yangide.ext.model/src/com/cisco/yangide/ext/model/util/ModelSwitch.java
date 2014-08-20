@@ -168,9 +168,8 @@ public class ModelSwitch<T> extends Switch<T> {
             case ModelPackage.LEAF_LIST: {
                 LeafList leafList = (LeafList)theEObject;
                 T result = caseLeafList(leafList);
-                if (result == null) result = caseNamedContainingNode(leafList);
                 if (result == null) result = caseNamedNode(leafList);
-                if (result == null) result = caseContainingNode(leafList);
+                if (result == null) result = caseTaggedNode(leafList);
                 if (result == null) result = caseNode(leafList);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
@@ -216,6 +215,7 @@ public class ModelSwitch<T> extends Switch<T> {
                 List list = (List)theEObject;
                 T result = caseList(list);
                 if (result == null) result = caseNamedContainingNode(list);
+                if (result == null) result = caseTaggedNode(list);
                 if (result == null) result = caseNamedNode(list);
                 if (result == null) result = caseContainingNode(list);
                 if (result == null) result = caseNode(list);
@@ -308,6 +308,12 @@ public class ModelSwitch<T> extends Switch<T> {
                 T result = caseIdentity(identity);
                 if (result == null) result = caseNamedNode(identity);
                 if (result == null) result = caseNode(identity);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case ModelPackage.TYPED_NODE: {
+                TypedNode typedNode = (TypedNode)theEObject;
+                T result = caseTypedNode(typedNode);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -747,6 +753,21 @@ public class ModelSwitch<T> extends Switch<T> {
      * @generated
      */
     public T caseIdentity(Identity object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Typed Node</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Typed Node</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseTypedNode(TypedNode object) {
         return null;
     }
 

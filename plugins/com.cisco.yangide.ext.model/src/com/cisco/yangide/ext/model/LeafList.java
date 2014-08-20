@@ -13,5 +13,5 @@ package com.cisco.yangide.ext.model;
  * @model
  * @generated
  */
-public interface LeafList extends NamedContainingNode {
+public interface LeafList extends NamedNode, TaggedNode {
 } // LeafList

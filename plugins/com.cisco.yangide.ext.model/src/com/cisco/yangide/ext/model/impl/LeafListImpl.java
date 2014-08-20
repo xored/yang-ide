@@ -2,24 +2,19 @@
  */
 package com.cisco.yangide.ext.model.impl;
 
-import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.LeafList;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
-
+import com.cisco.yangide.ext.model.Tag;
+import com.cisco.yangide.ext.model.TaggedNode;
 import java.util.Collection;
-
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.common.util.EList;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
-
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -32,7 +27,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.LeafListImpl#getParent <em>Parent</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.LeafListImpl#getName <em>Name</em>}</li>
- *   <li>{@link com.cisco.yangide.ext.model.impl.LeafListImpl#getChildren <em>Children</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.LeafListImpl#getTags <em>Tags</em>}</li>
  * </ul>
  * </p>
  *
@@ -70,14 +65,14 @@ public class LeafListImpl extends MinimalEObjectImpl.Container implements LeafLi
     protected String name = NAME_EDEFAULT;
 
     /**
-     * The cached value of the '{@link #getChildren() <em>Children</em>}' containment reference list.
+     * The cached value of the '{@link #getTags() <em>Tags</em>}' containment reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getChildren()
+     * @see #getTags()
      * @generated
      * @ordered
      */
-    protected EList<Node> children;
+    protected EList<Tag> tags;
 
     /**
      * <!-- begin-user-doc -->
@@ -162,11 +157,11 @@ public class LeafListImpl extends MinimalEObjectImpl.Container implements LeafLi
      * <!-- end-user-doc -->
      * @generated
      */
-    public EList<Node> getChildren() {
-        if (children == null) {
-            children = new EObjectContainmentEList<Node>(Node.class, this, ModelPackage.LEAF_LIST__CHILDREN);
+    public EList<Tag> getTags() {
+        if (tags == null) {
+            tags = new EObjectContainmentEList<Tag>(Tag.class, this, ModelPackage.LEAF_LIST__TAGS);
         }
-        return children;
+        return tags;
     }
 
     /**
@@ -177,8 +172,8 @@ public class LeafListImpl extends MinimalEObjectImpl.Container implements LeafLi
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-            case ModelPackage.LEAF_LIST__CHILDREN:
-                return ((InternalEList<?>)getChildren()).basicRemove(otherEnd, msgs);
+            case ModelPackage.LEAF_LIST__TAGS:
+                return ((InternalEList<?>)getTags()).basicRemove(otherEnd, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
@@ -196,8 +191,8 @@ public class LeafListImpl extends MinimalEObjectImpl.Container implements LeafLi
                 return basicGetParent();
             case ModelPackage.LEAF_LIST__NAME:
                 return getName();
-            case ModelPackage.LEAF_LIST__CHILDREN:
-                return getChildren();
+            case ModelPackage.LEAF_LIST__TAGS:
+                return getTags();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -217,9 +212,9 @@ public class LeafListImpl extends MinimalEObjectImpl.Container implements LeafLi
             case ModelPackage.LEAF_LIST__NAME:
                 setName((String)newValue);
                 return;
-            case ModelPackage.LEAF_LIST__CHILDREN:
-                getChildren().clear();
-                getChildren().addAll((Collection<? extends Node>)newValue);
+            case ModelPackage.LEAF_LIST__TAGS:
+                getTags().clear();
+                getTags().addAll((Collection<? extends Tag>)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -239,8 +234,8 @@ public class LeafListImpl extends MinimalEObjectImpl.Container implements LeafLi
             case ModelPackage.LEAF_LIST__NAME:
                 setName(NAME_EDEFAULT);
                 return;
-            case ModelPackage.LEAF_LIST__CHILDREN:
-                getChildren().clear();
+            case ModelPackage.LEAF_LIST__TAGS:
+                getTags().clear();
                 return;
         }
         super.eUnset(featureID);
@@ -258,8 +253,8 @@ public class LeafListImpl extends MinimalEObjectImpl.Container implements LeafLi
                 return parent != null;
             case ModelPackage.LEAF_LIST__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-            case ModelPackage.LEAF_LIST__CHILDREN:
-                return children != null && !children.isEmpty();
+            case ModelPackage.LEAF_LIST__TAGS:
+                return tags != null && !tags.isEmpty();
         }
         return super.eIsSet(featureID);
     }
@@ -271,9 +266,9 @@ public class LeafListImpl extends MinimalEObjectImpl.Container implements LeafLi
      */
     @Override
     public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
-        if (baseClass == ContainingNode.class) {
+        if (baseClass == TaggedNode.class) {
             switch (derivedFeatureID) {
-                case ModelPackage.LEAF_LIST__CHILDREN: return ModelPackage.CONTAINING_NODE__CHILDREN;
+                case ModelPackage.LEAF_LIST__TAGS: return ModelPackage.TAGGED_NODE__TAGS;
                 default: return -1;
             }
         }
@@ -287,9 +282,9 @@ public class LeafListImpl extends MinimalEObjectImpl.Container implements LeafLi
      */
     @Override
     public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
-        if (baseClass == ContainingNode.class) {
+        if (baseClass == TaggedNode.class) {
             switch (baseFeatureID) {
-                case ModelPackage.CONTAINING_NODE__CHILDREN: return ModelPackage.LEAF_LIST__CHILDREN;
+                case ModelPackage.TAGGED_NODE__TAGS: return ModelPackage.LEAF_LIST__TAGS;
                 default: return -1;
             }
         }

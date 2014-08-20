@@ -35,7 +35,7 @@ Package model <http://www.example.org/model>
 
   Class Choice -> NamedContainingNode
 
-  Class LeafList -> NamedContainingNode
+  Class LeafList -> NamedNode, TaggedNode
 
   Class Anyxml -> NamedNode
 
@@ -52,7 +52,7 @@ Package model <http://www.example.org/model>
   Class BelongsTo
     Reference ownerModule : Module<<1..1>>
 
-  Class List -> NamedContainingNode
+  Class List -> NamedContainingNode, TaggedNode
 
   Class Tag
     Attribute name : EString
@@ -82,3 +82,5 @@ Package model <http://www.example.org/model>
 
   Class Identity -> NamedNode
     Reference base : Identity
+
+  Class TypedNode

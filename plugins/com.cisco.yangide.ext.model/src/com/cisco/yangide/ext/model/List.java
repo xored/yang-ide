@@ -13,5 +13,5 @@ package com.cisco.yangide.ext.model;
  * @model
  * @generated
  */
-public interface List extends NamedContainingNode {
+public interface List extends NamedContainingNode, TaggedNode {
 } // List

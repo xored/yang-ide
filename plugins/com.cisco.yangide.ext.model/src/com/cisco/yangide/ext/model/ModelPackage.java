@@ -696,7 +696,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int LEAF_LIST__PARENT = NAMED_CONTAINING_NODE__PARENT;
+    int LEAF_LIST__PARENT = NAMED_NODE__PARENT;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -705,16 +705,16 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int LEAF_LIST__NAME = NAMED_CONTAINING_NODE__NAME;
+    int LEAF_LIST__NAME = NAMED_NODE__NAME;
 
     /**
-     * The feature id for the '<em><b>Children</b></em>' containment reference list.
+     * The feature id for the '<em><b>Tags</b></em>' containment reference list.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int LEAF_LIST__CHILDREN = NAMED_CONTAINING_NODE__CHILDREN;
+    int LEAF_LIST__TAGS = NAMED_NODE_FEATURE_COUNT + 0;
 
     /**
      * The number of structural features of the '<em>Leaf List</em>' class.
@@ -723,7 +723,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int LEAF_LIST_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+    int LEAF_LIST_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 1;
 
     /**
      * The number of operations of the '<em>Leaf List</em>' class.
@@ -732,7 +732,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int LEAF_LIST_OPERATION_COUNT = NAMED_CONTAINING_NODE_OPERATION_COUNT + 0;
+    int LEAF_LIST_OPERATION_COUNT = NAMED_NODE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.AnyxmlImpl <em>Anyxml</em>}' class.
@@ -1067,13 +1067,22 @@ public interface ModelPackage extends EPackage {
     int LIST__CHILDREN = NAMED_CONTAINING_NODE__CHILDREN;
 
     /**
+     * The feature id for the '<em><b>Tags</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LIST__TAGS = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+
+    /**
      * The number of structural features of the '<em>List</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int LIST_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+    int LIST_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 1;
 
     /**
      * The number of operations of the '<em>List</em>' class.
@@ -1590,6 +1599,35 @@ public interface ModelPackage extends EPackage {
 
 
     /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.TypedNode <em>Typed Node</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.TypedNode
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getTypedNode()
+     * @generated
+     */
+    int TYPED_NODE = 29;
+
+    /**
+     * The number of structural features of the '<em>Typed Node</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPED_NODE_FEATURE_COUNT = 0;
+
+    /**
+     * The number of operations of the '<em>Typed Node</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPED_NODE_OPERATION_COUNT = 0;
+
+
+    /**
      * Returns the meta object for class '{@link com.cisco.yangide.ext.model.Module <em>Module</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2078,6 +2116,16 @@ public interface ModelPackage extends EPackage {
     EReference getIdentity_Base();
 
     /**
+     * Returns the meta object for class '{@link com.cisco.yangide.ext.model.TypedNode <em>Typed Node</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Typed Node</em>'.
+     * @see com.cisco.yangide.ext.model.TypedNode
+     * @generated
+     */
+    EClass getTypedNode();
+
+    /**
      * Returns the factory that creates the instances of the model.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2533,6 +2581,16 @@ public interface ModelPackage extends EPackage {
          * @generated
          */
         EReference IDENTITY__BASE = eINSTANCE.getIdentity_Base();
+
+        /**
+         * The meta object literal for the '{@link com.cisco.yangide.ext.model.TypedNode <em>Typed Node</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see com.cisco.yangide.ext.model.TypedNode
+         * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getTypedNode()
+         * @generated
+         */
+        EClass TYPED_NODE = eINSTANCE.getTypedNode();
 
     }
 

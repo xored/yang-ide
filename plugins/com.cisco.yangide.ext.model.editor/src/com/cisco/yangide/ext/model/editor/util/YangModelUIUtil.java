@@ -228,18 +228,20 @@ public class YangModelUIUtil {
                     return true;
                 }
             } else {                
-                PictogramElement finishPE = YangModelUIUtil.getBusinessObjectShape(fp, ref);                
-                Anchor finish = YangModelUIUtil.getChopboxAnchor((AnchorContainer) finishPE);
-                if (null != con && con.getEnd().equals(finish)) {
-                    return false;
+                PictogramElement finishPE = YangModelUIUtil.getBusinessObjectShape(fp, ref); 
+                if (null != finishPE) {
+                    Anchor finish = YangModelUIUtil.getChopboxAnchor((AnchorContainer) finishPE);
+                    if (null != con && con.getEnd().equals(finish)) {
+                        return false;
+                    }
+                    if (null != con) {
+                        con.setEnd(finish);
+                    } else {
+                        YangModelUIUtil.drawConnection(obj, start, finish, fp);
+                    }
+                    LayoutUtil.layoutDiagramConnections(fp);
+                    return true;
                 }
-                if (null != con) {
-                    con.setEnd(finish);
-                } else {
-                    YangModelUIUtil.drawConnection(obj, start, finish, fp);
-                }
-                LayoutUtil.layoutDiagramConnections(fp);
-                return true;
             }
         }
         return false;

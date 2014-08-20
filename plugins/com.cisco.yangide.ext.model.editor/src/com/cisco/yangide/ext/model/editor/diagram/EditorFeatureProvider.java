@@ -51,7 +51,9 @@ import com.cisco.yangide.ext.model.editor.patterns.objects.ExtensionPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.FeaturePattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.GroupingPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.IdentityPattern;
+import com.cisco.yangide.ext.model.editor.patterns.objects.LeafListPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.LeafPattern;
+import com.cisco.yangide.ext.model.editor.patterns.objects.ListPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.NotificationPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.RpcIOPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.RpcPattern;
@@ -81,6 +83,8 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         addPattern(new FeaturePattern());
         addPattern(new IdentityPattern());
         addPattern(new RpcIOPattern());
+        addPattern(new LeafListPattern());
+        addPattern(new ListPattern());
     }
 
     @Override

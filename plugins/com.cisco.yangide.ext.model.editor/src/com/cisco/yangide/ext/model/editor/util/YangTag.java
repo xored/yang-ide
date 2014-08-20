@@ -11,7 +11,7 @@ public enum YangTag {
     DESCRIPTION, YANG_VERSION("yang-version"), NAMESPACE, PREFIX, ORGANIZATION(true), CONTACT, REFERENCE, CONFIG(Arrays.asList(Strings.EMPTY_STRING, Boolean.TRUE.toString(), Boolean.FALSE.toString())), 
     MANDATORY(Arrays.asList(Strings.EMPTY_STRING, Boolean.TRUE.toString(), Boolean.FALSE.toString())), STATUS(Arrays.asList(Strings.EMPTY_STRING, "current", "deprecated", "obsolete")), 
     PRESENCE(Arrays.asList(Strings.EMPTY_STRING, Boolean.TRUE.toString(), Boolean.FALSE.toString())), 
-    ORDERED_BY("ordered-by", Arrays.asList(Strings.EMPTY_STRING, "user", "system", "obsolete")), DEFAULT, UNITS;
+    ORDERED_BY("ordered-by", Arrays.asList(Strings.EMPTY_STRING, "user", "system", "obsolete")), DEFAULT, UNITS, MAX_ELEMENTS("max-elements"), MIN_ELEMENTS("min-elements");
     private String name;
     private boolean required;
     private List<String> possibleValues;

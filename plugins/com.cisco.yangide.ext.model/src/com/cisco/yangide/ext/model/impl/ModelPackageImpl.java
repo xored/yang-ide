@@ -30,6 +30,7 @@ import com.cisco.yangide.ext.model.RpcIO;
 import com.cisco.yangide.ext.model.Submodule;
 import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.TaggedNode;
+import com.cisco.yangide.ext.model.TypedNode;
 import com.cisco.yangide.ext.model.Typedef;
 import com.cisco.yangide.ext.model.Uses;
 
@@ -251,6 +252,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EClass identityEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass typedNodeEClass = null;
 
     /**
      * Creates an instance of the model <b>Package</b>, registered with
@@ -744,6 +752,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EClass getTypedNode() {
+        return typedNodeEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public ModelFactory getModelFactory() {
         return (ModelFactory)getEFactoryInstance();
     }
@@ -842,6 +859,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         identityEClass = createEClass(IDENTITY);
         createEReference(identityEClass, IDENTITY__BASE);
+
+        typedNodeEClass = createEClass(TYPED_NODE);
     }
 
     /**
@@ -889,13 +908,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         namedContainingNodeEClass.getESuperTypes().add(this.getContainingNode());
         submoduleEClass.getESuperTypes().add(this.getModule());
         choiceEClass.getESuperTypes().add(this.getNamedContainingNode());
-        leafListEClass.getESuperTypes().add(this.getNamedContainingNode());
+        leafListEClass.getESuperTypes().add(this.getNamedNode());
+        leafListEClass.getESuperTypes().add(this.getTaggedNode());
         anyxmlEClass.getESuperTypes().add(this.getNamedNode());
         importEClass.getESuperTypes().add(this.getNode());
         includeEClass.getESuperTypes().add(this.getNode());
         revisionEClass.getESuperTypes().add(this.getTaggedNode());
         revisionEClass.getESuperTypes().add(this.getNamedNode());
         listEClass.getESuperTypes().add(this.getNamedContainingNode());
+        listEClass.getESuperTypes().add(this.getTaggedNode());
         usesEClass.getESuperTypes().add(this.getNode());
         rpcEClass.getESuperTypes().add(this.getNamedContainingNode());
         rpcIOEClass.getESuperTypes().add(this.getContainingNode());
@@ -982,6 +1003,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
 
         initEClass(identityEClass, Identity.class, "Identity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getIdentity_Base(), this.getIdentity(), null, "base", null, 0, 1, Identity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+
+        initEClass(typedNodeEClass, TypedNode.class, "TypedNode", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         // Create resource
         createResource(eNS_URI);

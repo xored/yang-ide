@@ -7,6 +7,8 @@ import com.cisco.yangide.ext.model.List;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
 
+import com.cisco.yangide.ext.model.Tag;
+import com.cisco.yangide.ext.model.TaggedNode;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -33,6 +35,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link com.cisco.yangide.ext.model.impl.ListImpl#getParent <em>Parent</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ListImpl#getName <em>Name</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ListImpl#getChildren <em>Children</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.ListImpl#getTags <em>Tags</em>}</li>
  * </ul>
  * </p>
  *
@@ -78,6 +81,16 @@ public class ListImpl extends MinimalEObjectImpl.Container implements List {
      * @ordered
      */
     protected EList<Node> children;
+
+    /**
+     * The cached value of the '{@link #getTags() <em>Tags</em>}' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getTags()
+     * @generated
+     * @ordered
+     */
+    protected EList<Tag> tags;
 
     /**
      * <!-- begin-user-doc -->
@@ -174,11 +187,25 @@ public class ListImpl extends MinimalEObjectImpl.Container implements List {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EList<Tag> getTags() {
+        if (tags == null) {
+            tags = new EObjectContainmentEList<Tag>(Tag.class, this, ModelPackage.LIST__TAGS);
+        }
+        return tags;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.LIST__CHILDREN:
                 return ((InternalEList<?>)getChildren()).basicRemove(otherEnd, msgs);
+            case ModelPackage.LIST__TAGS:
+                return ((InternalEList<?>)getTags()).basicRemove(otherEnd, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
@@ -198,6 +225,8 @@ public class ListImpl extends MinimalEObjectImpl.Container implements List {
                 return getName();
             case ModelPackage.LIST__CHILDREN:
                 return getChildren();
+            case ModelPackage.LIST__TAGS:
+                return getTags();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -221,6 +250,10 @@ public class ListImpl extends MinimalEObjectImpl.Container implements List {
                 getChildren().clear();
                 getChildren().addAll((Collection<? extends Node>)newValue);
                 return;
+            case ModelPackage.LIST__TAGS:
+                getTags().clear();
+                getTags().addAll((Collection<? extends Tag>)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -242,6 +275,9 @@ public class ListImpl extends MinimalEObjectImpl.Container implements List {
             case ModelPackage.LIST__CHILDREN:
                 getChildren().clear();
                 return;
+            case ModelPackage.LIST__TAGS:
+                getTags().clear();
+                return;
         }
         super.eUnset(featureID);
     }
@@ -260,6 +296,8 @@ public class ListImpl extends MinimalEObjectImpl.Container implements List {
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.LIST__CHILDREN:
                 return children != null && !children.isEmpty();
+            case ModelPackage.LIST__TAGS:
+                return tags != null && !tags.isEmpty();
         }
         return super.eIsSet(featureID);
     }
@@ -277,6 +315,12 @@ public class ListImpl extends MinimalEObjectImpl.Container implements List {
                 default: return -1;
             }
         }
+        if (baseClass == TaggedNode.class) {
+            switch (derivedFeatureID) {
+                case ModelPackage.LIST__TAGS: return ModelPackage.TAGGED_NODE__TAGS;
+                default: return -1;
+            }
+        }
         return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
     }
 
@@ -290,6 +334,12 @@ public class ListImpl extends MinimalEObjectImpl.Container implements List {
         if (baseClass == ContainingNode.class) {
             switch (baseFeatureID) {
                 case ModelPackage.CONTAINING_NODE__CHILDREN: return ModelPackage.LIST__CHILDREN;
+                default: return -1;
+            }
+        }
+        if (baseClass == TaggedNode.class) {
+            switch (baseFeatureID) {
+                case ModelPackage.TAGGED_NODE__TAGS: return ModelPackage.LIST__TAGS;
                 default: return -1;
             }
         }
