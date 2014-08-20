@@ -287,11 +287,18 @@ public class YangModelUtil {
         return result;
     }
     
-    public static Object getValue(YangTag id, TaggedNode node) {
+    public static Tag getTag(YangTag id, TaggedNode node) {
         for (Tag tag : node.getTags()) {
             if (id.getName().equals(tag.getName())) {
-                return tag.getValue();
+                return tag;
             }
+        }
+        return null;
+    }
+    public static Object getValue(YangTag id, TaggedNode node) {
+        Tag tag = getTag(id, node);
+        if (null != tag) {
+            return tag.getValue();
         }
         return null;
     }
@@ -319,14 +326,10 @@ public class YangModelUtil {
     }
     
     public static void setValue(YangTag id, TaggedNode node, Object value) {
-        boolean set = false;
-        for (Tag tag : node.getTags()) {
-            if (id.getName().equals(tag.getName())) {
-                tag.setValue(value);
-                set = true;
-            }
-        }
-        if (!set) {
+        Tag tag = getTag(id, node);
+        if (null != tag){
+            tag.setValue(value);
+        } else {
             Tag t = ModelFactory.eINSTANCE.createTag();
             t.setName(id.getName());
             t.setValue(value);

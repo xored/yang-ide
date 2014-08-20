@@ -1,13 +1,19 @@
 package com.cisco.yangide.ext.model.editor.editors;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import org.eclipse.core.databinding.Binding;
+import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.emf.databinding.EMFProperties;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
+import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
@@ -22,8 +28,6 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.events.ModifyEvent;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -90,6 +94,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     
     private static final int H_OFFSET = 2;
     private static final int TEXT_AREA_HEIGHT = 80;
+    private DataBindingContext bindingContext = new DataBindingContext();
     
     protected class FillData {
 
@@ -208,11 +213,10 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             private Text name;
             private Revision revision;
             private Composite pane;
+            private List<Binding> dataBindigs = new ArrayList<Binding>();
             public RevisionEdit() {
                 pane = toolkit.createComposite(editPropertyForm, SWT.NONE);
                 createPane();
-                updateData();     
-                addListeneres();
             }
             protected void createPane() {
                 pane.setLayout(new FormLayout());
@@ -259,25 +263,29 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 data.right = new FormAttachment (100, 0);
                 data.top = new FormAttachment(description, H_OFFSET);
                 data.bottom = new FormAttachment(reference, TEXT_AREA_HEIGHT);
-                reference.setLayoutData (data);
-                
-                
+                reference.setLayoutData (data);               
             }
+            
             protected void addListeneres() {
-                addTextFieldListener(this, reference, YangTag.REFERENCE);
-                addTextFieldListener(this, description, YangTag.DESCRIPTION);
-                addTextFieldListener(this, name, YangModelUtil.MODEL_PACKAGE.getNamedNode_Name());
+                removeBindings(dataBindigs);
+                dataBindigs.clear();
+                dataBindigs.add(addTextFieldListener(this, reference, YangTag.REFERENCE));
+                dataBindigs.add(addTextFieldListener(this, description, YangTag.DESCRIPTION));
+                dataBindigs.add(addTextFieldListener(this, name, YangModelUtil.MODEL_PACKAGE.getNamedNode_Name()));
             }
             public void updateData() {
                 if (null != revision) {
                     name.setText(revision.getName());
                     description.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.DESCRIPTION, revision)));
                     reference.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.REFERENCE, revision)));
+                    addListeneres();
                 }
             }
             public Composite getPane(Revision revision) {
-                this.revision = revision;
-                updateData();
+                if (revision != this.revision) {
+                    this.revision = revision;
+                    updateData();
+                }
                 return pane;
             }
             @Override
@@ -293,11 +301,10 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             private Text revision;
             private Import importObj;
             private Composite pane;
+            private List<Binding> dataBindigs = new ArrayList<Binding>();
             public ImportEdit() {
                 pane = toolkit.createComposite(editPropertyForm, SWT.NONE);
                 createPane();
-                updateData();     
-                addListeneres();
             }
             protected void createPane() {
                 GridLayoutFactory.fillDefaults().numColumns(2).applyTo(pane);
@@ -309,7 +316,8 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 
                 toolkit.createLabel(pane, "Prefix: ");  
                 prefix  = toolkit.createText(pane, "");
-                prefix.setEditable(true);
+                prefix.setEditable(false);
+                prefix.setEnabled(false);
                 GridDataFactory.fillDefaults().grab(true, false).applyTo(prefix);
                 
                 toolkit.createLabel(pane, "Revision: ");  
@@ -320,20 +328,25 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 
             }
             protected void addListeneres() {
-                addTextFieldListener(this, prefix, YangModelUtil.MODEL_PACKAGE.getImport_Prefix());
-                addTextFieldListener(this, revision, YangModelUtil.MODEL_PACKAGE.getImport_RevisionDate());
+                removeBindings(dataBindigs);
+                dataBindigs.clear();
+                dataBindigs.add(addTextFieldListener(this, prefix, YangModelUtil.MODEL_PACKAGE.getImport_Prefix()));
+                dataBindigs.add(addTextFieldListener(this, revision, YangModelUtil.MODEL_PACKAGE.getImport_RevisionDate()));
             }
             public void updateData() {
                 if (null != importObj) {
                     name.setText(importObj.getModule().getName());
                     prefix.setText(Strings.getAsString(importObj.getPrefix()));
                     revision.setText(Strings.getAsString(importObj.getRevisionDate()));
+                    addListeneres();
                 }
             }
             
             public Composite getPane(Import importObj) {
-                this.importObj = importObj;
-                updateData();
+                if (importObj != this.importObj) {
+                    this.importObj = importObj;
+                    updateData();
+                }
                 return pane;
             }
             @Override
@@ -617,24 +630,22 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         addTextFieldListener(this, referenceText, YangTag.REFERENCE);
     }
     
-    protected void addTextFieldListener(final BusinessObjectWrapper<? extends TaggedNode> node, Text text, final YangTag tag) {
-        text.addModifyListener(new ModifyListener() {
-            
-            @Override
-            public void modifyText(ModifyEvent e) {
-                YangModelUtil.setValue(tag, node.getBusinessObject(), ((Text) e.widget).getText());
-            }
-        });
+    protected void removeBindings(List<Binding> bindings) {
+        for (Binding b : bindings) {
+            bindingContext.removeBinding(b);
+        }
     }
     
-    protected void addTextFieldListener(final BusinessObjectWrapper<? extends EObject> node, Text text, final EStructuralFeature esf) {
-        text.addModifyListener(new ModifyListener() {
-            
-            @Override
-            public void modifyText(ModifyEvent e) {
-                node.getBusinessObject().eSet(esf, ((Text) e.widget).getText());
-            }
-        });
+    protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends TaggedNode> node, Text text, final YangTag tag) {
+        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observe(text),
+                EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value())
+                    .observe(YangModelUtil.getTag(tag, node.getBusinessObject())));
+    }
+    
+    protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends EObject> node, final Text text, final EStructuralFeature esf) {
+        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observe(text),
+            EMFProperties.value(esf)
+                .observe(node.getBusinessObject()));
     }
     
     protected void createRevisionSection(final ScrolledForm form) {

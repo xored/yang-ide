@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target includeMode="feature" name="YANG IDE Extensions Target Platform" sequenceNumber="31">
+<?pde version="3.8"?><target includeMode="feature" name="YANG IDE Extensions Target Platform" sequenceNumber="36">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.m2e.feature.feature.group" version="1.4.1.20140328-1905"/>
@@ -51,6 +51,11 @@
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.compare.feature.group" version="3.0.0.201406111328"/>
 <repository location="http://download.eclipse.org/modeling/emf/compare/updates/releases/"/>
+</location>
+<location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
+<unit id="org.eclipse.emf.databinding.feature.group" version="1.1.0.v200906151043"/>
+<unit id="org.eclipse.emf.databinding.edit.feature.group" version="1.1.0.v200906151043"/>
+<repository location="http://download.eclipse.org/modeling/emf/updates/releases/"/>
 </location>
 </locations>
 </target>
