@@ -86,7 +86,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     private ScrolledForm pane;
     private Composite leftPane;
     
-    private boolean propertiesPaneIsVisible = false;
+    private SashForm mainSashPanel;
     
     private static final int H_OFFSET = 2;
     private static final int TEXT_AREA_HEIGHT = 80;
@@ -367,14 +367,14 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     
     public YangDiagramModuleInfoPanel(Composite parent, Module module) {       
         this.module = module;
-        SashForm form = new SashForm(parent, SWT.HORIZONTAL);
-        form.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
-        form.setLayout(new GridLayout(1, false));
+        mainSashPanel  = new SashForm(parent, SWT.HORIZONTAL);
+        mainSashPanel.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
+        mainSashPanel.setLayout(new GridLayout(1, false));
         
-        leftPane = new Composite(form, SWT.NONE);
+        leftPane = new Composite(mainSashPanel, SWT.NONE);
 
         leftPane.setLayout(new FillLayout(SWT.VERTICAL));
-        diagram = new Composite(form, SWT.NONE);
+        diagram = new Composite(mainSashPanel, SWT.NONE);
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
         layout.marginWidth = 0;
@@ -387,7 +387,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         layout.horizontalSpacing = 0;
         diagram.setLayout(layout);        
         createModuleInfoPanel(leftPane);     
-        form.setWeights(new int[] {2, 6});
+        setPropertiesPaneVisible(false);
     }    
     
     protected void createModuleInfoPanel(Composite parent) {
@@ -424,23 +424,16 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     }
     
     protected void setPropertiesPaneVisible(boolean set) {
-        Point size = leftPane.getSize();
         if (set) {
             infoPane.setWeights(new int[] {1, 1});
             infoPane.setMaximizedControl(null);
-            if (!propertiesPaneIsVisible) {
-                size.x = 2 * size.x;
-            }
+            mainSashPanel.setWeights(new int[] {4, 6});
             
         } else {
             infoPane.setWeights(new int[] {1, 0});
-            infoPane.setMaximizedControl(pane);   
-            if (propertiesPaneIsVisible) {
-                size.x = size.x / 2;
-            }
+            infoPane.setMaximizedControl(pane); 
+            mainSashPanel.setWeights(new int[] {2, 6});
         }
-        propertiesPaneIsVisible = set;
-        leftPane.setSize(size);
     }
     
     protected void createPropertiesButtonToolbar(final Section editSection, final SashForm infoPane, final ScrolledForm pane) {
