@@ -662,13 +662,22 @@ public interface ModelPackage extends EPackage {
     int CHOICE__CHILDREN = NAMED_CONTAINING_NODE__CHILDREN;
 
     /**
+     * The feature id for the '<em><b>Tags</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CHOICE__TAGS = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+
+    /**
      * The number of structural features of the '<em>Choice</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int CHOICE_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+    int CHOICE_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 1;
 
     /**
      * The number of operations of the '<em>Choice</em>' class.
@@ -1628,6 +1637,71 @@ public interface ModelPackage extends EPackage {
 
 
     /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.ChoiceCaseImpl <em>Choice Case</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.impl.ChoiceCaseImpl
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getChoiceCase()
+     * @generated
+     */
+    int CHOICE_CASE = 30;
+
+    /**
+     * The feature id for the '<em><b>Parent</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CHOICE_CASE__PARENT = NAMED_CONTAINING_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CHOICE_CASE__NAME = NAMED_CONTAINING_NODE__NAME;
+
+    /**
+     * The feature id for the '<em><b>Children</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CHOICE_CASE__CHILDREN = NAMED_CONTAINING_NODE__CHILDREN;
+
+    /**
+     * The feature id for the '<em><b>Tags</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CHOICE_CASE__TAGS = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of structural features of the '<em>Choice Case</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CHOICE_CASE_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 1;
+
+    /**
+     * The number of operations of the '<em>Choice Case</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int CHOICE_CASE_OPERATION_COUNT = NAMED_CONTAINING_NODE_OPERATION_COUNT + 0;
+
+
+    /**
      * Returns the meta object for class '{@link com.cisco.yangide.ext.model.Module <em>Module</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2126,6 +2200,16 @@ public interface ModelPackage extends EPackage {
     EClass getTypedNode();
 
     /**
+     * Returns the meta object for class '{@link com.cisco.yangide.ext.model.ChoiceCase <em>Choice Case</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Choice Case</em>'.
+     * @see com.cisco.yangide.ext.model.ChoiceCase
+     * @generated
+     */
+    EClass getChoiceCase();
+
+    /**
      * Returns the factory that creates the instances of the model.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2591,6 +2675,16 @@ public interface ModelPackage extends EPackage {
          * @generated
          */
         EClass TYPED_NODE = eINSTANCE.getTypedNode();
+
+        /**
+         * The meta object literal for the '{@link com.cisco.yangide.ext.model.impl.ChoiceCaseImpl <em>Choice Case</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see com.cisco.yangide.ext.model.impl.ChoiceCaseImpl
+         * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getChoiceCase()
+         * @generated
+         */
+        EClass CHOICE_CASE = eINSTANCE.getChoiceCase();
 
     }
 

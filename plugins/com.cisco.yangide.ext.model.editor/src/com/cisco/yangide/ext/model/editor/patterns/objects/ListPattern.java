@@ -2,13 +2,14 @@ package com.cisco.yangide.ext.model.editor.patterns.objects;
 
 import org.eclipse.emf.ecore.EClass;
 
+import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 
 public class ListPattern extends DomainObjectPattern {
 
     @Override
     public String getCreateImageId() {
-        return null;
+        return YangDiagramImageProvider.IMG_LIST_PROPOSAL;
     }
 
     @Override

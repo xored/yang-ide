@@ -13,5 +13,5 @@ package com.cisco.yangide.ext.model;
  * @model
  * @generated
  */
-public interface Choice extends NamedContainingNode {
+public interface Choice extends NamedContainingNode, TaggedNode {
 } // Choice

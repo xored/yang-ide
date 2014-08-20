@@ -20,6 +20,8 @@ import com.cisco.yangide.core.dom.ASTCompositeNode;
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.AugmentationSchema;
+import com.cisco.yangide.core.dom.ChoiceCaseNode;
+import com.cisco.yangide.core.dom.ChoiceNode;
 import com.cisco.yangide.core.dom.ContrainerSchemaNode;
 import com.cisco.yangide.core.dom.Deviation;
 import com.cisco.yangide.core.dom.ExtensionDefinition;
@@ -67,6 +69,13 @@ public class YangModelUtil {
         compositeNodeMap.put(MODEL_PACKAGE.getAugment(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
                 MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getLeaf(),
                 MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getUses()));
+        
+        compositeNodeMap.put(MODEL_PACKAGE.getChoice(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
+                MODEL_PACKAGE.getChoiceCase(), MODEL_PACKAGE.getContainer(), 
+                MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList()));
+        compositeNodeMap.put(MODEL_PACKAGE.getChoiceCase(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
+                MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), 
+                MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getUses()));
         compositeNodeMap.put(MODEL_PACKAGE.getContainer(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
                 MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(),
                 MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
@@ -96,6 +105,8 @@ public class YangModelUtil {
                 MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
                 MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
         
+        taggedNodeMap.put(MODEL_PACKAGE.getChoice(), Arrays.asList(YangTag.CONFIG, YangTag.DEFAULT, YangTag.DESCRIPTION, YangTag.MANDATORY, YangTag.REFERENCE, YangTag.STATUS));
+        taggedNodeMap.put(MODEL_PACKAGE.getChoiceCase(), Arrays.asList(YangTag.DESCRIPTION, YangTag.REFERENCE, YangTag.STATUS));
         taggedNodeMap.put(MODEL_PACKAGE.getContainer(), Arrays.asList(YangTag.CONFIG, YangTag.DESCRIPTION, YangTag.PRESENCE, YangTag.REFERENCE, YangTag.STATUS));
         taggedNodeMap.put(MODEL_PACKAGE.getGrouping(), Arrays.asList(YangTag.DESCRIPTION, YangTag.REFERENCE, YangTag.STATUS));
         taggedNodeMap.put(MODEL_PACKAGE.getLeaf(), Arrays.asList(YangTag.CONFIG, YangTag.DEFAULT, YangTag.DESCRIPTION, YangTag.MANDATORY, YangTag.REFERENCE, YangTag.STATUS, YangTag.UNITS));
@@ -124,6 +135,8 @@ public class YangModelUtil {
         astNodes.put(RevisionNode.class, MODEL_PACKAGE.getRevision());
         astNodes.put(LeafListSchemaNode.class, MODEL_PACKAGE.getLeafList());
         astNodes.put(ListSchemaNode.class, MODEL_PACKAGE.getList());
+        astNodes.put(ChoiceNode.class, MODEL_PACKAGE.getChoice());
+        astNodes.put(ChoiceCaseNode.class, MODEL_PACKAGE.getChoiceCase());
 
         connections.add(MODEL_PACKAGE.getUses());
     }

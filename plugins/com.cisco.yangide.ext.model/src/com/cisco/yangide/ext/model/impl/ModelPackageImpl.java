@@ -6,6 +6,7 @@ import com.cisco.yangide.ext.model.Anyxml;
 import com.cisco.yangide.ext.model.Augment;
 import com.cisco.yangide.ext.model.BelongsTo;
 import com.cisco.yangide.ext.model.Choice;
+import com.cisco.yangide.ext.model.ChoiceCase;
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.Deviation;
 import com.cisco.yangide.ext.model.Extension;
@@ -259,6 +260,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EClass typedNodeEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass choiceCaseEClass = null;
 
     /**
      * Creates an instance of the model <b>Package</b>, registered with
@@ -761,6 +769,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EClass getChoiceCase() {
+        return choiceCaseEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public ModelFactory getModelFactory() {
         return (ModelFactory)getEFactoryInstance();
     }
@@ -861,6 +878,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEReference(identityEClass, IDENTITY__BASE);
 
         typedNodeEClass = createEClass(TYPED_NODE);
+
+        choiceCaseEClass = createEClass(CHOICE_CASE);
     }
 
     /**
@@ -908,6 +927,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         namedContainingNodeEClass.getESuperTypes().add(this.getContainingNode());
         submoduleEClass.getESuperTypes().add(this.getModule());
         choiceEClass.getESuperTypes().add(this.getNamedContainingNode());
+        choiceEClass.getESuperTypes().add(this.getTaggedNode());
         leafListEClass.getESuperTypes().add(this.getNamedNode());
         leafListEClass.getESuperTypes().add(this.getTaggedNode());
         anyxmlEClass.getESuperTypes().add(this.getNamedNode());
@@ -926,6 +946,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         featureEClass.getESuperTypes().add(this.getNamedNode());
         deviationEClass.getESuperTypes().add(this.getNamedNode());
         identityEClass.getESuperTypes().add(this.getNamedNode());
+        choiceCaseEClass.getESuperTypes().add(this.getNamedContainingNode());
+        choiceCaseEClass.getESuperTypes().add(this.getTaggedNode());
 
         // Initialize classes, features, and operations; add parameters
         initEClass(moduleEClass, Module.class, "Module", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1005,6 +1027,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEReference(getIdentity_Base(), this.getIdentity(), null, "base", null, 0, 1, Identity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(typedNodeEClass, TypedNode.class, "TypedNode", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(choiceCaseEClass, ChoiceCase.class, "ChoiceCase", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         // Create resource
         createResource(eNS_URI);

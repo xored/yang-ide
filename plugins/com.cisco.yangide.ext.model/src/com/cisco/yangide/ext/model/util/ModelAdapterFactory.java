@@ -188,6 +188,10 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
                 return createTypedNodeAdapter();
             }
             @Override
+            public Adapter caseChoiceCase(ChoiceCase object) {
+                return createChoiceCaseAdapter();
+            }
+            @Override
             public Adapter defaultCase(EObject object) {
                 return createEObjectAdapter();
             }
@@ -624,6 +628,20 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createTypedNodeAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link com.cisco.yangide.ext.model.ChoiceCase <em>Choice Case</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see com.cisco.yangide.ext.model.ChoiceCase
+     * @generated
+     */
+    public Adapter createChoiceCaseAdapter() {
         return null;
     }
 

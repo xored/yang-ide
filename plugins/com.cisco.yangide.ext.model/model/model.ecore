@@ -29,7 +29,7 @@
         eType="#//BelongsTo"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Typedef"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Choice" eSuperTypes="#//NamedContainingNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Choice" eSuperTypes="#//NamedContainingNode #//TaggedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="LeafList" eSuperTypes="#//NamedNode #//TaggedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Anyxml" eSuperTypes="#//NamedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Import" eSuperTypes="#//Node">
@@ -74,4 +74,5 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//Identity"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TypedNode" abstract="true" interface="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ChoiceCase" eSuperTypes="#//NamedContainingNode #//TaggedNode"/>
 </ecore:EPackage>

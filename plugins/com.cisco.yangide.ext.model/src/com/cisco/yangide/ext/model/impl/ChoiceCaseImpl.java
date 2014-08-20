@@ -2,13 +2,13 @@
  */
 package com.cisco.yangide.ext.model.impl;
 
-import com.cisco.yangide.ext.model.Choice;
+import com.cisco.yangide.ext.model.ChoiceCase;
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
-
 import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.TaggedNode;
+
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -27,21 +27,21 @@ import org.eclipse.emf.ecore.util.InternalEList;
 
 /**
  * <!-- begin-user-doc -->
- * An implementation of the model object '<em><b>Choice</b></em>'.
+ * An implementation of the model object '<em><b>Choice Case</b></em>'.
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
  * <ul>
- *   <li>{@link com.cisco.yangide.ext.model.impl.ChoiceImpl#getParent <em>Parent</em>}</li>
- *   <li>{@link com.cisco.yangide.ext.model.impl.ChoiceImpl#getName <em>Name</em>}</li>
- *   <li>{@link com.cisco.yangide.ext.model.impl.ChoiceImpl#getChildren <em>Children</em>}</li>
- *   <li>{@link com.cisco.yangide.ext.model.impl.ChoiceImpl#getTags <em>Tags</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.ChoiceCaseImpl#getParent <em>Parent</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.ChoiceCaseImpl#getName <em>Name</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.ChoiceCaseImpl#getChildren <em>Children</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.ChoiceCaseImpl#getTags <em>Tags</em>}</li>
  * </ul>
  * </p>
  *
  * @generated
  */
-public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
+public class ChoiceCaseImpl extends MinimalEObjectImpl.Container implements ChoiceCase {
     /**
      * The cached value of the '{@link #getParent() <em>Parent</em>}' reference.
      * <!-- begin-user-doc -->
@@ -97,7 +97,7 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
      * <!-- end-user-doc -->
      * @generated
      */
-    protected ChoiceImpl() {
+    protected ChoiceCaseImpl() {
         super();
     }
 
@@ -108,7 +108,7 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
      */
     @Override
     protected EClass eStaticClass() {
-        return ModelPackage.Literals.CHOICE;
+        return ModelPackage.Literals.CHOICE_CASE;
     }
 
     /**
@@ -122,7 +122,7 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
             parent = (Node)eResolveProxy(oldParent);
             if (parent != oldParent) {
                 if (eNotificationRequired())
-                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, ModelPackage.CHOICE__PARENT, oldParent, parent));
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, ModelPackage.CHOICE_CASE__PARENT, oldParent, parent));
             }
         }
         return parent;
@@ -146,7 +146,7 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
         Node oldParent = parent;
         parent = newParent;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.CHOICE__PARENT, oldParent, parent));
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.CHOICE_CASE__PARENT, oldParent, parent));
     }
 
     /**
@@ -167,7 +167,7 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
         String oldName = name;
         name = newName;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.CHOICE__NAME, oldName, name));
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.CHOICE_CASE__NAME, oldName, name));
     }
 
     /**
@@ -177,7 +177,7 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
      */
     public EList<Node> getChildren() {
         if (children == null) {
-            children = new EObjectContainmentEList<Node>(Node.class, this, ModelPackage.CHOICE__CHILDREN);
+            children = new EObjectContainmentEList<Node>(Node.class, this, ModelPackage.CHOICE_CASE__CHILDREN);
         }
         return children;
     }
@@ -189,7 +189,7 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
      */
     public EList<Tag> getTags() {
         if (tags == null) {
-            tags = new EObjectContainmentEList<Tag>(Tag.class, this, ModelPackage.CHOICE__TAGS);
+            tags = new EObjectContainmentEList<Tag>(Tag.class, this, ModelPackage.CHOICE_CASE__TAGS);
         }
         return tags;
     }
@@ -202,9 +202,9 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
-            case ModelPackage.CHOICE__CHILDREN:
+            case ModelPackage.CHOICE_CASE__CHILDREN:
                 return ((InternalEList<?>)getChildren()).basicRemove(otherEnd, msgs);
-            case ModelPackage.CHOICE__TAGS:
+            case ModelPackage.CHOICE_CASE__TAGS:
                 return ((InternalEList<?>)getTags()).basicRemove(otherEnd, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
@@ -218,14 +218,14 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
-            case ModelPackage.CHOICE__PARENT:
+            case ModelPackage.CHOICE_CASE__PARENT:
                 if (resolve) return getParent();
                 return basicGetParent();
-            case ModelPackage.CHOICE__NAME:
+            case ModelPackage.CHOICE_CASE__NAME:
                 return getName();
-            case ModelPackage.CHOICE__CHILDREN:
+            case ModelPackage.CHOICE_CASE__CHILDREN:
                 return getChildren();
-            case ModelPackage.CHOICE__TAGS:
+            case ModelPackage.CHOICE_CASE__TAGS:
                 return getTags();
         }
         return super.eGet(featureID, resolve, coreType);
@@ -240,17 +240,17 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
     @Override
     public void eSet(int featureID, Object newValue) {
         switch (featureID) {
-            case ModelPackage.CHOICE__PARENT:
+            case ModelPackage.CHOICE_CASE__PARENT:
                 setParent((Node)newValue);
                 return;
-            case ModelPackage.CHOICE__NAME:
+            case ModelPackage.CHOICE_CASE__NAME:
                 setName((String)newValue);
                 return;
-            case ModelPackage.CHOICE__CHILDREN:
+            case ModelPackage.CHOICE_CASE__CHILDREN:
                 getChildren().clear();
                 getChildren().addAll((Collection<? extends Node>)newValue);
                 return;
-            case ModelPackage.CHOICE__TAGS:
+            case ModelPackage.CHOICE_CASE__TAGS:
                 getTags().clear();
                 getTags().addAll((Collection<? extends Tag>)newValue);
                 return;
@@ -266,16 +266,16 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
     @Override
     public void eUnset(int featureID) {
         switch (featureID) {
-            case ModelPackage.CHOICE__PARENT:
+            case ModelPackage.CHOICE_CASE__PARENT:
                 setParent((Node)null);
                 return;
-            case ModelPackage.CHOICE__NAME:
+            case ModelPackage.CHOICE_CASE__NAME:
                 setName(NAME_EDEFAULT);
                 return;
-            case ModelPackage.CHOICE__CHILDREN:
+            case ModelPackage.CHOICE_CASE__CHILDREN:
                 getChildren().clear();
                 return;
-            case ModelPackage.CHOICE__TAGS:
+            case ModelPackage.CHOICE_CASE__TAGS:
                 getTags().clear();
                 return;
         }
@@ -290,13 +290,13 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
     @Override
     public boolean eIsSet(int featureID) {
         switch (featureID) {
-            case ModelPackage.CHOICE__PARENT:
+            case ModelPackage.CHOICE_CASE__PARENT:
                 return parent != null;
-            case ModelPackage.CHOICE__NAME:
+            case ModelPackage.CHOICE_CASE__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
-            case ModelPackage.CHOICE__CHILDREN:
+            case ModelPackage.CHOICE_CASE__CHILDREN:
                 return children != null && !children.isEmpty();
-            case ModelPackage.CHOICE__TAGS:
+            case ModelPackage.CHOICE_CASE__TAGS:
                 return tags != null && !tags.isEmpty();
         }
         return super.eIsSet(featureID);
@@ -311,13 +311,13 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
     public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
         if (baseClass == ContainingNode.class) {
             switch (derivedFeatureID) {
-                case ModelPackage.CHOICE__CHILDREN: return ModelPackage.CONTAINING_NODE__CHILDREN;
+                case ModelPackage.CHOICE_CASE__CHILDREN: return ModelPackage.CONTAINING_NODE__CHILDREN;
                 default: return -1;
             }
         }
         if (baseClass == TaggedNode.class) {
             switch (derivedFeatureID) {
-                case ModelPackage.CHOICE__TAGS: return ModelPackage.TAGGED_NODE__TAGS;
+                case ModelPackage.CHOICE_CASE__TAGS: return ModelPackage.TAGGED_NODE__TAGS;
                 default: return -1;
             }
         }
@@ -333,13 +333,13 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
     public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
         if (baseClass == ContainingNode.class) {
             switch (baseFeatureID) {
-                case ModelPackage.CONTAINING_NODE__CHILDREN: return ModelPackage.CHOICE__CHILDREN;
+                case ModelPackage.CONTAINING_NODE__CHILDREN: return ModelPackage.CHOICE_CASE__CHILDREN;
                 default: return -1;
             }
         }
         if (baseClass == TaggedNode.class) {
             switch (baseFeatureID) {
-                case ModelPackage.TAGGED_NODE__TAGS: return ModelPackage.CHOICE__TAGS;
+                case ModelPackage.TAGGED_NODE__TAGS: return ModelPackage.CHOICE_CASE__TAGS;
                 default: return -1;
             }
         }
@@ -362,4 +362,4 @@ public class ChoiceImpl extends MinimalEObjectImpl.Container implements Choice {
         return result.toString();
     }
 
-} //ChoiceImpl
+} //ChoiceCaseImpl

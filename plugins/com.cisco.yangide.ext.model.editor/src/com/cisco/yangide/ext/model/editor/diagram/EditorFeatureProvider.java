@@ -45,6 +45,8 @@ import com.cisco.yangide.ext.model.editor.features.TextDirectEditingFeature;
 import com.cisco.yangide.ext.model.editor.features.UpdateTextFeature;
 import com.cisco.yangide.ext.model.editor.patterns.objects.AnyxmlPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.AugmentPattern;
+import com.cisco.yangide.ext.model.editor.patterns.objects.ChoiceCasePattern;
+import com.cisco.yangide.ext.model.editor.patterns.objects.ChoicePattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.ContainerPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.DeviationPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.ExtensionPattern;
@@ -82,9 +84,11 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         addPattern(new ExtensionPattern());
         addPattern(new FeaturePattern());
         addPattern(new IdentityPattern());
-        addPattern(new RpcIOPattern());
         addPattern(new LeafListPattern());
         addPattern(new ListPattern());
+        addPattern(new ChoicePattern());
+        addPattern(new ChoiceCasePattern());
+        addPattern(new RpcIOPattern());
     }
 
     @Override

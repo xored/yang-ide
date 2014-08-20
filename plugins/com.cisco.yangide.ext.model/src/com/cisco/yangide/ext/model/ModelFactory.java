@@ -238,6 +238,15 @@ public interface ModelFactory extends EFactory {
     Identity createIdentity();
 
     /**
+     * Returns a new object of class '<em>Choice Case</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Choice Case</em>'.
+     * @generated
+     */
+    ChoiceCase createChoiceCase();
+
+    /**
      * Returns the package supported by this factory.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

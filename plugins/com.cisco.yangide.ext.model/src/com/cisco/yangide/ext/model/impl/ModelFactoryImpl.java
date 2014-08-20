@@ -80,6 +80,7 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
             case ModelPackage.FEATURE: return createFeature();
             case ModelPackage.DEVIATION: return createDeviation();
             case ModelPackage.IDENTITY: return createIdentity();
+            case ModelPackage.CHOICE_CASE: return createChoiceCase();
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
         }
@@ -323,6 +324,16 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public Identity createIdentity() {
         IdentityImpl identity = new IdentityImpl();
         return identity;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public ChoiceCase createChoiceCase() {
+        ChoiceCaseImpl choiceCase = new ChoiceCaseImpl();
+        return choiceCase;
     }
 
     /**

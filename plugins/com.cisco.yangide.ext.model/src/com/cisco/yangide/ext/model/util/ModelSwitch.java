@@ -159,6 +159,7 @@ public class ModelSwitch<T> extends Switch<T> {
                 Choice choice = (Choice)theEObject;
                 T result = caseChoice(choice);
                 if (result == null) result = caseNamedContainingNode(choice);
+                if (result == null) result = caseTaggedNode(choice);
                 if (result == null) result = caseNamedNode(choice);
                 if (result == null) result = caseContainingNode(choice);
                 if (result == null) result = caseNode(choice);
@@ -314,6 +315,17 @@ public class ModelSwitch<T> extends Switch<T> {
             case ModelPackage.TYPED_NODE: {
                 TypedNode typedNode = (TypedNode)theEObject;
                 T result = caseTypedNode(typedNode);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case ModelPackage.CHOICE_CASE: {
+                ChoiceCase choiceCase = (ChoiceCase)theEObject;
+                T result = caseChoiceCase(choiceCase);
+                if (result == null) result = caseNamedContainingNode(choiceCase);
+                if (result == null) result = caseTaggedNode(choiceCase);
+                if (result == null) result = caseNamedNode(choiceCase);
+                if (result == null) result = caseContainingNode(choiceCase);
+                if (result == null) result = caseNode(choiceCase);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -768,6 +780,21 @@ public class ModelSwitch<T> extends Switch<T> {
      * @generated
      */
     public T caseTypedNode(TypedNode object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Choice Case</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Choice Case</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseChoiceCase(ChoiceCase object) {
         return null;
     }
 

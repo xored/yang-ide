@@ -33,7 +33,7 @@ Package model <http://www.example.org/model>
 
   Class Typedef
 
-  Class Choice -> NamedContainingNode
+  Class Choice -> NamedContainingNode, TaggedNode
 
   Class LeafList -> NamedNode, TaggedNode
 
@@ -84,3 +84,5 @@ Package model <http://www.example.org/model>
     Reference base : Identity
 
   Class TypedNode
+
+  Class ChoiceCase -> NamedContainingNode, TaggedNode

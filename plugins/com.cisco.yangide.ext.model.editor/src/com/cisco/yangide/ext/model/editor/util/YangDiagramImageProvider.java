@@ -15,6 +15,10 @@ public class YangDiagramImageProvider extends AbstractImageProvider {
     public static final String IMG_GROUPING_PROPOSAL = PLUGIN_ID + ".grouping_obj";
     public static final String IMG_CONTAINER_PROPOSAL = PLUGIN_ID + ".container_obj";
     public static final String IMG_LEAF_PROPOSAL = PLUGIN_ID + ".leaf_obj";
+    public static final String IMG_LEAF_LIST_PROPOSAL = PLUGIN_ID + ".leaf_list_obj";
+    public static final String IMG_LIST_PROPOSAL = PLUGIN_ID + ".list_obj";
+    public static final String IMG_CHOICE_PROPOSAL = PLUGIN_ID + ".choice_obj";
+    public static final String IMG_CHOICE_CASE_PROPOSAL = PLUGIN_ID + ".choice_case_obj";
     public static final String IMG_MODULE_PROPOSAL = PLUGIN_ID + ".module_obj";
     public static final String IMG_SUBMODULE_PROPOSAL = PLUGIN_ID + ".submodule_obj";
     public static final String IMG_USES_PROPOSAL = PLUGIN_ID + ".uses_obj";
@@ -46,6 +50,10 @@ public class YangDiagramImageProvider extends AbstractImageProvider {
         addImageFilePath(IMG_GROUPING_PROPOSAL, PATH_OBJ + "grouping_obj.gif"); //$NON-NLS-1$        
         addImageFilePath(IMG_CONTAINER_PROPOSAL, PATH_OBJ + "container_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IMG_LEAF_PROPOSAL, PATH_OBJ + "leaf_obj.gif"); //$NON-NLS-1$
+        addImageFilePath(IMG_LEAF_LIST_PROPOSAL, PATH_OBJ + "leaf_list_obj.gif"); //$NON-NLS-1$
+        addImageFilePath(IMG_LIST_PROPOSAL, PATH_OBJ + "list_obj.gif"); //$NON-NLS-1$
+        addImageFilePath(IMG_CHOICE_PROPOSAL, PATH_OBJ + "choice_obj.gif"); //$NON-NLS-1$
+        addImageFilePath(IMG_CHOICE_CASE_PROPOSAL, PATH_OBJ + "choice_case_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IMG_MODULE_PROPOSAL, PATH_OBJ + "module_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IMG_SUBMODULE_PROPOSAL, PATH_OBJ + "submodule_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IMG_USES_PROPOSAL, PATH_OBJ + "uses_obj.gif"); //$NON-NLS-1$
