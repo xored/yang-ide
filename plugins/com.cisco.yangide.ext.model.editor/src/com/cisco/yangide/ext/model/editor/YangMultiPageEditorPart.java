@@ -64,7 +64,7 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
             addPage(1, yangDiagramEditor, input);
             setPageText(1, "Diagram");
 
-            yangDiagramEditor.setSourceElementCreator(modelSynchronizer.getSourceElementCreator());
+            yangDiagramEditor.setSourceModelManager(modelSynchronizer.getSourceModelManager());
         } catch (PartInitException e) {
             YangEditorPlugin.log(e);
         }

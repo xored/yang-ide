@@ -35,11 +35,12 @@ import org.eclipse.swt.graphics.Point;
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.editor.Activator;
-import com.cisco.yangide.ext.model.editor.editors.ISourceElementCreator;
+import com.cisco.yangide.ext.model.editor.editors.ISourceModelManager;
 import com.cisco.yangide.ext.model.editor.editors.YangDiagramBehavior;
 import com.cisco.yangide.ext.model.editor.features.AddReferenceConnectionFeature;
 import com.cisco.yangide.ext.model.editor.features.DiagramLayoutCustomFeature;
 import com.cisco.yangide.ext.model.editor.features.DiagramLayoutFeature;
+import com.cisco.yangide.ext.model.editor.features.ExtractGroupingCustomFeature;
 import com.cisco.yangide.ext.model.editor.features.TextDirectEditingFeature;
 import com.cisco.yangide.ext.model.editor.features.UpdateTextFeature;
 import com.cisco.yangide.ext.model.editor.patterns.objects.AnyxmlPattern;
@@ -61,7 +62,7 @@ import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
     private static Map<String, String> TEMPLATES = new HashMap<>();
 
-    private ISourceElementCreator sourceElementCreator;
+    private ISourceModelManager sourceModelManager;
 
     public EditorFeatureProvider(IDiagramTypeProvider dtp) {
         super(dtp);
@@ -82,7 +83,6 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         addPattern(new RpcIOPattern());
     }
 
-
     @Override
     public IAddFeature getAddFeature(IAddContext context) {
         if (context instanceof IAddConnectionContext) {
@@ -91,10 +91,10 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         return super.getAddFeature(context);
     }
 
-
     @Override
     public IDirectEditingFeature getDirectEditingFeature(IDirectEditingContext context) {
-        if (context.getPictogramElement() instanceof Shape && ((Shape) context.getPictogramElement()).getGraphicsAlgorithm() instanceof Text) {
+        if (context.getPictogramElement() instanceof Shape
+                && ((Shape) context.getPictogramElement()).getGraphicsAlgorithm() instanceof Text) {
             return new TextDirectEditingFeature(this);
         }
         return super.getDirectEditingFeature(context);
@@ -102,7 +102,8 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
 
     @Override
     public IUpdateFeature getUpdateFeature(IUpdateContext context) {
-        if (context.getPictogramElement() instanceof Shape && ((Shape) context.getPictogramElement()).getGraphicsAlgorithm() instanceof Text) {
+        if (context.getPictogramElement() instanceof Shape
+                && ((Shape) context.getPictogramElement()).getGraphicsAlgorithm() instanceof Text) {
             return new UpdateTextFeature(this);
         }
         return super.getUpdateFeature(context);
@@ -116,10 +117,10 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         return super.getLayoutFeature(context);
     }
 
-
     @Override
     public ICustomFeature[] getCustomFeatures(ICustomContext context) {
-        return new ICustomFeature[] { new DiagramLayoutCustomFeature(this) };
+        return new ICustomFeature[] { new DiagramLayoutCustomFeature(this),
+                new ExtractGroupingCustomFeature(this, sourceModelManager) };
     }
 
     @Override
@@ -146,7 +147,7 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
                             ContainingNode node = (ContainingNode) parent;
                             String template = TEMPLATES.get(name);
                             template = template.replaceAll("@name@", name + node.getChildren().size());
-                            sourceElementCreator.createSourceElement(node, position, template);
+                            sourceModelManager.createSourceElement(node, position, template);
                         }
 
                         return new Object[0];
@@ -164,10 +165,10 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
     }
 
     /**
-     * @param sourceElementCreator the sourceElementCreator to set
+     * @param sourceModelManager the sourceModelManager to set
      */
-    public void setSourceElementCreator(ISourceElementCreator sourceElementCreator) {
-        this.sourceElementCreator = sourceElementCreator;
+    public void setSourceModelManager(ISourceModelManager sourceModelManager) {
+        this.sourceModelManager = sourceModelManager;
     }
 
     /**

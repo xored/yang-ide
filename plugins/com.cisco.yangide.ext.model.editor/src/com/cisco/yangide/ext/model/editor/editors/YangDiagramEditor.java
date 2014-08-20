@@ -46,7 +46,8 @@ public class YangDiagramEditor extends DiagramEditor {
         @Override
         public void nodeChanged(Node node, EAttribute attribute, Object newValue) {
             System.out.println("Changed " + node);
-            PictogramElement pe = YangModelUIUtil.getBusinessObjectPropShape(getDiagramTypeProvider().getFeatureProvider(), node, attribute);
+            PictogramElement pe = YangModelUIUtil.getBusinessObjectPropShape(getDiagramTypeProvider()
+                    .getFeatureProvider(), node, attribute);
             if (null != pe) {
                 YangModelUIUtil.updatePictogramElement(getDiagramTypeProvider().getFeatureProvider(), pe);
             }
@@ -55,12 +56,16 @@ public class YangDiagramEditor extends DiagramEditor {
         @Override
         public void nodeAdded(Node parent, Node child, int position) {
             System.out.println("Added " + child);
-            Point p = new Point(0, 0);
+            Point p = null;
             if (parent instanceof Module) {
                 p = ((YangDiagramBehavior) getDiagramBehavior()).getCreatePosition();
             }
-            PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(getDiagramTypeProvider().getFeatureProvider(), parent);
+            PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(getDiagramTypeProvider().getFeatureProvider(),
+                    parent);
             if (null != pe && pe instanceof ContainerShape) {
+                if (p == null) {
+                    p = new Point(0, 0);
+                }
                 YangModelUIUtil.drawObject(child, (ContainerShape) pe, getDiagramTypeProvider().getFeatureProvider(),
                         p.x, p.y);
             }
@@ -136,11 +141,8 @@ public class YangDiagramEditor extends DiagramEditor {
         return modelChangeHandler;
     }
 
-    /**
-     * @param sourceElementCreator the sourceElementCreator to set
-     */
-    public void setSourceElementCreator(ISourceElementCreator sourceElementCreator) {
+    public void setSourceModelManager(ISourceModelManager sourceModelManage) {
         ((EditorFeatureProvider) getDiagramTypeProvider().getFeatureProvider())
-        .setSourceElementCreator(sourceElementCreator);
+        .setSourceModelManager(sourceModelManage);
     }
 }

@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.compare.Comparison;
 import org.eclipse.emf.compare.Diff;
 import org.eclipse.emf.compare.EMFCompare;
@@ -19,6 +20,10 @@ import org.eclipse.emf.compare.merge.ReferenceChangeMerger;
 import org.eclipse.emf.compare.scope.DefaultComparisonScope;
 import org.eclipse.emf.compare.scope.IComparisonScope;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
+import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.IFileEditorInput;
+
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.YangModelException;
 import com.cisco.yangide.core.dom.ASTNode;
@@ -28,9 +33,11 @@ import com.cisco.yangide.editor.editors.YangEditor;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.editor.editors.IModelChangeHandler;
-import com.cisco.yangide.ext.model.editor.editors.ISourceElementCreator;
+import com.cisco.yangide.ext.model.editor.editors.ISourceModelManager;
 import com.cisco.yangide.ext.model.editor.editors.YangDiagramEditor;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
+import com.cisco.yangide.ext.refactoring.code.ExtractGroupingRefactoring;
+import com.cisco.yangide.ext.refactoring.ui.ExtractGroupingRefactoringWizard;
 
 /**
  * @author Konstantin Zaitsev
@@ -54,13 +61,38 @@ public class ModelSynchronizer {
 
     private DiagramModelAdapter diagModelAdapter;
 
-    private ISourceElementCreator sourceElementCreator = new ISourceElementCreator() {
+    private ISourceModelManager sourceModelManager = new ISourceModelManager() {
 
         @Override
         public void createSourceElement(Node parent, int position, String content) {
             ASTNode node = mapping.get(parent);
             diagModelAdapter.add(node, content + System.getProperty("line.separator"), position);
             syncWithSource();
+        }
+
+        @Override
+        public void extractGrouping(List<Node> nodes) {
+            int startPosition = Integer.MAX_VALUE;
+            int endPosition = Integer.MIN_VALUE;
+            for (Node node : nodes) {
+                ASTNode astNode = mapping.get(node);
+                startPosition = Math.min(startPosition, astNode.getStartPosition());
+                endPosition = Math.max(endPosition, astNode.getEndPosition() + 1);
+            }
+
+            IFile file = ((IFileEditorInput) yangSourceEditor.getEditorInput()).getFile();
+
+            try {
+                ExtractGroupingRefactoring refactoring = new ExtractGroupingRefactoring(file,
+                        yangSourceEditor.getModule(), startPosition, endPosition - startPosition);
+                ExtractGroupingRefactoringWizard wizard = new ExtractGroupingRefactoringWizard(refactoring);
+
+                RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(wizard);
+                op.run(Display.getDefault().getActiveShell(), "Extract Grouping");
+                syncWithSource();
+            } catch (InterruptedException | YangModelException e) {
+                // do nothing
+            }
         }
     };
 
@@ -126,11 +158,8 @@ public class ModelSynchronizer {
         }
     }
 
-    /**
-     * @return the sourceElementCreator
-     */
-    public ISourceElementCreator getSourceElementCreator() {
-        return sourceElementCreator;
+    public ISourceModelManager getSourceModelManager() {
+        return sourceModelManager;
     }
 
     void updateFromSource(com.cisco.yangide.core.dom.Module module, boolean notify) {
