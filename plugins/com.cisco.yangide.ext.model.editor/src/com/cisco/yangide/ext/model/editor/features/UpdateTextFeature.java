@@ -42,21 +42,25 @@ public class UpdateTextFeature extends AbstractUpdateFeature {
             }
         }
         Object[] objects = getAllBusinessObjectsForPictogramElement(context.getPictogramElement());
-        if (null != objects && 1 < objects.length) {
-            if (null != objects && 2 == objects.length && objects[0] instanceof EObject
-                    && objects[1] instanceof EStructuralFeature) {
-                objectValue = null == ((EObject) objects[0]).eGet((EStructuralFeature) objects[1]) ? null
-                        : ((EObject) objects[0]).eGet((EStructuralFeature) objects[1]).toString();
+        if (null != objects && 0 != objects.length) {
+            if (null != objects && 1 < objects.length) {
+                if (null != objects && 2 == objects.length && objects[0] instanceof EObject
+                        && objects[1] instanceof EStructuralFeature) {
+                    objectValue = null == ((EObject) objects[0]).eGet((EStructuralFeature) objects[1]) ? null
+                            : ((EObject) objects[0]).eGet((EStructuralFeature) objects[1]).toString();
+                }
+            } else if (null != objects && 0 < objects.length
+                    && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getNode(), objects[0])) {
+                objectValue = YangModelUtil.getQNamePresentation((Node) objects[0]);
             }
-        } else if (null != objects && 0 < objects.length && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getNode(), objects[0])) {
-            objectValue = YangModelUtil.getQNamePresentation((Node) objects[0]);            
+            if ((null == pictogramValue && null != objectValue)
+                    || (null != pictogramValue && !pictogramValue.equals(objectValue))) {
+                return Reason.createTrueReason("Attribute is out of date"); //$NON-NLS-1$
+            } else {
+                return Reason.createFalseReason();
+            }
         }
-        if ((null == pictogramValue && null != objectValue)
-                || (null != pictogramValue && !pictogramValue.equals(objectValue))) {
-            return Reason.createTrueReason("Attribute is out of date"); //$NON-NLS-1$
-        } else {
-            return Reason.createFalseReason();
-        }
+        return Reason.createFalseReason();
     }
 
     @Override

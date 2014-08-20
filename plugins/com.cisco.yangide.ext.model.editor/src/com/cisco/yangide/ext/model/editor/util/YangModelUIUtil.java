@@ -41,6 +41,7 @@ import org.eclipse.graphiti.services.IPeCreateService;
 
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.NamedNode;
+import com.cisco.yangide.ext.model.Node;
 
 public class YangModelUIUtil {
     
@@ -329,8 +330,14 @@ public class YangModelUIUtil {
             text = Graphiti.getGaService().createPlainText(textShape, ((NamedNode) context.getNewObject()).getName());
             fp.link(textShape, new Object[] { context.getNewObject(), YangModelUtil.MODEL_PACKAGE.getNamedNode_Name() });
         } else {
-            text = Graphiti.getGaService().createPlainText(textShape, title);
-            fp.link(textShape, context.getNewObject());
+            String qName = YangModelUtil.getQNamePresentation((EObject) context.getNewObject());
+            if (null == qName) {
+                text = Graphiti.getGaService().createPlainText(textShape, title);
+            } else {
+                text = Graphiti.getGaService().createPlainText(textShape, qName);
+                fp.link(textShape, context.getNewObject());
+            }
+            
         }
         text.setStyle(StyleUtil.getStyleForDomainObjectText(fp.getDiagramTypeProvider().getDiagram()));
         PropertyUtil.setObjectShapeProp(textShape, PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY, true);

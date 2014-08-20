@@ -410,7 +410,7 @@ public class YangModelUtil {
         }
     }
     
-    public static String getQName(Node obj) {
+    public static String getQName(EObject obj) {
         if (checkType(MODEL_PACKAGE.getUses(), obj)) {
             if (null != obj && null != ((Uses) obj).getGrouping() && null != ((Uses) obj).getGrouping().getName()) {
                 return ((Uses) obj).getGrouping().getName();
@@ -422,7 +422,7 @@ public class YangModelUtil {
         return null;
     }
     
-    public static String getQNamePresentation(Node obj) {
+    public static String getQNamePresentation(EObject obj) {
         String result = getQName(obj);
         if (null != result) {
             return obj.eClass().getName().toLowerCase() + " " + result;
