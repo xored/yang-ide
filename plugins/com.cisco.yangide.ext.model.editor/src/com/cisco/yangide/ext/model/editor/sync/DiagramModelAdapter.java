@@ -3,16 +3,15 @@
  */
 package com.cisco.yangide.ext.model.editor.sync;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.WeakHashMap;
 
+import org.eclipse.core.resources.ResourcesPlugin;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.util.EContentAdapter;
-import org.eclipse.jdt.internal.ui.actions.WorkbenchRunnableAdapter;
-import org.eclipse.jdt.internal.ui.util.BusyIndicatorRunnableContext;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ltk.core.refactoring.DocumentChange;
 import org.eclipse.ltk.core.refactoring.PerformChangeOperation;
@@ -21,7 +20,6 @@ import org.eclipse.text.edits.InsertEdit;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
-import org.eclipse.ui.PlatformUI;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.dom.ASTCompositeNode;
@@ -31,8 +29,8 @@ import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.parser.YangFormattingPreferences;
 import com.cisco.yangide.core.parser.YangParserUtil;
+import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.editors.YangEditor;
-import com.cisco.yangide.editor.editors.YangSourceViewer;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
 
@@ -190,14 +188,11 @@ final class DiagramModelAdapter extends EContentAdapter {
         DocumentChange change = new DocumentChange("edit", yangSourceEditor.getDocument());
         change.setEdit(edit);
         change.initializeValidationData(new NullProgressMonitor());
-        ((YangSourceViewer) yangSourceEditor.getViewer()).setRedraw(true);
         PerformChangeOperation op = new PerformChangeOperation(change);
-        WorkbenchRunnableAdapter adapter = new WorkbenchRunnableAdapter(op);
         try {
-            PlatformUI.getWorkbench().getProgressService()
-            .runInUI(new BusyIndicatorRunnableContext(), adapter, adapter.getSchedulingRule());
-        } catch (InvocationTargetException | InterruptedException e) {
-            e.printStackTrace();
+            ResourcesPlugin.getWorkspace().run(op, null);
+        } catch (CoreException e) {
+            YangEditorPlugin.log(e);
         }
     }
 

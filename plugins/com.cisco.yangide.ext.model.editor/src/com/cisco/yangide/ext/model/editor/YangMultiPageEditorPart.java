@@ -11,6 +11,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 
 import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.editors.YangEditor;
+import com.cisco.yangide.editor.editors.YangSourceViewer;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.editor.editors.YangDiagramEditor;
 import com.cisco.yangide.ext.model.editor.editors.YangDiagramEditorInput;
@@ -23,6 +24,7 @@ import com.cisco.yangide.ext.model.editor.sync.ModelSynchronizer;
 public class YangMultiPageEditorPart extends MultiPageEditorPart {
 
     private YangEditor yangSourceEditor;
+    private YangSourceViewer yangSourceViewer;
     private YangDiagramEditor yangDiagramEditor;
     private ModelSynchronizer modelSynchronizer;
 
@@ -74,6 +76,7 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
         try {
             addPage(0, yangSourceEditor, getEditorInput());
             setPageText(0, "Source");
+            yangSourceViewer = (YangSourceViewer) yangSourceEditor.getViewer();
         } catch (PartInitException e) {
             YangEditorPlugin.log(e);
         }
@@ -85,11 +88,16 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
         if (newPageIndex == 1) {
             modelSynchronizer.syncWithSource();
             if (modelSynchronizer.isSourceInvalid()) {
-                MessageDialog
-                .openWarning(getSite().getShell(), "Yang source is invalid",
+                MessageDialog.openWarning(getSite().getShell(), "Yang source is invalid",
                         "Yang source has syntax error and diagram view cannot be synchronized correctly.\n"
                                 + "Please correct syntax error first.");
             }
+            yangSourceViewer.disableProjection();
+            yangSourceViewer.getReconciler().uninstall();
+        } else {
+            yangSourceViewer.updateDocument();
+            yangSourceViewer.enableProjection();
+            yangSourceViewer.getReconciler().install(yangSourceEditor.getViewer());
         }
         super.pageChange(newPageIndex);
     }
