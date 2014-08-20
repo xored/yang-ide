@@ -555,15 +555,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getRevision_Date() {
-        return (EAttribute)revisionEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public EClass getBelongsTo() {
         return belongsToEClass;
     }
@@ -817,7 +808,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEReference(includeEClass, INCLUDE__SUBMODULE);
 
         revisionEClass = createEClass(REVISION);
-        createEAttribute(revisionEClass, REVISION__DATE);
 
         belongsToEClass = createEClass(BELONGS_TO);
         createEReference(belongsToEClass, BELONGS_TO__OWNER_MODULE);
@@ -904,6 +894,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         importEClass.getESuperTypes().add(this.getNode());
         includeEClass.getESuperTypes().add(this.getNode());
         revisionEClass.getESuperTypes().add(this.getTaggedNode());
+        revisionEClass.getESuperTypes().add(this.getNamedNode());
         listEClass.getESuperTypes().add(this.getNamedContainingNode());
         usesEClass.getESuperTypes().add(this.getNode());
         rpcEClass.getESuperTypes().add(this.getNamedContainingNode());
@@ -957,7 +948,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEReference(getInclude_Submodule(), this.getSubmodule(), null, "submodule", null, 1, 1, Include.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(revisionEClass, Revision.class, "Revision", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEAttribute(getRevision_Date(), theXMLTypePackage.getString(), "date", null, 0, 1, Revision.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(belongsToEClass, BelongsTo.class, "BelongsTo", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getBelongsTo_OwnerModule(), this.getModule(), null, "ownerModule", null, 1, 1, BelongsTo.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

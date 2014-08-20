@@ -139,7 +139,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             return new Point(width, height);
         }
 
-        Point computeChildSize(Control control, int wHint, int hHint, boolean flushCache) {
+        protected Point computeChildSize(Control control, int wHint, int hHint, boolean flushCache) {
             FillData data = (FillData) control.getLayoutData();
             if (data == null) {
                 data = new FillData();
@@ -243,7 +243,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 data.left = new FormAttachment (descriptionLabel, 0);
                 data.right = new FormAttachment (100, 0);
                 data.top = new FormAttachment(name, H_OFFSET);
-                data.bottom = new FormAttachment(name, TEXT_AREA_HEIGHT + H_OFFSET);
+                data.bottom = new FormAttachment(description, TEXT_AREA_HEIGHT);
                 description.setLayoutData (data);
                 
                 data = new FormData ();
@@ -255,7 +255,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 data.left = new FormAttachment (descriptionLabel, 0);
                 data.right = new FormAttachment (100, 0);
                 data.top = new FormAttachment(description, H_OFFSET);
-                data.bottom = new FormAttachment(description, TEXT_AREA_HEIGHT + H_OFFSET);
+                data.bottom = new FormAttachment(reference, TEXT_AREA_HEIGHT);
                 reference.setLayoutData (data);
                 
                 
@@ -263,11 +263,11 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             protected void addListeneres() {
                 addTextFieldListener(this, reference, YangTag.REFERENCE);
                 addTextFieldListener(this, description, YangTag.DESCRIPTION);
-                addTextFieldListener(this, name, YangModelUtil.MODEL_PACKAGE.getRevision_Date());
+                addTextFieldListener(this, name, YangModelUtil.MODEL_PACKAGE.getNamedNode_Name());
             }
             public void updateData() {
                 if (null != revision) {
-                    name.setText(revision.getDate());
+                    name.setText(revision.getName());
                     description.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.DESCRIPTION, revision)));
                     reference.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.REFERENCE, revision)));
                 }
@@ -430,8 +430,9 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             @Override
             public void run() {
                 super.run();
+                setChecked(false);
                 infoPane.setWeights(new int[] {1, 0});
-                infoPane.setMaximizedControl(pane);
+                infoPane.setMaximizedControl(pane);                
             }
         };
 
@@ -533,7 +534,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         data.left = new FormAttachment (yangVersion, 0);
         data.right = new FormAttachment (100, 0);
         data.top = new FormAttachment(prefixText, H_OFFSET);
-        data.bottom = new FormAttachment(prefixText, TEXT_AREA_HEIGHT + H_OFFSET);
+        data.bottom = new FormAttachment(organizationText, TEXT_AREA_HEIGHT);
         organizationText.setLayoutData (data);
         
         data = new FormData ();
@@ -545,7 +546,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         data.left = new FormAttachment (yangVersion, 0);
         data.right = new FormAttachment (100, 0);
         data.top = new FormAttachment(organizationText, H_OFFSET);
-        data.bottom = new FormAttachment(organizationText, TEXT_AREA_HEIGHT + H_OFFSET);
+        data.bottom = new FormAttachment(contactText, TEXT_AREA_HEIGHT);
         contactText.setLayoutData (data);
         
         data = new FormData ();
@@ -557,7 +558,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         data.left = new FormAttachment (yangVersion, 0);
         data.right = new FormAttachment (100, 0);
         data.top = new FormAttachment(contactText, H_OFFSET);
-        data.bottom = new FormAttachment(contactText, TEXT_AREA_HEIGHT + H_OFFSET);
+        data.bottom = new FormAttachment(descriptionText, TEXT_AREA_HEIGHT);
         descriptionText.setLayoutData (data);
         
         data = new FormData ();
@@ -569,7 +570,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         data.left = new FormAttachment (yangVersion, 0);
         data.right = new FormAttachment (100, 0);
         data.top = new FormAttachment(descriptionText, H_OFFSET);
-        data.bottom = new FormAttachment(descriptionText, TEXT_AREA_HEIGHT + H_OFFSET);
+        data.bottom = new FormAttachment(referenceText, TEXT_AREA_HEIGHT);
         referenceText.setLayoutData (data);
         
         updateGeneralSection();
@@ -661,7 +662,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             @Override
             public String getText(Object element) {
                 if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getRevision(), element)) {
-                    return ((Revision) element).getDate();
+                    return ((Revision) element).getName();
                 }
                 return super.getText(element);
             }
@@ -737,6 +738,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 if (0 <= dialog.open()) {
                     refreshImportTable();
                 }
+                setChecked(false);
             }
         };
 
@@ -756,6 +758,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                         module.getChildren().remove(iter.next());
                     }
                     refreshImportTable();
+                    setChecked(false);
                 }
             }
         };

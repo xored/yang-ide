@@ -3,6 +3,8 @@
 package com.cisco.yangide.ext.model.impl;
 
 import com.cisco.yangide.ext.model.ModelPackage;
+import com.cisco.yangide.ext.model.NamedNode;
+import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Revision;
 
 import com.cisco.yangide.ext.model.Tag;
@@ -26,7 +28,8 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * The following features are implemented:
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.RevisionImpl#getTags <em>Tags</em>}</li>
- *   <li>{@link com.cisco.yangide.ext.model.impl.RevisionImpl#getDate <em>Date</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.RevisionImpl#getParent <em>Parent</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.RevisionImpl#getName <em>Name</em>}</li>
  * </ul>
  * </p>
  *
@@ -43,24 +46,32 @@ public class RevisionImpl extends MinimalEObjectImpl.Container implements Revisi
      */
     protected EList<Tag> tags;
     /**
-     * The default value of the '{@link #getDate() <em>Date</em>}' attribute.
+     * The cached value of the '{@link #getParent() <em>Parent</em>}' reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getDate()
+     * @see #getParent()
      * @generated
      * @ordered
      */
-    protected static final String DATE_EDEFAULT = null;
+    protected Node parent;
     /**
-     * The cached value of the '{@link #getDate() <em>Date</em>}' attribute.
+     * The default value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @see #getDate()
+     * @see #getName()
      * @generated
      * @ordered
      */
-    protected String date = DATE_EDEFAULT;
-
+    protected static final String NAME_EDEFAULT = null;
+    /**
+     * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getName()
+     * @generated
+     * @ordered
+     */
+    protected String name = NAME_EDEFAULT;
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -97,8 +108,16 @@ public class RevisionImpl extends MinimalEObjectImpl.Container implements Revisi
      * <!-- end-user-doc -->
      * @generated
      */
-    public String getDate() {
-        return date;
+    public Node getParent() {
+        if (parent != null && parent.eIsProxy()) {
+            InternalEObject oldParent = (InternalEObject)parent;
+            parent = (Node)eResolveProxy(oldParent);
+            if (parent != oldParent) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, ModelPackage.REVISION__PARENT, oldParent, parent));
+            }
+        }
+        return parent;
     }
 
     /**
@@ -106,11 +125,41 @@ public class RevisionImpl extends MinimalEObjectImpl.Container implements Revisi
      * <!-- end-user-doc -->
      * @generated
      */
-    public void setDate(String newDate) {
-        String oldDate = date;
-        date = newDate;
+    public Node basicGetParent() {
+        return parent;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setParent(Node newParent) {
+        Node oldParent = parent;
+        parent = newParent;
         if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REVISION__DATE, oldDate, date));
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REVISION__PARENT, oldParent, parent));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setName(String newName) {
+        String oldName = name;
+        name = newName;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.REVISION__NAME, oldName, name));
     }
 
     /**
@@ -137,8 +186,11 @@ public class RevisionImpl extends MinimalEObjectImpl.Container implements Revisi
         switch (featureID) {
             case ModelPackage.REVISION__TAGS:
                 return getTags();
-            case ModelPackage.REVISION__DATE:
-                return getDate();
+            case ModelPackage.REVISION__PARENT:
+                if (resolve) return getParent();
+                return basicGetParent();
+            case ModelPackage.REVISION__NAME:
+                return getName();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -156,8 +208,11 @@ public class RevisionImpl extends MinimalEObjectImpl.Container implements Revisi
                 getTags().clear();
                 getTags().addAll((Collection<? extends Tag>)newValue);
                 return;
-            case ModelPackage.REVISION__DATE:
-                setDate((String)newValue);
+            case ModelPackage.REVISION__PARENT:
+                setParent((Node)newValue);
+                return;
+            case ModelPackage.REVISION__NAME:
+                setName((String)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -174,8 +229,11 @@ public class RevisionImpl extends MinimalEObjectImpl.Container implements Revisi
             case ModelPackage.REVISION__TAGS:
                 getTags().clear();
                 return;
-            case ModelPackage.REVISION__DATE:
-                setDate(DATE_EDEFAULT);
+            case ModelPackage.REVISION__PARENT:
+                setParent((Node)null);
+                return;
+            case ModelPackage.REVISION__NAME:
+                setName(NAME_EDEFAULT);
                 return;
         }
         super.eUnset(featureID);
@@ -191,10 +249,56 @@ public class RevisionImpl extends MinimalEObjectImpl.Container implements Revisi
         switch (featureID) {
             case ModelPackage.REVISION__TAGS:
                 return tags != null && !tags.isEmpty();
-            case ModelPackage.REVISION__DATE:
-                return DATE_EDEFAULT == null ? date != null : !DATE_EDEFAULT.equals(date);
+            case ModelPackage.REVISION__PARENT:
+                return parent != null;
+            case ModelPackage.REVISION__NAME:
+                return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
         }
         return super.eIsSet(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
+        if (baseClass == Node.class) {
+            switch (derivedFeatureID) {
+                case ModelPackage.REVISION__PARENT: return ModelPackage.NODE__PARENT;
+                default: return -1;
+            }
+        }
+        if (baseClass == NamedNode.class) {
+            switch (derivedFeatureID) {
+                case ModelPackage.REVISION__NAME: return ModelPackage.NAMED_NODE__NAME;
+                default: return -1;
+            }
+        }
+        return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
+        if (baseClass == Node.class) {
+            switch (baseFeatureID) {
+                case ModelPackage.NODE__PARENT: return ModelPackage.REVISION__PARENT;
+                default: return -1;
+            }
+        }
+        if (baseClass == NamedNode.class) {
+            switch (baseFeatureID) {
+                case ModelPackage.NAMED_NODE__NAME: return ModelPackage.REVISION__NAME;
+                default: return -1;
+            }
+        }
+        return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
     }
 
     /**
@@ -207,8 +311,8 @@ public class RevisionImpl extends MinimalEObjectImpl.Container implements Revisi
         if (eIsProxy()) return super.toString();
 
         StringBuffer result = new StringBuffer(super.toString());
-        result.append(" (date: ");
-        result.append(date);
+        result.append(" (name: ");
+        result.append(name);
         result.append(')');
         return result.toString();
     }

@@ -43,9 +43,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="submodule" lowerBound="1"
         eType="#//Submodule" containment="true"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Revision" eSuperTypes="#//TaggedNode">
-    <eStructuralFeatures xsi:type="ecore:EAttribute" name="date" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Revision" eSuperTypes="#//TaggedNode #//NamedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="BelongsTo">
     <eStructuralFeatures xsi:type="ecore:EReference" name="ownerModule" lowerBound="1"
         eType="#//Module"/>

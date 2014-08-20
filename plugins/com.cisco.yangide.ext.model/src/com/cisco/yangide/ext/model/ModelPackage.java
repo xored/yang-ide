@@ -977,13 +977,22 @@ public interface ModelPackage extends EPackage {
     int REVISION__TAGS = TAGGED_NODE__TAGS;
 
     /**
-     * The feature id for the '<em><b>Date</b></em>' attribute.
+     * The feature id for the '<em><b>Parent</b></em>' reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int REVISION__DATE = TAGGED_NODE_FEATURE_COUNT + 0;
+    int REVISION__PARENT = TAGGED_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int REVISION__NAME = TAGGED_NODE_FEATURE_COUNT + 1;
 
     /**
      * The number of structural features of the '<em>Revision</em>' class.
@@ -992,7 +1001,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int REVISION_FEATURE_COUNT = TAGGED_NODE_FEATURE_COUNT + 1;
+    int REVISION_FEATURE_COUNT = TAGGED_NODE_FEATURE_COUNT + 2;
 
     /**
      * The number of operations of the '<em>Revision</em>' class.
@@ -1851,17 +1860,6 @@ public interface ModelPackage extends EPackage {
     EClass getRevision();
 
     /**
-     * Returns the meta object for the attribute '{@link com.cisco.yangide.ext.model.Revision#getDate <em>Date</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Date</em>'.
-     * @see com.cisco.yangide.ext.model.Revision#getDate()
-     * @see #getRevision()
-     * @generated
-     */
-    EAttribute getRevision_Date();
-
-    /**
      * Returns the meta object for class '{@link com.cisco.yangide.ext.model.BelongsTo <em>Belongs To</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2341,14 +2339,6 @@ public interface ModelPackage extends EPackage {
          * @generated
          */
         EClass REVISION = eINSTANCE.getRevision();
-
-        /**
-         * The meta object literal for the '<em><b>Date</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute REVISION__DATE = eINSTANCE.getRevision_Date();
 
         /**
          * The meta object literal for the '{@link com.cisco.yangide.ext.model.impl.BelongsToImpl <em>Belongs To</em>}' class.

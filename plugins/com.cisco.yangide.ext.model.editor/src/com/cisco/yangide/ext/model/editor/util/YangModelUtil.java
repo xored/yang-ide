@@ -28,6 +28,7 @@ import com.cisco.yangide.core.dom.IdentitySchemaNode;
 import com.cisco.yangide.core.dom.LeafSchemaNode;
 import com.cisco.yangide.core.dom.ModuleImport;
 import com.cisco.yangide.core.dom.NotificationDefinition;
+import com.cisco.yangide.core.dom.RevisionNode;
 import com.cisco.yangide.core.dom.RpcDefinition;
 import com.cisco.yangide.core.dom.RpcInputNode;
 import com.cisco.yangide.core.dom.RpcOutputNode;
@@ -109,8 +110,9 @@ public class YangModelUtil {
         astNodes.put(FeatureDefinition.class, MODEL_PACKAGE.getFeature());
         astNodes.put(IdentitySchemaNode.class, MODEL_PACKAGE.getIdentity());
         astNodes.put(ModuleImport.class, MODEL_PACKAGE.getImport());
+        astNodes.put(RevisionNode.class, MODEL_PACKAGE.getRevision());
 
-        connections.add(YangModelUtil.MODEL_PACKAGE.getUses());
+        connections.add(MODEL_PACKAGE.getUses());
     }
 
     public static boolean canContain(Object parent) {
@@ -343,11 +345,6 @@ public class YangModelUtil {
                 ((Import) o).setModule(module);
                 ((Import) o).setPrefix(((ModuleImport) n).getPrefix());
                 ((Import) o).setRevisionDate(((ModuleImport) n).getRevision());
-            }
-        }
-        if (checkType(MODEL_PACKAGE.getRevision(), o)) {
-            if (n instanceof SimpleNode<?>) {
-                ((Revision) o).setDate(null == ((SimpleNode<?>) n).getValue() ? null : ((SimpleNode<?>) n).getValue().toString());
             }
         }
     }

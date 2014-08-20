@@ -47,8 +47,7 @@ Package model <http://www.example.org/model>
   Class Include -> Node
     Reference submodule : Submodule<<1..1>>
 
-  Class Revision -> TaggedNode
-    Attribute date : String
+  Class Revision -> TaggedNode, NamedNode
 
   Class BelongsTo
     Reference ownerModule : Module<<1..1>>

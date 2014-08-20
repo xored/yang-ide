@@ -201,6 +201,8 @@ public class ModelSwitch<T> extends Switch<T> {
                 Revision revision = (Revision)theEObject;
                 T result = caseRevision(revision);
                 if (result == null) result = caseTaggedNode(revision);
+                if (result == null) result = caseNamedNode(revision);
+                if (result == null) result = caseNode(revision);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }

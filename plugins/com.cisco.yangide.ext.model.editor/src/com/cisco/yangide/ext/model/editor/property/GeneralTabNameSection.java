@@ -16,6 +16,8 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 
 import com.cisco.yangide.ext.model.NamedNode;
+import com.cisco.yangide.ext.model.editor.util.PropertyUtil;
+import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 
 public class GeneralTabNameSection extends GFPropertySection implements ITabbedPropertyConstants {
@@ -44,6 +46,8 @@ public class GeneralTabNameSection extends GFPropertySection implements ITabbedP
             public void modifyText(ModifyEvent e) {
                 if (null != node) {
                     node.setName(((Text) e.widget).getText());
+                    YangModelUIUtil.updatePictogramElement(getDiagramTypeProvider().getFeatureProvider(), 
+                            YangModelUIUtil.getBusinessObjectPropShape(getDiagramTypeProvider().getFeatureProvider(), node, PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY));
                 }
                 
             }
