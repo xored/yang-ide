@@ -49,4 +49,8 @@ public class YangSourceViewer extends ProjectionViewer {
     public IReconciler getReconciler() {
         return fReconciler;
     }
+
+    public void updateDocument() {
+        setVisibleDocument(getDocument());
+    }
 }

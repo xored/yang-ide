@@ -476,7 +476,6 @@ public class YangEditor extends TextEditor implements IProjectionListener {
     }
 
     public void reconcile() {
-        ((YangSourceViewer) getViewer()).resetVisibleRegion();
         updateOutline();
         updateFoldingRegions();
         for (IReconcileHandler reconcileHandler : reconcileHandlers) {
