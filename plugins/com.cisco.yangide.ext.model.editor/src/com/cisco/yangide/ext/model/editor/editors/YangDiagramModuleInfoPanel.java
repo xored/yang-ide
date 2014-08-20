@@ -83,7 +83,10 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     private Text referenceText;
     private TableViewer revisionTable;
     private SashForm infoPane;
-    private ScrolledForm pane;  
+    private ScrolledForm pane;
+    private Composite leftPane;
+    
+    private boolean propertiesPaneIsVisible = false;
     
     private static final int H_OFFSET = 2;
     private static final int TEXT_AREA_HEIGHT = 80;
@@ -368,9 +371,9 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         form.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
         form.setLayout(new GridLayout(1, false));
         
-        Composite infoPane = new Composite(form, SWT.NONE);
+        leftPane = new Composite(form, SWT.NONE);
 
-        infoPane.setLayout(new FillLayout(SWT.VERTICAL));
+        leftPane.setLayout(new FillLayout(SWT.VERTICAL));
         diagram = new Composite(form, SWT.NONE);
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
@@ -383,7 +386,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         layout.verticalSpacing = 0;
         layout.horizontalSpacing = 0;
         diagram.setLayout(layout);        
-        createModuleInfoPanel(infoPane);     
+        createModuleInfoPanel(leftPane);     
         form.setWeights(new int[] {2, 6});
     }    
     
@@ -420,6 +423,26 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         mainForm.reflow(true);
     }
     
+    protected void setPropertiesPaneVisible(boolean set) {
+        Point size = leftPane.getSize();
+        if (set) {
+            infoPane.setWeights(new int[] {1, 1});
+            infoPane.setMaximizedControl(null);
+            if (!propertiesPaneIsVisible) {
+                size.x = 2 * size.x;
+            }
+            
+        } else {
+            infoPane.setWeights(new int[] {1, 0});
+            infoPane.setMaximizedControl(pane);   
+            if (propertiesPaneIsVisible) {
+                size.x = size.x / 2;
+            }
+        }
+        propertiesPaneIsVisible = set;
+        leftPane.setSize(size);
+    }
+    
     protected void createPropertiesButtonToolbar(final Section editSection, final SashForm infoPane, final ScrolledForm pane) {
         ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolbar = toolBarManager.createControl(editSection);
@@ -431,8 +454,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             public void run() {
                 super.run();
                 setChecked(false);
-                infoPane.setWeights(new int[] {1, 0});
-                infoPane.setMaximizedControl(pane);                
+                setPropertiesPaneVisible(false);
             }
         };
 
@@ -637,8 +659,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                     Object selected = ((IStructuredSelection) revisionTable.getSelection()).getFirstElement();
                     if (null != selected && selected instanceof Revision) {
                         editPropertyForm.setRevision((Revision) selected);
-                        infoPane.setWeights(new int[] {6, 4});
-                        infoPane.setMaximizedControl(null);
+                        setPropertiesPaneVisible(true);
                     }
                 }
                 
@@ -685,8 +706,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 Object selected = ((IStructuredSelection) importTable.getSelection()).getFirstElement();
                 if (null != selected && selected instanceof Import) {
                     editPropertyForm.setImport((Import) selected);
-                    infoPane.setWeights(new int[] {6, 4});
-                    infoPane.setMaximizedControl(null);                
+                    setPropertiesPaneVisible(true);               
                 }
                 
             }
