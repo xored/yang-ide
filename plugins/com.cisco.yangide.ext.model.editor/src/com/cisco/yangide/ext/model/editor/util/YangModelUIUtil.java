@@ -267,6 +267,10 @@ public class YangModelUIUtil {
         return (Connection) fp.addIfPossible(ac);
     }
     
+    public static Connection drawPictogramConnectionElement(IAddConnectionContext context, IFeatureProvider fp) {
+        return drawPictogramConnectionElement(context, fp, Strings.EMPTY_STRING);
+    }
+    
     public static Connection drawPictogramConnectionElement(IAddConnectionContext context, IFeatureProvider fp, String title) {
         EObject addedEReference = (EObject) context.getNewObject();
         IPeCreateService peCreateService = Graphiti.getPeCreateService();
@@ -281,18 +285,21 @@ public class YangModelUIUtil {
 
         // create link and wire it
         fp.link(connection, addedEReference);
-        
         // add dynamic text decorator for the reference name
+        
         ConnectionDecorator textDecorator = peCreateService.createConnectionDecorator(connection, true, 0.5, true);
         Text text = gaService.createPlainText(textDecorator);
         text.setStyle(StyleUtil.getStyleForTextDecorator(fp.getDiagramTypeProvider().getDiagram()));
         gaService.setLocation(text, 10, 0);
 
-        // set reference name in the text decorator
+        // set reference name in the text decorator 
         text.setValue(title);
-        
-        // add static graphical decorators (composition and navigable)
-        createConnectionArrow(connection, fp);
+        //add static graphical decorators (composition and inheritance)        
+        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getIdentity(), addedEReference)) {            
+            createInheritanceConnectionArrow(connection, fp);
+        } else {
+            createConnectionArrow(connection, fp);
+        }
         
         return connection;
     }
@@ -300,6 +307,14 @@ public class YangModelUIUtil {
     public static Polyline createConnectionArrow(Connection connection, IFeatureProvider fp) {
         ConnectionDecorator cd = Graphiti.getPeCreateService().createConnectionDecorator(connection, false, 1.0, true);
         Polyline polyline = Graphiti.getGaCreateService().createPlainPolyline(cd,
+                new int[] { -10, 5, 0, 0, -10, -5});
+        polyline.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
+        return polyline;
+    }
+    
+    public static Polyline createInheritanceConnectionArrow(Connection connection, IFeatureProvider fp) {
+        ConnectionDecorator cd = Graphiti.getPeCreateService().createConnectionDecorator(connection, false, 1.0, true);
+        Polyline polyline = Graphiti.getGaCreateService().createPlainPolygon(cd,
                 new int[] { -10, 5, 0, 0, -10, -5});
         polyline.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
         return polyline;

@@ -13,5 +13,5 @@ package com.cisco.yangide.ext.model;
  * @model
  * @generated
  */
-public interface Anyxml extends NamedNode {
+public interface Anyxml extends NamedNode, TaggedNode {
 } // Anyxml

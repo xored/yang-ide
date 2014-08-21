@@ -37,7 +37,7 @@ Package model <http://www.example.org/model>
 
   Class LeafList -> NamedNode, TaggedNode, TypedNode
 
-  Class Anyxml -> NamedNode
+  Class Anyxml -> NamedNode, TaggedNode
 
   Class Import -> Node
     Attribute prefix : String<<1..1>>

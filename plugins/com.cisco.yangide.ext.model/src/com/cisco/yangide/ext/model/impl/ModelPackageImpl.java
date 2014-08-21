@@ -1012,6 +1012,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         leafListEClass.getESuperTypes().add(this.getTaggedNode());
         leafListEClass.getESuperTypes().add(this.getTypedNode());
         anyxmlEClass.getESuperTypes().add(this.getNamedNode());
+        anyxmlEClass.getESuperTypes().add(this.getTaggedNode());
         importEClass.getESuperTypes().add(this.getNode());
         includeEClass.getESuperTypes().add(this.getNode());
         revisionEClass.getESuperTypes().add(this.getTaggedNode());

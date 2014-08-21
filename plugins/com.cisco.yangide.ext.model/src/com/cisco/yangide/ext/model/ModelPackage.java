@@ -817,13 +817,22 @@ public interface ModelPackage extends EPackage {
     int ANYXML__NAME = NAMED_NODE__NAME;
 
     /**
+     * The feature id for the '<em><b>Tags</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int ANYXML__TAGS = NAMED_NODE_FEATURE_COUNT + 0;
+
+    /**
      * The number of structural features of the '<em>Anyxml</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int ANYXML_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 0;
+    int ANYXML_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 1;
 
     /**
      * The number of operations of the '<em>Anyxml</em>' class.

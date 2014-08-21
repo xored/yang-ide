@@ -31,7 +31,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="Typedef" eSuperTypes="#//NamedNode #//TaggedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Choice" eSuperTypes="#//NamedContainingNode #//TaggedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="LeafList" eSuperTypes="#//NamedNode #//TaggedNode #//TypedNode"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Anyxml" eSuperTypes="#//NamedNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Anyxml" eSuperTypes="#//NamedNode #//TaggedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Import" eSuperTypes="#//Node">
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="prefix" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"/>

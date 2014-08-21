@@ -25,7 +25,7 @@ public class AddReferenceConnectionFeature extends AbstractAddFeature {
 
     @Override
     public PictogramElement add(IAddContext context) {
-        return YangModelUIUtil.drawPictogramConnectionElement((IAddConnectionContext) context, getFeatureProvider(), /*((EObject) context.getNewObject()).eClass().getName().toLowerCase()*/ "");
+        return YangModelUIUtil.drawPictogramConnectionElement((IAddConnectionContext) context, getFeatureProvider());
     }
 
 }

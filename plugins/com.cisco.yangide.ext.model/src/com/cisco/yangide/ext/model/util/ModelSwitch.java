@@ -184,6 +184,7 @@ public class ModelSwitch<T> extends Switch<T> {
                 Anyxml anyxml = (Anyxml)theEObject;
                 T result = caseAnyxml(anyxml);
                 if (result == null) result = caseNamedNode(anyxml);
+                if (result == null) result = caseTaggedNode(anyxml);
                 if (result == null) result = caseNode(anyxml);
                 if (result == null) result = defaultCase(theEObject);
                 return result;

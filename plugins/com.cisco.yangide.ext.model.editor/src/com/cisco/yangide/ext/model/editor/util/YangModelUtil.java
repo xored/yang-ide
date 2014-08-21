@@ -44,12 +44,14 @@ import com.cisco.yangide.core.dom.TypeReference;
 import com.cisco.yangide.core.dom.UsesNode;
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.Grouping;
+import com.cisco.yangide.ext.model.Identity;
 import com.cisco.yangide.ext.model.Import;
 import com.cisco.yangide.ext.model.ModelFactory;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.NamedNode;
 import com.cisco.yangide.ext.model.Node;
+import com.cisco.yangide.ext.model.ReferenceNode;
 import com.cisco.yangide.ext.model.RpcIO;
 import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.TaggedNode;
@@ -108,6 +110,7 @@ public class YangModelUtil {
                 MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
                 MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
         
+        taggedNodeMap.put(MODEL_PACKAGE.getAnyxml(), Arrays.asList(YangTag.CONFIG, YangTag.DESCRIPTION, YangTag.MANDATORY, YangTag.REFERENCE, YangTag.STATUS));
         taggedNodeMap.put(MODEL_PACKAGE.getChoice(), Arrays.asList(YangTag.CONFIG, YangTag.DEFAULT, YangTag.DESCRIPTION, YangTag.MANDATORY, YangTag.REFERENCE, YangTag.STATUS));
         taggedNodeMap.put(MODEL_PACKAGE.getChoiceCase(), Arrays.asList(YangTag.DESCRIPTION, YangTag.REFERENCE, YangTag.STATUS));
         taggedNodeMap.put(MODEL_PACKAGE.getContainer(), Arrays.asList(YangTag.CONFIG, YangTag.DESCRIPTION, YangTag.PRESENCE, YangTag.REFERENCE, YangTag.STATUS));
@@ -257,8 +260,8 @@ public class YangModelUtil {
                         return o;
                     }
                 }
-                if (checkType(MODEL_PACKAGE.getNamedNode(), obj) && checkType(MODEL_PACKAGE.getNamedNode(), referencedClass)) {
-                    if (o != obj && null != ((NamedNode) o).getName() && ((NamedNode) o).getName().equals(((NamedNode) obj).getName())) {
+                if (checkType(MODEL_PACKAGE.getReferenceNode(), obj) && checkType(MODEL_PACKAGE.getNamedNode(), referencedClass)) {
+                    if (null != ((NamedNode) o).getName() && ((NamedNode) o).getName().equals(((ReferenceNode) obj).getReference())) {
                         return o;
                     }
                 }
@@ -415,6 +418,11 @@ public class YangModelUtil {
                 ((Import) o).setModule(((ModuleImport) n).getName());
                 ((Import) o).setPrefix(((ModuleImport) n).getPrefix());
                 ((Import) o).setRevisionDate(((ModuleImport) n).getRevision());
+            }
+        }
+        if (checkType(MODEL_PACKAGE.getIdentity(), o)) {
+            if (n instanceof IdentitySchemaNode && null != ((IdentitySchemaNode) n).getBase()) {
+                ((Identity) o).setReference(((IdentitySchemaNode) n).getBase().getName());
             }
         }
     }
