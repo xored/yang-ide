@@ -21,6 +21,8 @@ import org.eclipse.swt.widgets.Composite;
  * @date Jul 24, 2014
  */
 public class YangSourceViewer extends ProjectionViewer {
+    private boolean notifyTextListeners = true;
+
     public YangSourceViewer(Composite parent, IVerticalRuler verticalRuler, IOverviewRuler overviewRuler,
             boolean showAnnotationsOverview, int styles) {
         super(parent, verticalRuler, overviewRuler, showAnnotationsOverview, styles);
@@ -52,5 +54,20 @@ public class YangSourceViewer extends ProjectionViewer {
 
     public void updateDocument() {
         setVisibleDocument(getDocument());
+    }
+
+    public void enableTextListeners() {
+        this.notifyTextListeners = true;
+    }
+
+    public void disableTextListeners() {
+        this.notifyTextListeners = false;
+    }
+
+    @Override
+    protected void updateTextListeners(WidgetCommand cmd) {
+        if (notifyTextListeners) {
+            super.updateTextListeners(cmd);
+        }
     }
 }
