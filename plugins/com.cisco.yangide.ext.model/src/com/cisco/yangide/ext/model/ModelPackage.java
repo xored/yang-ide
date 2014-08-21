@@ -1285,13 +1285,22 @@ public interface ModelPackage extends EPackage {
     int RPC__CHILDREN = NAMED_CONTAINING_NODE__CHILDREN;
 
     /**
+     * The feature id for the '<em><b>Tags</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int RPC__TAGS = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+
+    /**
      * The number of structural features of the '<em>Rpc</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int RPC_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 0;
+    int RPC_FEATURE_COUNT = NAMED_CONTAINING_NODE_FEATURE_COUNT + 1;
 
     /**
      * The number of operations of the '<em>Rpc</em>' class.

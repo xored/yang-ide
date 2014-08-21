@@ -11,6 +11,7 @@ import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
 import com.cisco.yangide.ext.model.Node;
+import com.cisco.yangide.ext.model.editor.util.LayoutUtil;
 import com.cisco.yangide.ext.model.editor.util.PropertyUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
@@ -80,6 +81,9 @@ public class UpdateTextFeature extends AbstractUpdateFeature {
             if (context.getPictogramElement() instanceof Shape) {
                 if (((Shape) context.getPictogramElement()).getGraphicsAlgorithm() instanceof Text) {
                     ((Text) ((Shape) context.getPictogramElement()).getGraphicsAlgorithm()).setValue(objectValue);
+                    if (context.getPictogramElement() instanceof Shape) {
+                        LayoutUtil.layoutContainerShapeHeader(((Shape) context.getPictogramElement()).getContainer(), getFeatureProvider());
+                    }
                     return true;
                 }
             }

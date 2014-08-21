@@ -38,7 +38,6 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeCreateService;
-import org.eclipse.graphiti.ui.services.GraphitiUi;
 
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.NamedNode;
@@ -164,6 +163,15 @@ public class YangModelUIUtil {
             }
         }
         return result;        
+    }
+    
+    public static Shape getBusinessObjectPropShape(ContainerShape parent, String prop) {
+        for(Shape shape : parent.getChildren()) {
+            if (PropertyUtil.isObjectShapeProp(shape, prop)) {
+                return shape;
+            }
+        }
+        return null;        
     }
     
     public static PictogramElement getBusinessObjectShape(IFeatureProvider fp, EObject obj) {
@@ -362,11 +370,9 @@ public class YangModelUIUtil {
             }
             
         }
-        //int DEFAULT_LETTER_WIDTH = 7;
         text.setStyle(StyleUtil.getStyleForDomainObjectText(fp.getDiagramTypeProvider().getDiagram()));
         PropertyUtil.setObjectShapeProp(textShape, PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY, true);
-        int textWidth = GraphitiUi.getUiLayoutService().calculateTextSize(text.getValue(), text.getStyle().getFont()).getWidth();
-        Graphiti.getGaService().setLocationAndSize(text, height + DEFAULT_V_ALIGN, 0, textWidth, height);
+        Graphiti.getGaService().setLocationAndSize(text, height + DEFAULT_V_ALIGN, 0, width, height);
         
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getTypedNode(), context.getNewObject()) && null != ((TypedNode) context.getNewObject()).getType()) {
             Shape typeShape = Graphiti.getPeCreateService().createShape(containerShape, false);
@@ -374,8 +380,8 @@ public class YangModelUIUtil {
             fp.link(typeShape, ((TypedNode) context.getNewObject()).getType());
             type.setStyle(StyleUtil.getStyleForDomainObjectTypeText(fp.getDiagramTypeProvider().getDiagram()));
             PropertyUtil.setObjectShapeProp(typeShape, PropertyUtil.BUSINESS_OBJECT_TYPE_SHAPE_KEY, true);
-            Graphiti.getGaService().setLocationAndSize(type, height + DEFAULT_V_ALIGN + textWidth, 0, 
-                    Math.max(0, width - textWidth), height);    
+            Graphiti.getGaService().setLocationAndSize(type, height + DEFAULT_V_ALIGN, 0, 
+                    Math.max(0, width), height);    
         }
         
     }

@@ -65,7 +65,7 @@ Package model <http://www.example.org/model>
     Reference grouping : Grouping
     Attribute qName : String
 
-  Class Rpc -> NamedContainingNode
+  Class Rpc -> NamedContainingNode, TaggedNode
 
   Class RpcIO -> ContainingNode
     Attribute input : Boolean

@@ -13,5 +13,5 @@ package com.cisco.yangide.ext.model;
  * @model
  * @generated
  */
-public interface Rpc extends NamedContainingNode {
+public interface Rpc extends NamedContainingNode, TaggedNode {
 } // Rpc

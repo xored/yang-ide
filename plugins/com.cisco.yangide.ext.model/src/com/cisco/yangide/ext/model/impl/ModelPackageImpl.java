@@ -1021,6 +1021,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         listEClass.getESuperTypes().add(this.getTaggedNode());
         usesEClass.getESuperTypes().add(this.getNode());
         rpcEClass.getESuperTypes().add(this.getNamedContainingNode());
+        rpcEClass.getESuperTypes().add(this.getTaggedNode());
         rpcIOEClass.getESuperTypes().add(this.getContainingNode());
         notificationEClass.getESuperTypes().add(this.getNamedContainingNode());
         augmentEClass.getESuperTypes().add(this.getNamedContainingNode());

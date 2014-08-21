@@ -26,6 +26,7 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
+import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.eclipse.zest.layouts.InvalidLayoutConfiguration;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
 import org.eclipse.zest.layouts.LayoutBendPoint;
@@ -539,12 +540,30 @@ public class LayoutUtil {
     public static void layoutDiagram(IFeatureProvider fp) {
         layoutDiagram(fp, DEFAULT_DIAGRAM_LAYOUT_TYPE);
     }
+    
+    public static void layoutContainerShapeHeader(ContainerShape cs, IFeatureProvider fp) {
+        //int width = cs.getGraphicsAlgorithm().getWidth();
+        Shape text = YangModelUIUtil.getBusinessObjectPropShape(cs, PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY);
+        int textWidth = 0;
+        if (null != text && text.getGraphicsAlgorithm() instanceof Text) {
+            Text ga = (Text) text.getGraphicsAlgorithm();
+            textWidth = GraphitiUi.getUiLayoutService().calculateTextSize(ga.getValue(), ga.getStyle().getFont()).getWidth();
+            ga.setWidth(textWidth);            
+        }
+        Shape type = YangModelUIUtil.getBusinessObjectPropShape(cs, PropertyUtil.BUSINESS_OBJECT_TYPE_SHAPE_KEY);
+        if (null != type && type.getGraphicsAlgorithm() instanceof Text) {
+            Text ga = (Text) type.getGraphicsAlgorithm();
+            ga.setX(textWidth + YangModelUIUtil.DEFAULT_V_ALIGN + YangModelUIUtil.DEFAULT_TEXT_HEIGHT);
+            //ga.setWidth(Math.max(0, width - textWidth));
+        }
+        
+    }
 
     public static void layoutContainerShape(ContainerShape cs, IFeatureProvider fp) {
         int y = YangModelUIUtil.DEFAULT_TEXT_HEIGHT;
         int x = 0;
         
-        
+        layoutContainerShapeHeader(cs, fp);
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), fp.getBusinessObjectForPictogramElement(cs))) {
             for (Node child : ((ContainingNode) fp.getBusinessObjectForPictogramElement(cs)).getChildren()) {
                 PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(fp, child);

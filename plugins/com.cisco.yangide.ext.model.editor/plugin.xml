@@ -56,6 +56,11 @@
             contributorId="yang.PropertyContributor">
          <propertyTab
                category="Graphiti"
+               id="com.cisco.yangide.ext.model.editor.TypeTab"
+               label="Type">
+         </propertyTab>
+         <propertyTab
+               category="Graphiti"
                id="com.cisco.yangide.ext.model.editor.AttributesTab"
                label="Attributes">
          </propertyTab>
@@ -87,6 +92,18 @@
                filter="com.cisco.yangide.ext.model.editor.property.AttributesTabContentFilter"
                id="com.cisco.yangide.ext.model.editor.AttributesTabSection"
                tab="com.cisco.yangide.ext.model.editor.AttributesTab">
+         </propertySection>
+         <propertySection
+               class="com.cisco.yangide.ext.model.editor.property.GeneralTabReferenceSection"
+               filter="com.cisco.yangide.ext.model.editor.property.GeneralTabReferenceFilter"
+               id="com.cisco.yangide.ext.model.editor.GeneralTabReference"
+               tab="com.cisco.yangide.ext.model.editor.GeneralTab">
+         </propertySection>
+         <propertySection
+               class="com.cisco.yangide.ext.model.editor.property.TypeTabSection"
+               filter="com.cisco.yangide.ext.model.editor.property.TypeTabFilter"
+               id="com.cisco.yangide.ext.model.editor.TypeTabSection"
+               tab="com.cisco.yangide.ext.model.editor.TypeTab">
          </propertySection>
       </propertySections>
    </extension>

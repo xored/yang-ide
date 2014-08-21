@@ -252,6 +252,7 @@ public class ModelSwitch<T> extends Switch<T> {
                 Rpc rpc = (Rpc)theEObject;
                 T result = caseRpc(rpc);
                 if (result == null) result = caseNamedContainingNode(rpc);
+                if (result == null) result = caseTaggedNode(rpc);
                 if (result == null) result = caseNamedNode(rpc);
                 if (result == null) result = caseContainingNode(rpc);
                 if (result == null) result = caseNode(rpc);
