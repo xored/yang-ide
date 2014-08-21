@@ -1,0 +1,4 @@
+typedef @name@ {
+    type string;
+    description "Type description";
+}
