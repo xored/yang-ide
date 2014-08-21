@@ -609,18 +609,19 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     
     protected void removeBindings(List<Binding> bindings) {
         for (Binding b : bindings) {
+            b.updateTargetToModel();
             bindingContext.removeBinding(b);
         }
     }
     
     protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends TaggedNode> node, Text text, final YangTag tag) {
-        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observe(text),
+        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(2000, text),
                 EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value())
                     .observe(YangModelUtil.getTag(tag, node.getBusinessObject())));
     }
     
     protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends EObject> node, final Text text, final EStructuralFeature esf) {
-        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observe(text),
+        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(2000, text),
             EMFProperties.value(esf)
                 .observe(node.getBusinessObject()));
     }
