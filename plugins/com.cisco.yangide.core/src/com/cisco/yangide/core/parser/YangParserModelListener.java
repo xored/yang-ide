@@ -7,7 +7,6 @@
  */
 package com.cisco.yangide.core.parser;
 
-import java.net.URI;
 import java.util.Stack;
 
 import org.antlr.v4.runtime.ParserRuleContext;
@@ -99,7 +98,6 @@ import com.cisco.yangide.core.dom.UsesNode;
 public class YangParserModelListener extends YangParserBaseListener {
 
     private Module module;
-    private URI namespace = URI.create("none");
     private String yangModelPrefix;
     private String revision = "1970-01-01"; // default revision Date(0L)
     private Stack<ASTNode> stack = new Stack<>();
@@ -107,7 +105,7 @@ public class YangParserModelListener extends YangParserBaseListener {
     @Override
     public void enterModule_stmt(Module_stmtContext ctx) {
         module = new Module();
-        module.setNamespace(URI.create(""));
+        module.setNamespace("");
         module.setRevision(revision);
         stack.push(module);
         updateNamedNode(module, ctx);
@@ -127,7 +125,7 @@ public class YangParserModelListener extends YangParserBaseListener {
     @Override
     public void enterSubmodule_stmt(Submodule_stmtContext ctx) {
         module = new SubModule();
-        module.setNamespace(URI.create(""));
+        module.setNamespace("");
         module.setRevision(revision);
         stack.push(module);
         updateNamedNode(module, ctx);
@@ -160,13 +158,8 @@ public class YangParserModelListener extends YangParserBaseListener {
             final ParseTree treeNode = ctx.getChild(i);
             if (treeNode instanceof Namespace_stmtContext) {
                 final String namespaceStr = stringFromNode(treeNode);
-                try {
-                    namespace = URI.create(namespaceStr);
-                } catch (Exception e) {
-                    // ignore exception
-                }
-                SimpleNode<URI> astNode = new SimpleNode<URI>(module, ((Namespace_stmtContext) treeNode)
-                        .NAMESPACE_KEYWORD().getText(), namespace);
+                SimpleNode<String> astNode = new SimpleNode<String>(module, ((Namespace_stmtContext) treeNode)
+                        .NAMESPACE_KEYWORD().getText(), namespaceStr);
                 updateNodePosition(astNode, treeNode);
                 module.setNamespaceNode(astNode);
             } else if (treeNode instanceof Prefix_stmtContext) {
@@ -190,9 +183,8 @@ public class YangParserModelListener extends YangParserBaseListener {
             final ParseTree treeNode = ctx.getChild(i);
             if (treeNode instanceof Namespace_stmtContext) {
                 final String namespaceStr = stringFromNode(treeNode);
-                namespace = URI.create(namespaceStr);
-                SimpleNode<URI> astNode = new SimpleNode<URI>(module, ((Namespace_stmtContext) treeNode)
-                        .NAMESPACE_KEYWORD().getText(), namespace);
+                SimpleNode<String> astNode = new SimpleNode<String>(module, ((Namespace_stmtContext) treeNode)
+                        .NAMESPACE_KEYWORD().getText(), namespaceStr);
                 updateNodePosition(astNode, treeNode);
                 module.setNamespaceNode(astNode);
             } else if (treeNode instanceof Prefix_stmtContext) {

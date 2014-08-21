@@ -188,7 +188,7 @@ public class YangTextHover extends DefaultTextHover implements ITextHoverExtensi
         buffer.append("<dl>");
         if (node instanceof Module) {
             Module module = (Module) node;
-            addValue(buffer, "Namespace", module.getNamespace() != null ? module.getNamespace().toASCIIString() : null);
+            addValue(buffer, "Namespace", module.getNamespace() != null ? module.getNamespace() : null);
             addValue(buffer, "Organization", module.getOrganization() != null ? module.getOrganization().getValue()
                     : null);
             addValue(buffer, "Contact", module.getContact() != null ? module.getContact().getValue() : null);

@@ -7,7 +7,6 @@
  */
 package com.cisco.yangide.core.dom;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -20,10 +19,10 @@ import java.util.concurrent.atomic.AtomicReference;
  * @date Jun 26, 2014
  */
 public class Module extends ASTCompositeNode {
-    private URI namespace;
+    private String namespace;
     private String revision;
 
-    private SimpleNode<URI> namespaceNode;
+    private SimpleNode<String> namespaceNode;
     private ASTNamedNode revisionNode;
     private SimpleNode<String> sourcePath;
     private SimpleNode<String> prefix;
@@ -73,14 +72,14 @@ public class Module extends ASTCompositeNode {
     /**
      * @return the namespace
      */
-    public URI getNamespace() {
+    public String getNamespace() {
         return namespace;
     }
 
     /**
      * @param namespace the namespace to set
      */
-    public void setNamespace(URI namespace) {
+    public void setNamespace(String namespace) {
         this.namespace = namespace;
     }
 
@@ -101,14 +100,14 @@ public class Module extends ASTCompositeNode {
     /**
      * @return the namespaceNode
      */
-    public SimpleNode<URI> getNamespaceNode() {
+    public SimpleNode<String> getNamespaceNode() {
         return namespaceNode;
     }
 
     /**
      * @param namespace the namespace to set
      */
-    public void setNamespaceNode(SimpleNode<URI> namespaceNode) {
+    public void setNamespaceNode(SimpleNode<String> namespaceNode) {
         this.namespaceNode = namespaceNode;
         this.namespace = namespaceNode.getValue();
     }

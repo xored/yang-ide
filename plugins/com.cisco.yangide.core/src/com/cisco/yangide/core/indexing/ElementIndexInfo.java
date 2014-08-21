@@ -56,7 +56,7 @@ public class ElementIndexInfo implements Serializable, Comparable<ElementIndexIn
         this.status = node.getStatus();
         if (node instanceof Module) {
             Module m = (Module) node;
-            this.namespace = m.getNamespace() != null ? m.getNamespace().toASCIIString() : null;
+            this.namespace = m.getNamespace() != null ? m.getNamespace() : null;
             this.organization = m.getOrganization() != null ? m.getOrganization().getValue() : null;
             this.contact = m.getContact() != null ? m.getContact().getValue() : null;
         }
