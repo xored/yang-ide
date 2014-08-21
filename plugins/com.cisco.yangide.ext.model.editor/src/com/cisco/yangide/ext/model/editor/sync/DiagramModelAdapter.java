@@ -6,17 +6,16 @@ package com.cisco.yangide.ext.model.editor.sync;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.eclipse.core.resources.ResourcesPlugin;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.ltk.core.refactoring.DocumentChange;
-import org.eclipse.ltk.core.refactoring.PerformChangeOperation;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.text.edits.DeleteEdit;
 import org.eclipse.text.edits.InsertEdit;
+import org.eclipse.text.edits.MalformedTreeException;
 import org.eclipse.text.edits.MultiTextEdit;
 import org.eclipse.text.edits.ReplaceEdit;
 import org.eclipse.text.edits.TextEdit;
@@ -31,8 +30,8 @@ import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.parser.YangFormattingPreferences;
 import com.cisco.yangide.core.parser.YangParserUtil;
-import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.editors.YangEditor;
+import com.cisco.yangide.editor.editors.YangSourceViewer;
 import com.cisco.yangide.ext.model.Import;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
@@ -334,17 +333,26 @@ final class DiagramModelAdapter extends EContentAdapter {
         }
     }
 
-    private void performEdit(TextEdit edit) {
-        DocumentChange change = new DocumentChange("edit", yangSourceEditor.getDocument());
+    private void performEdit(final TextEdit edit) {
+        final DocumentChange change = new DocumentChange("edit", yangSourceEditor.getDocument());
         change.setEdit(edit);
         change.initializeValidationData(new NullProgressMonitor());
-        PerformChangeOperation op = new PerformChangeOperation(change);
-        try {
-            ResourcesPlugin.getWorkspace().run(op, null);
-        } catch (CoreException e) {
-            YangEditorPlugin.log(e);
-        }
+        Display.getDefault().syncExec(new Runnable() {
 
+            @Override
+            public void run() {
+                try {
+                    YangSourceViewer viewer = (YangSourceViewer) yangSourceEditor.getViewer();
+                    viewer.getRewriteTarget().beginCompoundChange();
+                    edit.apply(yangSourceEditor.getDocument());
+                    viewer.getRewriteTarget().endCompoundChange();
+                    viewer.invalidateTextPresentation(edit.getOffset(), edit.getLength());
+
+                } catch (MalformedTreeException | BadLocationException e) {
+                    Activator.log(e, e.getMessage());
+                }
+            }
+        });
         char[] content = yangSourceEditor.getDocument().get().toCharArray();
         com.cisco.yangide.core.dom.Module module = YangParserUtil.parseYangFile(content);
         modelSynchronizer.updateFromSource(module, true);

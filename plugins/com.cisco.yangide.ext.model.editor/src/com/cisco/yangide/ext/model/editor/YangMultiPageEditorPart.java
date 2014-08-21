@@ -96,7 +96,9 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
             if (yangSourceViewer.getReconciler() != null) {
                 yangSourceViewer.getReconciler().uninstall();
             }
+            yangSourceViewer.disableTextListeners();
         } else {
+            yangSourceViewer.enableTextListeners();
             yangSourceViewer.updateDocument();
             yangSourceViewer.enableProjection();
             if (yangSourceViewer.getReconciler() != null) {
