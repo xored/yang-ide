@@ -495,7 +495,6 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         
         FormData data = new FormData ();
         data.left = new FormAttachment (0, 0);
-        //data.top = new FormAttachment(prefixText, H_OFFSET);
         organization.setLayoutData (data);
         
         data = new FormData ();
@@ -615,13 +614,13 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     }
     
     protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends TaggedNode> node, Text text, final YangTag tag) {
-        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(2000, text),
+        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, text),
                 EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value())
                     .observe(YangModelUtil.getTag(tag, node.getBusinessObject())));
     }
     
     protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends EObject> node, final Text text, final EStructuralFeature esf) {
-        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(2000, text),
+        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, text),
             EMFProperties.value(esf)
                 .observe(node.getBusinessObject()));
     }
@@ -772,15 +771,17 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         section.setTextClient(toolbar);
     }
     
-    protected void refreshImportTable() {
+    public void refreshImportTable() {
         if (null != module) {
             importTable.setInput(YangModelUtil.filter(module.getChildren(), YangModelUtil.MODEL_PACKAGE.getImport()));
+            pane.getBody().layout(true);
         }
     }
     
     protected void refreshRevisionTable() {
         if (null != module) {
             revisionTable.setInput(module.getRevisions());
+            pane.getBody().layout(true);
         }
     }
     

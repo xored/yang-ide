@@ -24,6 +24,7 @@ import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.editor.diagram.EditorFeatureProvider;
 import com.cisco.yangide.ext.model.editor.util.DiagramImportSupport;
 import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
+import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 
 public class YangDiagramEditor extends DiagramEditor {
 
@@ -68,6 +69,9 @@ public class YangDiagramEditor extends DiagramEditor {
                 }
                 YangModelUIUtil.drawObject(child, (ContainerShape) pe, getDiagramTypeProvider().getFeatureProvider(),
                         p.x, p.y);
+            }
+            if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getImport(), child)) {
+                infoPane.refreshImportTable();
             }
         }
     };
