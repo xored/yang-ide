@@ -115,8 +115,12 @@ public class YangParserModelListener extends YangParserBaseListener {
 
     @Override
     public void visitErrorNode(ErrorNode node) {
-        stack.peek().setFlags(ASTNode.MALFORMED);
-        module.setFlags(ASTNode.MALFORMED);
+        if (!stack.isEmpty()) {
+            stack.peek().setFlags(ASTNode.MALFORMED);
+        }
+        if (module != null) {
+            module.setFlags(ASTNode.MALFORMED);
+        }
         super.visitErrorNode(node);
     }
 
@@ -221,11 +225,15 @@ public class YangParserModelListener extends YangParserBaseListener {
                 updateNodePosition(astNode, treeNode);
                 module.setContact(astNode);
             } else if (treeNode instanceof Description_stmtContext) {
-                final String description = stringFromNode(treeNode);
-                module.setDescription(description);
+                SimpleNode<String> astNode = new SimpleNode<String>(module, ((Description_stmtContext) treeNode)
+                        .DESCRIPTION_KEYWORD().getText(), stringFromNode(treeNode));
+                updateNodePosition(astNode, treeNode);
+                module.setDescriptionNode(astNode);
             } else if (treeNode instanceof Reference_stmtContext) {
-                final String reference = stringFromNode(treeNode);
-                module.setReference(reference);
+                SimpleNode<String> astNode = new SimpleNode<String>(module, ((Reference_stmtContext) treeNode)
+                        .REFERENCE_KEYWORD().getText(), stringFromNode(treeNode));
+                updateNodePosition(astNode, treeNode);
+                module.setReferenceNode(astNode);
             }
         }
     }
@@ -565,12 +573,6 @@ public class YangParserModelListener extends YangParserBaseListener {
             updateNodePosition(revisionNode, treeNode);
             updateNamedNode(revisionNode, treeNode);
             module.setRevisionNode(revisionNode);
-            for (int i = 0; i < treeNode.getChildCount(); ++i) {
-                ParseTree child = treeNode.getChild(i);
-                if (child instanceof Reference_stmtContext) {
-                    module.setReference(stringFromNode(child));
-                }
-            }
         }
     }
 
@@ -599,38 +601,25 @@ public class YangParserModelListener extends YangParserBaseListener {
     }
 
     private void setNodeDescription(ASTNode astNode, ParseTree treeNode) {
-        String description = null;
-        int descriptionPosition = -1;
-
-        String reference = null;
-        int referencePosition = -1;
-
-        String status = null;
-        int statusPosition = -1;
-
         for (int i = 0; i < treeNode.getChildCount(); i++) {
             ParseTree child = treeNode.getChild(i);
             if (child instanceof Description_stmtContext) {
-                description = stringFromNode(child);
-                descriptionPosition = getStringStartPosition(child);
+                SimpleNode<String> astChild = new SimpleNode<String>(module, ((Description_stmtContext) child)
+                        .DESCRIPTION_KEYWORD().getText(), stringFromNode(child));
+                updateNodePosition(astChild, child);
+                astNode.setDescriptionNode(astChild);
             } else if (child instanceof Reference_stmtContext) {
-                reference = stringFromNode(child);
-                referencePosition = getStringStartPosition(child);
+                SimpleNode<String> astChild = new SimpleNode<String>(module, ((Reference_stmtContext) child)
+                        .REFERENCE_KEYWORD().getText(), stringFromNode(child));
+                updateNodePosition(astChild, child);
+                astNode.setReferenceNode(astChild);
             } else if (child instanceof Status_stmtContext) {
-                status = stringFromNode(child);
-                statusPosition = getStringStartPosition(child);
-            } else {
-                if (description != null && reference != null) {
-                    break;
-                }
+                SimpleNode<String> astChild = new SimpleNode<String>(module, ((Status_stmtContext) child)
+                        .STATUS_KEYWORD().getText(), stringFromNode(child));
+                updateNodePosition(astChild, child);
+                astNode.setStatusNode(astChild);
             }
         }
-        astNode.setStatus(status);
-        astNode.setStatusStartPosition(statusPosition);
-        astNode.setDescription(description);
-        astNode.setDescriptionStartPosition(descriptionPosition);
-        astNode.setReference(reference);
-        astNode.setReferenceStartPosition(referencePosition);
     }
 
     private void updateNamedNode(ASTNamedNode astNode, ParseTree treeNode) {
@@ -647,19 +636,6 @@ public class YangParserModelListener extends YangParserBaseListener {
                 }
             }
         }
-    }
-
-    private int getStringStartPosition(ParseTree treeNode) {
-        for (int i = 0; i < treeNode.getChildCount(); ++i) {
-            if (treeNode.getChild(i) instanceof StringContext) {
-                final StringContext context = (StringContext) treeNode.getChild(i);
-                if (context != null) {
-                    Token token = context.getStart();
-                    return token.getStartIndex();
-                }
-            }
-        }
-        return -1;
     }
 
     /**

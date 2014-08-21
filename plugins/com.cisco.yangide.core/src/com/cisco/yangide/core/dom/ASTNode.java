@@ -16,16 +16,13 @@ import java.util.Collection;
 public abstract class ASTNode {
 
     /** Common field "description" for Yang statement. */
-    private String description;
-    private int descriptionStartPosition;
+    private SimpleNode<String> descriptionNode;
 
     /** Common field "reference" for Yang statement. */
-    private String reference;
-    private int referenceStartPosition;
+    private SimpleNode<String> referenceNode;
 
     /** Common field "status" for Yang statement. */
-    private String status;
-    private int statusStartPosition;
+    private SimpleNode<String> statusNode;
 
     /**
      * A character index into the original source string, or <code>-1</code> if no source position
@@ -179,42 +176,21 @@ public abstract class ASTNode {
      * @return the description
      */
     public String getDescription() {
-        return description;
-    }
-
-    /**
-     * @param description the description to set
-     */
-    public void setDescription(String description) {
-        this.description = description;
+        return descriptionNode != null ? descriptionNode.getValue() : null;
     }
 
     /**
      * @return the reference
      */
     public String getReference() {
-        return reference;
-    }
-
-    /**
-     * @param reference the reference to set
-     */
-    public void setReference(String reference) {
-        this.reference = reference;
+        return referenceNode != null ? referenceNode.getValue() : null;
     }
 
     /**
      * @return the status
      */
     public String getStatus() {
-        return status;
-    }
-
-    /**
-     * @param status the status to set
-     */
-    public void setStatus(String status) {
-        this.status = status;
+        return statusNode != null ? statusNode.getValue() : null;
     }
 
     /**
@@ -284,44 +260,44 @@ public abstract class ASTNode {
     }
 
     /**
-     * @return the descriptionStartPosition
+     * @return the descriptionNode
      */
-    public int getDescriptionStartPosition() {
-        return descriptionStartPosition;
+    public SimpleNode<String> getDescriptionNode() {
+        return descriptionNode;
     }
 
     /**
-     * @param descriptionStartPosition the descriptionStartPosition to set
+     * @param descriptionNode the descriptionNode to set
      */
-    public void setDescriptionStartPosition(int descriptionStartPosition) {
-        this.descriptionStartPosition = descriptionStartPosition;
+    public void setDescriptionNode(SimpleNode<String> descriptionNode) {
+        this.descriptionNode = descriptionNode;
     }
 
     /**
-     * @return the referenceStartPosition
+     * @return the referenceNode
      */
-    public int getReferenceStartPosition() {
-        return referenceStartPosition;
+    public SimpleNode<String> getReferenceNode() {
+        return referenceNode;
     }
 
     /**
-     * @param referenceStartPosition the referenceStartPosition to set
+     * @param referenceNode the referenceNode to set
      */
-    public void setReferenceStartPosition(int referenceStartPosition) {
-        this.referenceStartPosition = referenceStartPosition;
+    public void setReferenceNode(SimpleNode<String> referenceNode) {
+        this.referenceNode = referenceNode;
     }
 
     /**
-     * @return the statusStartPosition
+     * @return the statusNode
      */
-    public int getStatusStartPosition() {
-        return statusStartPosition;
+    public SimpleNode<String> getStatusNode() {
+        return statusNode;
     }
 
     /**
-     * @param statusStartPosition the statusStartPosition to set
+     * @param statusNode the statusNode to set
      */
-    public void setStatusStartPosition(int statusStartPosition) {
-        this.statusStartPosition = statusStartPosition;
+    public void setStatusNode(SimpleNode<String> statusNode) {
+        this.statusNode = statusNode;
     }
 }
