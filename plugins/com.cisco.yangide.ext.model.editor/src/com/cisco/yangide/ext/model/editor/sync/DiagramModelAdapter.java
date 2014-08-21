@@ -70,18 +70,26 @@ final class DiagramModelAdapter extends EContentAdapter {
                     switch (notification.getEventType()) {
                     case Notification.ADD:
                         ASTNode node = mapping.get(notification.getNotifier());
-                        Node newValue = (Node) notification.getNewValue();
-                        String content = null;
-                        if (removedBlock.containsKey(newValue)) { // block moved from another
-                            // location
-                            System.out.println("block moved");
-                            content = removedBlock.remove(newValue);
-                            add(node, content, notification.getPosition());
+                        if (notification.getNewValue() instanceof Node) {
+                            Node newValue = (Node) notification.getNewValue();
+                            String content = null;
+                            if (removedBlock.containsKey(newValue)) { // block moved from another
+                                // location
+                                System.out.println("block moved");
+                                content = removedBlock.remove(newValue);
+                                add(node, content, notification.getPosition());
+                            }
+                            if (newValue.eClass() == ModelPackage.Literals.IMPORT) {
+                                addImport((Module) node, newValue);
+                            }
+                            break;
+                        } else if (notification.getNewValue() instanceof Tag) {
+                            if (((Tag) notification.getNewValue()).getValue() != null) {
+                                Activator.logError("tag added with value: " + notification);
+                            }
+                        } else {
+                            Activator.logError("unknown notification : " + notification);
                         }
-                        if (newValue.eClass() == ModelPackage.Literals.IMPORT) {
-                            addImport((Module) node, newValue);
-                        }
-                        break;
                     case Notification.SET:
                         if (notification.getFeature() != ModelPackage.Literals.NODE__PARENT) {
                             // skip notification if value not changed
@@ -117,7 +125,7 @@ final class DiagramModelAdapter extends EContentAdapter {
                         break;
                     case Notification.REMOVE:
                         if (notification.getOldValue() != null && notification.getOldValue() instanceof Node
-                                && mapping.containsKey(notification.getOldValue())) {
+                        && mapping.containsKey(notification.getOldValue())) {
                             delete((Node) notification.getOldValue());
                         }
                         break;
@@ -339,7 +347,7 @@ final class DiagramModelAdapter extends EContentAdapter {
 
         char[] content = yangSourceEditor.getDocument().get().toCharArray();
         com.cisco.yangide.core.dom.Module module = YangParserUtil.parseYangFile(content);
-        modelSynchronizer.updateFromSource(module, false);
+        modelSynchronizer.updateFromSource(module, true);
     }
 
     private int getIndentLevel(ASTNode node) {
