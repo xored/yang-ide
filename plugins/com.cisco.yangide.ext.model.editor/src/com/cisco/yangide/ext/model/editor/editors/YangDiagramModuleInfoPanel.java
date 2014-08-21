@@ -335,7 +335,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             }
             public void updateData() {
                 if (null != importObj) {
-                    name.setText(importObj.getModule().getName());
+                    name.setText(importObj.getModule());
                     prefix.setText(Strings.getAsString(importObj.getPrefix()));
                     revision.setText(Strings.getAsString(importObj.getRevisionDate()));
                     addListeneres();
@@ -716,7 +716,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             @Override
             public String getText(Object element) {
                 if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getImport(), element)) {
-                    return ((Import) element).getPrefix() + " : " + ((Import) element).getModule().getName();
+                    return ((Import) element).getPrefix() + " : " + ((Import) element).getModule();
                 }
                 return super.getText(element);
             }

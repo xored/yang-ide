@@ -63,7 +63,8 @@ public class YangModelUtil {
 
     private static Map<EClass, List<EClass>> compositeNodeMap = new HashMap<EClass, List<EClass>>();
     private static Map<EClass, List<YangTag>> taggedNodeMap = new HashMap<EClass, List<YangTag>>();
-    private static final List<EClass> connections = new ArrayList<EClass>();
+    // key has reference to value
+    private static final Map<EClass, EClass> connections = new HashMap<EClass, EClass>();
 
     private static Map<Class<? extends ASTNode>, EClass> astNodes = new HashMap<Class<? extends ASTNode>, EClass>();
     public static final ModelPackage MODEL_PACKAGE = ModelPackage.eINSTANCE;
@@ -143,7 +144,8 @@ public class YangModelUtil {
         astNodes.put(TypeDefinition.class, MODEL_PACKAGE.getTypedef());
         astNodes.put(TypeReference.class, MODEL_PACKAGE.getTyperef());
 
-        connections.add(MODEL_PACKAGE.getUses());
+        connections.put(MODEL_PACKAGE.getUses(), MODEL_PACKAGE.getGrouping());
+        connections.put(MODEL_PACKAGE.getIdentity(), MODEL_PACKAGE.getIdentity());
     }
 
     public static boolean canContain(Object parent) {
@@ -221,16 +223,19 @@ public class YangModelUtil {
     }
 
     public static boolean hasConnection(EObject tested) {
-        if (!connections.contains(tested.eClass())) {
-            for (EClass c : connections) {
-                if (checkType(c, tested)) {
-                    return true;
+        return null != getConnectionReferenceClass(tested);
+    }
+    public static EClass getConnectionReferenceClass(EObject tested) {
+        if (null == connections.get(tested.eClass())) {
+            for (Map.Entry<EClass, EClass> c : connections.entrySet()) {
+                if (checkType(c.getKey(), tested)) {
+                    return c.getValue();
                 }
             }
-            return false;
         } else {
-            return true;
+            return connections.get(tested.eClass());
         }
+        return null;
     }
 
     public static EStructuralFeature getReference(EClass parent, EClass ref) {
@@ -243,15 +248,20 @@ public class YangModelUtil {
     }
     
     public static EObject getReferencedObject(IFeatureProvider fp, EObject obj) {
-        if (hasConnection(obj)) {
+        EClass referencedClass = getConnectionReferenceClass(obj);
+        if (null != referencedClass) {
            Object module = fp.getBusinessObjectForPictogramElement(fp.getDiagramTypeProvider().getDiagram());
-           if (checkType(MODEL_PACKAGE.getUses(), obj) && null != module && module instanceof EObject) {
-               for(EObject o : filter(getAllBusinessObjects((EObject) module, null), MODEL_PACKAGE.getGrouping())) {
-                   if (((Grouping) o).getName().equals(((Uses) obj).getQName())) {
-                       return o;
-                   }
-               }
-               
+           for(EObject o : filter(getAllBusinessObjects((EObject) module, null), referencedClass)) {
+                if (checkType(MODEL_PACKAGE.getUses(), obj) && null != module && module instanceof EObject) {
+                    if (((Grouping) o).getName().equals(((Uses) obj).getQName())) {
+                        return o;
+                    }
+                }
+                if (checkType(MODEL_PACKAGE.getNamedNode(), obj) && checkType(MODEL_PACKAGE.getNamedNode(), referencedClass)) {
+                    if (o != obj && null != ((NamedNode) o).getName() && ((NamedNode) o).getName().equals(((NamedNode) obj).getName())) {
+                        return o;
+                    }
+                }
            }
         }
         return null;
@@ -402,9 +412,7 @@ public class YangModelUtil {
         }
         if (checkType(MODEL_PACKAGE.getImport(), o)) {
             if (n instanceof ModuleImport) {
-                Module module = ModelFactory.eINSTANCE.createModule();
-                module.setName(((ModuleImport) n).getName());
-                ((Import) o).setModule(module);
+                ((Import) o).setModule(((ModuleImport) n).getName());
                 ((Import) o).setPrefix(((ModuleImport) n).getPrefix());
                 ((Import) o).setRevisionDate(((ModuleImport) n).getRevision());
             }

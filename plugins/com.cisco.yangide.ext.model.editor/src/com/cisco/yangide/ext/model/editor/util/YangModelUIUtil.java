@@ -224,7 +224,7 @@ public class YangModelUIUtil {
             PictogramElement startPE = YangModelUIUtil.getBusinessObjectShape(fp, obj);
             Anchor start = YangModelUIUtil.getBoxRelativeAnchor((AnchorContainer) startPE);
             Connection con = null;
-            if (null != start.getOutgoingConnections() && !start.getOutgoingConnections().isEmpty()) {
+            if (null != start && null != start.getOutgoingConnections() && !start.getOutgoingConnections().isEmpty()) {
                 con = start.getOutgoingConnections().get(0);
             }
             if (null == ref) { 

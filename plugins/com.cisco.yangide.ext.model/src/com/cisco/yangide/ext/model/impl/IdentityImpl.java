@@ -6,6 +6,7 @@ import com.cisco.yangide.ext.model.Identity;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
 
+import com.cisco.yangide.ext.model.ReferenceNode;
 import org.eclipse.emf.common.notify.Notification;
 
 import org.eclipse.emf.ecore.EClass;
@@ -23,6 +24,7 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.IdentityImpl#getParent <em>Parent</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.IdentityImpl#getName <em>Name</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.IdentityImpl#getReference <em>Reference</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.IdentityImpl#getBase <em>Base</em>}</li>
  * </ul>
  * </p>
@@ -59,6 +61,26 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
      * @ordered
      */
     protected String name = NAME_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getReference() <em>Reference</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getReference()
+     * @generated
+     * @ordered
+     */
+    protected static final String REFERENCE_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getReference() <em>Reference</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getReference()
+     * @generated
+     * @ordered
+     */
+    protected String reference = REFERENCE_EDEFAULT;
 
     /**
      * The cached value of the '{@link #getBase() <em>Base</em>}' reference.
@@ -153,6 +175,27 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
      * <!-- end-user-doc -->
      * @generated
      */
+    public String getReference() {
+        return reference;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setReference(String newReference) {
+        String oldReference = reference;
+        reference = newReference;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.IDENTITY__REFERENCE, oldReference, reference));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public Identity getBase() {
         if (base != null && base.eIsProxy()) {
             InternalEObject oldBase = (InternalEObject)base;
@@ -199,6 +242,8 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
                 return basicGetParent();
             case ModelPackage.IDENTITY__NAME:
                 return getName();
+            case ModelPackage.IDENTITY__REFERENCE:
+                return getReference();
             case ModelPackage.IDENTITY__BASE:
                 if (resolve) return getBase();
                 return basicGetBase();
@@ -219,6 +264,9 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
                 return;
             case ModelPackage.IDENTITY__NAME:
                 setName((String)newValue);
+                return;
+            case ModelPackage.IDENTITY__REFERENCE:
+                setReference((String)newValue);
                 return;
             case ModelPackage.IDENTITY__BASE:
                 setBase((Identity)newValue);
@@ -241,6 +289,9 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
             case ModelPackage.IDENTITY__NAME:
                 setName(NAME_EDEFAULT);
                 return;
+            case ModelPackage.IDENTITY__REFERENCE:
+                setReference(REFERENCE_EDEFAULT);
+                return;
             case ModelPackage.IDENTITY__BASE:
                 setBase((Identity)null);
                 return;
@@ -260,10 +311,44 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
                 return parent != null;
             case ModelPackage.IDENTITY__NAME:
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
+            case ModelPackage.IDENTITY__REFERENCE:
+                return REFERENCE_EDEFAULT == null ? reference != null : !REFERENCE_EDEFAULT.equals(reference);
             case ModelPackage.IDENTITY__BASE:
                 return base != null;
         }
         return super.eIsSet(featureID);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public int eBaseStructuralFeatureID(int derivedFeatureID, Class<?> baseClass) {
+        if (baseClass == ReferenceNode.class) {
+            switch (derivedFeatureID) {
+                case ModelPackage.IDENTITY__REFERENCE: return ModelPackage.REFERENCE_NODE__REFERENCE;
+                default: return -1;
+            }
+        }
+        return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    @Override
+    public int eDerivedStructuralFeatureID(int baseFeatureID, Class<?> baseClass) {
+        if (baseClass == ReferenceNode.class) {
+            switch (baseFeatureID) {
+                case ModelPackage.REFERENCE_NODE__REFERENCE: return ModelPackage.IDENTITY__REFERENCE;
+                default: return -1;
+            }
+        }
+        return super.eDerivedStructuralFeatureID(baseFeatureID, baseClass);
     }
 
     /**
@@ -278,6 +363,8 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
         StringBuffer result = new StringBuffer(super.toString());
         result.append(" (name: ");
         result.append(name);
+        result.append(", reference: ");
+        result.append(reference);
         result.append(')');
         return result.toString();
     }

@@ -854,22 +854,13 @@ public interface ModelPackage extends EPackage {
     int IMPORT__PARENT = NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Module</b></em>' containment reference.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int IMPORT__MODULE = NODE_FEATURE_COUNT + 0;
-
-    /**
      * The feature id for the '<em><b>Prefix</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int IMPORT__PREFIX = NODE_FEATURE_COUNT + 1;
+    int IMPORT__PREFIX = NODE_FEATURE_COUNT + 0;
 
     /**
      * The feature id for the '<em><b>Revision Date</b></em>' attribute.
@@ -878,7 +869,16 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int IMPORT__REVISION_DATE = NODE_FEATURE_COUNT + 2;
+    int IMPORT__REVISION_DATE = NODE_FEATURE_COUNT + 1;
+
+    /**
+     * The feature id for the '<em><b>Module</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IMPORT__MODULE = NODE_FEATURE_COUNT + 2;
 
     /**
      * The number of structural features of the '<em>Import</em>' class.
@@ -1625,13 +1625,22 @@ public interface ModelPackage extends EPackage {
     int IDENTITY__NAME = NAMED_NODE__NAME;
 
     /**
+     * The feature id for the '<em><b>Reference</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int IDENTITY__REFERENCE = NAMED_NODE_FEATURE_COUNT + 0;
+
+    /**
      * The feature id for the '<em><b>Base</b></em>' reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int IDENTITY__BASE = NAMED_NODE_FEATURE_COUNT + 0;
+    int IDENTITY__BASE = NAMED_NODE_FEATURE_COUNT + 1;
 
     /**
      * The number of structural features of the '<em>Identity</em>' class.
@@ -1640,7 +1649,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int IDENTITY_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 1;
+    int IDENTITY_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 2;
 
     /**
      * The number of operations of the '<em>Identity</em>' class.
@@ -1846,6 +1855,44 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int TYPEREF_OPERATION_COUNT = NAMED_NODE_OPERATION_COUNT + 0;
+
+
+    /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.ReferenceNode <em>Reference Node</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.ReferenceNode
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getReferenceNode()
+     * @generated
+     */
+    int REFERENCE_NODE = 33;
+
+    /**
+     * The feature id for the '<em><b>Reference</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int REFERENCE_NODE__REFERENCE = 0;
+
+    /**
+     * The number of structural features of the '<em>Reference Node</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int REFERENCE_NODE_FEATURE_COUNT = 1;
+
+    /**
+     * The number of operations of the '<em>Reference Node</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int REFERENCE_NODE_OPERATION_COUNT = 0;
 
 
     /**
@@ -2055,15 +2102,15 @@ public interface ModelPackage extends EPackage {
     EClass getImport();
 
     /**
-     * Returns the meta object for the containment reference '{@link com.cisco.yangide.ext.model.Import#getModule <em>Module</em>}'.
+     * Returns the meta object for the attribute '{@link com.cisco.yangide.ext.model.Import#getModule <em>Module</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the containment reference '<em>Module</em>'.
+     * @return the meta object for the attribute '<em>Module</em>'.
      * @see com.cisco.yangide.ext.model.Import#getModule()
      * @see #getImport()
      * @generated
      */
-    EReference getImport_Module();
+    EAttribute getImport_Module();
 
     /**
      * Returns the meta object for the attribute '{@link com.cisco.yangide.ext.model.Import#getPrefix <em>Prefix</em>}'.
@@ -2388,6 +2435,27 @@ public interface ModelPackage extends EPackage {
     EClass getTyperef();
 
     /**
+     * Returns the meta object for class '{@link com.cisco.yangide.ext.model.ReferenceNode <em>Reference Node</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Reference Node</em>'.
+     * @see com.cisco.yangide.ext.model.ReferenceNode
+     * @generated
+     */
+    EClass getReferenceNode();
+
+    /**
+     * Returns the meta object for the attribute '{@link com.cisco.yangide.ext.model.ReferenceNode#getReference <em>Reference</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Reference</em>'.
+     * @see com.cisco.yangide.ext.model.ReferenceNode#getReference()
+     * @see #getReferenceNode()
+     * @generated
+     */
+    EAttribute getReferenceNode_Reference();
+
+    /**
      * Returns the factory that creates the instances of the model.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2599,12 +2667,12 @@ public interface ModelPackage extends EPackage {
         EClass IMPORT = eINSTANCE.getImport();
 
         /**
-         * The meta object literal for the '<em><b>Module</b></em>' containment reference feature.
+         * The meta object literal for the '<em><b>Module</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
          */
-        EReference IMPORT__MODULE = eINSTANCE.getImport_Module();
+        EAttribute IMPORT__MODULE = eINSTANCE.getImport_Module();
 
         /**
          * The meta object literal for the '<em><b>Prefix</b></em>' attribute feature.
@@ -2891,6 +2959,24 @@ public interface ModelPackage extends EPackage {
          * @generated
          */
         EClass TYPEREF = eINSTANCE.getTyperef();
+
+        /**
+         * The meta object literal for the '{@link com.cisco.yangide.ext.model.ReferenceNode <em>Reference Node</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see com.cisco.yangide.ext.model.ReferenceNode
+         * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getReferenceNode()
+         * @generated
+         */
+        EClass REFERENCE_NODE = eINSTANCE.getReferenceNode();
+
+        /**
+         * The meta object literal for the '<em><b>Reference</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute REFERENCE_NODE__REFERENCE = eINSTANCE.getReferenceNode_Reference();
 
     }
 

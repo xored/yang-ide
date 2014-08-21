@@ -4,15 +4,10 @@ package com.cisco.yangide.ext.model.impl;
 
 import com.cisco.yangide.ext.model.Import;
 import com.cisco.yangide.ext.model.ModelPackage;
-import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Node;
-
 import org.eclipse.emf.common.notify.Notification;
-import org.eclipse.emf.common.notify.NotificationChain;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
@@ -24,9 +19,9 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * The following features are implemented:
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getParent <em>Parent</em>}</li>
- *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getModule <em>Module</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getPrefix <em>Prefix</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getRevisionDate <em>Revision Date</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getModule <em>Module</em>}</li>
  * </ul>
  * </p>
  *
@@ -42,16 +37,6 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
      * @ordered
      */
     protected Node parent;
-
-    /**
-     * The cached value of the '{@link #getModule() <em>Module</em>}' containment reference.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getModule()
-     * @generated
-     * @ordered
-     */
-    protected Module module;
 
     /**
      * The default value of the '{@link #getPrefix() <em>Prefix</em>}' attribute.
@@ -92,6 +77,26 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
      * @ordered
      */
     protected String revisionDate = REVISION_DATE_EDEFAULT;
+
+    /**
+     * The default value of the '{@link #getModule() <em>Module</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getModule()
+     * @generated
+     * @ordered
+     */
+    protected static final String MODULE_EDEFAULT = null;
+
+    /**
+     * The cached value of the '{@link #getModule() <em>Module</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getModule()
+     * @generated
+     * @ordered
+     */
+    protected String module = MODULE_EDEFAULT;
 
     /**
      * <!-- begin-user-doc -->
@@ -155,7 +160,7 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
      * <!-- end-user-doc -->
      * @generated
      */
-    public Module getModule() {
+    public String getModule() {
         return module;
     }
 
@@ -164,33 +169,11 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
      * <!-- end-user-doc -->
      * @generated
      */
-    public NotificationChain basicSetModule(Module newModule, NotificationChain msgs) {
-        Module oldModule = module;
+    public void setModule(String newModule) {
+        String oldModule = module;
         module = newModule;
-        if (eNotificationRequired()) {
-            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.IMPORT__MODULE, oldModule, newModule);
-            if (msgs == null) msgs = notification; else msgs.add(notification);
-        }
-        return msgs;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setModule(Module newModule) {
-        if (newModule != module) {
-            NotificationChain msgs = null;
-            if (module != null)
-                msgs = ((InternalEObject)module).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.IMPORT__MODULE, null, msgs);
-            if (newModule != null)
-                msgs = ((InternalEObject)newModule).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.IMPORT__MODULE, null, msgs);
-            msgs = basicSetModule(newModule, msgs);
-            if (msgs != null) msgs.dispatch();
-        }
-        else if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.IMPORT__MODULE, newModule, newModule));
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.IMPORT__MODULE, oldModule, module));
     }
 
     /**
@@ -241,31 +224,17 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
      * @generated
      */
     @Override
-    public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
-        switch (featureID) {
-            case ModelPackage.IMPORT__MODULE:
-                return basicSetModule(null, msgs);
-        }
-        return super.eInverseRemove(otherEnd, featureID, msgs);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
             case ModelPackage.IMPORT__PARENT:
                 if (resolve) return getParent();
                 return basicGetParent();
-            case ModelPackage.IMPORT__MODULE:
-                return getModule();
             case ModelPackage.IMPORT__PREFIX:
                 return getPrefix();
             case ModelPackage.IMPORT__REVISION_DATE:
                 return getRevisionDate();
+            case ModelPackage.IMPORT__MODULE:
+                return getModule();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -281,14 +250,14 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
             case ModelPackage.IMPORT__PARENT:
                 setParent((Node)newValue);
                 return;
-            case ModelPackage.IMPORT__MODULE:
-                setModule((Module)newValue);
-                return;
             case ModelPackage.IMPORT__PREFIX:
                 setPrefix((String)newValue);
                 return;
             case ModelPackage.IMPORT__REVISION_DATE:
                 setRevisionDate((String)newValue);
+                return;
+            case ModelPackage.IMPORT__MODULE:
+                setModule((String)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -305,14 +274,14 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
             case ModelPackage.IMPORT__PARENT:
                 setParent((Node)null);
                 return;
-            case ModelPackage.IMPORT__MODULE:
-                setModule((Module)null);
-                return;
             case ModelPackage.IMPORT__PREFIX:
                 setPrefix(PREFIX_EDEFAULT);
                 return;
             case ModelPackage.IMPORT__REVISION_DATE:
                 setRevisionDate(REVISION_DATE_EDEFAULT);
+                return;
+            case ModelPackage.IMPORT__MODULE:
+                setModule(MODULE_EDEFAULT);
                 return;
         }
         super.eUnset(featureID);
@@ -328,12 +297,12 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
         switch (featureID) {
             case ModelPackage.IMPORT__PARENT:
                 return parent != null;
-            case ModelPackage.IMPORT__MODULE:
-                return module != null;
             case ModelPackage.IMPORT__PREFIX:
                 return PREFIX_EDEFAULT == null ? prefix != null : !PREFIX_EDEFAULT.equals(prefix);
             case ModelPackage.IMPORT__REVISION_DATE:
                 return REVISION_DATE_EDEFAULT == null ? revisionDate != null : !REVISION_DATE_EDEFAULT.equals(revisionDate);
+            case ModelPackage.IMPORT__MODULE:
+                return MODULE_EDEFAULT == null ? module != null : !MODULE_EDEFAULT.equals(module);
         }
         return super.eIsSet(featureID);
     }
@@ -352,6 +321,8 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
         result.append(prefix);
         result.append(", revisionDate: ");
         result.append(revisionDate);
+        result.append(", module: ");
+        result.append(module);
         result.append(')');
         return result.toString();
     }

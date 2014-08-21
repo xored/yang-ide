@@ -313,6 +313,7 @@ public class ModelSwitch<T> extends Switch<T> {
                 Identity identity = (Identity)theEObject;
                 T result = caseIdentity(identity);
                 if (result == null) result = caseNamedNode(identity);
+                if (result == null) result = caseReferenceNode(identity);
                 if (result == null) result = caseNode(identity);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
@@ -347,6 +348,12 @@ public class ModelSwitch<T> extends Switch<T> {
                 T result = caseTyperef(typeref);
                 if (result == null) result = caseNamedNode(typeref);
                 if (result == null) result = caseNode(typeref);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case ModelPackage.REFERENCE_NODE: {
+                ReferenceNode referenceNode = (ReferenceNode)theEObject;
+                T result = caseReferenceNode(referenceNode);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -846,6 +853,21 @@ public class ModelSwitch<T> extends Switch<T> {
      * @generated
      */
     public T caseTyperef(Typeref object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Reference Node</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Reference Node</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseReferenceNode(ReferenceNode object) {
         return null;
     }
 

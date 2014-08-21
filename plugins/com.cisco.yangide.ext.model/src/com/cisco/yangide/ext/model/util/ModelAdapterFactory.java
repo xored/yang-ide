@@ -200,6 +200,10 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
                 return createTyperefAdapter();
             }
             @Override
+            public Adapter caseReferenceNode(ReferenceNode object) {
+                return createReferenceNodeAdapter();
+            }
+            @Override
             public Adapter defaultCase(EObject object) {
                 return createEObjectAdapter();
             }
@@ -678,6 +682,20 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createTyperefAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link com.cisco.yangide.ext.model.ReferenceNode <em>Reference Node</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see com.cisco.yangide.ext.model.ReferenceNode
+     * @generated
+     */
+    public Adapter createReferenceNodeAdapter() {
         return null;
     }
 

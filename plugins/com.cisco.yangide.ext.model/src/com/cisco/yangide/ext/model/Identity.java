@@ -19,7 +19,7 @@ package com.cisco.yangide.ext.model;
  * @model
  * @generated
  */
-public interface Identity extends NamedNode {
+public interface Identity extends NamedNode, ReferenceNode {
     /**
      * Returns the value of the '<em><b>Base</b></em>' reference.
      * <!-- begin-user-doc -->

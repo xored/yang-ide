@@ -54,7 +54,7 @@ public class AddImportDialog extends ElementListSelectionDialog {
     
     private ElementIndexInfo find(Import node) {
         for (ElementIndexInfo info : list) {
-            if (info.getModule().equals(obj.getModule().getName()) && info.getRevision().equals(obj.getRevisionDate())) {
+            if (info.getModule().equals(obj.getModule()) && info.getRevision().equals(obj.getRevisionDate())) {
                 return info;
             }
         }
@@ -109,14 +109,12 @@ public class AddImportDialog extends ElementListSelectionDialog {
             Import result = ModelFactory.eINSTANCE.createImport();
             result.setPrefix(prefix.getText());
             result.setRevisionDate(choosen.getRevision());
-            Module imported = ModelFactory.eINSTANCE.createModule();
-            imported.setName(choosen.getModule());
-            result.setModule(imported);
+            result.setModule(choosen.getModule());
             YangModelUtil.add(module, result, module.getChildren().size());
         } else {
             obj.setPrefix(prefix.getText());
             obj.setRevisionDate(choosen.getRevision());
-            obj.getModule().setName(choosen.getModule());
+            obj.setModule(choosen.getModule());
         }
         
     }

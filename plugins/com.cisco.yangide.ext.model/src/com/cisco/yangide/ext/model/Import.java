@@ -11,9 +11,9 @@ package com.cisco.yangide.ext.model;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link com.cisco.yangide.ext.model.Import#getModule <em>Module</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.Import#getPrefix <em>Prefix</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.Import#getRevisionDate <em>Revision Date</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.Import#getModule <em>Module</em>}</li>
  * </ul>
  * </p>
  *
@@ -23,30 +23,30 @@ package com.cisco.yangide.ext.model;
  */
 public interface Import extends Node {
     /**
-     * Returns the value of the '<em><b>Module</b></em>' containment reference.
+     * Returns the value of the '<em><b>Module</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <p>
      * If the meaning of the '<em>Module</em>' containment reference isn't clear,
      * there really should be more of a description here...
      * </p>
      * <!-- end-user-doc -->
-     * @return the value of the '<em>Module</em>' containment reference.
-     * @see #setModule(Module)
+     * @return the value of the '<em>Module</em>' attribute.
+     * @see #setModule(String)
      * @see com.cisco.yangide.ext.model.ModelPackage#getImport_Module()
-     * @model containment="true" required="true"
+     * @model dataType="org.eclipse.emf.ecore.xml.type.String"
      * @generated
      */
-    Module getModule();
+    String getModule();
 
     /**
-     * Sets the value of the '{@link com.cisco.yangide.ext.model.Import#getModule <em>Module</em>}' containment reference.
+     * Sets the value of the '{@link com.cisco.yangide.ext.model.Import#getModule <em>Module</em>}' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @param value the new value of the '<em>Module</em>' containment reference.
+     * @param value the new value of the '<em>Module</em>' attribute.
      * @see #getModule()
      * @generated
      */
-    void setModule(Module value);
+    void setModule(String value);
 
     /**
      * Returns the value of the '<em><b>Prefix</b></em>' attribute.

@@ -33,11 +33,10 @@
   <eClassifiers xsi:type="ecore:EClass" name="LeafList" eSuperTypes="#//NamedNode #//TaggedNode #//TypedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Anyxml" eSuperTypes="#//NamedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Import" eSuperTypes="#//Node">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="module" lowerBound="1"
-        eType="#//Module" containment="true"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="prefix" lowerBound="1"
         eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="revisionDate" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"/>
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="module" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Include" eSuperTypes="#//Node">
     <eStructuralFeatures xsi:type="ecore:EReference" name="submodule" lowerBound="1"
@@ -70,7 +69,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="Extension" eSuperTypes="#//NamedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Feature" eSuperTypes="#//NamedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Deviation" eSuperTypes="#//NamedNode"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Identity" eSuperTypes="#//NamedNode">
+  <eClassifiers xsi:type="ecore:EClass" name="Identity" eSuperTypes="#//NamedNode #//ReferenceNode">
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//Identity"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TypedNode" abstract="true" interface="true">
@@ -79,4 +78,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="ChoiceCase" eSuperTypes="#//NamedContainingNode #//TaggedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="ListKey" eSuperTypes="#//NamedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Typeref" eSuperTypes="#//NamedNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ReferenceNode" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EAttribute" name="reference" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"/>
+  </eClassifiers>
 </ecore:EPackage>

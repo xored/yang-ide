@@ -26,6 +26,7 @@ import com.cisco.yangide.ext.model.NamedContainingNode;
 import com.cisco.yangide.ext.model.NamedNode;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Notification;
+import com.cisco.yangide.ext.model.ReferenceNode;
 import com.cisco.yangide.ext.model.Revision;
 import com.cisco.yangide.ext.model.Rpc;
 import com.cisco.yangide.ext.model.RpcIO;
@@ -285,6 +286,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
     private EClass typerefEClass = null;
 
     /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass referenceNodeEClass = null;
+
+    /**
      * Creates an instance of the model <b>Package</b>, registered with
      * {@link org.eclipse.emf.ecore.EPackage.Registry EPackage.Registry} by the package
      * package URI value.
@@ -533,8 +541,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getImport_Module() {
-        return (EReference)importEClass.getEStructuralFeatures().get(0);
+    public EAttribute getImport_Module() {
+        return (EAttribute)importEClass.getEStructuralFeatures().get(2);
     }
 
     /**
@@ -543,7 +551,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     public EAttribute getImport_Prefix() {
-        return (EAttribute)importEClass.getEStructuralFeatures().get(1);
+        return (EAttribute)importEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -552,7 +560,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     public EAttribute getImport_RevisionDate() {
-        return (EAttribute)importEClass.getEStructuralFeatures().get(2);
+        return (EAttribute)importEClass.getEStructuralFeatures().get(1);
     }
 
     /**
@@ -821,6 +829,24 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EClass getReferenceNode() {
+        return referenceNodeEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getReferenceNode_Reference() {
+        return (EAttribute)referenceNodeEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public ModelFactory getModelFactory() {
         return (ModelFactory)getEFactoryInstance();
     }
@@ -877,9 +903,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         anyxmlEClass = createEClass(ANYXML);
 
         importEClass = createEClass(IMPORT);
-        createEReference(importEClass, IMPORT__MODULE);
         createEAttribute(importEClass, IMPORT__PREFIX);
         createEAttribute(importEClass, IMPORT__REVISION_DATE);
+        createEAttribute(importEClass, IMPORT__MODULE);
 
         includeEClass = createEClass(INCLUDE);
         createEReference(includeEClass, INCLUDE__SUBMODULE);
@@ -928,6 +954,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         listKeyEClass = createEClass(LIST_KEY);
 
         typerefEClass = createEClass(TYPEREF);
+
+        referenceNodeEClass = createEClass(REFERENCE_NODE);
+        createEAttribute(referenceNodeEClass, REFERENCE_NODE__REFERENCE);
     }
 
     /**
@@ -998,6 +1027,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         featureEClass.getESuperTypes().add(this.getNamedNode());
         deviationEClass.getESuperTypes().add(this.getNamedNode());
         identityEClass.getESuperTypes().add(this.getNamedNode());
+        identityEClass.getESuperTypes().add(this.getReferenceNode());
         choiceCaseEClass.getESuperTypes().add(this.getNamedContainingNode());
         choiceCaseEClass.getESuperTypes().add(this.getTaggedNode());
         listKeyEClass.getESuperTypes().add(this.getNamedNode());
@@ -1037,9 +1067,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEClass(anyxmlEClass, Anyxml.class, "Anyxml", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         initEClass(importEClass, Import.class, "Import", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getImport_Module(), this.getModule(), null, "module", null, 1, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getImport_Prefix(), theXMLTypePackage.getString(), "prefix", null, 1, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getImport_RevisionDate(), theXMLTypePackage.getString(), "revisionDate", null, 0, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
+        initEAttribute(getImport_Module(), theXMLTypePackage.getString(), "module", null, 0, 1, Import.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(includeEClass, Include.class, "Include", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getInclude_Submodule(), this.getSubmodule(), null, "submodule", null, 1, 1, Include.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
@@ -1088,6 +1118,9 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEClass(listKeyEClass, ListKey.class, "ListKey", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         initEClass(typerefEClass, Typeref.class, "Typeref", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(referenceNodeEClass, ReferenceNode.class, "ReferenceNode", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEAttribute(getReferenceNode_Reference(), theXMLTypePackage.getString(), "reference", null, 0, 1, ReferenceNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         // Create resource
         createResource(eNS_URI);

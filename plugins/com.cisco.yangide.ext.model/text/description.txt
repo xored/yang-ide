@@ -40,9 +40,9 @@ Package model <http://www.example.org/model>
   Class Anyxml -> NamedNode
 
   Class Import -> Node
-    Reference module : Module<<1..1>>
     Attribute prefix : String<<1..1>>
     Attribute revisionDate : String
+    Attribute module : String
 
   Class Include -> Node
     Reference submodule : Submodule<<1..1>>
@@ -80,7 +80,7 @@ Package model <http://www.example.org/model>
 
   Class Deviation -> NamedNode
 
-  Class Identity -> NamedNode
+  Class Identity -> NamedNode, ReferenceNode
     Reference base : Identity
 
   Class TypedNode
@@ -91,3 +91,6 @@ Package model <http://www.example.org/model>
   Class ListKey -> NamedNode
 
   Class Typeref -> NamedNode
+
+  Class ReferenceNode
+    Attribute reference : String
