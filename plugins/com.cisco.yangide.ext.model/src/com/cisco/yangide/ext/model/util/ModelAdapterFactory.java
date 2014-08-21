@@ -192,6 +192,14 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
                 return createChoiceCaseAdapter();
             }
             @Override
+            public Adapter caseListKey(ListKey object) {
+                return createListKeyAdapter();
+            }
+            @Override
+            public Adapter caseTyperef(Typeref object) {
+                return createTyperefAdapter();
+            }
+            @Override
             public Adapter defaultCase(EObject object) {
                 return createEObjectAdapter();
             }
@@ -642,6 +650,34 @@ public class ModelAdapterFactory extends AdapterFactoryImpl {
      * @generated
      */
     public Adapter createChoiceCaseAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link com.cisco.yangide.ext.model.ListKey <em>List Key</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see com.cisco.yangide.ext.model.ListKey
+     * @generated
+     */
+    public Adapter createListKeyAdapter() {
+        return null;
+    }
+
+    /**
+     * Creates a new adapter for an object of class '{@link com.cisco.yangide.ext.model.Typeref <em>Typeref</em>}'.
+     * <!-- begin-user-doc -->
+     * This default implementation returns null so that we can easily ignore cases;
+     * it's useful to ignore a case when inheritance will catch all the cases anyway.
+     * <!-- end-user-doc -->
+     * @return the new adapter.
+     * @see com.cisco.yangide.ext.model.Typeref
+     * @generated
+     */
+    public Adapter createTyperefAdapter() {
         return null;
     }
 

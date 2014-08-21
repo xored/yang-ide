@@ -18,6 +18,7 @@ import com.cisco.yangide.ext.model.Include;
 import com.cisco.yangide.ext.model.Leaf;
 import com.cisco.yangide.ext.model.LeafList;
 import com.cisco.yangide.ext.model.List;
+import com.cisco.yangide.ext.model.ListKey;
 import com.cisco.yangide.ext.model.ModelFactory;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Module;
@@ -33,6 +34,7 @@ import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.TaggedNode;
 import com.cisco.yangide.ext.model.TypedNode;
 import com.cisco.yangide.ext.model.Typedef;
+import com.cisco.yangide.ext.model.Typeref;
 import com.cisco.yangide.ext.model.Uses;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -267,6 +269,20 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * @generated
      */
     private EClass choiceCaseEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass listKeyEClass = null;
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    private EClass typerefEClass = null;
 
     /**
      * Creates an instance of the model <b>Package</b>, registered with
@@ -769,8 +785,35 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- end-user-doc -->
      * @generated
      */
+    public EReference getTypedNode_Type() {
+        return (EReference)typedNodeEClass.getEStructuralFeatures().get(0);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     public EClass getChoiceCase() {
         return choiceCaseEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getListKey() {
+        return listKeyEClass;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EClass getTyperef() {
+        return typerefEClass;
     }
 
     /**
@@ -878,8 +921,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEReference(identityEClass, IDENTITY__BASE);
 
         typedNodeEClass = createEClass(TYPED_NODE);
+        createEReference(typedNodeEClass, TYPED_NODE__TYPE);
 
         choiceCaseEClass = createEClass(CHOICE_CASE);
+
+        listKeyEClass = createEClass(LIST_KEY);
+
+        typerefEClass = createEClass(TYPEREF);
     }
 
     /**
@@ -919,6 +967,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         groupingEClass.getESuperTypes().add(this.getTaggedNode());
         leafEClass.getESuperTypes().add(this.getNamedNode());
         leafEClass.getESuperTypes().add(this.getTaggedNode());
+        leafEClass.getESuperTypes().add(this.getTypedNode());
         containerEClass.getESuperTypes().add(this.getNamedContainingNode());
         containerEClass.getESuperTypes().add(this.getTaggedNode());
         namedNodeEClass.getESuperTypes().add(this.getNode());
@@ -926,10 +975,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         namedContainingNodeEClass.getESuperTypes().add(this.getNamedNode());
         namedContainingNodeEClass.getESuperTypes().add(this.getContainingNode());
         submoduleEClass.getESuperTypes().add(this.getModule());
+        typedefEClass.getESuperTypes().add(this.getNamedNode());
+        typedefEClass.getESuperTypes().add(this.getTaggedNode());
         choiceEClass.getESuperTypes().add(this.getNamedContainingNode());
         choiceEClass.getESuperTypes().add(this.getTaggedNode());
         leafListEClass.getESuperTypes().add(this.getNamedNode());
         leafListEClass.getESuperTypes().add(this.getTaggedNode());
+        leafListEClass.getESuperTypes().add(this.getTypedNode());
         anyxmlEClass.getESuperTypes().add(this.getNamedNode());
         importEClass.getESuperTypes().add(this.getNode());
         includeEClass.getESuperTypes().add(this.getNode());
@@ -948,6 +1000,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         identityEClass.getESuperTypes().add(this.getNamedNode());
         choiceCaseEClass.getESuperTypes().add(this.getNamedContainingNode());
         choiceCaseEClass.getESuperTypes().add(this.getTaggedNode());
+        listKeyEClass.getESuperTypes().add(this.getNamedNode());
+        typerefEClass.getESuperTypes().add(this.getNamedNode());
 
         // Initialize classes, features, and operations; add parameters
         initEClass(moduleEClass, Module.class, "Module", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1027,8 +1081,13 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEReference(getIdentity_Base(), this.getIdentity(), null, "base", null, 0, 1, Identity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(typedNodeEClass, TypedNode.class, "TypedNode", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+        initEReference(getTypedNode_Type(), this.getTyperef(), null, "type", null, 0, 1, TypedNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(choiceCaseEClass, ChoiceCase.class, "ChoiceCase", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(listKeyEClass, ListKey.class, "ListKey", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
+
+        initEClass(typerefEClass, Typeref.class, "Typeref", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         // Create resource
         createResource(eNS_URI);

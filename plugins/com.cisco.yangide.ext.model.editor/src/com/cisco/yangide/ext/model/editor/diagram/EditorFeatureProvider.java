@@ -55,11 +55,14 @@ import com.cisco.yangide.ext.model.editor.patterns.objects.GroupingPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.IdentityPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.LeafListPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.LeafPattern;
+import com.cisco.yangide.ext.model.editor.patterns.objects.ListKeyPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.ListPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.NotificationPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.RpcIOPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.RpcPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.SubmodulePattern;
+import com.cisco.yangide.ext.model.editor.patterns.objects.TypedefPattern;
+import com.cisco.yangide.ext.model.editor.patterns.objects.TyperefPattern;
 import com.cisco.yangide.ext.model.editor.patterns.objects.UsesPattern;
 import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 
@@ -86,8 +89,11 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         addPattern(new IdentityPattern());
         addPattern(new LeafListPattern());
         addPattern(new ListPattern());
+        addPattern(new ListKeyPattern());
         addPattern(new ChoicePattern());
         addPattern(new ChoiceCasePattern());
+        addPattern(new TypedefPattern());
+        addPattern(new TyperefPattern());
         addPattern(new RpcIOPattern());
     }
 

@@ -2,7 +2,6 @@
  */
 package com.cisco.yangide.ext.model;
 
-import org.eclipse.emf.ecore.EObject;
 
 /**
  * <!-- begin-user-doc -->
@@ -14,5 +13,5 @@ import org.eclipse.emf.ecore.EObject;
  * @model
  * @generated
  */
-public interface Typedef extends EObject {
+public interface Typedef extends NamedNode, TaggedNode {
 } // Typedef

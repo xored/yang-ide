@@ -93,6 +93,7 @@ public class ModelSwitch<T> extends Switch<T> {
                 T result = caseLeaf(leaf);
                 if (result == null) result = caseNamedNode(leaf);
                 if (result == null) result = caseTaggedNode(leaf);
+                if (result == null) result = caseTypedNode(leaf);
                 if (result == null) result = caseNode(leaf);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
@@ -152,6 +153,9 @@ public class ModelSwitch<T> extends Switch<T> {
             case ModelPackage.TYPEDEF: {
                 Typedef typedef = (Typedef)theEObject;
                 T result = caseTypedef(typedef);
+                if (result == null) result = caseNamedNode(typedef);
+                if (result == null) result = caseTaggedNode(typedef);
+                if (result == null) result = caseNode(typedef);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -171,6 +175,7 @@ public class ModelSwitch<T> extends Switch<T> {
                 T result = caseLeafList(leafList);
                 if (result == null) result = caseNamedNode(leafList);
                 if (result == null) result = caseTaggedNode(leafList);
+                if (result == null) result = caseTypedNode(leafList);
                 if (result == null) result = caseNode(leafList);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
@@ -326,6 +331,22 @@ public class ModelSwitch<T> extends Switch<T> {
                 if (result == null) result = caseNamedNode(choiceCase);
                 if (result == null) result = caseContainingNode(choiceCase);
                 if (result == null) result = caseNode(choiceCase);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case ModelPackage.LIST_KEY: {
+                ListKey listKey = (ListKey)theEObject;
+                T result = caseListKey(listKey);
+                if (result == null) result = caseNamedNode(listKey);
+                if (result == null) result = caseNode(listKey);
+                if (result == null) result = defaultCase(theEObject);
+                return result;
+            }
+            case ModelPackage.TYPEREF: {
+                Typeref typeref = (Typeref)theEObject;
+                T result = caseTyperef(typeref);
+                if (result == null) result = caseNamedNode(typeref);
+                if (result == null) result = caseNode(typeref);
                 if (result == null) result = defaultCase(theEObject);
                 return result;
             }
@@ -795,6 +816,36 @@ public class ModelSwitch<T> extends Switch<T> {
      * @generated
      */
     public T caseChoiceCase(ChoiceCase object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>List Key</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>List Key</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseListKey(ListKey object) {
+        return null;
+    }
+
+    /**
+     * Returns the result of interpreting the object as an instance of '<em>Typeref</em>'.
+     * <!-- begin-user-doc -->
+     * This implementation returns null;
+     * returning a non-null result will terminate the switch.
+     * <!-- end-user-doc -->
+     * @param object the target of the switch.
+     * @return the result of interpreting the object as an instance of '<em>Typeref</em>'.
+     * @see #doSwitch(org.eclipse.emf.ecore.EObject) doSwitch(EObject)
+     * @generated
+     */
+    public T caseTyperef(Typeref object) {
         return null;
     }
 

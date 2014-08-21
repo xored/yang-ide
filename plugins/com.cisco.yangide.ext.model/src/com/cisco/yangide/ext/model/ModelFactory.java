@@ -247,6 +247,24 @@ public interface ModelFactory extends EFactory {
     ChoiceCase createChoiceCase();
 
     /**
+     * Returns a new object of class '<em>List Key</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>List Key</em>'.
+     * @generated
+     */
+    ListKey createListKey();
+
+    /**
+     * Returns a new object of class '<em>Typeref</em>'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return a new object of class '<em>Typeref</em>'.
+     * @generated
+     */
+    Typeref createTyperef();
+
+    /**
      * Returns the package supported by this factory.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

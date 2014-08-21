@@ -8,6 +8,8 @@ import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.TaggedNode;
 
+import com.cisco.yangide.ext.model.TypedNode;
+import com.cisco.yangide.ext.model.Typeref;
 import java.util.Collection;
 
 import org.eclipse.emf.common.notify.Notification;
@@ -34,6 +36,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link com.cisco.yangide.ext.model.impl.LeafImpl#getParent <em>Parent</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.LeafImpl#getName <em>Name</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.LeafImpl#getTags <em>Tags</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.LeafImpl#getType <em>Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -79,6 +82,16 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
      * @ordered
      */
     protected EList<Tag> tags;
+
+    /**
+     * The cached value of the '{@link #getType() <em>Type</em>}' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getType()
+     * @generated
+     * @ordered
+     */
+    protected Typeref type;
 
     /**
      * <!-- begin-user-doc -->
@@ -175,6 +188,44 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
      * <!-- end-user-doc -->
      * @generated
      */
+    public Typeref getType() {
+        if (type != null && type.eIsProxy()) {
+            InternalEObject oldType = (InternalEObject)type;
+            type = (Typeref)eResolveProxy(oldType);
+            if (type != oldType) {
+                if (eNotificationRequired())
+                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, ModelPackage.LEAF__TYPE, oldType, type));
+            }
+        }
+        return type;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Typeref basicGetType() {
+        return type;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setType(Typeref newType) {
+        Typeref oldType = type;
+        type = newType;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LEAF__TYPE, oldType, type));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
@@ -199,6 +250,9 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
                 return getName();
             case ModelPackage.LEAF__TAGS:
                 return getTags();
+            case ModelPackage.LEAF__TYPE:
+                if (resolve) return getType();
+                return basicGetType();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -222,6 +276,9 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
                 getTags().clear();
                 getTags().addAll((Collection<? extends Tag>)newValue);
                 return;
+            case ModelPackage.LEAF__TYPE:
+                setType((Typeref)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -243,6 +300,9 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
             case ModelPackage.LEAF__TAGS:
                 getTags().clear();
                 return;
+            case ModelPackage.LEAF__TYPE:
+                setType((Typeref)null);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -261,6 +321,8 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.LEAF__TAGS:
                 return tags != null && !tags.isEmpty();
+            case ModelPackage.LEAF__TYPE:
+                return type != null;
         }
         return super.eIsSet(featureID);
     }
@@ -278,6 +340,12 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
                 default: return -1;
             }
         }
+        if (baseClass == TypedNode.class) {
+            switch (derivedFeatureID) {
+                case ModelPackage.LEAF__TYPE: return ModelPackage.TYPED_NODE__TYPE;
+                default: return -1;
+            }
+        }
         return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
     }
 
@@ -291,6 +359,12 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
         if (baseClass == TaggedNode.class) {
             switch (baseFeatureID) {
                 case ModelPackage.TAGGED_NODE__TAGS: return ModelPackage.LEAF__TAGS;
+                default: return -1;
+            }
+        }
+        if (baseClass == TypedNode.class) {
+            switch (baseFeatureID) {
+                case ModelPackage.TYPED_NODE__TYPE: return ModelPackage.LEAF__TYPE;
                 default: return -1;
             }
         }

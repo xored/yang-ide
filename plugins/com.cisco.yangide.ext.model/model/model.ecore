@@ -8,7 +8,7 @@
         eType="#//Revision" containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Grouping" eSuperTypes="#//NamedContainingNode #//TaggedNode"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Leaf" eSuperTypes="#//NamedNode #//TaggedNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Leaf" eSuperTypes="#//NamedNode #//TaggedNode #//TypedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Container" eSuperTypes="#//NamedContainingNode #//TaggedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Node" abstract="true" interface="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="parent" eType="#//Node"/>
@@ -28,9 +28,9 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="belongsTo" lowerBound="1"
         eType="#//BelongsTo"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Typedef"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Typedef" eSuperTypes="#//NamedNode #//TaggedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Choice" eSuperTypes="#//NamedContainingNode #//TaggedNode"/>
-  <eClassifiers xsi:type="ecore:EClass" name="LeafList" eSuperTypes="#//NamedNode #//TaggedNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="LeafList" eSuperTypes="#//NamedNode #//TaggedNode #//TypedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Anyxml" eSuperTypes="#//NamedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Import" eSuperTypes="#//Node">
     <eStructuralFeatures xsi:type="ecore:EReference" name="module" lowerBound="1"
@@ -73,6 +73,10 @@
   <eClassifiers xsi:type="ecore:EClass" name="Identity" eSuperTypes="#//NamedNode">
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//Identity"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="TypedNode" abstract="true" interface="true"/>
+  <eClassifiers xsi:type="ecore:EClass" name="TypedNode" abstract="true" interface="true">
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//Typeref"/>
+  </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ChoiceCase" eSuperTypes="#//NamedContainingNode #//TaggedNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="ListKey" eSuperTypes="#//NamedNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Typeref" eSuperTypes="#//NamedNode"/>
 </ecore:EPackage>

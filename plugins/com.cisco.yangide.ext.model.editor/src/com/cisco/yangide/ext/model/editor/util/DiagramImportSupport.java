@@ -96,7 +96,7 @@ public class DiagramImportSupport {
         if (YangModelUtil.hasConnection(n)) {
             start = YangModelUIUtil.getBoxRelativeAnchor((AnchorContainer) elements.get(n));
         }
-        if (null == start.getOutgoingConnections() || start.getOutgoingConnections().isEmpty()) {
+        if (null !=  start && (null == start.getOutgoingConnections() || start.getOutgoingConnections().isEmpty())) {
             Anchor finish = null;
             if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getUses(), n)) {
                 if (elements.containsKey(((Uses) n).getGrouping())) {

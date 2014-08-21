@@ -11,12 +11,13 @@ public class YangDiagramImageProvider extends AbstractImageProvider {
     public static final String IMG_IMPORT_PROPOSAL = PLUGIN_ID + ".import_obj";
     //public static final String IMG_KEYWORD_PROPOSAL = PLUGIN_ID + ".keyword_obj";
     public static final String IMG_TYPE_PROPOSAL = PLUGIN_ID + ".type_obj";
-    //public static final String IMG_CUSTOM_TYPE_PROPOSAL = PLUGIN_ID + ".custom_type_obj";
+    public static final String IMG_CUSTOM_TYPE_PROPOSAL = PLUGIN_ID + ".custom_type_obj";
     public static final String IMG_GROUPING_PROPOSAL = PLUGIN_ID + ".grouping_obj";
     public static final String IMG_CONTAINER_PROPOSAL = PLUGIN_ID + ".container_obj";
     public static final String IMG_LEAF_PROPOSAL = PLUGIN_ID + ".leaf_obj";
     public static final String IMG_LEAF_LIST_PROPOSAL = PLUGIN_ID + ".leaf_list_obj";
     public static final String IMG_LIST_PROPOSAL = PLUGIN_ID + ".list_obj";
+    public static final String IMG_LIST_KEY_PROPOSAL = PLUGIN_ID + ".key_obj";
     public static final String IMG_CHOICE_PROPOSAL = PLUGIN_ID + ".choice_obj";
     public static final String IMG_CHOICE_CASE_PROPOSAL = PLUGIN_ID + ".choice_case_obj";
     public static final String IMG_MODULE_PROPOSAL = PLUGIN_ID + ".module_obj";
@@ -46,12 +47,13 @@ public class YangDiagramImageProvider extends AbstractImageProvider {
     protected void addAvailableImages() {        
         addImageFilePath(IMG_IMPORT_PROPOSAL, PATH_OBJ + "import_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IMG_TYPE_PROPOSAL, PATH_OBJ + "type_obj.gif"); //$NON-NLS-1$
-
+        addImageFilePath(IMG_CUSTOM_TYPE_PROPOSAL, PATH_OBJ + "custom_type_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IMG_GROUPING_PROPOSAL, PATH_OBJ + "grouping_obj.gif"); //$NON-NLS-1$        
         addImageFilePath(IMG_CONTAINER_PROPOSAL, PATH_OBJ + "container_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IMG_LEAF_PROPOSAL, PATH_OBJ + "leaf_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IMG_LEAF_LIST_PROPOSAL, PATH_OBJ + "leaf_list_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IMG_LIST_PROPOSAL, PATH_OBJ + "list_obj.gif"); //$NON-NLS-1$
+        addImageFilePath(IMG_LIST_KEY_PROPOSAL, PATH_OBJ + "key_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IMG_CHOICE_PROPOSAL, PATH_OBJ + "choice_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IMG_CHOICE_CASE_PROPOSAL, PATH_OBJ + "choice_case_obj.gif"); //$NON-NLS-1$
         addImageFilePath(IMG_MODULE_PROPOSAL, PATH_OBJ + "module_obj.gif"); //$NON-NLS-1$

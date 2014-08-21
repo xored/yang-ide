@@ -12,6 +12,7 @@ public class PropertyUtil {
     public static final String OBJECT_HEADER_TEXT_SHAPE_KEY = "object-header-shape-id";
     public static final String OBJECT_IMAGE_SHAPE_KEY = "object-image-shape-id";
     public static final String BUSINESS_OBJECT_SHAPE_KEY = "business-object-shape-id";
+    public static final String BUSINESS_OBJECT_TYPE_SHAPE_KEY = "business-object-shape-id";
     
     public static final void setObjectShapeProp(PictogramElement pe, String prop, boolean set) {
         Graphiti.getPeService().setPropertyValue(pe, prop,

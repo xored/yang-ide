@@ -81,6 +81,8 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
             case ModelPackage.DEVIATION: return createDeviation();
             case ModelPackage.IDENTITY: return createIdentity();
             case ModelPackage.CHOICE_CASE: return createChoiceCase();
+            case ModelPackage.LIST_KEY: return createListKey();
+            case ModelPackage.TYPEREF: return createTyperef();
             default:
                 throw new IllegalArgumentException("The class '" + eClass.getName() + "' is not a valid classifier");
         }
@@ -334,6 +336,26 @@ public class ModelFactoryImpl extends EFactoryImpl implements ModelFactory {
     public ChoiceCase createChoiceCase() {
         ChoiceCaseImpl choiceCase = new ChoiceCaseImpl();
         return choiceCase;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public ListKey createListKey() {
+        ListKeyImpl listKey = new ListKeyImpl();
+        return listKey;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public Typeref createTyperef() {
+        TyperefImpl typeref = new TyperefImpl();
+        return typeref;
     }
 
     /**

@@ -378,13 +378,22 @@ public interface ModelPackage extends EPackage {
     int LEAF__TAGS = NAMED_NODE_FEATURE_COUNT + 0;
 
     /**
+     * The feature id for the '<em><b>Type</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LEAF__TYPE = NAMED_NODE_FEATURE_COUNT + 1;
+
+    /**
      * The number of structural features of the '<em>Leaf</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int LEAF_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 1;
+    int LEAF_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 2;
 
     /**
      * The number of operations of the '<em>Leaf</em>' class.
@@ -607,13 +616,40 @@ public interface ModelPackage extends EPackage {
     int TYPEDEF = 9;
 
     /**
+     * The feature id for the '<em><b>Parent</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPEDEF__PARENT = NAMED_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPEDEF__NAME = NAMED_NODE__NAME;
+
+    /**
+     * The feature id for the '<em><b>Tags</b></em>' containment reference list.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPEDEF__TAGS = NAMED_NODE_FEATURE_COUNT + 0;
+
+    /**
      * The number of structural features of the '<em>Typedef</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int TYPEDEF_FEATURE_COUNT = 0;
+    int TYPEDEF_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 1;
 
     /**
      * The number of operations of the '<em>Typedef</em>' class.
@@ -622,7 +658,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int TYPEDEF_OPERATION_COUNT = 0;
+    int TYPEDEF_OPERATION_COUNT = NAMED_NODE_OPERATION_COUNT + 0;
 
     /**
      * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.ChoiceImpl <em>Choice</em>}' class.
@@ -726,13 +762,22 @@ public interface ModelPackage extends EPackage {
     int LEAF_LIST__TAGS = NAMED_NODE_FEATURE_COUNT + 0;
 
     /**
+     * The feature id for the '<em><b>Type</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LEAF_LIST__TYPE = NAMED_NODE_FEATURE_COUNT + 1;
+
+    /**
      * The number of structural features of the '<em>Leaf List</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int LEAF_LIST_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 1;
+    int LEAF_LIST_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 2;
 
     /**
      * The number of operations of the '<em>Leaf List</em>' class.
@@ -1618,13 +1663,22 @@ public interface ModelPackage extends EPackage {
     int TYPED_NODE = 29;
 
     /**
+     * The feature id for the '<em><b>Type</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPED_NODE__TYPE = 0;
+
+    /**
      * The number of structural features of the '<em>Typed Node</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int TYPED_NODE_FEATURE_COUNT = 0;
+    int TYPED_NODE_FEATURE_COUNT = 1;
 
     /**
      * The number of operations of the '<em>Typed Node</em>' class.
@@ -1699,6 +1753,99 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int CHOICE_CASE_OPERATION_COUNT = NAMED_CONTAINING_NODE_OPERATION_COUNT + 0;
+
+
+    /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.ListKeyImpl <em>List Key</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.impl.ListKeyImpl
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getListKey()
+     * @generated
+     */
+    int LIST_KEY = 31;
+
+    /**
+     * The feature id for the '<em><b>Parent</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LIST_KEY__PARENT = NAMED_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LIST_KEY__NAME = NAMED_NODE__NAME;
+
+    /**
+     * The number of structural features of the '<em>List Key</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LIST_KEY_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>List Key</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int LIST_KEY_OPERATION_COUNT = NAMED_NODE_OPERATION_COUNT + 0;
+
+    /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.TyperefImpl <em>Typeref</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.impl.TyperefImpl
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getTyperef()
+     * @generated
+     */
+    int TYPEREF = 32;
+
+    /**
+     * The feature id for the '<em><b>Parent</b></em>' reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPEREF__PARENT = NAMED_NODE__PARENT;
+
+    /**
+     * The feature id for the '<em><b>Name</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPEREF__NAME = NAMED_NODE__NAME;
+
+    /**
+     * The number of structural features of the '<em>Typeref</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPEREF_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 0;
+
+    /**
+     * The number of operations of the '<em>Typeref</em>' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPEREF_OPERATION_COUNT = NAMED_NODE_OPERATION_COUNT + 0;
 
 
     /**
@@ -2200,6 +2347,17 @@ public interface ModelPackage extends EPackage {
     EClass getTypedNode();
 
     /**
+     * Returns the meta object for the reference '{@link com.cisco.yangide.ext.model.TypedNode#getType <em>Type</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the reference '<em>Type</em>'.
+     * @see com.cisco.yangide.ext.model.TypedNode#getType()
+     * @see #getTypedNode()
+     * @generated
+     */
+    EReference getTypedNode_Type();
+
+    /**
      * Returns the meta object for class '{@link com.cisco.yangide.ext.model.ChoiceCase <em>Choice Case</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2208,6 +2366,26 @@ public interface ModelPackage extends EPackage {
      * @generated
      */
     EClass getChoiceCase();
+
+    /**
+     * Returns the meta object for class '{@link com.cisco.yangide.ext.model.ListKey <em>List Key</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>List Key</em>'.
+     * @see com.cisco.yangide.ext.model.ListKey
+     * @generated
+     */
+    EClass getListKey();
+
+    /**
+     * Returns the meta object for class '{@link com.cisco.yangide.ext.model.Typeref <em>Typeref</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for class '<em>Typeref</em>'.
+     * @see com.cisco.yangide.ext.model.Typeref
+     * @generated
+     */
+    EClass getTyperef();
 
     /**
      * Returns the factory that creates the instances of the model.
@@ -2677,6 +2855,14 @@ public interface ModelPackage extends EPackage {
         EClass TYPED_NODE = eINSTANCE.getTypedNode();
 
         /**
+         * The meta object literal for the '<em><b>Type</b></em>' reference feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EReference TYPED_NODE__TYPE = eINSTANCE.getTypedNode_Type();
+
+        /**
          * The meta object literal for the '{@link com.cisco.yangide.ext.model.impl.ChoiceCaseImpl <em>Choice Case</em>}' class.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -2685,6 +2871,26 @@ public interface ModelPackage extends EPackage {
          * @generated
          */
         EClass CHOICE_CASE = eINSTANCE.getChoiceCase();
+
+        /**
+         * The meta object literal for the '{@link com.cisco.yangide.ext.model.impl.ListKeyImpl <em>List Key</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see com.cisco.yangide.ext.model.impl.ListKeyImpl
+         * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getListKey()
+         * @generated
+         */
+        EClass LIST_KEY = eINSTANCE.getListKey();
+
+        /**
+         * The meta object literal for the '{@link com.cisco.yangide.ext.model.impl.TyperefImpl <em>Typeref</em>}' class.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @see com.cisco.yangide.ext.model.impl.TyperefImpl
+         * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getTyperef()
+         * @generated
+         */
+        EClass TYPEREF = eINSTANCE.getTyperef();
 
     }
 

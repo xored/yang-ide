@@ -430,6 +430,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         createGeneralSection(pane);
         createRevisionSection(pane);
         createImportSection(pane);
+        createMetaInfoSection(pane);
         infoPane.setWeights(new int[] {1, 0});
         infoPane.setMaximizedControl(pane);
         createPropertiesButtonToolbar(editSection, infoPane, pane);
@@ -471,95 +472,34 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         editSection.setTextClient(toolbar);
     }
     
-    protected void createGeneralSection(ScrolledForm form) {
-        Section section = createSection(form, "General");
-        Composite header = toolkit.createComposite(section);
-
-        header.setLayout(new FormLayout());
-        Label name = toolkit.createLabel(header, "Name: ");  
+    protected void createMetaInfoSection(ScrolledForm form) {
+        Section section = createSection(form, "Meta information");
+        Composite meta = toolkit.createComposite(section);
+        meta.setLayout(new FormLayout());
         
-        nameText = toolkit.createText(header, "");
-        nameText.setEditable(true);        
-        
-        Label yangVersion = toolkit.createLabel(header, "Yang-version: ");  
-        
-        yangVersionText  = toolkit.createText(header, "");
-        yangVersionText.setEditable(true);
-        
-        Label namespace = toolkit.createLabel(header, "Namespace: ");  
-        namespaceText = toolkit.createText(header, "");
-        namespaceText.setEditable(true);
-        
-        Label prefix = toolkit.createLabel(header, "Prefix: ");  
-        prefixText  = toolkit.createText(header, "");
-        prefixText.setEditable(true);
-        
-        Label organization = toolkit.createLabel(header, "Organization: ");  
-        organizationText = toolkit.createText(header, "", SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+        Label organization = toolkit.createLabel(meta, "Organization: ");  
+        organizationText = toolkit.createText(meta, "", SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
         organizationText.setEditable(true);
         
-        Label contact = toolkit.createLabel(header, "Contact: ");  
-        contactText  = toolkit.createText(header, "",  SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+        Label contact = toolkit.createLabel(meta, "Contact: ");  
+        contactText  = toolkit.createText(meta, "",  SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
         contactText.setEditable(true);
 
-        Label description = toolkit.createLabel(header, "Description: ");  
-        descriptionText  = toolkit.createText(header, "",  SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+        Label description = toolkit.createLabel(meta, "Description: ");  
+        descriptionText  = toolkit.createText(meta, "",  SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
         descriptionText.setEditable(true);
         
-        Label reference = toolkit.createLabel(header, "Reference: ");  
-        referenceText  = toolkit.createText(header, "",  SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+        Label reference = toolkit.createLabel(meta, "Reference: ");  
+        referenceText  = toolkit.createText(meta, "",  SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
         referenceText.setEditable(true);
         
-        // layout elements
         FormData data = new FormData ();
         data.left = new FormAttachment (0, 0);
-        name.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (yangVersion, 0);
-        data.right = new FormAttachment (100, 0);
-        nameText.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (0, 0);
-        data.top = new FormAttachment(nameText, H_OFFSET);
-        yangVersion.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (yangVersion, 0);
-        data.right = new FormAttachment (100, 0);
-        data.top = new FormAttachment(nameText, H_OFFSET);
-        yangVersionText.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (0, 0);
-        data.top = new FormAttachment(yangVersionText, H_OFFSET);
-        namespace.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (yangVersion, 0);
-        data.right = new FormAttachment (100, 0);
-        data.top = new FormAttachment(yangVersionText, H_OFFSET);
-        namespaceText.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (0, 0);
-        data.top = new FormAttachment(namespaceText, H_OFFSET);
-        prefix.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (yangVersion, 0);
-        data.right = new FormAttachment (100, 0);
-        data.top = new FormAttachment(namespaceText, H_OFFSET);
-        prefixText.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (0, 0);
-        data.top = new FormAttachment(prefixText, H_OFFSET);
+        //data.top = new FormAttachment(prefixText, H_OFFSET);
         organization.setLayoutData (data);
         
         data = new FormData ();
-        data.left = new FormAttachment (yangVersion, 0);
+        data.left = new FormAttachment (organization, 0);
         data.right = new FormAttachment (100, 0);
         data.top = new FormAttachment(prefixText, H_OFFSET);
         data.bottom = new FormAttachment(organizationText, TEXT_AREA_HEIGHT);
@@ -571,7 +511,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         contact.setLayoutData (data);
         
         data = new FormData ();
-        data.left = new FormAttachment (yangVersion, 0);
+        data.left = new FormAttachment (organization, 0);
         data.right = new FormAttachment (100, 0);
         data.top = new FormAttachment(organizationText, H_OFFSET);
         data.bottom = new FormAttachment(contactText, TEXT_AREA_HEIGHT);
@@ -583,7 +523,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         description.setLayoutData (data);
         
         data = new FormData ();
-        data.left = new FormAttachment (yangVersion, 0);
+        data.left = new FormAttachment (organization, 0);
         data.right = new FormAttachment (100, 0);
         data.top = new FormAttachment(contactText, H_OFFSET);
         data.bottom = new FormAttachment(descriptionText, TEXT_AREA_HEIGHT);
@@ -595,23 +535,48 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         reference.setLayoutData (data);
         
         data = new FormData ();
-        data.left = new FormAttachment (yangVersion, 0);
+        data.left = new FormAttachment (organization, 0);
         data.right = new FormAttachment (100, 0);
         data.top = new FormAttachment(descriptionText, H_OFFSET);
         data.bottom = new FormAttachment(referenceText, TEXT_AREA_HEIGHT);
         referenceText.setLayoutData (data);
         
+        updateMetaInfoSection();;
+        addMetaInfoSectionListeners();
+        section.setClient(meta);
+    }
+    
+    protected void createGeneralSection(ScrolledForm form) {
+        Section section = createSection(form, "General");
+        Composite header = toolkit.createComposite(section);
+        GridLayoutFactory.fillDefaults().numColumns(2).applyTo(header);
+        
+        toolkit.createLabel(header, "Name: ");  
+        nameText = toolkit.createText(header, "");
+        nameText.setEditable(true);        
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(nameText);
+        
+        toolkit.createLabel(header, "Yang-version: ");          
+        yangVersionText  = toolkit.createText(header, "");
+        yangVersionText.setEditable(true);
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(yangVersionText);
+        
+        toolkit.createLabel(header, "Namespace: ");  
+        namespaceText = toolkit.createText(header, "");
+        namespaceText.setEditable(true);
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(namespaceText);
+        
+        toolkit.createLabel(header, "Prefix: ");  
+        prefixText  = toolkit.createText(header, "");
+        prefixText.setEditable(true);
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(prefixText);
+        
         updateGeneralSection();
         addGeneralSectionListeners();
         section.setClient(header);
     }    
-    
-    protected void updateGeneralSection() {
+    protected void updateMetaInfoSection() {
         if (null != module) {
-            nameText.setText(module.getName());
-            yangVersionText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.YANG_VERSION, module)));
-            namespaceText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.NAMESPACE, module)));
-            prefixText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.PREFIX, module)));
             organizationText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.ORGANIZATION, module)));
             contactText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.CONTACT, module)));
             descriptionText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.DESCRIPTION, module)));
@@ -619,15 +584,27 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         }
     }
     
+    protected void updateGeneralSection() {
+        if (null != module) {
+            nameText.setText(module.getName());
+            yangVersionText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.YANG_VERSION, module)));
+            namespaceText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.NAMESPACE, module)));
+            prefixText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.PREFIX, module)));
+        }
+    }
+    
+    protected void addMetaInfoSectionListeners() {
+        addTextFieldListener(this, organizationText, YangTag.ORGANIZATION);
+        addTextFieldListener(this, contactText, YangTag.CONTACT);
+        addTextFieldListener(this, descriptionText, YangTag.DESCRIPTION);
+        addTextFieldListener(this, referenceText, YangTag.REFERENCE);
+    }
+    
     protected void addGeneralSectionListeners() {
         addTextFieldListener(this, nameText, YangModelUtil.MODEL_PACKAGE.getNamedNode_Name());
         addTextFieldListener(this, yangVersionText, YangTag.YANG_VERSION);
         addTextFieldListener(this, namespaceText, YangTag.NAMESPACE);
         addTextFieldListener(this, prefixText, YangTag.PREFIX);
-        addTextFieldListener(this, organizationText, YangTag.ORGANIZATION);
-        addTextFieldListener(this, contactText, YangTag.CONTACT);
-        addTextFieldListener(this, descriptionText, YangTag.DESCRIPTION);
-        addTextFieldListener(this, referenceText, YangTag.REFERENCE);
     }
     
     protected void removeBindings(List<Binding> bindings) {

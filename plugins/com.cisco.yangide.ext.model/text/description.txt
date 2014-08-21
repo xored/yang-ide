@@ -13,7 +13,7 @@ Package model <http://www.example.org/model>
 
   Class Grouping -> NamedContainingNode, TaggedNode
 
-  Class Leaf -> NamedNode, TaggedNode
+  Class Leaf -> NamedNode, TaggedNode, TypedNode
 
   Class Container -> NamedContainingNode, TaggedNode
 
@@ -31,11 +31,11 @@ Package model <http://www.example.org/model>
   Class Submodule -> Module
     Reference belongsTo : BelongsTo<<1..1>>
 
-  Class Typedef
+  Class Typedef -> NamedNode, TaggedNode
 
   Class Choice -> NamedContainingNode, TaggedNode
 
-  Class LeafList -> NamedNode, TaggedNode
+  Class LeafList -> NamedNode, TaggedNode, TypedNode
 
   Class Anyxml -> NamedNode
 
@@ -84,5 +84,10 @@ Package model <http://www.example.org/model>
     Reference base : Identity
 
   Class TypedNode
+    Reference type : Typeref
 
   Class ChoiceCase -> NamedContainingNode, TaggedNode
+
+  Class ListKey -> NamedNode
+
+  Class Typeref -> NamedNode
