@@ -26,12 +26,14 @@ import com.cisco.yangide.core.dom.ASTCompositeNode;
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
+import com.cisco.yangide.core.dom.ModuleImport;
 import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.parser.YangFormattingPreferences;
 import com.cisco.yangide.core.parser.YangParserUtil;
 import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.editors.YangEditor;
+import com.cisco.yangide.ext.model.Import;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Tag;
@@ -64,7 +66,7 @@ final class DiagramModelAdapter extends EContentAdapter {
             if (this.modelSynchronizer.isNotificationEnabled()) {
                 try {
                     this.modelSynchronizer.disableNotification();
-                    System.out.println("from diag");
+                    System.out.println("from diag: " + notification);
                     switch (notification.getEventType()) {
                     case Notification.ADD:
                         ASTNode node = mapping.get(notification.getNotifier());
@@ -76,16 +78,19 @@ final class DiagramModelAdapter extends EContentAdapter {
                             content = removedBlock.remove(newValue);
                             add(node, content, notification.getPosition());
                         }
+                        if (newValue.eClass() == ModelPackage.Literals.IMPORT) {
+                            addImport((Module) node, newValue);
+                        }
                         break;
                     case Notification.SET:
                         if (notification.getFeature() != ModelPackage.Literals.NODE__PARENT) {
-                            if (notification.getFeature() == ModelPackage.Literals.NAMED_NODE__NAME) {
-                                // skip notification if value not changed
-                                if (notification.getNewValue() != null && notification.getOldValue() != null
-                                        && notification.getOldValue().equals(notification.getNewValue())) {
-                                    break;
-                                }
+                            // skip notification if value not changed
+                            if (notification.getNewValue() != null && notification.getOldValue() != null
+                                    && notification.getOldValue().equals(notification.getNewValue())) {
+                                break;
+                            }
 
+                            if (notification.getFeature() == ModelPackage.Literals.NAMED_NODE__NAME) {
                                 updateName((Node) notification.getNotifier(), (EAttribute) notification.getFeature(),
                                         notification.getNewValue());
                             }
@@ -129,6 +134,25 @@ final class DiagramModelAdapter extends EContentAdapter {
                 }
             }
         }
+    }
+
+    private void addImport(Module module, Node newValue) {
+        int position = 0;
+        if (module.getImports().isEmpty()) {
+            if (module.getPrefix() != null) {
+                position = module.getPrefix().getEndPosition() + 1;
+            } else {
+                position = module.getBodyStartPosition() + 1;
+            }
+        } else {
+            for (ASTNode astNode : module.getChildren()) {
+                if (astNode instanceof ModuleImport) {
+                    position = astNode.getEndPosition() + 1;
+                }
+            }
+        }
+
+        performEdit(new InsertEdit(position, System.lineSeparator() + formatImport((Import) newValue)));
     }
 
     /**
@@ -215,7 +239,39 @@ final class DiagramModelAdapter extends EContentAdapter {
     }
 
     private void updateModuleProperty(ASTNode node, String name, Object newValue) {
-        updateProperty(node, name, newValue, node.getBodyStartPosition() + 1);
+        Module module = (Module) node;
+        SimpleNode<String> prop = null;
+        boolean handle = false;
+
+        switch (name) {
+        case "namespace":
+            prop = module.getNamespaceNode();
+            handle = true;
+            break;
+        case "prefix":
+            prop = module.getPrefix();
+            handle = true;
+            break;
+        case "yang-version":
+            prop = module.getYangVersion();
+            handle = true;
+            break;
+        }
+
+        if (handle) {
+            if (prop == null) { // insert new property
+                int pos = node.getBodyStartPosition() + 1;
+                performEdit(new InsertEdit(pos, System.lineSeparator() + formatTag(node, name, (String) newValue)));
+            } else { // update property
+                performEdit(new ReplaceEdit(prop.getStartPosition(), prop.getLength() + 1, formatTag(node, name,
+                        (String) newValue).trim()));
+            }
+        }
+        ASTNode beforeRevisionNode = getAboveChildNode(module, module.getRevisionNode());
+        int beforeRevision = beforeRevisionNode != null ? beforeRevisionNode.getEndPosition() + 1 : node
+                .getBodyStartPosition() + 1;
+
+        updateProperty(node, name, newValue, beforeRevision);
     }
 
     private void updateRevisionProperty(ASTNode node, String name, Object newValue) {
@@ -235,6 +291,12 @@ final class DiagramModelAdapter extends EContentAdapter {
         case "status":
             prop = node.getStatusNode();
             break;
+        case "organization":
+            prop = ((Module) node).getOrganization();
+            break;
+        case "contact":
+            prop = ((Module) node).getContact();
+            break;
         default:
             Activator.logError("unknoun tag: " + name);
             return;
@@ -251,7 +313,7 @@ final class DiagramModelAdapter extends EContentAdapter {
             } else if (name.equals("reference") && node.getDescriptionNode() != null) {
                 pos = node.getDescriptionNode().getEndPosition() + 1;
             }
-            performEdit(new InsertEdit(pos, formatTag(node, name, (String) newValue)));
+            performEdit(new InsertEdit(pos, System.lineSeparator() + formatTag(node, name, (String) newValue)));
         } else if (newValue == null || ((String) newValue).isEmpty()) { // delete property
             if (prop != null) {
                 performEdit(new DeleteEdit(prop.getStartPosition(), prop.getLength() + 1));
@@ -259,7 +321,7 @@ final class DiagramModelAdapter extends EContentAdapter {
         } else { // update property
             if (prop != null) {
                 performEdit(new ReplaceEdit(prop.getStartPosition(), prop.getLength() + 1, formatTag(node, name,
-                        (String) newValue)));
+                        (String) newValue).trim()));
             }
         }
     }
@@ -274,6 +336,10 @@ final class DiagramModelAdapter extends EContentAdapter {
         } catch (CoreException e) {
             YangEditorPlugin.log(e);
         }
+
+        char[] content = yangSourceEditor.getDocument().get().toCharArray();
+        com.cisco.yangide.core.dom.Module module = YangParserUtil.parseYangFile(content);
+        modelSynchronizer.updateFromSource(module, false);
     }
 
     private int getIndentLevel(ASTNode node) {
@@ -287,6 +353,36 @@ final class DiagramModelAdapter extends EContentAdapter {
     }
 
     private String formatTag(ASTNode node, String name, String value) {
-        return RefactorUtil.formatCodeSnipped("\n" + name + " \"" + value + "\";\n", getIndentLevel(node));
+        return trimTrailingSpaces(RefactorUtil.formatCodeSnipped(name + " \"" + value + "\";", getIndentLevel(node)));
+    }
+
+    private String formatImport(Import newValue) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("import ").append(newValue.getModule()).append(" {\n");
+        sb.append("prefix ").append(newValue.getPrefix()).append(";\n");
+        sb.append("revision-date \"").append(newValue.getRevisionDate()).append("\";\n");
+        sb.append("}");
+        return trimTrailingSpaces(RefactorUtil.formatCodeSnipped(sb.toString(), 1));
+    }
+
+    private ASTNode getAboveChildNode(ASTCompositeNode parent, ASTNode node) {
+        ASTNode result = null;
+        for (ASTNode child : parent.getChildren()) {
+            if (child == node) {
+                return result;
+            }
+            result = child;
+        }
+        return null;
+    }
+
+    private String trimTrailingSpaces(String str) {
+        int len = str.length();
+        char[] val = str.toCharArray();
+
+        while ((len > 0) && (val[len - 1] <= ' ')) {
+            len--;
+        }
+        return (len < str.length()) ? str.substring(0, len) : str;
     }
 }
