@@ -26,5 +26,6 @@ Require-Bundle: org.eclipse.core.runtime,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Bundle-ClassPath: .
-Export-Package: com.cisco.yangide.ext.refactoring.code,
+Export-Package: com.cisco.yangide.ext.refactoring,
+ com.cisco.yangide.ext.refactoring.code,
  com.cisco.yangide.ext.refactoring.ui

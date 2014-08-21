@@ -220,6 +220,10 @@ public class ModelSynchronizer {
         if (astModule == null) {
             try {
                 astModule = yangSourceEditor.getModule();
+                if (astModule == null) {
+                    astModule = new com.cisco.yangide.core.dom.Module();
+                    astModule.setName("module");
+                }
             } catch (YangModelException e) {
                 YangCorePlugin.log(e);
             }

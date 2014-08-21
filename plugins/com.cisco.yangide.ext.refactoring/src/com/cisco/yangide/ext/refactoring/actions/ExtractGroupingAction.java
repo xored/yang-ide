@@ -69,16 +69,20 @@ public class ExtractGroupingAction extends SelectionDispatchAction {
             try {
                 if (selection.getText() != null) {
                     Module module = editor.getModule();
-                    String txt = selection.getText().trim();
-                    ASTNode startNode = module.getNodeAtPosition(selection.getOffset()
-                            + selection.getText().indexOf(txt));
-                    int startLevel = RefactorUtil.getNodeLevel(startNode);
+                    if (module != null) {
 
-                    ASTNode endNode = module.getNodeAtPosition(selection.getOffset() + selection.getLength() - 1);
-                    int endLevel = RefactorUtil.getNodeLevel(endNode);
-                    if (endLevel == startLevel && startLevel > 0 && startNode.getParent().equals(endNode.getParent())) {
-                        return new TextSelection(startNode.getStartPosition(), endNode.getEndPosition()
-                                - startNode.getStartPosition() + 1);
+                        String txt = selection.getText().trim();
+                        ASTNode startNode = module.getNodeAtPosition(selection.getOffset()
+                                + selection.getText().indexOf(txt));
+                        int startLevel = RefactorUtil.getNodeLevel(startNode);
+
+                        ASTNode endNode = module.getNodeAtPosition(selection.getOffset() + selection.getLength() - 1);
+                        int endLevel = RefactorUtil.getNodeLevel(endNode);
+                        if (endLevel == startLevel && startLevel > 0
+                                && startNode.getParent().equals(endNode.getParent())) {
+                            return new TextSelection(startNode.getStartPosition(), endNode.getEndPosition()
+                                    - startNode.getStartPosition() + 1);
+                        }
                     }
                 }
             } catch (YangModelException e) {

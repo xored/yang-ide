@@ -26,6 +26,7 @@ import com.cisco.yangide.core.dom.ASTCompositeNode;
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
+import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.parser.YangFormattingPreferences;
 import com.cisco.yangide.core.parser.YangParserUtil;
@@ -33,6 +34,9 @@ import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.editors.YangEditor;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
+import com.cisco.yangide.ext.model.Tag;
+import com.cisco.yangide.ext.model.editor.Activator;
+import com.cisco.yangide.ext.refactoring.RefactorUtil;
 
 /**
  * @author Konstantin Zaitsev
@@ -54,7 +58,7 @@ final class DiagramModelAdapter extends EContentAdapter {
     }
 
     @Override
-    public void notifyChanged(Notification notification) {
+    public synchronized void notifyChanged(Notification notification) {
         super.notifyChanged(notification);
         if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
             if (this.modelSynchronizer.isNotificationEnabled()) {
@@ -74,15 +78,41 @@ final class DiagramModelAdapter extends EContentAdapter {
                         }
                         break;
                     case Notification.SET:
-                        if (notification.getFeature() != ModelPackage.Literals.NODE__PARENT
-                        && notification.getNotifier() instanceof Node) {
-                            update((Node) notification.getNotifier(), (EAttribute) notification.getFeature(),
-                                    notification.getNewValue());
+                        if (notification.getFeature() != ModelPackage.Literals.NODE__PARENT) {
+                            if (notification.getFeature() == ModelPackage.Literals.NAMED_NODE__NAME) {
+                                // skip notification if value not changed
+                                if (notification.getNewValue() != null && notification.getOldValue() != null
+                                        && notification.getOldValue().equals(notification.getNewValue())) {
+                                    break;
+                                }
+
+                                updateName((Node) notification.getNotifier(), (EAttribute) notification.getFeature(),
+                                        notification.getNewValue());
+                            }
+
+                            if (notification.getNotifier() instanceof Tag) {
+                                Tag tag = (Tag) notification.getNotifier();
+                                Node parent = (Node) tag.eContainer();
+                                ASTNode astNode = mapping.get(parent);
+                                if (astNode == null) {
+                                    throw new RuntimeException(
+                                            "Cannot find references source block from diagram editor");
+                                }
+                                if (parent.eClass() == ModelPackage.Literals.MODULE) {
+                                    updateModuleProperty(astNode, tag.getName(), notification.getNewValue());
+                                } else if (parent.eClass() == ModelPackage.Literals.REVISION) {
+                                    updateRevisionProperty(astNode, tag.getName(), notification.getNewValue());
+                                } else {
+                                    updateProperty(astNode, tag.getName(), notification.getNewValue(),
+                                            astNode.getBodyStartPosition() + 1);
+                                }
+                            }
                         }
+
                         break;
                     case Notification.REMOVE:
                         if (notification.getOldValue() != null && notification.getOldValue() instanceof Node
-                        && mapping.containsKey(notification.getOldValue())) {
+                                && mapping.containsKey(notification.getOldValue())) {
                             delete((Node) notification.getOldValue());
                         }
                         break;
@@ -168,7 +198,7 @@ final class DiagramModelAdapter extends EContentAdapter {
         performEdit(new DeleteEdit(astNode.getStartPosition(), astNode.getLength() + 1));
     }
 
-    void update(Node node, EAttribute feature, Object newValue) {
+    void updateName(Node node, EAttribute feature, Object newValue) {
         ASTNode astNode = mapping.get(node);
         if (astNode == null) {
             throw new RuntimeException("Cannot find references source block from diagram editor");
@@ -181,6 +211,56 @@ final class DiagramModelAdapter extends EContentAdapter {
             ASTNamedNode nnode = (ASTNamedNode) astNode;
 
             performEdit(new ReplaceEdit(nnode.getNameStartPosition(), nnode.getNameLength(), (String) newValue));
+        }
+    }
+
+    private void updateModuleProperty(ASTNode node, String name, Object newValue) {
+        updateProperty(node, name, newValue, node.getBodyStartPosition() + 1);
+    }
+
+    private void updateRevisionProperty(ASTNode node, String name, Object newValue) {
+        updateProperty(node, name, newValue, node.getBodyStartPosition() + 1);
+    }
+
+    private void updateProperty(ASTNode node, String name, Object newValue, int startPosition) {
+        SimpleNode<String> prop = null;
+
+        switch (name) {
+        case "description":
+            prop = node.getDescriptionNode();
+            break;
+        case "reference":
+            prop = node.getReferenceNode();
+            break;
+        case "status":
+            prop = node.getStatusNode();
+            break;
+        default:
+            Activator.logError("unknoun tag: " + name);
+            return;
+        }
+
+        if (prop == null) { // insert new property
+            int pos = startPosition;
+            if (name.equals("status")) {
+                if (node.getReferenceNode() != null) {
+                    pos = node.getReferenceNode().getEndPosition() + 1;
+                } else if (node.getDescriptionNode() != null) {
+                    pos = node.getDescriptionNode().getEndPosition() + 1;
+                }
+            } else if (name.equals("reference") && node.getDescriptionNode() != null) {
+                pos = node.getDescriptionNode().getEndPosition() + 1;
+            }
+            performEdit(new InsertEdit(pos, formatTag(node, name, (String) newValue)));
+        } else if (newValue == null || ((String) newValue).isEmpty()) { // delete property
+            if (prop != null) {
+                performEdit(new DeleteEdit(prop.getStartPosition(), prop.getLength() + 1));
+            }
+        } else { // update property
+            if (prop != null) {
+                performEdit(new ReplaceEdit(prop.getStartPosition(), prop.getLength() + 1, formatTag(node, name,
+                        (String) newValue)));
+            }
         }
     }
 
@@ -204,5 +284,9 @@ final class DiagramModelAdapter extends EContentAdapter {
             level++;
         }
         return level;
+    }
+
+    private String formatTag(ASTNode node, String name, String value) {
+        return RefactorUtil.formatCodeSnipped("\n" + name + " \"" + value + "\";\n", getIndentLevel(node));
     }
 }

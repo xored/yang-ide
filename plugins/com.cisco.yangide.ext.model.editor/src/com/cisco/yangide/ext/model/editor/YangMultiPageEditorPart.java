@@ -93,11 +93,15 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
                                 + "Please correct syntax error first.");
             }
             yangSourceViewer.disableProjection();
-            yangSourceViewer.getReconciler().uninstall();
+            if (yangSourceViewer.getReconciler() != null) {
+                yangSourceViewer.getReconciler().uninstall();
+            }
         } else {
             yangSourceViewer.updateDocument();
             yangSourceViewer.enableProjection();
-            yangSourceViewer.getReconciler().install(yangSourceEditor.getViewer());
+            if (yangSourceViewer.getReconciler() != null) {
+                yangSourceViewer.getReconciler().install(yangSourceEditor.getViewer());
+            }
         }
         super.pageChange(newPageIndex);
     }
