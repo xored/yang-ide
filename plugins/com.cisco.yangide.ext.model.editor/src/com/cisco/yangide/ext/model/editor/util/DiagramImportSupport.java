@@ -82,7 +82,7 @@ public class DiagramImportSupport {
     }
     public static void drawLines(List<Node> list, IFeatureProvider fp) {
         for (Node n : list) {
-            if (YangModelUtil.hasConnection(n)) {
+            if (YangModelUtil.hasReference(n)) {
                 drawLine(n, fp);
             }
             if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), n)) {
@@ -93,7 +93,7 @@ public class DiagramImportSupport {
     
     public static void drawLine(Node n, IFeatureProvider fp) {
         Anchor start = YangModelUIUtil.getChopboxAnchor((AnchorContainer) elements.get(n));
-        if (YangModelUtil.hasConnection(n)) {
+        if (YangModelUtil.hasReference(n)) {
             start = YangModelUIUtil.getBoxRelativeAnchor((AnchorContainer) elements.get(n));
         }
         if (null !=  start && (null == start.getOutgoingConnections() || start.getOutgoingConnections().isEmpty())) {

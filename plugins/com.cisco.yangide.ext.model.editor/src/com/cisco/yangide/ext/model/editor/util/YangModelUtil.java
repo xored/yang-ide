@@ -226,7 +226,7 @@ public class YangModelUtil {
         }
     }
 
-    public static boolean hasConnection(EObject tested) {
+    public static boolean hasReference(EObject tested) {
         return null != getConnectionReferenceClass(tested);
     }
     public static EClass getConnectionReferenceClass(EObject tested) {

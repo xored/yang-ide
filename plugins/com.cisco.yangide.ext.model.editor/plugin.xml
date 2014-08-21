@@ -76,6 +76,12 @@
       <propertySections
             contributorId="yang.PropertyContributor">
          <propertySection
+               class="com.cisco.yangide.ext.model.editor.property.GeneralTabReferenceSection"
+               filter="com.cisco.yangide.ext.model.editor.property.GeneralTabReferenceFilter"
+               id="com.cisco.yangide.ext.model.editor.GeneralTabReference"
+               tab="com.cisco.yangide.ext.model.editor.GeneralTab">
+         </propertySection>
+         <propertySection
                class="com.cisco.yangide.ext.model.editor.property.GeneralTabNameSection"
                filter="com.cisco.yangide.ext.model.editor.property.GenaralTabNameFilter"
                id="com.cisco.yangide.ext.model.editor.GeneralTabName"
@@ -92,12 +98,6 @@
                filter="com.cisco.yangide.ext.model.editor.property.AttributesTabContentFilter"
                id="com.cisco.yangide.ext.model.editor.AttributesTabSection"
                tab="com.cisco.yangide.ext.model.editor.AttributesTab">
-         </propertySection>
-         <propertySection
-               class="com.cisco.yangide.ext.model.editor.property.GeneralTabReferenceSection"
-               filter="com.cisco.yangide.ext.model.editor.property.GeneralTabReferenceFilter"
-               id="com.cisco.yangide.ext.model.editor.GeneralTabReference"
-               tab="com.cisco.yangide.ext.model.editor.GeneralTab">
          </propertySection>
          <propertySection
                class="com.cisco.yangide.ext.model.editor.property.TypeTabSection"

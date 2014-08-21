@@ -227,7 +227,7 @@ public class YangModelUIUtil {
     }
     
     public static boolean updateConnections(EObject obj, IFeatureProvider fp) {
-        if (YangModelUtil.hasConnection(obj)) {            
+        if (YangModelUtil.hasReference(obj)) {            
             EObject ref = YangModelUtil.getReferencedObject(fp, obj);
             PictogramElement startPE = YangModelUIUtil.getBusinessObjectShape(fp, obj);
             Anchor start = YangModelUIUtil.getBoxRelativeAnchor((AnchorContainer) startPE);
@@ -408,7 +408,7 @@ public class YangModelUIUtil {
         ChopboxAnchor anchor = Graphiti.getPeCreateService().createChopboxAnchor(result);
         anchor.setReferencedGraphicsAlgorithm(result.getGraphicsAlgorithm());
         // create BoxRelativeAnchor for references
-        if (context.getNewObject() instanceof EObject && YangModelUtil.hasConnection((EObject) context.getNewObject())){
+        if (context.getNewObject() instanceof EObject && YangModelUtil.hasReference((EObject) context.getNewObject())){
             drawBoxRelativeAnchor(result, context, fp);
         }        
         PropertyUtil.setObjectShapeProp(result, PropertyUtil.BUSINESS_OBJECT_SHAPE_KEY, true);

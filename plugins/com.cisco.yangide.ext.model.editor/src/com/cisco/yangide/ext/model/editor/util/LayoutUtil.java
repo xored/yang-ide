@@ -542,7 +542,6 @@ public class LayoutUtil {
     }
     
     public static void layoutContainerShapeHeader(ContainerShape cs, IFeatureProvider fp) {
-        //int width = cs.getGraphicsAlgorithm().getWidth();
         Shape text = YangModelUIUtil.getBusinessObjectPropShape(cs, PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY);
         int textWidth = 0;
         if (null != text && text.getGraphicsAlgorithm() instanceof Text) {
@@ -554,7 +553,6 @@ public class LayoutUtil {
         if (null != type && type.getGraphicsAlgorithm() instanceof Text) {
             Text ga = (Text) type.getGraphicsAlgorithm();
             ga.setX(textWidth + YangModelUIUtil.DEFAULT_V_ALIGN + YangModelUIUtil.DEFAULT_TEXT_HEIGHT);
-            //ga.setWidth(Math.max(0, width - textWidth));
         }
         
     }
