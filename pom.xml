@@ -17,6 +17,8 @@
   <modules>
     <!-- plugins -->
     <module>plugins/com.cisco.yangide.ext.refactoring</module>
+    <module>plugins/com.cisco.yangide.ext.model</module>
+    <module>plugins/com.cisco.yangide.ext.model.editor</module>
     <!-- features -->
     <module>features/com.cisco.yangide.ext.feature</module>
     <!-- tests -->
@@ -52,8 +54,28 @@
     </repository>
     <repository>
       <layout>p2</layout>
+      <id>emf</id>
+      <url>http://download.eclipse.org/modeling/emf/updates/releases/</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
       <id>sonatype</id>
       <url>https://repository.sonatype.org/content/repositories/forge-sites/m2e-extras/0.15.0/N/0.15.0.201206251206/</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>emf-compare</id>
+      <url>http://download.eclipse.org/modeling/emf/compare/updates/releases/</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>graphiti</id>
+      <url>http://download.eclipse.org/graphiti/updates/0.11.0</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>gef</id>
+      <url>http://download.eclipse.org/tools/gef/updates/releases</url>
     </repository>
     <repository>
       <layout>p2</layout>
