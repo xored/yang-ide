@@ -62,7 +62,7 @@ public class LayoutUtil {
 
     public static final int DEFAULT_DIAGRAM_LAYOUT_TYPE = 13;
     public static final double DEFAULT_DIAGRAM_LAYOUT_V_SHIFT = 10;
-    public static final double DEFAULT_SCREEN_WIDTH = 1000;
+    public static final double DEFAULT_SCREEN_WIDTH = 1500;
 
     /**
      * Used to keep track of the initial Connection locations for self connections<br/>
@@ -383,7 +383,7 @@ public class LayoutUtil {
         protected int numChildren;
         @SuppressWarnings("unused") protected double fullW = YangModelUIUtil.DEFAULT_WIDTH;
         protected double fullH = YangModelUIUtil.DEFAULT_COMPOSITE_HEIGHT;
-        private static final int OFFSET = 20;
+        private static final int OFFSET = 40;
 
         public YangDiagramLayoutAlgorithm(int styles) {
             super(styles);
@@ -596,7 +596,7 @@ public class LayoutUtil {
     public static void layoutContainerShape(ContainerShape cs, IFeatureProvider fp) {
         int y = YangModelUIUtil.DEFAULT_TEXT_HEIGHT;
         int x = 0;
-        
+        //layoutContainerShapeHorizontal(cs, fp);
         layoutContainerShapeHeader(cs, fp);
         Object bo = fp.getBusinessObjectForPictogramElement(cs);
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), bo)) {
@@ -605,7 +605,7 @@ public class LayoutUtil {
                 if (cs.getChildren().contains(pe)) {   
                     if (pe instanceof ContainerShape) {
                         layoutContainerShapeVertical((ContainerShape) pe, fp);
-                        //layoutContainerShapeHorizontal((ContainerShape) pe, fp);
+                       
                     }
                     pe.getGraphicsAlgorithm().setX(YangModelUIUtil.DEFAULT_V_ALIGN);
                     pe.getGraphicsAlgorithm().setY(y + YangModelUIUtil.DEFAULT_H_ALIGN);

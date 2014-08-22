@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<viewpoint:DAnalysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/table/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_2="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:diagram="http://www.eclipse.org/sirius/diagram/1.1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:table="http://www.eclipse.org/sirius/table/1.1.0" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/table/description/1.1.0 http://www.eclipse.org/sirius/table/1.1.0#//description http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/style/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description/style" xmi:id="_R172wCNxEeS1ypqXlbG4tA" selectedViews="_R4NHoCNxEeS1ypqXlbG4tA _R9nMECNxEeS1ypqXlbG4tA _R-UWsCNxEeS1ypqXlbG4tA _SG8HMCNxEeS1ypqXlbG4tA" version="8.1.1">
+<viewpoint:DAnalysis xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:description="http://www.eclipse.org/sirius/table/description/1.1.0" xmlns:description_1="http://www.eclipse.org/sirius/description/1.1.0" xmlns:description_2="http://www.eclipse.org/sirius/diagram/description/1.1.0" xmlns:diagram="http://www.eclipse.org/sirius/diagram/1.1.0" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore" xmlns:modisco.xml="http://www.eclipse.org/MoDisco/Xml/0.1.incubation/XML" xmlns:notation="http://www.eclipse.org/gmf/runtime/1.0.2/notation" xmlns:style="http://www.eclipse.org/sirius/diagram/description/style/1.1.0" xmlns:table="http://www.eclipse.org/sirius/table/1.1.0" xmlns:viewpoint="http://www.eclipse.org/sirius/1.1.0" xsi:schemaLocation="http://www.eclipse.org/sirius/table/description/1.1.0 http://www.eclipse.org/sirius/table/1.1.0#//description http://www.eclipse.org/sirius/description/1.1.0 http://www.eclipse.org/sirius/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description http://www.eclipse.org/sirius/diagram/description/style/1.1.0 http://www.eclipse.org/sirius/diagram/1.1.0#//description/style" xmi:id="_R172wCNxEeS1ypqXlbG4tA" selectedViews="_R4NHoCNxEeS1ypqXlbG4tA _R9nMECNxEeS1ypqXlbG4tA _R-UWsCNxEeS1ypqXlbG4tA _SG8HMCNxEeS1ypqXlbG4tA" version="8.1.1">
   <models xmi:type="ecore:EPackage" href="model.ecore#/"/>
   <models xmi:type="ecore:EPackage" href="http://www.eclipse.org/emf/2002/Ecore#/"/>
   <models xmi:type="ecore:EPackage" href="http://www.eclipse.org/emf/2003/XMLType#/"/>
+  <models xmi:type="modisco.xml:Root" href="../pom.xml#/"/>
   <ownedViews xmi:type="viewpoint:DRepresentationContainer" xmi:id="_R4NHoCNxEeS1ypqXlbG4tA" initialized="true">
     <ownedRepresentations xmi:type="table:DTable" xmi:id="_mNK1oCNxEeS1ypqXlbG4tA" name="model class table" headerColumnWidth="353">
       <target xmi:type="ecore:EPackage" href="model.ecore#/"/>
@@ -192,12 +193,12 @@
       <lines xmi:type="table:DLine" xmi:id="_mNK1zyNxEeS1ypqXlbG4tA" label="Import -> Node">
         <target xmi:type="ecore:EClass" href="model.ecore#//Import"/>
         <lines xmi:type="table:DLine" xmi:id="_mNK10CNxEeS1ypqXlbG4tA" label="module : Module">
-          <target xmi:type="ecore:EReference" href="model.ecore#//Import/module"/>
-          <semanticElements xmi:type="ecore:EReference" href="model.ecore#//Import/module"/>
+          <target xmi:type="ecore:EAttribute" href="model.ecore#//Import/module"/>
+          <semanticElements xmi:type="ecore:EAttribute" href="model.ecore#//Import/module"/>
           <originMapping xmi:type="description:LineMapping" href="platform:/plugin/org.eclipse.emf.ecoretools.design/description/ecore.odesign#//@ownedViewpoints[name='Design']/@ownedRepresentations[name='Classes']/@ownedLineMappings[name='Classes%20lines']/@ownedSubLines[name='Feature']"/>
           <cells xmi:type="table:DCell" xmi:id="_mNK10SNxEeS1ypqXlbG4tA" label="module" column="_mNLc1SNxEeS1ypqXlbG4tA">
-            <target xmi:type="ecore:EReference" href="model.ecore#//Import/module"/>
-            <semanticElements xmi:type="ecore:EReference" href="model.ecore#//Import/module"/>
+            <target xmi:type="ecore:EAttribute" href="model.ecore#//Import/module"/>
+            <semanticElements xmi:type="ecore:EAttribute" href="model.ecore#//Import/module"/>
           </cells>
         </lines>
         <lines xmi:type="table:DLine" xmi:id="_mNK10iNxEeS1ypqXlbG4tA" label="prefix : String">

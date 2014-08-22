@@ -17,7 +17,7 @@ public class RectilinearAvoidObstaclesPathFinder implements IPathFinder {
      * @see #getSpacing()
      * @see #setSpacing(int)
      */
-    public static final int DEFAULT_SPACING = 5;
+    public static final int DEFAULT_SPACING = 15;
 
     /**
      * The spacing maintained between figure and path.
