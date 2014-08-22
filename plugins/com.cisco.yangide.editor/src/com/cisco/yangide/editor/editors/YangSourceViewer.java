@@ -53,7 +53,7 @@ public class YangSourceViewer extends ProjectionViewer {
     }
 
     public void updateDocument() {
-        setVisibleDocument(getDocument());
+        resetVisibleRegion();
     }
 
     public void enableTextListeners() {
