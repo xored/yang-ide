@@ -6,12 +6,11 @@ package com.cisco.yangide.ext.model.editor.sync;
 import java.util.Map;
 import java.util.WeakHashMap;
 
-import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.ltk.core.refactoring.DocumentChange;
+import org.eclipse.jface.text.RewriteSessionEditProcessor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.text.edits.DeleteEdit;
 import org.eclipse.text.edits.InsertEdit;
@@ -333,21 +332,20 @@ final class DiagramModelAdapter extends EContentAdapter {
         }
     }
 
-    private void performEdit(final TextEdit edit) {
-        final DocumentChange change = new DocumentChange("edit", yangSourceEditor.getDocument());
-        change.setEdit(edit);
-        change.initializeValidationData(new NullProgressMonitor());
-        Display.getDefault().syncExec(new Runnable() {
-
+    private synchronized void performEdit(final TextEdit edit) {
+        Display display = Display.getCurrent();
+        if (display == null) {
+            display = Display.getDefault();
+        }
+        display.syncExec(new Runnable() {
             @Override
             public void run() {
                 try {
                     YangSourceViewer viewer = (YangSourceViewer) yangSourceEditor.getViewer();
-                    viewer.getRewriteTarget().beginCompoundChange();
-                    edit.apply(yangSourceEditor.getDocument());
-                    viewer.getRewriteTarget().endCompoundChange();
-                    viewer.invalidateTextPresentation(edit.getOffset(), edit.getLength());
-
+                    MultiTextEdit mt = new MultiTextEdit();
+                    mt.addChild(edit);
+                    new RewriteSessionEditProcessor(viewer.getDocument(), mt, TextEdit.CREATE_UNDO).performEdits();
+                    viewer.updateDocument();
                 } catch (MalformedTreeException | BadLocationException e) {
                     Activator.log(e, e.getMessage());
                 }
