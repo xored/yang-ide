@@ -1,5 +1,6 @@
 package com.cisco.yangide.ext.model.editor.dialog;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -31,7 +32,7 @@ public class AddImportDialog extends ElementListSelectionDialog {
     private Import obj;
     private ElementIndexInfo[] list; 
     
-    public AddImportDialog(Shell parent, Module module) {
+    public AddImportDialog(Shell parent, Module module, IFile file) {
         super(parent, new LabelProvider() {
             public String getText(Object element) {
                 if (element instanceof ElementIndexInfo) {
@@ -41,14 +42,14 @@ public class AddImportDialog extends ElementListSelectionDialog {
             }
         });
         this.module = module;
-        list = YangModelManager.search(null, null, null, ElementIndexType.MODULE, null, null);
+        list = YangModelManager.search(null, null, null, ElementIndexType.MODULE, null == file ? null : file.getProject(), null);
         setElements(list);
         setTitle("Select imported module");
         setImage(GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_IMPORT_PROPOSAL));
     }
     
-    public AddImportDialog(Shell parent, Module node, Import obj) {
-        this(parent, node);
+    public AddImportDialog(Shell parent, Module node, Import obj, IFile file) {
+        this(parent, node, file);
         this.obj = obj;        
     }
     

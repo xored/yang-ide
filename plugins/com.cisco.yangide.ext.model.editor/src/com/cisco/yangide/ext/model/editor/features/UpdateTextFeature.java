@@ -11,6 +11,7 @@ import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 
 import com.cisco.yangide.ext.model.Node;
+import com.cisco.yangide.ext.model.TypedNode;
 import com.cisco.yangide.ext.model.editor.util.LayoutUtil;
 import com.cisco.yangide.ext.model.editor.util.PropertyUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
@@ -26,49 +27,57 @@ public class UpdateTextFeature extends AbstractUpdateFeature {
     public boolean canUpdate(IUpdateContext context) {
         Object[] objects = getAllBusinessObjectsForPictogramElement(context.getPictogramElement());
         return PropertyUtil.isObjectShapeProp(context.getPictogramElement(), PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY) 
+                || PropertyUtil.isObjectShapeProp(context.getPictogramElement(), PropertyUtil.BUSINESS_OBJECT_TYPE_SHAPE_KEY) 
                 || (null != objects && 2 == objects.length && objects[0] instanceof EObject && objects [1] instanceof EStructuralFeature);
 
     }
 
     @Override
     public IReason updateNeeded(IUpdateContext context) {
-        if (!PropertyUtil.isObjectShapeProp(context.getPictogramElement(), PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY)) {
-            return Reason.createFalseReason();
-        }
         String pictogramValue = null;
         String objectValue = null;
-        if (context.getPictogramElement() instanceof Shape) {
-            if (((Shape) context.getPictogramElement()).getGraphicsAlgorithm() instanceof Text) {
-                pictogramValue = ((Text) ((Shape) context.getPictogramElement()).getGraphicsAlgorithm()).getValue();
-            }
-        }
         Object[] objects = getAllBusinessObjectsForPictogramElement(context.getPictogramElement());
-        if (null != objects && 0 != objects.length) {
-            if (null != objects && 1 < objects.length) {
-                if (null != objects && 2 == objects.length && objects[0] instanceof EObject
-                        && objects[1] instanceof EStructuralFeature) {
-                    objectValue = null == ((EObject) objects[0]).eGet((EStructuralFeature) objects[1]) ? null
-                            : ((EObject) objects[0]).eGet((EStructuralFeature) objects[1]).toString();
-                }
-            } else if (null != objects && 0 < objects.length
-                    && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getNode(), objects[0])) {
-                objectValue = YangModelUtil.getQNamePresentation((Node) objects[0]);
-            }
-            if ((null == pictogramValue && null != objectValue)
-                    || (null != pictogramValue && !pictogramValue.equals(objectValue))) {
-                return Reason.createTrueReason("Attribute is out of date"); //$NON-NLS-1$
-            } else {
-                return Reason.createFalseReason();
-            }
+        if (null == objects || 0 >= objects.length || !(context.getPictogramElement().getGraphicsAlgorithm() instanceof Text)) {
+            return Reason.createFalseReason();
         }
-        return Reason.createFalseReason();
+        pictogramValue = ((Text) context.getPictogramElement().getGraphicsAlgorithm()).getValue();
+
+        if (PropertyUtil.isObjectShapeProp(context.getPictogramElement(), PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY)) {            
+            if (null != objects && 0 != objects.length) {
+                if (null != objects && 1 < objects.length) {
+                    if (null != objects && 2 == objects.length && objects[0] instanceof EObject
+                            && objects[1] instanceof EStructuralFeature) {
+                        objectValue = null == ((EObject) objects[0]).eGet((EStructuralFeature) objects[1]) ? null
+                                : ((EObject) objects[0]).eGet((EStructuralFeature) objects[1]).toString();
+                    }
+                } else if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getNode(), objects[0])) {
+                    objectValue = YangModelUtil.getQNamePresentation((Node) objects[0]);
+                }
+            }
+        } else if (PropertyUtil.isObjectShapeProp(context.getPictogramElement(), PropertyUtil.BUSINESS_OBJECT_TYPE_SHAPE_KEY)) {
+            if (null != objects[0] && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getTypedNode(), objects[0])) {
+                objectValue = YangModelUIUtil.getTypeText((TypedNode) objects[0]);
+            }
+        } else {
+            return Reason.createFalseReason();
+        }
+        
+        if ((null == pictogramValue && null != objectValue)
+                || (null != pictogramValue && !pictogramValue.equals(objectValue))) {
+            return Reason.createTrueReason("Attribute is out of date"); //$NON-NLS-1$
+        } else {
+            return Reason.createFalseReason();
+        }
     }
 
     @Override
     public boolean update(IUpdateContext context) {
-        if (PropertyUtil.isObjectShapeProp(context.getPictogramElement(), PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY)) {
-            Object[] objects = getAllBusinessObjectsForPictogramElement(context.getPictogramElement());
-            String objectValue = null;
+        Object[] objects = getAllBusinessObjectsForPictogramElement(context.getPictogramElement());
+        String objectValue = null;
+        if (null == objects || 0 >= objects.length || !(context.getPictogramElement().getGraphicsAlgorithm() instanceof Text)) {
+            return false;
+        }
+        if (PropertyUtil.isObjectShapeProp(context.getPictogramElement(), PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY)) {           
             if (null != objects && 2 == objects.length && objects[0] instanceof EObject
                     && objects[1] instanceof EStructuralFeature) {
                 objectValue = null == ((EObject) objects[0]).eGet((EStructuralFeature) objects[1]) ? null
@@ -78,16 +87,25 @@ public class UpdateTextFeature extends AbstractUpdateFeature {
                 objectValue = YangModelUtil.getQNamePresentation((Node) objects[0]);
                 YangModelUIUtil.updateConnections((Node) objects[0], getFeatureProvider());
             }
-            if (context.getPictogramElement() instanceof Shape) {
-                if (((Shape) context.getPictogramElement()).getGraphicsAlgorithm() instanceof Text) {
-                    ((Text) ((Shape) context.getPictogramElement()).getGraphicsAlgorithm()).setValue(objectValue);
+            if (context.getPictogramElement().getGraphicsAlgorithm() instanceof Text) {
+                    ((Text) context.getPictogramElement().getGraphicsAlgorithm()).setValue(objectValue);
                     if (context.getPictogramElement() instanceof Shape) {
                         LayoutUtil.layoutContainerShapeHeader(((Shape) context.getPictogramElement()).getContainer(), getFeatureProvider());
                     }
                     return true;
-                }
             }
-        }        
+        } else if (PropertyUtil.isObjectShapeProp(context.getPictogramElement(), PropertyUtil.BUSINESS_OBJECT_TYPE_SHAPE_KEY)) {
+            if (null != objects[0] && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getTypedNode(), objects[0])) {
+                objectValue = YangModelUIUtil.getTypeText((TypedNode) objects[0]);
+                if (context.getPictogramElement().getGraphicsAlgorithm() instanceof Text) {
+                    ((Text) context.getPictogramElement().getGraphicsAlgorithm()).setValue(objectValue);
+                    if (context.getPictogramElement() instanceof Shape) {
+                        LayoutUtil.layoutContainerShapeHeader(((Shape) context.getPictogramElement()).getContainer(), getFeatureProvider());
+                    }
+                    return true;
+            }
+            }
+        }
         return false;
     }
 }

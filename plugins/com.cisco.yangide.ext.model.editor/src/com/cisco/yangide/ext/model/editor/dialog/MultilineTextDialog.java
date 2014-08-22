@@ -48,7 +48,7 @@ public class MultilineTextDialog extends Dialog {
 
       FormData data;
 
-      final Label instructionLabel = toolkit.createLabel(composite, "Specify a value for the " + title);
+      final Label instructionLabel = toolkit.createLabel(composite, "Specify " + title +  " value");
       data = new FormData();
       data.top = new FormAttachment(composite, SPACING);
       data.left = new FormAttachment(composite, SPACING);

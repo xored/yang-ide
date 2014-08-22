@@ -562,8 +562,9 @@ public class LayoutUtil {
         int x = 0;
         
         layoutContainerShapeHeader(cs, fp);
-        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), fp.getBusinessObjectForPictogramElement(cs))) {
-            for (Node child : ((ContainingNode) fp.getBusinessObjectForPictogramElement(cs)).getChildren()) {
+        Object bo = fp.getBusinessObjectForPictogramElement(cs);
+        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), bo)) {
+            for (Node child : ((ContainingNode) bo).getChildren()) {
                 PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(fp, child);
                 if (cs.getChildren().contains(pe)) {
                     layoutPictogramElement(pe, fp);

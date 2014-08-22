@@ -3,9 +3,11 @@
  */
 package com.cisco.yangide.ext.model.editor;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
@@ -61,7 +63,7 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
     private void initDiagramPage() {
         try {
             Module diagModule = modelSynchronizer.getDiagramModule();
-            YangDiagramEditorInput input = new YangDiagramEditorInput(URI.createURI("tmp:/local"),
+            YangDiagramEditorInput input = new YangDiagramEditorInput(URI.createURI("tmp:/local"), getFile(),
                     "com.cisco.yangide.ext.model.editor.editorDiagramTypeProvider", diagModule);
             addPage(1, yangDiagramEditor, input);
             setPageText(1, "Diagram");
@@ -70,6 +72,17 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
         } catch (PartInitException e) {
             YangEditorPlugin.log(e);
         }
+    }
+    
+    private IFile getFile() {
+        if (null != yangSourceEditor && null != yangSourceEditor.getEditorInput()) {
+            if (yangSourceEditor.getEditorInput() instanceof IFileEditorInput)
+            {
+                IFileEditorInput fileEI = (IFileEditorInput) yangSourceEditor.getEditorInput();
+                return fileEI.getFile();
+            }
+        }
+        return null;
     }
 
     private void initSourcePage() {

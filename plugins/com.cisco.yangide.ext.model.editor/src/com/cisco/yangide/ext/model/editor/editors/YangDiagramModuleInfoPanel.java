@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.databinding.EMFProperties;
 import org.eclipse.emf.ecore.EObject;
@@ -77,6 +78,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
 
     private Module module;
     private FormToolkit toolkit;
+    private IFile file;
   
     private Composite diagram;
     private PropertyEdit editPropertyForm;
@@ -381,8 +383,9 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         
     }
     
-    public YangDiagramModuleInfoPanel(Composite parent, Module module) {       
+    public YangDiagramModuleInfoPanel(Composite parent, Module module, IFile file) {       
         this.module = module;
+        this.file = file;
         mainSashPanel  = new SashForm(parent, SWT.HORIZONTAL);
         mainSashPanel.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
         mainSashPanel.setLayout(new GridLayout(1, false));
@@ -500,7 +503,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             @Override
             protected Object openDialogBox(Text text) {
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Organization");
+                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Contact");
                 if (IStatus.OK == dialog.open()) {
                     text.setText(dialog.getValue());
                 }
@@ -514,7 +517,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             @Override
             protected Object openDialogBox(Text text) {
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Organization");
+                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Description");
                 if (IStatus.OK == dialog.open()) {
                     text.setText(dialog.getValue());
                 }
@@ -528,7 +531,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             @Override
             protected Object openDialogBox(Text text) {
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Organization");
+                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Reference");
                 if (IStatus.OK == dialog.open()) {
                     text.setText(dialog.getValue());
                 }
@@ -774,7 +777,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             public void run() {
                 super.run();
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                AddImportDialog dialog = new AddImportDialog(shell, module);
+                AddImportDialog dialog = new AddImportDialog(shell, module, file);
                 if (0 <= dialog.open()) {
                     refreshImportTable();
                 }

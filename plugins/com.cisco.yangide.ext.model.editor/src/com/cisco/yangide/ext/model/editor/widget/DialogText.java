@@ -19,8 +19,6 @@ public abstract class DialogText {
         createControl(parent);
     }
 
-public static final String CELL_EDITOR_IMG_DOTS_BUTTON = "cell_editor_dots_button_image";//$NON-NLS-1$
-
    private Control contents;
 
    private Text text;
@@ -42,10 +40,11 @@ public static final String CELL_EDITOR_IMG_DOTS_BUTTON = "cell_editor_dots_butto
        public void layout(Composite editor, boolean force) {
            Rectangle bounds = editor.getClientArea();
            Point size = button.computeSize(SWT.DEFAULT, SWT.DEFAULT, force);
+           int height = contents.computeSize(SWT.DEFAULT, SWT.DEFAULT, force).y;
            if (contents != null) {
-               contents.setBounds(0, 0, bounds.width - size.x, bounds.height);
+               contents.setBounds(0, 0, bounds.width - size.x, height);
            }
-           button.setBounds(bounds.width - size.x, 0, size.x, bounds.height);
+           button.setBounds(bounds.width - size.x, 0, size.x, height);
        }
 
        public Point computeSize(Composite editor, int wHint, int hHint,
@@ -57,8 +56,7 @@ public static final String CELL_EDITOR_IMG_DOTS_BUTTON = "cell_editor_dots_butto
                    force);
            Point buttonSize = button.computeSize(SWT.DEFAULT, SWT.DEFAULT,
                    force);
-           Point result = new Point(buttonSize.x, Math.max(contentsSize.y,
-                   buttonSize.y));
+           Point result = new Point(buttonSize.x, contentsSize.y);
            return result;
        }
    }

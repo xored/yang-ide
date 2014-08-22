@@ -3,6 +3,7 @@
  */
 package com.cisco.yangide.ext.model.editor.editors;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.graphiti.ui.editor.DiagramEditorInput;
 
@@ -15,13 +16,15 @@ import com.cisco.yangide.ext.model.Module;
 public class YangDiagramEditorInput extends DiagramEditorInput {
 
     private Module module;
+    private IFile file;
 
     /**
      * @param diagramUri
      * @param providerId
      */
-    public YangDiagramEditorInput(URI diagramUri, String providerId, Module m) {
+    public YangDiagramEditorInput(URI diagramUri, IFile file, String providerId, Module m) {
         super(diagramUri, providerId);
+        this.file = file;
         this.module = m;
     }
 
@@ -31,4 +34,10 @@ public class YangDiagramEditorInput extends DiagramEditorInput {
     public Module getModule() {
         return module;
     }
+
+    public IFile getFile() {
+        return file;
+    }
+    
+    
 }

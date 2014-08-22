@@ -42,6 +42,7 @@ import org.eclipse.graphiti.services.IPeCreateService;
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.NamedNode;
 import com.cisco.yangide.ext.model.TypedNode;
+import com.cisco.yangide.ext.model.Typeref;
 
 public class YangModelUIUtil {
     
@@ -341,6 +342,18 @@ public class YangModelUIUtil {
         ellipse.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
     }
     
+    public static String getTypeText(TypedNode node) {
+        if (null != node) {
+            return getTypeText(node.getType());
+        }
+        return null;
+    }
+    public static String getTypeText(Typeref ref) {
+        if (null != ref) {
+            return " : " + ref.getName();
+        }
+        return null;
+    }
     public static void drawPictogramElementHeader(ContainerShape containerShape, IAddContext context, IFeatureProvider fp, String imageId, String title, int width, int height) {
         final Shape imageShape = Graphiti.getPeCreateService().createShape(containerShape, false);
         // create and set text graphics algorithm
@@ -374,10 +387,10 @@ public class YangModelUIUtil {
         PropertyUtil.setObjectShapeProp(textShape, PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY, true);
         Graphiti.getGaService().setLocationAndSize(text, height + DEFAULT_V_ALIGN, 0, width, height);
         
-        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getTypedNode(), context.getNewObject()) && null != ((TypedNode) context.getNewObject()).getType()) {
+        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getTypedNode(), context.getNewObject())) {
             Shape typeShape = Graphiti.getPeCreateService().createShape(containerShape, false);
-            Text type = Graphiti.getGaService().createPlainText(typeShape, " : " + ((TypedNode) context.getNewObject()).getType().getName());
-            fp.link(typeShape, ((TypedNode) context.getNewObject()).getType());
+            Text type = Graphiti.getGaService().createPlainText(typeShape, getTypeText((TypedNode) context.getNewObject()));
+            fp.link(typeShape, (TypedNode) context.getNewObject());
             type.setStyle(StyleUtil.getStyleForDomainObjectTypeText(fp.getDiagramTypeProvider().getDiagram()));
             PropertyUtil.setObjectShapeProp(typeShape, PropertyUtil.BUSINESS_OBJECT_TYPE_SHAPE_KEY, true);
             Graphiti.getGaService().setLocationAndSize(type, height + DEFAULT_V_ALIGN, 0, 

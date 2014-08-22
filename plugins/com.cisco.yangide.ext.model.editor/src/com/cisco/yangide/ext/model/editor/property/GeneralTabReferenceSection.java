@@ -4,6 +4,7 @@ import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
 import org.eclipse.core.databinding.observable.ChangeEvent;
 import org.eclipse.core.databinding.observable.IChangeListener;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.databinding.EMFProperties;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
@@ -18,21 +19,31 @@ import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.layout.FormAttachment;
 import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 
+import com.cisco.yangide.core.indexing.ElementIndexInfo;
+import com.cisco.yangide.core.indexing.ElementIndexType;
+import com.cisco.yangide.ext.model.Module;
+import com.cisco.yangide.ext.model.editor.dialog.YangElementListSelectionDialog;
 import com.cisco.yangide.ext.model.editor.util.PropertyUtil;
+import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
 import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
+import com.cisco.yangide.ext.model.editor.widget.DialogText;
 
 public class GeneralTabReferenceSection extends GFPropertySection implements ITabbedPropertyConstants {
     
-    private Text text;
+    private DialogText text;
     private CLabel valueLabel;
     private DataBindingContext bindingContext = new DataBindingContext();
     private Binding binding;
+    YangElementListSelectionDialog dialog;
+    private EObject node;
     
     @Override
     public void createControls(Composite parent,
@@ -43,7 +54,18 @@ public class GeneralTabReferenceSection extends GFPropertySection implements ITa
         Composite composite = factory.createFlatFormComposite(parent);
         FormData data;
  
-        text = factory.createText(composite, "");
+        text = new DialogText(composite) {
+            
+            @Override
+            protected Object openDialogBox(Text text) {                
+                if (null != dialog) {
+                    if (IStatus.OK == dialog.open()) {
+                        setValue(dialog.getValue());
+                    }
+                }
+                return null;
+            }
+        };
         data = new FormData();
         data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, 0);
@@ -53,8 +75,8 @@ public class GeneralTabReferenceSection extends GFPropertySection implements ITa
         valueLabel = factory.createCLabel(composite, "Reference:");
         data = new FormData();
         data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(text, -HSPACE);
-        data.top = new FormAttachment(text, 0, SWT.CENTER);
+        data.right = new FormAttachment(text.getControl(), -HSPACE);
+        data.top = new FormAttachment(text.getControl(), 0, SWT.CENTER);
         valueLabel.setLayoutData(data);
     }
  
@@ -67,25 +89,37 @@ public class GeneralTabReferenceSection extends GFPropertySection implements ITa
         }
         final PictogramElement pe = getSelectedPictogramElement();
         if (pe != null) {
-            EObject bo = Graphiti.getLinkService()
+            node = Graphiti.getLinkService()
                  .getBusinessObjectForLinkedPictogramElement(pe);
-            if (bo == null) {
+            if (node == null) {
                 return;
             }
-            if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getUses(), bo)) {
-                binding = bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(2000, text),
+            if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getUses(), node)) {
+                binding = bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(2000, text.getTextControl()),
                         EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getUses_QName())
-                            .observe(bo));
-            } else if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getReferenceNode(), bo)) {
-                binding = bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(2000, text),
+                            .observe(node));
+            } else if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getReferenceNode(), node)) {
+                binding = bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(2000, text.getTextControl()),
                         EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getReferenceNode_Reference())
-                            .observe(bo));
+                            .observe(node));
             }
-            EClass reference = YangModelUtil.getConnectionReferenceClass(bo);
+            EClass reference = YangModelUtil.getConnectionReferenceClass(node);
+            ElementIndexType indexType = ElementIndexType.GROUPING;
+            String imageId = YangDiagramImageProvider.IMG_GROUPING_PROPOSAL;
             if (YangModelUtil.MODEL_PACKAGE.getIdentity().equals(reference)) {
                 valueLabel.setText("Base:");
+                indexType = ElementIndexType.IDENTITY;
+                imageId = YangDiagramImageProvider.IMG_IDENTITY_PROPOSAL;
             } else {
                 valueLabel.setText(reference.getName() + ":");
+            }
+            Module module = (Module) getDiagramTypeProvider().getFeatureProvider().getBusinessObjectForPictogramElement(getDiagram());
+            if (null == dialog) {
+                
+                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                dialog = new YangElementListSelectionDialog(shell, indexType, null, imageId, module);
+            } else {
+                dialog.reset(indexType, null, imageId, module);
             }
             binding.updateModelToTarget();
             binding.getModel().addChangeListener(new IChangeListener() {
@@ -101,6 +135,10 @@ public class GeneralTabReferenceSection extends GFPropertySection implements ITa
                 }
             });
         }
+    }
+    
+    private void setValue(String firstResult) {
+        text.setText(firstResult);
     }
 
 }

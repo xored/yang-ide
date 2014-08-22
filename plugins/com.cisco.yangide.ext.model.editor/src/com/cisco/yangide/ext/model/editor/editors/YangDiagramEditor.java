@@ -1,5 +1,6 @@
 package com.cisco.yangide.ext.model.editor.editors;
 
+import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.resource.Resource;
@@ -101,7 +102,7 @@ public class YangDiagramEditor extends DiagramEditor {
         layout.marginHeight = 0;
         parent.setLayout(layout);
 
-        infoPane = new YangDiagramModuleInfoPanel(parent, module);
+        infoPane = new YangDiagramModuleInfoPanel(parent, module, getFile());
 
         super.createPartControl(infoPane.getDiagram());
 
@@ -157,5 +158,9 @@ public class YangDiagramEditor extends DiagramEditor {
     public void setSourceModelManager(ISourceModelManager sourceModelManage) {
         ((EditorFeatureProvider) getDiagramTypeProvider().getFeatureProvider())
         .setSourceModelManager(sourceModelManage);
+    }
+    
+    private IFile getFile() {
+        return ((YangDiagramEditorInput) getEditorInput()).getFile();
     }
 }
