@@ -3,9 +3,11 @@ package com.cisco.yangide.ext.model.editor.dialog;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.swt.widgets.Shell;
@@ -15,9 +17,11 @@ import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.editor.editors.YangScanner;
+import com.cisco.yangide.ext.model.Import;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.editor.util.Strings;
 import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
+import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 
 public class YangElementListSelectionDialog extends ElementListSelectionDialog {
     
@@ -57,6 +61,7 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
     }
     
     private Module module;
+    private HashMap<String, String> imports = new HashMap<String, String>();
     private String value;
     
     public interface Transformer {
@@ -75,11 +80,11 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
         reset(indexType, file, imageId, module);       
     }
     
-    public void reset(ElementIndexType indexType, IFile file, String imageId, Module module) {
+    public void reset(ElementIndexType indexType, IFile file, String imageId, Module m) {
         setTitle("Select element");
         setAllowDuplicates(false);
-        this.module = module;
-        setList(indexType, file, module);
+        setModule(m);
+        setList(indexType, file, m);
         setImage(GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, imageId));
     }
     
@@ -89,7 +94,7 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
             result.addAll(Arrays.asList(YangScanner.getTypes()));
         }
         result.addAll(Arrays.asList(YangModelManager.search(null, null, null, indexType, null == file ? null : file.getProject(), null)));
-        list = result.toArray();
+        list = filterElements(result).toArray();
         setElements(list);
         
     }
@@ -105,6 +110,23 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
         }
     }
     
+    protected List<Object> filterElements(List<Object> elements) {
+        List<Object> result = new ArrayList<Object>();
+        for (Object element : elements) {
+            if (!(element instanceof ElementIndexInfo) || hasImport(element)) {
+                result.add(element);
+            }
+        }
+        return result;
+    }
+    
+    protected boolean hasImport(Object element) {
+        if (element instanceof ElementIndexInfo) {
+            return imports.containsKey(((ElementIndexInfo) element).getModule()) || ((ElementIndexInfo) element).getModule().equals(module.getName());
+        }
+        return false;
+    }
+
     protected void setResultObject() {
         Object result = getFirstResult();
         if (result instanceof ElementIndexInfo) {
@@ -112,7 +134,7 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
             if (null == getModule() || choosen.getModule().equals(getModule().getName())) {
                 value = choosen.getName();
             } else {
-                value = choosen.getModule() + ":" + choosen.getName();
+                value = (imports.containsKey(choosen.getModule()) ? imports.get(choosen.getModule()) + ":" : "") + choosen.getName();
             }
         } else {
             value = Strings.getAsString(result);
@@ -121,6 +143,13 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
     
     public String getValue() {
         return value;
+    }
+    
+    protected void setModule(Module module) {
+        this.module = module;
+        for (EObject i : YangModelUtil.filter(module.getChildren(), YangModelUtil.MODEL_PACKAGE.getImport())) {
+            imports.put(((Import) i).getModule(), ((Import) i).getPrefix());
+        }
     }
     
     protected Module getModule() {

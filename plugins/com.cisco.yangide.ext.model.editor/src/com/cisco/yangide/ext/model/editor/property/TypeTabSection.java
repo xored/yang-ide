@@ -25,10 +25,8 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 
 import com.cisco.yangide.core.indexing.ElementIndexType;
-import com.cisco.yangide.ext.model.ModelFactory;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.TypedNode;
-import com.cisco.yangide.ext.model.Typeref;
 import com.cisco.yangide.ext.model.editor.dialog.YangElementListSelectionDialog;
 import com.cisco.yangide.ext.model.editor.util.PropertyUtil;
 import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
@@ -94,7 +92,7 @@ public class TypeTabSection extends GFPropertySection implements ITabbedProperty
             }
             node = (TypedNode) bo;
             binding = bindingContext.bindValue(
-                    WidgetProperties.text(SWT.Modify).observeDelayed(2000, type.getTextControl()),
+                    WidgetProperties.text(SWT.Modify).observeDelayed(200, type.getTextControl()),
                     EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getNamedNode_Name()).observe(node.getType()));
         }
         binding.updateModelToTarget();
@@ -114,10 +112,6 @@ public class TypeTabSection extends GFPropertySection implements ITabbedProperty
     }
     
     private void setType(String firstResult) {
-        Typeref ref = node.getType();
-        if (null == ref) {
-            ref = ModelFactory.eINSTANCE.createTyperef();
-        }
-        ref.setName(firstResult);  
+        type.setText(firstResult); 
     }
 }
