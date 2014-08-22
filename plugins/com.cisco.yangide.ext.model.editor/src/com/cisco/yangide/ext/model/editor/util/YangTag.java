@@ -7,6 +7,8 @@ import org.eclipse.ui.views.properties.ComboBoxPropertyDescriptor;
 import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import org.eclipse.ui.views.properties.TextPropertyDescriptor;
 
+import com.cisco.yangide.ext.model.editor.property.DialogTextPropertyDescriptor;
+
 public enum YangTag {
     DESCRIPTION, YANG_VERSION("yang-version"), NAMESPACE, PREFIX, ORGANIZATION(true), CONTACT, REFERENCE, CONFIG(Arrays.asList(Strings.EMPTY_STRING, Boolean.TRUE.toString(), Boolean.FALSE.toString())), 
     MANDATORY(Arrays.asList(Strings.EMPTY_STRING, Boolean.TRUE.toString(), Boolean.FALSE.toString())), STATUS(Arrays.asList(Strings.EMPTY_STRING, "current", "deprecated", "obsolete")), 
@@ -53,7 +55,9 @@ public enum YangTag {
     }
     public IPropertyDescriptor getPropertyDescriptor() {
         if (null == pd) {
-            if (null != possibleValues && !possibleValues.isEmpty()) {
+            if (this == DESCRIPTION || this == CONTACT || this == ORGANIZATION || this == REFERENCE) {
+               return new DialogTextPropertyDescriptor(this, getName());
+            } else if (null != possibleValues && !possibleValues.isEmpty()) {
                 pd = new ComboBoxPropertyDescriptor(this, getName(), possibleValues.toArray(new String[0]));
             } else {
                 pd = new TextPropertyDescriptor(this, getName());

@@ -4,10 +4,8 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
-import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
-import org.eclipse.graphiti.features.context.IRemoveContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -27,7 +25,7 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
         super(null);
     }
     
-    @Override
+    /*@Override
     public boolean canRemove(IRemoveContext context) {
         return false;
     }
@@ -35,7 +33,7 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
     @Override
     public boolean canDelete(IDeleteContext context) {
         return true;
-    }
+    }*/
 
     @Override
     public boolean canLayout(ILayoutContext context) {

@@ -42,6 +42,7 @@ public class YangDiagramEditor extends DiagramEditor {
                 IRemoveFeature feature = getDiagramTypeProvider().getFeatureProvider().getRemoveFeature(context);
                 getDiagramBehavior().executeFeature(feature, context);
             }
+            updateModuleInfoPane(node);
         }
 
         @Override
@@ -52,25 +53,33 @@ public class YangDiagramEditor extends DiagramEditor {
             if (null != pe) {
                 YangModelUIUtil.updatePictogramElement(getDiagramTypeProvider().getFeatureProvider(), pe);
             }
+            updateModuleInfoPane(node);
         }
 
         @Override
         public void nodeAdded(Node parent, Node child, int position) {
             System.out.println("Added " + child);
-            Point p = null;
-            if (parent instanceof Module) {
-                p = ((YangDiagramBehavior) getDiagramBehavior()).getCreatePosition();
-            }
-            PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(getDiagramTypeProvider().getFeatureProvider(),
-                    parent);
-            if (null != pe && pe instanceof ContainerShape) {
-                if (p == null) {
-                    p = new Point(0, 0);
+            if (null == YangModelUIUtil.getBusinessObjectShape(getDiagramTypeProvider().getFeatureProvider(), child)) {
+                Point p = null;
+                if (parent instanceof Module) {
+                    p = ((YangDiagramBehavior) getDiagramBehavior()).getCreatePosition();
                 }
-                YangModelUIUtil.drawObject(child, (ContainerShape) pe, getDiagramTypeProvider().getFeatureProvider(),
-                        p.x, p.y);
+                PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(getDiagramTypeProvider()
+                        .getFeatureProvider(), parent);
+                if (null != pe && pe instanceof ContainerShape) {
+                    if (p == null) {
+                        p = new Point(0, 0);
+                    }
+                    YangModelUIUtil.drawObject(child, (ContainerShape) pe, getDiagramTypeProvider()
+                            .getFeatureProvider(), p.x, p.y);
+                }
+                updateModuleInfoPane(child);
             }
-            if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getImport(), child)) {
+            
+        }
+        
+        protected void updateModuleInfoPane(Node node) {
+            if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getImport(), node)) {
                 infoPane.refreshImportTable();
             }
         }

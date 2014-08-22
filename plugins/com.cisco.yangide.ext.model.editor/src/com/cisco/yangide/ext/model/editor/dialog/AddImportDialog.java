@@ -78,7 +78,7 @@ public class AddImportDialog extends ElementListSelectionDialog {
         appendix.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         CLabel label = new CLabel(appendix, SWT.NONE);
         label.setText("Prefix");
-        prefix = new Text(appendix, SWT.NONE);
+        prefix = new Text(appendix, SWT.BORDER);
         prefix.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
         if (null != obj) {
             prefix.setText(obj.getPrefix());

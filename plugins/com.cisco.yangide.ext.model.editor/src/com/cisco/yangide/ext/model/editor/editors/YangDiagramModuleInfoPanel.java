@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.databinding.EMFProperties;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.EStructuralFeature;
@@ -59,11 +60,13 @@ import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Revision;
 import com.cisco.yangide.ext.model.TaggedNode;
 import com.cisco.yangide.ext.model.editor.dialog.AddImportDialog;
+import com.cisco.yangide.ext.model.editor.dialog.MultilineTextDialog;
 import com.cisco.yangide.ext.model.editor.util.BusinessObjectWrapper;
 import com.cisco.yangide.ext.model.editor.util.Strings;
 import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 import com.cisco.yangide.ext.model.editor.util.YangTag;
+import com.cisco.yangide.ext.model.editor.widget.DialogText;
 
 
 
@@ -79,12 +82,12 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     private PropertyEdit editPropertyForm;
     
     private Text namespaceText;
-    private Text organizationText;
-    private Text contactText;
+    private DialogText organizationText;
+    private DialogText contactText;
     private Text prefixText;
     private Text yangVersionText;
-    private Text descriptionText;
-    private Text referenceText;
+    private DialogText descriptionText;
+    private DialogText referenceText;
     private TableViewer revisionTable;
     private SashForm infoPane;
     private ScrolledForm pane;
@@ -478,20 +481,60 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         meta.setLayout(new FormLayout());
         
         Label organization = toolkit.createLabel(meta, "Organization: ");  
-        organizationText = toolkit.createText(meta, "", SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-        organizationText.setEditable(true);
+        organizationText = new DialogText(meta) {
+            
+            @Override
+            protected Object openDialogBox(Text text) {
+                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Organization");
+                if (IStatus.OK == dialog.open()) {
+                    text.setText(dialog.getValue());
+                }
+                return null;
+            }
+        };
         
         Label contact = toolkit.createLabel(meta, "Contact: ");  
-        contactText  = toolkit.createText(meta, "",  SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-        contactText.setEditable(true);
+        contactText  = new DialogText(meta) {
+            
+            @Override
+            protected Object openDialogBox(Text text) {
+                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Organization");
+                if (IStatus.OK == dialog.open()) {
+                    text.setText(dialog.getValue());
+                }
+                return null;
+            }
+        };
 
         Label description = toolkit.createLabel(meta, "Description: ");  
-        descriptionText  = toolkit.createText(meta, "",  SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-        descriptionText.setEditable(true);
+        descriptionText  = new DialogText(meta) {
+            
+            @Override
+            protected Object openDialogBox(Text text) {
+                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Organization");
+                if (IStatus.OK == dialog.open()) {
+                    text.setText(dialog.getValue());
+                }
+                return null;
+            }
+        };
         
         Label reference = toolkit.createLabel(meta, "Reference: ");  
-        referenceText  = toolkit.createText(meta, "",  SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-        referenceText.setEditable(true);
+        referenceText  = new DialogText(meta) {
+            
+            @Override
+            protected Object openDialogBox(Text text) {
+                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Organization");
+                if (IStatus.OK == dialog.open()) {
+                    text.setText(dialog.getValue());
+                }
+                return null;
+            }
+        };
         
         FormData data = new FormData ();
         data.left = new FormAttachment (0, 0);
@@ -501,43 +544,39 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         data.left = new FormAttachment (organization, 0);
         data.right = new FormAttachment (100, 0);
         data.top = new FormAttachment(prefixText, H_OFFSET);
-        data.bottom = new FormAttachment(organizationText, TEXT_AREA_HEIGHT);
         organizationText.setLayoutData (data);
         
         data = new FormData ();
         data.left = new FormAttachment (0, 0);
-        data.top = new FormAttachment(organizationText, H_OFFSET);
+        data.top = new FormAttachment(organizationText.getControl(), H_OFFSET);
         contact.setLayoutData (data);
         
         data = new FormData ();
         data.left = new FormAttachment (organization, 0);
         data.right = new FormAttachment (100, 0);
-        data.top = new FormAttachment(organizationText, H_OFFSET);
-        data.bottom = new FormAttachment(contactText, TEXT_AREA_HEIGHT);
+        data.top = new FormAttachment(organizationText.getControl(), H_OFFSET);
         contactText.setLayoutData (data);
         
         data = new FormData ();
         data.left = new FormAttachment (0, 0);
-        data.top = new FormAttachment(contactText, H_OFFSET);
+        data.top = new FormAttachment(contactText.getControl(), H_OFFSET);
         description.setLayoutData (data);
         
         data = new FormData ();
         data.left = new FormAttachment (organization, 0);
         data.right = new FormAttachment (100, 0);
-        data.top = new FormAttachment(contactText, H_OFFSET);
-        data.bottom = new FormAttachment(descriptionText, TEXT_AREA_HEIGHT);
+        data.top = new FormAttachment(contactText.getControl(), H_OFFSET);
         descriptionText.setLayoutData (data);
         
         data = new FormData ();
         data.left = new FormAttachment (0, 0);
-        data.top = new FormAttachment(descriptionText, H_OFFSET);
+        data.top = new FormAttachment(descriptionText.getControl(), H_OFFSET);
         reference.setLayoutData (data);
         
         data = new FormData ();
         data.left = new FormAttachment (organization, 0);
         data.right = new FormAttachment (100, 0);
-        data.top = new FormAttachment(descriptionText, H_OFFSET);
-        data.bottom = new FormAttachment(referenceText, TEXT_AREA_HEIGHT);
+        data.top = new FormAttachment(descriptionText.getControl(), H_OFFSET);
         referenceText.setLayoutData (data);
         
         updateMetaInfoSection();;
@@ -593,10 +632,10 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     }
     
     protected void addMetaInfoSectionListeners() {
-        addTextFieldListener(this, organizationText, YangTag.ORGANIZATION);
-        addTextFieldListener(this, contactText, YangTag.CONTACT);
-        addTextFieldListener(this, descriptionText, YangTag.DESCRIPTION);
-        addTextFieldListener(this, referenceText, YangTag.REFERENCE);
+        addTextFieldListener(this, organizationText.getTextControl(), YangTag.ORGANIZATION);
+        addTextFieldListener(this, contactText.getTextControl(), YangTag.CONTACT);
+        addTextFieldListener(this, descriptionText.getTextControl(), YangTag.DESCRIPTION);
+        addTextFieldListener(this, referenceText.getTextControl(), YangTag.REFERENCE);
     }
     
     protected void addGeneralSectionListeners() {
@@ -613,7 +652,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         }
     }
     
-    protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends TaggedNode> node, Text text, final YangTag tag) {
+    protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends TaggedNode> node, Control text, final YangTag tag) {
         return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, text),
                 EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value())
                     .observe(YangModelUtil.getTag(tag, node.getBusinessObject())));
