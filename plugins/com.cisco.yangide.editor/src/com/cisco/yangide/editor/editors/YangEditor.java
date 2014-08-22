@@ -44,6 +44,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
@@ -414,6 +415,8 @@ public class YangEditor extends TextEditor implements IProjectionListener {
 
     @Override
     public void projectionEnabled() {
+        safelySanityCheckState(getEditorInput());
+        firePropertyChange(IEditorPart.PROP_INPUT);
         fFoldingStructureProvider = new YangFoldingStructureProvider(this);
         fFoldingStructureProvider.setDocument(getDocumentProvider().getDocument(getEditorInput()));
 

@@ -70,4 +70,13 @@ public class YangSourceViewer extends ProjectionViewer {
             super.updateTextListeners(cmd);
         }
     }
+
+    @Override
+    public int modelLine2WidgetLine(int modelLine) {
+        try {
+            return super.modelLine2WidgetLine(modelLine);
+        } catch (IllegalStateException e) {
+            return modelLine;
+        }
+    }
 }
