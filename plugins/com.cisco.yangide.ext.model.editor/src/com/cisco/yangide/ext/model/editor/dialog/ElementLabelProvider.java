@@ -1,11 +1,15 @@
 package com.cisco.yangide.ext.model.editor.dialog;
 
+import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Image;
 
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
+import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.editor.dialog.YangElementListSelectionDialog.Transformer;
+import com.cisco.yangide.ext.model.editor.util.Strings;
+import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
 
 public class ElementLabelProvider extends LabelProvider {
         
@@ -35,6 +39,20 @@ public class ElementLabelProvider extends LabelProvider {
 
     @Override
     public Image getImage(Object element) {
+        if (element instanceof ElementIndexInfo) {
+            ElementIndexInfo info = (ElementIndexInfo) element;
+            if (ElementIndexType.GROUPING.equals(info.getType())) {
+                return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_GROUPING_PROPOSAL);
+            }
+            if (ElementIndexType.TYPE.equals(info.getType())) {
+                return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_CUSTOM_TYPE_PROPOSAL);
+            }
+            if (ElementIndexType.IDENTITY.equals(info.getType())) {
+                return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_IDENTITY_PROPOSAL);
+            }
+        } else {
+            return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_TYPE_PROPOSAL);
+        }
         return super.getImage(element);
     }
 
@@ -43,7 +61,7 @@ public class ElementLabelProvider extends LabelProvider {
         if (element instanceof ElementIndexInfo) {
             return transformer.transform((ElementIndexInfo) element);
         }
-        return null;
+        return Strings.getAsString(element);
     }
     
     private Module getModule() {

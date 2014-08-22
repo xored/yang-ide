@@ -8,6 +8,7 @@ import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -36,11 +37,18 @@ public class AddImportDialog extends ElementListSelectionDialog {
         super(parent, new LabelProvider() {
             public String getText(Object element) {
                 if (element instanceof ElementIndexInfo) {
-                    return ((ElementIndexInfo) element).getModule() + " {" + ((ElementIndexInfo) element).getRevision() + "}";
+                    return ((ElementIndexInfo) element).getName() + " {" + ((ElementIndexInfo) element).getRevision() + "}";
                 }
                 return null;
             }
+
+            @Override
+            public Image getImage(Object element) {
+                return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_MODULE_PROPOSAL);
+            }
+            
         });
+        setAllowDuplicates(false);
         this.module = module;
         list = YangModelManager.search(null, null, null, ElementIndexType.MODULE, null == file ? null : file.getProject(), null);
         setElements(list);
