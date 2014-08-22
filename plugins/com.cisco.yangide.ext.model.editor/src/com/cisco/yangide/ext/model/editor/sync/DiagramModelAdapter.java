@@ -10,6 +10,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.jface.text.BadLocationException;
+import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.RewriteSessionEditProcessor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.text.edits.DeleteEdit;
@@ -123,7 +124,7 @@ final class DiagramModelAdapter extends EContentAdapter {
                         break;
                     case Notification.REMOVE:
                         if (notification.getOldValue() != null && notification.getOldValue() instanceof Node
-                        && mapping.containsKey(notification.getOldValue())) {
+                                && mapping.containsKey(notification.getOldValue())) {
                             delete((Node) notification.getOldValue());
                         }
                         break;

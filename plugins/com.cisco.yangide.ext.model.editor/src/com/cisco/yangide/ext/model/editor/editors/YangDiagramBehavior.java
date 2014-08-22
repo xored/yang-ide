@@ -1,6 +1,7 @@
 package com.cisco.yangide.ext.model.editor.editors;
 
 import org.eclipse.graphiti.ui.editor.DefaultPersistencyBehavior;
+import org.eclipse.graphiti.ui.editor.DefaultRefreshBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramBehavior;
 import org.eclipse.graphiti.ui.editor.IDiagramContainerUI;
 import org.eclipse.swt.graphics.Point;
@@ -31,4 +32,8 @@ public class YangDiagramBehavior extends DiagramBehavior {
         this.createPosition = createPosition;
     }
 
+    @Override
+    protected DefaultRefreshBehavior createRefreshBehavior() {
+        return new YangDiagramRefreshBehavior(this);
+    }
 }
