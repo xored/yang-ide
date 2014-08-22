@@ -78,7 +78,6 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
     public void reset(ElementIndexType indexType, IFile file, String imageId, Module module) {
         setTitle("Select element");
         setAllowDuplicates(false);
-        setco
         this.module = module;
         setList(indexType, file, module);
         setImage(GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, imageId));
