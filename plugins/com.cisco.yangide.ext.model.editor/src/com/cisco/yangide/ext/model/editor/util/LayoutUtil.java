@@ -557,6 +557,42 @@ public class LayoutUtil {
         
     }
 
+    public static void layoutContainerShapeVertical(ContainerShape cs, IFeatureProvider fp) {
+        int y = YangModelUIUtil.DEFAULT_TEXT_HEIGHT;
+        Object bo = fp.getBusinessObjectForPictogramElement(cs);
+        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), bo)) {
+            for (Node child : ((ContainingNode) bo).getChildren()) {
+                PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(fp, child);
+                if (cs.getChildren().contains(pe)) {   
+                    if (pe instanceof ContainerShape) {
+                        layoutContainerShapeVertical((ContainerShape) pe, fp);
+                    }
+                    pe.getGraphicsAlgorithm().setY(y + YangModelUIUtil.DEFAULT_H_ALIGN);
+                    y = pe.getGraphicsAlgorithm().getY() + pe.getGraphicsAlgorithm().getHeight();
+                }
+            }
+        }
+        if (y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN > cs.getGraphicsAlgorithm().getHeight()) {
+            cs.getGraphicsAlgorithm().setHeight(y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN);
+        }
+    }
+    
+    public static void layoutContainerShapeHorizontal(ContainerShape cs, IFeatureProvider fp) {
+        if (!(cs instanceof Diagram)) {
+            layoutContainerShapeHeader(cs, fp);
+            for (Shape shape : cs.getChildren()) {
+                if (shape instanceof ContainerShape) {
+                    layoutContainerShapeHorizontal((ContainerShape) shape, fp);
+                }
+                if (shape.getGraphicsAlgorithm().getX() + shape.getGraphicsAlgorithm().getWidth() + 2
+                        * YangModelUIUtil.DEFAULT_H_ALIGN > cs.getGraphicsAlgorithm().getWidth()) {
+                    cs.getGraphicsAlgorithm().setWidth(
+                            shape.getGraphicsAlgorithm().getX() + shape.getGraphicsAlgorithm().getWidth() + 2
+                                    * YangModelUIUtil.DEFAULT_H_ALIGN);
+                }
+            }
+        }
+    }
     public static void layoutContainerShape(ContainerShape cs, IFeatureProvider fp) {
         int y = YangModelUIUtil.DEFAULT_TEXT_HEIGHT;
         int x = 0;
@@ -566,8 +602,11 @@ public class LayoutUtil {
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), bo)) {
             for (Node child : ((ContainingNode) bo).getChildren()) {
                 PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(fp, child);
-                if (cs.getChildren().contains(pe)) {
-                    layoutPictogramElement(pe, fp);
+                if (cs.getChildren().contains(pe)) {   
+                    if (pe instanceof ContainerShape) {
+                        layoutContainerShapeVertical((ContainerShape) pe, fp);
+                        //layoutContainerShapeHorizontal((ContainerShape) pe, fp);
+                    }
                     pe.getGraphicsAlgorithm().setX(YangModelUIUtil.DEFAULT_V_ALIGN);
                     pe.getGraphicsAlgorithm().setY(y + YangModelUIUtil.DEFAULT_H_ALIGN);
                     pe.getGraphicsAlgorithm().setWidth(
@@ -576,12 +615,9 @@ public class LayoutUtil {
                     if (x < pe.getGraphicsAlgorithm().getWidth()) {
                         x = pe.getGraphicsAlgorithm().getWidth();
                     }
+                    layoutPictogramElement(pe, fp);
                 }
             }
-        }
-
-        if (x + 2 * YangModelUIUtil.DEFAULT_V_ALIGN > cs.getGraphicsAlgorithm().getWidth()) {
-            cs.getGraphicsAlgorithm().setWidth(x + 2 * YangModelUIUtil.DEFAULT_V_ALIGN);
         }
         if (y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN > cs.getGraphicsAlgorithm().getHeight()) {
             cs.getGraphicsAlgorithm().setHeight(y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN);
