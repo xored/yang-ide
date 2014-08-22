@@ -10,7 +10,6 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.jface.text.BadLocationException;
-import org.eclipse.jface.text.DocumentCommand;
 import org.eclipse.jface.text.RewriteSessionEditProcessor;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.text.edits.DeleteEdit;
@@ -61,6 +60,7 @@ final class DiagramModelAdapter extends EContentAdapter {
     @Override
     public synchronized void notifyChanged(Notification notification) {
         super.notifyChanged(notification);
+
         if (notification.getEventType() != Notification.REMOVING_ADAPTER) {
             if (this.modelSynchronizer.isNotificationEnabled()) {
                 try {
@@ -96,8 +96,8 @@ final class DiagramModelAdapter extends EContentAdapter {
                                     && notification.getOldValue().equals(notification.getNewValue())) {
                                 break;
                             }
-
-                            if (notification.getFeature() == ModelPackage.Literals.NAMED_NODE__NAME) {
+                            if (notification.getFeature() == ModelPackage.Literals.NAMED_NODE__NAME
+                                    || notification.getFeature() == ModelPackage.Literals.USES__QNAME) {
                                 updateName((Node) notification.getNotifier(), (EAttribute) notification.getFeature(),
                                         notification.getNewValue());
                             }
@@ -114,6 +114,8 @@ final class DiagramModelAdapter extends EContentAdapter {
                                     updateModuleProperty(astNode, tag.getName(), notification.getNewValue());
                                 } else if (parent.eClass() == ModelPackage.Literals.REVISION) {
                                     updateRevisionProperty(astNode, tag.getName(), notification.getNewValue());
+                                } else if (parent.eClass() == ModelPackage.Literals.USES) {
+                                    updateUsesProperty(astNode, tag.getName(), notification.getNewValue());
                                 } else {
                                     updateProperty(astNode, tag.getName(), notification.getNewValue(),
                                             astNode.getBodyStartPosition() + 1);
@@ -235,14 +237,12 @@ final class DiagramModelAdapter extends EContentAdapter {
             throw new RuntimeException("Cannot find references source block from diagram editor");
         }
 
-        if (feature == ModelPackage.Literals.NAMED_NODE__NAME) {
-            if (!(astNode instanceof ASTNamedNode)) {
-                throw new RuntimeException("Source block is not named element");
-            }
-            ASTNamedNode nnode = (ASTNamedNode) astNode;
-
-            performEdit(new ReplaceEdit(nnode.getNameStartPosition(), nnode.getNameLength(), (String) newValue));
+        if (!(astNode instanceof ASTNamedNode)) {
+            throw new RuntimeException("Source block is not named element");
         }
+        ASTNamedNode nnode = (ASTNamedNode) astNode;
+
+        performEdit(new ReplaceEdit(nnode.getNameStartPosition(), nnode.getNameLength(), (String) newValue));
     }
 
     private void updateModuleProperty(ASTNode node, String name, Object newValue) {
@@ -282,6 +282,10 @@ final class DiagramModelAdapter extends EContentAdapter {
     }
 
     private void updateRevisionProperty(ASTNode node, String name, Object newValue) {
+        updateProperty(node, name, newValue, node.getBodyStartPosition() + 1);
+    }
+
+    private void updateUsesProperty(ASTNode node, String name, Object newValue) {
         updateProperty(node, name, newValue, node.getBodyStartPosition() + 1);
     }
 

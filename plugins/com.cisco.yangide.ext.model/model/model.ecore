@@ -73,7 +73,8 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//Identity"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="TypedNode" abstract="true" interface="true">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//Typeref"/>
+    <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//Typeref"
+        containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="ChoiceCase" eSuperTypes="#//NamedContainingNode #//TaggedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="ListKey" eSuperTypes="#//NamedNode"/>

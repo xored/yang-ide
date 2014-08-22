@@ -84,7 +84,7 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
     protected EList<Tag> tags;
 
     /**
-     * The cached value of the '{@link #getType() <em>Type</em>}' reference.
+     * The cached value of the '{@link #getType() <em>Type</em>}' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @see #getType()
@@ -189,14 +189,6 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
      * @generated
      */
     public Typeref getType() {
-        if (type != null && type.eIsProxy()) {
-            InternalEObject oldType = (InternalEObject)type;
-            type = (Typeref)eResolveProxy(oldType);
-            if (type != oldType) {
-                if (eNotificationRequired())
-                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, ModelPackage.LEAF__TYPE, oldType, type));
-            }
-        }
         return type;
     }
 
@@ -205,8 +197,14 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
      * <!-- end-user-doc -->
      * @generated
      */
-    public Typeref basicGetType() {
-        return type;
+    public NotificationChain basicSetType(Typeref newType, NotificationChain msgs) {
+        Typeref oldType = type;
+        type = newType;
+        if (eNotificationRequired()) {
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.LEAF__TYPE, oldType, newType);
+            if (msgs == null) msgs = notification; else msgs.add(notification);
+        }
+        return msgs;
     }
 
     /**
@@ -215,10 +213,17 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
      * @generated
      */
     public void setType(Typeref newType) {
-        Typeref oldType = type;
-        type = newType;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LEAF__TYPE, oldType, type));
+        if (newType != type) {
+            NotificationChain msgs = null;
+            if (type != null)
+                msgs = ((InternalEObject)type).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.LEAF__TYPE, null, msgs);
+            if (newType != null)
+                msgs = ((InternalEObject)newType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.LEAF__TYPE, null, msgs);
+            msgs = basicSetType(newType, msgs);
+            if (msgs != null) msgs.dispatch();
+        }
+        else if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.LEAF__TYPE, newType, newType));
     }
 
     /**
@@ -231,6 +236,8 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
         switch (featureID) {
             case ModelPackage.LEAF__TAGS:
                 return ((InternalEList<?>)getTags()).basicRemove(otherEnd, msgs);
+            case ModelPackage.LEAF__TYPE:
+                return basicSetType(null, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
@@ -251,8 +258,7 @@ public class LeafImpl extends MinimalEObjectImpl.Container implements Leaf {
             case ModelPackage.LEAF__TAGS:
                 return getTags();
             case ModelPackage.LEAF__TYPE:
-                if (resolve) return getType();
-                return basicGetType();
+                return getType();
         }
         return super.eGet(featureID, resolve, coreType);
     }

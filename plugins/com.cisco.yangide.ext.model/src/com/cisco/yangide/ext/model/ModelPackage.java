@@ -378,7 +378,7 @@ public interface ModelPackage extends EPackage {
     int LEAF__TAGS = NAMED_NODE_FEATURE_COUNT + 0;
 
     /**
-     * The feature id for the '<em><b>Type</b></em>' reference.
+     * The feature id for the '<em><b>Type</b></em>' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -762,7 +762,7 @@ public interface ModelPackage extends EPackage {
     int LEAF_LIST__TAGS = NAMED_NODE_FEATURE_COUNT + 0;
 
     /**
-     * The feature id for the '<em><b>Type</b></em>' reference.
+     * The feature id for the '<em><b>Type</b></em>' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -1690,7 +1690,7 @@ public interface ModelPackage extends EPackage {
     int TYPED_NODE = 29;
 
     /**
-     * The feature id for the '<em><b>Type</b></em>' reference.
+     * The feature id for the '<em><b>Type</b></em>' containment reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
@@ -2412,10 +2412,10 @@ public interface ModelPackage extends EPackage {
     EClass getTypedNode();
 
     /**
-     * Returns the meta object for the reference '{@link com.cisco.yangide.ext.model.TypedNode#getType <em>Type</em>}'.
+     * Returns the meta object for the containment reference '{@link com.cisco.yangide.ext.model.TypedNode#getType <em>Type</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
-     * @return the meta object for the reference '<em>Type</em>'.
+     * @return the meta object for the containment reference '<em>Type</em>'.
      * @see com.cisco.yangide.ext.model.TypedNode#getType()
      * @see #getTypedNode()
      * @generated
@@ -2941,7 +2941,7 @@ public interface ModelPackage extends EPackage {
         EClass TYPED_NODE = eINSTANCE.getTypedNode();
 
         /**
-         * The meta object literal for the '<em><b>Type</b></em>' reference feature.
+         * The meta object literal for the '<em><b>Type</b></em>' containment reference feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
          * @generated
