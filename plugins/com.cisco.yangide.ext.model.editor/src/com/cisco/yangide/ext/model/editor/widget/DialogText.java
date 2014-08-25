@@ -18,6 +18,8 @@ public abstract class DialogText {
     public DialogText (Composite parent) {
         createControl(parent);
     }
+    
+    private static final int H_OFFSET = 2;
 
    private Control contents;
 
@@ -42,9 +44,9 @@ public abstract class DialogText {
            Point size = button.computeSize(SWT.DEFAULT, SWT.DEFAULT, force);
            int height = contents.computeSize(SWT.DEFAULT, SWT.DEFAULT, force).y;
            if (contents != null) {
-               contents.setBounds(0, 0, bounds.width - size.x, height);
+               contents.setBounds(0, 0, Math.max(0, bounds.width - size.x - H_OFFSET), height);
            }
-           button.setBounds(bounds.width - size.x, 0, size.x, height);
+           button.setBounds(Math.max(0, bounds.width - size.x - H_OFFSET), 0, size.x, height);
        }
 
        public Point computeSize(Composite editor, int wHint, int hHint,
@@ -61,7 +63,7 @@ public abstract class DialogText {
        }
    }
    protected Control createContents(Composite parent) {
-       text = new Text(parent, SWT.LEFT);
+       text = new Text(parent, SWT.LEFT | SWT.BORDER);
        text.setFont(parent.getFont());
        text.setBackground(parent.getBackground());
        return text;
@@ -78,7 +80,7 @@ public abstract class DialogText {
        Font font = parent.getFont();
        Color bg = parent.getBackground();
 
-       editor = new Composite(parent, SWT.BORDER);
+       editor = new Composite(parent, SWT.NONE);
        editor.setFont(font);
        editor.setBackground(bg);
        editor.setLayout(new DialogCellLayout());
