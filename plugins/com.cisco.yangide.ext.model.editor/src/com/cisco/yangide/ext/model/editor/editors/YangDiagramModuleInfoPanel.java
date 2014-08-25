@@ -440,6 +440,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         infoPane.setWeights(new int[] {1, 0});
         infoPane.setMaximizedControl(pane);
         createPropertiesButtonToolbar(editSection, infoPane, pane);
+        mainForm.pack();
         mainForm.reflow(true);
     }
     

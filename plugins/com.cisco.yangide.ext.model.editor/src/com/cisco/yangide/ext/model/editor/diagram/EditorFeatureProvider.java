@@ -38,7 +38,6 @@ import com.cisco.yangide.ext.model.editor.Activator;
 import com.cisco.yangide.ext.model.editor.editors.ISourceModelManager;
 import com.cisco.yangide.ext.model.editor.editors.YangDiagramBehavior;
 import com.cisco.yangide.ext.model.editor.features.AddReferenceConnectionFeature;
-import com.cisco.yangide.ext.model.editor.features.DiagramLayoutCustomFeature;
 import com.cisco.yangide.ext.model.editor.features.DiagramLayoutFeature;
 import com.cisco.yangide.ext.model.editor.features.ExtractGroupingCustomFeature;
 import com.cisco.yangide.ext.model.editor.features.TextDirectEditingFeature;
@@ -133,8 +132,7 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
 
     @Override
     public ICustomFeature[] getCustomFeatures(ICustomContext context) {
-        return new ICustomFeature[] { new DiagramLayoutCustomFeature(this),
-                new ExtractGroupingCustomFeature(this, sourceModelManager) };
+        return new ICustomFeature[] { new ExtractGroupingCustomFeature(this, sourceModelManager) };
     }
 
     @Override

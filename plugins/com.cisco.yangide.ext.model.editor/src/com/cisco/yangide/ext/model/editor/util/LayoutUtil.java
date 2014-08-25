@@ -33,16 +33,7 @@ import org.eclipse.zest.layouts.LayoutBendPoint;
 import org.eclipse.zest.layouts.LayoutEntity;
 import org.eclipse.zest.layouts.LayoutRelationship;
 import org.eclipse.zest.layouts.LayoutStyles;
-import org.eclipse.zest.layouts.algorithms.CompositeLayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.DirectedGraphLayoutAlgorithm;
 import org.eclipse.zest.layouts.algorithms.GridLayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.HorizontalLayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.HorizontalShift;
-import org.eclipse.zest.layouts.algorithms.HorizontalTreeLayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.RadialLayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.SpringLayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.TreeLayoutAlgorithm;
-import org.eclipse.zest.layouts.algorithms.VerticalLayoutAlgorithm;
 import org.eclipse.zest.layouts.dataStructures.BendPoint;
 import org.eclipse.zest.layouts.dataStructures.InternalNode;
 import org.eclipse.zest.layouts.dataStructures.InternalRelationship;
@@ -206,23 +197,10 @@ public class LayoutUtil {
                 maxH = node.getHeight();
             }
         }
-        if (layout instanceof VerticalLayoutAlgorithm) {
-            return new double[] { maxW + 2 * YangModelUIUtil.DEFAULT_V_ALIGN,
-                    fullH + entities.size() * YangModelUIUtil.DEFAULT_V_ALIGN };
-        }
-        if (layout instanceof HorizontalLayoutAlgorithm) {
-            return new double[] { fullW + entities.size() * YangModelUIUtil.DEFAULT_V_ALIGN,
-                    maxH + 2 * YangModelUIUtil.DEFAULT_H_ALIGN };
-        }
-        if (layout instanceof YangDiagramLayoutAlgorithm) {
-            ((YangDiagramLayoutAlgorithm) layout).setMaxElementSizes(maxW, maxH);
-            ((YangDiagramLayoutAlgorithm) layout).setFullElementSizes(fullW, fullH);
-            double h = Math.max(1, Math.ceil(entities.size() / (DEFAULT_SCREEN_WIDTH / maxW))) * maxH;
-            return new double[] { DEFAULT_SCREEN_WIDTH, h };
-        }
-        Double n = Math.ceil(Math.sqrt(entities.size()));
-        return new double[] { (maxW + YangModelUIUtil.DEFAULT_V_ALIGN) * n,
-                (maxH + YangModelUIUtil.DEFAULT_H_ALIGN) * n };
+        ((YangDiagramLayoutAlgorithm) layout).setMaxElementSizes(maxW, maxH);
+        ((YangDiagramLayoutAlgorithm) layout).setFullElementSizes(fullW, fullH);
+        double h = Math.max(1, Math.ceil(entities.size() / (DEFAULT_SCREEN_WIDTH / maxW))) * maxH;
+        return new double[] { DEFAULT_SCREEN_WIDTH, h };
     }
 
     /**
@@ -278,60 +256,7 @@ public class LayoutUtil {
      * @return
      */
     private static LayoutAlgorithm getLayoutAlgorithmn(int current) {
-        LayoutAlgorithm layout;
-        int style = LayoutStyles.NO_LAYOUT_NODE_RESIZING;
-        switch (current) {
-        case 1:
-            layout = new SpringLayoutAlgorithm(style); // SpringLayoutAlgorithmn
-            break;
-        case 2:
-            layout = new TreeLayoutAlgorithm(style); // TreeLayoutAlgorithm
-            break;
-        case 3:
-            layout = new GridLayoutAlgorithm(style); // GridLayoutAlgorithm
-            break;
-        case 4:
-            layout = new HorizontalLayoutAlgorithm(style); // HorizontalLayoutAlgorithm
-            break;
-        case 5:
-            layout = new HorizontalTreeLayoutAlgorithm(style); // HorizontalTreeLayoutAlgorithm
-            break;
-        case 6:
-            layout = new VerticalLayoutAlgorithm(style); // VerticalLayoutAlgorithm
-            break;
-        case 7:
-            layout = new RadialLayoutAlgorithm(style); // RadialLayoutAlgorithm
-            break;
-        case 8:
-            layout = new DirectedGraphLayoutAlgorithm(style); // DirectedGraphLayoutAlgorithm
-            break;
-        case 9:
-            layout = new CompositeLayoutAlgorithm(new LayoutAlgorithm[] { new DirectedGraphLayoutAlgorithm(style),
-                    new HorizontalShift(style) }); // CompositeLayoutAlgorithm
-                                                   // [DirectedGraphLayoutAlgorithm+HorizontalShift]
-            break;
-        case 10:
-            layout = new CompositeLayoutAlgorithm(new LayoutAlgorithm[] { new SpringLayoutAlgorithm(style),
-                    new HorizontalShift(style) }); // CompositeLayoutAlgorithm
-                                                   // [SpringLayoutAlgorithm+HorizontalShift]
-            break;
-        case 11:
-            layout = new CompositeLayoutAlgorithm(new LayoutAlgorithm[] { new RadialLayoutAlgorithm(style),
-                    new HorizontalShift(style) }); // CompositeLayoutAlgorithm
-                                                   // [RadialLayoutAlgorithm+HorizontalShift]
-            break;
-        case 12:
-            layout = new HorizontalShift(style); // HorizontalShift
-            break;
-        case 13:
-            layout = new YangDiagramLayoutAlgorithm(style); // YangDiagramLayoutAlgorithm
-            break;
-        default:
-            layout = new CompositeLayoutAlgorithm(new LayoutAlgorithm[] { new TreeLayoutAlgorithm(style),
-                    new HorizontalShift(style) }); // CompositeLayoutAlgorithm
-                                                   // [TreeLayoutAlgorithm+HorizontalShift]
-        }
-        return layout;
+        return new YangDiagramLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING); // YangDiagramLayoutAlgorithm
     }
 
     /**
