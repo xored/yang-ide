@@ -41,34 +41,36 @@ public class TypeTabSection extends GFPropertySection implements ITabbedProperty
     private Binding binding;
 
     @Override
-    public void createControls(Composite parent,
-        TabbedPropertySheetPage tabbedPropertySheetPage) {
+    public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
         super.createControls(parent, tabbedPropertySheetPage);
- 
+
         TabbedPropertySheetWidgetFactory factory = getWidgetFactory();
         Composite composite = factory.createFlatFormComposite(parent);
         FormData data;
-        
-        type = new DialogText(composite) {
-            
+
+        type = new DialogText(composite, tabbedPropertySheetPage.getWidgetFactory()) {
+
             @Override
             protected Object openDialogBox(Text text) {
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                Module module = (Module) getDiagramTypeProvider().getFeatureProvider().getBusinessObjectForPictogramElement(getDiagram());
-                YangElementListSelectionDialog dialog = new YangElementListSelectionDialog(shell, ElementIndexType.TYPE, null, YangDiagramImageProvider.IMG_CUSTOM_TYPE_PROPOSAL, module, type.getText());
+                Module module = (Module) getDiagramTypeProvider().getFeatureProvider()
+                        .getBusinessObjectForPictogramElement(getDiagram());
+                YangElementListSelectionDialog dialog = new YangElementListSelectionDialog(shell,
+                        ElementIndexType.TYPE, null, YangDiagramImageProvider.IMG_CUSTOM_TYPE_PROPOSAL, module,
+                        type.getText());
                 if (IStatus.OK == dialog.open()) {
                     setType(dialog.getValue());
                 }
                 return null;
             }
         };
-            
+
         data = new FormData();
         data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
         data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(0, VSPACE);
         type.setLayoutData(data);
- 
+
         CLabel valueLabel = factory.createCLabel(composite, "Name:");
         data = new FormData();
         data.left = new FormAttachment(0, 0);
@@ -76,7 +78,7 @@ public class TypeTabSection extends GFPropertySection implements ITabbedProperty
         data.top = new FormAttachment(type.getControl(), 0, SWT.CENTER);
         valueLabel.setLayoutData(data);
     }
- 
+
     @Override
     public void refresh() {
         if (null != binding) {
@@ -110,8 +112,8 @@ public class TypeTabSection extends GFPropertySection implements ITabbedProperty
             }
         });
     }
-    
+
     private void setType(String firstResult) {
-        type.setText(firstResult); 
+        type.setText(firstResult);
     }
 }

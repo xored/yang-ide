@@ -76,9 +76,9 @@ public class YangDiagramEditor extends DiagramEditor {
                 }
                 updateModuleInfoPane(child);
             }
-            
+
         }
-        
+
         protected void updateModuleInfoPane(Node node) {
             if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getImport(), node)) {
                 infoPane.refreshImportTable();
@@ -157,9 +157,9 @@ public class YangDiagramEditor extends DiagramEditor {
 
     public void setSourceModelManager(ISourceModelManager sourceModelManage) {
         ((EditorFeatureProvider) getDiagramTypeProvider().getFeatureProvider())
-        .setSourceModelManager(sourceModelManage);
+                .setSourceModelManager(sourceModelManage);
     }
-    
+
     private IFile getFile() {
         return ((YangDiagramEditorInput) getEditorInput()).getFile();
     }

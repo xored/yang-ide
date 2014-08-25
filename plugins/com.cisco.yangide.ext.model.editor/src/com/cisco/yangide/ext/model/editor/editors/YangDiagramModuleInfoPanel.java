@@ -16,16 +16,13 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.ToolBarManager;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
-import org.eclipse.jface.viewers.ColumnWeightData;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
-import org.eclipse.jface.viewers.TableLayout;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
@@ -33,20 +30,13 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Layout;
-import org.eclipse.swt.widgets.Scrollable;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
@@ -81,7 +71,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     private IFile file;
 
     private Composite diagram;
-    private PropertyEdit editPropertyForm;
+//    private PropertyEdit editPropertyForm;
 
     private Text namespaceText;
     private DialogText organizationText;
@@ -101,113 +91,6 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     private static final int TEXT_AREA_HEIGHT = 80;
     private DataBindingContext bindingContext = new DataBindingContext();
 
-    protected class FillData {
-
-        int defaultWidth = -1, defaultHeight = -1;
-        int currentWhint, currentHhint, currentWidth = -1, currentHeight = -1;
-
-        public Point computeSize(Control control, int wHint, int hHint, boolean flushCache) {
-            if (flushCache)
-                flushCache();
-            if (wHint == SWT.DEFAULT && hHint == SWT.DEFAULT) {
-                if (defaultWidth == -1 || defaultHeight == -1) {
-                    Point size = control.computeSize(wHint, hHint, flushCache);
-                    defaultWidth = size.x;
-                    defaultHeight = size.y;
-                }
-                return new Point(defaultWidth, defaultHeight);
-            }
-            if (currentWidth == -1 || currentHeight == -1 || wHint != currentWhint || hHint != currentHhint) {
-                Point size = control.computeSize(wHint, hHint, flushCache);
-                currentWhint = wHint;
-                currentHhint = hHint;
-                currentWidth = size.x;
-                currentHeight = size.y;
-            }
-            return new Point(currentWidth, currentHeight);
-        }
-
-        public void flushCache() {
-            defaultWidth = defaultHeight = -1;
-            currentWidth = currentHeight = -1;
-        }
-    }
-
-    protected class YangPanelFillLayout extends Layout {
-
-        public int type = SWT.VERTICAL;
-
-        public int marginWidth = 3;
-
-        public int marginHeight = 3;
-
-        public int spacing = 2;
-
-        public YangPanelFillLayout() {
-        }
-
-        protected Point computeSize(Composite composite, int wHint, int hHint, boolean flushCache) {
-            int width = composite.getClientArea().width - 2 * marginWidth;
-            int height = composite.getClientArea().height - 2 * marginHeight;
-            return new Point(width, height);
-        }
-
-        protected Point computeChildSize(Control control, int wHint, int hHint, boolean flushCache) {
-            FillData data = (FillData) control.getLayoutData();
-            if (data == null) {
-                data = new FillData();
-                control.setLayoutData(data);
-            }
-            Point size = null;
-            int trimX, trimY;
-            if (control instanceof Scrollable) {
-                Rectangle rect = ((Scrollable) control).computeTrim(0, 0, 0, 0);
-                trimX = rect.width;
-                trimY = rect.height;
-            } else {
-                trimX = trimY = control.getBorderWidth() * 2;
-            }
-            int w = wHint == SWT.DEFAULT ? wHint : Math.max(0, wHint - trimX);
-            int h = hHint == SWT.DEFAULT ? hHint : Math.max(0, hHint - trimY);
-            size = data.computeSize(control, w, h, flushCache);
-            return size;
-        }
-
-        protected boolean flushCache(Control control) {
-            Object data = control.getLayoutData();
-            if (data != null)
-                ((FillData) data).flushCache();
-            return true;
-        }
-
-        protected void layout(Composite composite, boolean flushCache) {
-            Rectangle rect = composite.getClientArea();
-            Control[] children = composite.getChildren();
-            int count = children.length;
-            if (count == 0)
-                return;
-            int width = rect.width - marginWidth * 2;
-            int height = rect.height - marginHeight * 2;
-            height -= (count - 1) * spacing;
-
-            int x = rect.x + marginWidth;
-            int y = rect.y + marginHeight, extra = height % count;
-            for (int i = 0; i < count; i++) {
-                Control child = children[i];
-                Point size = computeChildSize(child, -1, -1, true);
-                int childHeight = size.y;
-                if (i == 0) {
-                    childHeight += extra / 2;
-                } else {
-                    if (i == count - 1)
-                        childHeight += (extra + 1) / 2;
-                }
-                child.setBounds(x, y, width, childHeight);
-                y += childHeight + spacing;
-            }
-        }
-    }
-
     protected class PropertyEdit extends SashForm {
         private RevisionEdit editRevision;
         private ImportEdit editImport;
@@ -221,56 +104,25 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             private List<Binding> dataBindigs = new ArrayList<Binding>();
 
             public RevisionEdit() {
-                pane = toolkit.createComposite(editPropertyForm, SWT.NONE);
+//                pane = toolkit.createComposite(editPropertyForm, SWT.NONE);
                 createPane();
             }
 
             protected void createPane() {
-                pane.setLayout(new FormLayout());
-                Label nameLabel = toolkit.createLabel(pane, "Name: ");
+                GridDataFactory.fillDefaults().grab(true, false).applyTo(pane);
+                GridLayoutFactory.fillDefaults().numColumns(2).applyTo(pane);
+                toolkit.createLabel(pane, "Name: ");
                 name = toolkit.createText(pane, "");
-                name.setEditable(true);
+                GridDataFactory.fillDefaults().grab(true, false).applyTo(name);
 
-                Label descriptionLabel = toolkit.createLabel(pane, "Description: ");
-                description = toolkit.createText(pane, "", SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-                description.setEditable(true);
+                toolkit.createLabel(pane, "Description: ");
+                description = toolkit.createText(pane, "", SWT.MULTI | SWT.WRAP);
+                GridDataFactory.fillDefaults().grab(true, true).applyTo(description);
 
-                Label referenceLabel = toolkit.createLabel(pane, "Reference: ");
-                reference = toolkit.createText(pane, "", SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-                reference.setEditable(true);
+                toolkit.createLabel(pane, "Reference: ");
+                reference = toolkit.createText(pane, "", SWT.MULTI | SWT.WRAP);
+                GridDataFactory.fillDefaults().grab(true, true).applyTo(reference);
 
-                FormData data = new FormData();
-                data.left = new FormAttachment(0, 0);
-                nameLabel.setLayoutData(data);
-
-                data = new FormData();
-                data.left = new FormAttachment(descriptionLabel, 0);
-                data.right = new FormAttachment(100, 0);
-                name.setLayoutData(data);
-
-                data = new FormData();
-                data.left = new FormAttachment(0, 0);
-                data.top = new FormAttachment(name, H_OFFSET);
-                descriptionLabel.setLayoutData(data);
-
-                data = new FormData();
-                data.left = new FormAttachment(descriptionLabel, 0);
-                data.right = new FormAttachment(100, 0);
-                data.top = new FormAttachment(name, H_OFFSET);
-                data.bottom = new FormAttachment(description, TEXT_AREA_HEIGHT);
-                description.setLayoutData(data);
-
-                data = new FormData();
-                data.left = new FormAttachment(0, 0);
-                data.top = new FormAttachment(description, H_OFFSET);
-                referenceLabel.setLayoutData(data);
-
-                data = new FormData();
-                data.left = new FormAttachment(descriptionLabel, 0);
-                data.right = new FormAttachment(100, 0);
-                data.top = new FormAttachment(description, H_OFFSET);
-                data.bottom = new FormAttachment(reference, TEXT_AREA_HEIGHT);
-                reference.setLayoutData(data);
             }
 
             protected void addListeneres() {
@@ -314,12 +166,13 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             private List<Binding> dataBindigs = new ArrayList<Binding>();
 
             public ImportEdit() {
-                pane = toolkit.createComposite(editPropertyForm, SWT.NONE);
+//                pane = toolkit.createComposite(editPropertyForm, SWT.NONE);
                 createPane();
             }
 
             protected void createPane() {
                 GridLayoutFactory.fillDefaults().numColumns(2).applyTo(pane);
+                GridDataFactory.fillDefaults().grab(true, false).applyTo(pane);
                 toolkit.createLabel(pane, "Name: ");
                 name = toolkit.createText(pane, "");
                 name.setEditable(false);
@@ -374,7 +227,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
 
         public PropertyEdit(Composite parent) {
             super(parent, SWT.HORIZONTAL);
-            setLayoutData(new GridData(GridData.FILL_BOTH));
+            GridDataFactory.fillDefaults().grab(true, false).applyTo(this);
             setLayout(new GridLayout(1, false));
         }
 
@@ -402,70 +255,71 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         mainSashPanel.setLayout(new GridLayout(1, false));
 
         leftPane = new Composite(mainSashPanel, SWT.NONE);
-
-        leftPane.setLayout(new FillLayout(SWT.VERTICAL));
         diagram = new Composite(mainSashPanel, SWT.NONE);
-        GridLayout layout = new GridLayout();
-        layout.numColumns = 1;
-        layout.marginWidth = 0;
-        layout.marginHeight = 0;
-        layout.marginTop = 0;
-        layout.marginBottom = 0;
-        layout.marginLeft = 0;
-        layout.marginRight = 0;
-        layout.verticalSpacing = 0;
-        layout.horizontalSpacing = 0;
-        diagram.setLayout(layout);
+
+        GridLayoutFactory.fillDefaults().applyTo(diagram);
+        GridDataFactory.fillDefaults().grab(false, true).applyTo(leftPane);
+        GridLayoutFactory.fillDefaults().applyTo(leftPane);
+        
         createModuleInfoPanel(leftPane);
+        
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(diagram);
         setPropertiesPaneVisible(false);
+        mainSashPanel.setWeights(new int[]{1,5});
     }
 
     protected void createModuleInfoPanel(Composite parent) {
         toolkit = new FormToolkit(parent.getDisplay());
         toolkit.adapt(parent);
         ScrolledForm mainForm = toolkit.createScrolledForm(parent);
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(mainForm);
         mainForm.setText("Module Info");
         toolkit.decorateFormHeading(mainForm.getForm());
 
-        mainForm.getBody().setLayout(new FillLayout(SWT.VERTICAL));
+        GridLayoutFactory.swtDefaults().applyTo(mainForm.getBody());
         infoPane = new SashForm(mainForm.getBody(), SWT.HORIZONTAL);
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(infoPane);
         toolkit.adapt(infoPane);
 
         infoPane.setLayout(new FillLayout(SWT.VERTICAL));
         pane = toolkit.createScrolledForm(infoPane);
 
-        pane.getBody().setLayout(new YangPanelFillLayout());
+        GridLayoutFactory.fillDefaults().applyTo(pane.getBody());
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(pane);
 
-        ScrolledForm editForm = toolkit.createScrolledForm(infoPane);
+        // ScrolledForm editForm = toolkit.createScrolledForm(infoPane);
+        // GridDataFactory.fillDefaults().grab(true, true).applyTo(editForm);
+        //
+        // GridLayoutFactory.fillDefaults().applyTo(editForm.getBody());
+        // Section editSection = createSection(editForm, "Properties", Section.TITLE_BAR |
+        // Section.EXPANDED);
+        // GridDataFactory.fillDefaults().grab(true, false).applyTo(editSection);
+        // editPropertyForm = new PropertyEdit(editSection);
+        // toolkit.adapt(editPropertyForm);
+        // editSection.setClient(editPropertyForm);
 
-        editForm.getBody().setLayout(new YangPanelFillLayout());
-        Section editSection = createSection(editForm, "Properties", Section.TITLE_BAR | Section.EXPANDED);
-        editPropertyForm = new PropertyEdit(editSection);
-        toolkit.adapt(editPropertyForm);
-        editSection.setClient(editPropertyForm);
-        Dialog.applyDialogFont(mainForm.getBody());
         createGeneralSection(pane);
         createRevisionSection(pane);
         createImportSection(pane);
         createMetaInfoSection(pane);
-        infoPane.setWeights(new int[] { 1, 0 });
-        infoPane.setMaximizedControl(pane);
-        createPropertiesButtonToolbar(editSection, infoPane, pane);
-        mainForm.pack();
-        mainForm.reflow(true);
+        // infoPane.setWeights(new int[] { 1, 0 });
+        // infoPane.setMaximizedControl(pane);
+        // createPropertiesButtonToolbar(editSection, infoPane, pane);
+        // mainForm.pack();
+        // mainForm.reflow(true);
     }
 
     protected void setPropertiesPaneVisible(boolean set) {
-        if (set) {
-            infoPane.setWeights(new int[] { 1, 1 });
-            infoPane.setMaximizedControl(null);
-            mainSashPanel.setWeights(new int[] { 4, 6 });
-
-        } else {
-            infoPane.setWeights(new int[] { 1, 0 });
-            infoPane.setMaximizedControl(pane);
-            mainSashPanel.setWeights(new int[] { 2, 6 });
-        }
+        // if (set) {
+        // infoPane.setWeights(new int[] { 1, 1 });
+        // infoPane.setMaximizedControl(null);
+        // mainSashPanel.setWeights(new int[] { 4, 6 });
+        //
+        // } else {
+        // infoPane.setWeights(new int[] { 1, 0 });
+        // infoPane.setMaximizedControl(pane);
+        // mainSashPanel.setWeights(new int[] { 2, 6 });
+        // }
     }
 
     protected void createPropertiesButtonToolbar(final Section editSection, final SashForm infoPane,
@@ -496,10 +350,11 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     protected void createMetaInfoSection(ScrolledForm form) {
         Section section = createSection(form, "Meta information");
         Composite meta = toolkit.createComposite(section);
-        meta.setLayout(new FormLayout());
+        GridLayoutFactory.swtDefaults().numColumns(2).applyTo(meta);
+        GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(section);
 
         Label organization = toolkit.createLabel(meta, "Organization: ");
-        organizationText = new DialogText(meta) {
+        organizationText = new DialogText(meta, toolkit) {
 
             @Override
             protected Object openDialogBox(Text text) {
@@ -514,7 +369,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         };
 
         Label contact = toolkit.createLabel(meta, "Contact: ");
-        contactText = new DialogText(meta) {
+        contactText = new DialogText(meta, toolkit) {
 
             @Override
             protected Object openDialogBox(Text text) {
@@ -529,7 +384,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         };
 
         Label description = toolkit.createLabel(meta, "Description: ");
-        descriptionText = new DialogText(meta) {
+        descriptionText = new DialogText(meta, toolkit) {
 
             @Override
             protected Object openDialogBox(Text text) {
@@ -544,7 +399,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         };
 
         Label reference = toolkit.createLabel(meta, "Reference: ");
-        referenceText = new DialogText(meta) {
+        referenceText = new DialogText(meta, toolkit) {
 
             @Override
             protected Object openDialogBox(Text text) {
@@ -558,51 +413,8 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             }
         };
 
-        FormData data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        organization.setLayoutData(data);
-
-        data = new FormData();
-        data.left = new FormAttachment(organization, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(prefixText, H_OFFSET);
-        organizationText.setLayoutData(data);
-
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.top = new FormAttachment(organizationText.getControl(), H_OFFSET);
-        contact.setLayoutData(data);
-
-        data = new FormData();
-        data.left = new FormAttachment(organization, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(organizationText.getControl(), H_OFFSET);
-        contactText.setLayoutData(data);
-
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.top = new FormAttachment(contactText.getControl(), H_OFFSET);
-        description.setLayoutData(data);
-
-        data = new FormData();
-        data.left = new FormAttachment(organization, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(contactText.getControl(), H_OFFSET);
-        descriptionText.setLayoutData(data);
-
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.top = new FormAttachment(descriptionText.getControl(), H_OFFSET);
-        reference.setLayoutData(data);
-
-        data = new FormData();
-        data.left = new FormAttachment(organization, 0);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(descriptionText.getControl(), H_OFFSET);
-        referenceText.setLayoutData(data);
-
         updateMetaInfoSection();
-        ;
+
         addMetaInfoSectionListeners();
         section.setClient(meta);
     }
@@ -611,26 +423,27 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         Section section = createSection(form, "General");
         Composite header = toolkit.createComposite(section);
         GridLayoutFactory.fillDefaults().numColumns(2).applyTo(header);
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
 
         toolkit.createLabel(header, "Name: ");
         nameText = toolkit.createText(header, "");
         nameText.setEditable(true);
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(nameText);
+        GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(nameText);
 
         toolkit.createLabel(header, "Yang-version: ");
         yangVersionText = toolkit.createText(header, "");
         yangVersionText.setEditable(true);
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(yangVersionText);
+        GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(yangVersionText);
 
         toolkit.createLabel(header, "Namespace: ");
         namespaceText = toolkit.createText(header, "");
         namespaceText.setEditable(true);
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(namespaceText);
+        GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(namespaceText);
 
         toolkit.createLabel(header, "Prefix: ");
         prefixText = toolkit.createText(header, "");
         prefixText.setEditable(true);
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(prefixText);
+        GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(prefixText);
 
         updateGeneralSection();
         addGeneralSectionListeners();
@@ -693,7 +506,8 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     protected void createRevisionSection(final ScrolledForm form) {
         Section section = createSection(form, "Revision");
         Composite revisions = toolkit.createComposite(section);
-        revisions.setLayout(new FillLayout(SWT.VERTICAL));
+        GridLayoutFactory.swtDefaults().applyTo(revisions);
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
 
         createRevisionTable(revisions);
         refreshRevisionTable();
@@ -704,7 +518,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 if (revisionTable.getSelection() instanceof IStructuredSelection) {
                     Object selected = ((IStructuredSelection) revisionTable.getSelection()).getFirstElement();
                     if (null != selected && selected instanceof Revision) {
-                        editPropertyForm.setRevision((Revision) selected);
+//                        editPropertyForm.setRevision((Revision) selected);
                         setPropertiesPaneVisible(true);
                     }
                 }
@@ -715,15 +529,15 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     }
 
     protected Composite createRevisionTable(Composite parent) {
-        Table t = toolkit.createTable(parent, SWT.FULL_SELECTION | SWT.V_SCROLL);
+        final Table t = toolkit.createTable(parent, SWT.FULL_SELECTION | SWT.V_SCROLL);
+
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(t);
         t.setLinesVisible(false);
         t.setHeaderVisible(false);
-        TableLayout tableLayout = new TableLayout();
-        tableLayout.addColumnData(new ColumnWeightData(1));
-        t.setLayout(tableLayout);
         revisionTable = new TableViewer(t);
         revisionTable.setContentProvider(new ArrayContentProvider());
-        TableViewerColumn col = new TableViewerColumn(revisionTable, SWT.NONE);
+        final TableViewerColumn col = new TableViewerColumn(revisionTable, SWT.NONE);
+
         col.setLabelProvider(new ColumnLabelProvider() {
 
             @Override
@@ -733,15 +547,26 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 }
                 return super.getText(element);
             }
-
         });
+        t.addControlListener(new ControlListener() {
+            @Override
+            public void controlResized(ControlEvent e) {
+                col.getColumn().setWidth(t.getSize().x - 30);
+            }
+
+            @Override
+            public void controlMoved(ControlEvent e) {
+            }
+        });
+        col.getColumn().setWidth(t.getSize().x - 30);
         return t;
     }
 
     protected void createImportSection(final ScrolledForm form) {
         final Section section = createSection(form, "Imports");
         Composite imports = toolkit.createComposite(section);
-        imports.setLayout(new FillLayout(SWT.VERTICAL));
+        GridLayoutFactory.swtDefaults().applyTo(imports);
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
         createImportTable(imports);
         createImportButtonToolbar(section);
         refreshImportTable();
@@ -751,7 +576,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             public void selectionChanged(SelectionChangedEvent event) {
                 Object selected = ((IStructuredSelection) importTable.getSelection()).getFirstElement();
                 if (null != selected && selected instanceof Import) {
-                    editPropertyForm.setImport((Import) selected);
+//                    editPropertyForm.setImport((Import) selected);
                     setPropertiesPaneVisible(true);
                 }
 
@@ -764,9 +589,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         final Table t = toolkit.createTable(parent, SWT.FULL_SELECTION | SWT.V_SCROLL);
         t.setLinesVisible(false);
         t.setHeaderVisible(false);
-        TableLayout tableLayout = new TableLayout();
-        tableLayout.addColumnData(new ColumnWeightData(1));
-        t.setLayout(tableLayout);
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(t);
         importTable = new TableViewer(t);
         importTable.setContentProvider(new ArrayContentProvider());
         final TableViewerColumn col = new TableViewerColumn(importTable, SWT.NONE);
@@ -868,7 +691,8 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
 
     protected Section createSection(final ScrolledForm form, String title, int styles) {
         Section section = toolkit.createSection(form.getBody(), styles);
-        section.setLayout(new FillLayout(SWT.VERTICAL));
+        GridLayoutFactory.fillDefaults().applyTo(section);
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
         section.setText(title);
         section.addExpansionListener(new ExpansionAdapter() {
             public void expansionStateChanged(ExpansionEvent e) {
