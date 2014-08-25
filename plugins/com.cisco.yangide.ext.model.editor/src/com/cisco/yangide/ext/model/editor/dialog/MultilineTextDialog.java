@@ -1,23 +1,16 @@
 package com.cisco.yangide.ext.model.editor.dialog;
 
-import org.eclipse.draw2d.ColorConstants;
 import org.eclipse.jface.dialogs.Dialog;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
-import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.forms.widgets.FormToolkit;
 
 public class MultilineTextDialog extends Dialog {
-
-    private static final int SPACING = 10;
-
-    private FormToolkit toolkit;
     private Composite composite;
     private String originalValue;
     private String value;
@@ -25,59 +18,48 @@ public class MultilineTextDialog extends Dialog {
     private Text textControl;
 
     public MultilineTextDialog(Shell parentShell, final String originalValue, String title) {
-      super(parentShell);
-      this.originalValue = originalValue;
-      this.title = title;
-      this.toolkit = new FormToolkit(parentShell.getDisplay());
+        super(parentShell);
+        setShellStyle(SWT.RESIZE | SWT.TOOL | SWT.TITLE);
+
+        this.originalValue = originalValue;
+        this.title = title;
     }
 
     @Override
     protected void configureShell(Shell shell) {
-      super.configureShell(shell);
-      shell.setText(title);
+        super.configureShell(shell);
+        shell.setText(title);
     }
 
     @Override
     protected Control createDialogArea(Composite parent) {
+        GridLayoutFactory.swtDefaults().applyTo(parent);
 
-      this.composite = (Composite) super.createDialogArea(parent);
-      composite.setBackground(ColorConstants.white);
+        composite = new Composite(parent, SWT.NONE);
+        GridLayoutFactory.swtDefaults().applyTo(composite);
 
-      final FormLayout formLayout = new FormLayout();
-      composite.setLayout(formLayout);
+        Label label = new Label(composite, SWT.WRAP);
+        label.setText("Specify " + title + " value");
 
-      FormData data;
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(composite);
 
-      final Label instructionLabel = toolkit.createLabel(composite, "Specify " + title +  " value");
-      data = new FormData();
-      data.top = new FormAttachment(composite, SPACING);
-      data.left = new FormAttachment(composite, SPACING);
-      data.right = new FormAttachment(100, -SPACING);
-      instructionLabel.setLayoutData(data);
+        textControl = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER_SOLID);
 
-      Control previousAnchor = instructionLabel;
+        textControl.setText(originalValue);
+        GridDataFactory.fillDefaults().grab(true, true).hint(300, 200).applyTo(textControl);
 
-      textControl = toolkit.createText(composite, originalValue, SWT.MULTI | SWT.WRAP | SWT.V_SCROLL | SWT.BORDER_SOLID);
-      textControl.setEnabled(true);
-
-      data = new FormData();
-      data.top = new FormAttachment(previousAnchor, SPACING);
-      data.left = new FormAttachment(composite, SPACING);
-      data.right = new FormAttachment(100, -SPACING);
-      data.height = 120;
-      textControl.setLayoutData(data);
-
-      return composite;
+        return parent;
     }
+
     @Override
     protected void okPressed() {
-      // store the value from the spinners so it can be set in the text control
-      value = textControl.getText();
-      super.okPressed();
+        // store the value from the spinners so it can be set in the text control
+        value = textControl.getText();
+        super.okPressed();
     }
 
     public String getValue() {
-      return value;
+        return value;
     }
 
-  }
+}
