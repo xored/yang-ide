@@ -51,16 +51,24 @@ public class FeedbackEditPolicy extends GraphicalEditPolicy {
         if (request.getType().equals(RequestConstants.REQ_CREATE) || request.getType().equals(RequestConstants.REQ_ADD)) {
             Command command = getHost().getCommand(request);
             if (command.canExecute()) {
-                int y = 0;
+                int position = 0;
                 if (command instanceof GefCommandWrapper) {
                     ICommand cmd = ((GefCommandWrapper) command).getCommand();
                     if (cmd instanceof MoveShapeFeatureCommandWithContext) {
-                        y = ((MoveShapeContext) ((MoveShapeFeatureCommandWithContext) cmd).getContext()).getY();
+                        Object pos = ((MoveShapeContext) ((MoveShapeFeatureCommandWithContext) cmd).getContext())
+                                .getProperty("parent_position");
+                        if (pos != null) {
+                            position = (int) pos;
+                        }
                     }
                 } else if (command instanceof CreateModelObjectCommand) {
-                    y = ((CreateContext) ((CreateModelObjectCommand) command).getContext()).getY();
+                    Object pos = ((CreateContext) ((CreateModelObjectCommand) command).getContext())
+                            .getProperty("parent_position");
+                    if (pos != null) {
+                        position = (int) pos;
+                    }
                 }
-                feedbackFigure.setPosition(y);
+                feedbackFigure.setPosition(position);
                 feedbackFigure.setVisible(true);
                 feedbackFigure.repaint();
             } else {
