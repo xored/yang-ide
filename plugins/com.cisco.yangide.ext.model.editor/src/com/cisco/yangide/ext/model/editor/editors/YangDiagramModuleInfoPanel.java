@@ -30,6 +30,8 @@ import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
@@ -69,20 +71,18 @@ import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 import com.cisco.yangide.ext.model.editor.util.YangTag;
 import com.cisco.yangide.ext.model.editor.widget.DialogText;
 
-
-
 public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module> {
-     
+
     private Text nameText;
     private TableViewer importTable;
 
     private Module module;
     private FormToolkit toolkit;
     private IFile file;
-  
+
     private Composite diagram;
     private PropertyEdit editPropertyForm;
-    
+
     private Text namespaceText;
     private DialogText organizationText;
     private DialogText contactText;
@@ -94,13 +94,13 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     private SashForm infoPane;
     private ScrolledForm pane;
     private Composite leftPane;
-    
+
     private SashForm mainSashPanel;
-    
+
     private static final int H_OFFSET = 2;
     private static final int TEXT_AREA_HEIGHT = 80;
     private DataBindingContext bindingContext = new DataBindingContext();
-    
+
     protected class FillData {
 
         int defaultWidth = -1, defaultHeight = -1;
@@ -132,7 +132,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             currentWidth = currentHeight = -1;
         }
     }
-    
+
     protected class YangPanelFillLayout extends Layout {
 
         public int type = SWT.VERTICAL;
@@ -207,70 +207,72 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             }
         }
     }
-        
+
     protected class PropertyEdit extends SashForm {
         private RevisionEdit editRevision;
         private ImportEdit editImport;
-        
-        protected class RevisionEdit implements BusinessObjectWrapper<Revision>{
+
+        protected class RevisionEdit implements BusinessObjectWrapper<Revision> {
             private Text description;
             private Text reference;
             private Text name;
             private Revision revision;
             private Composite pane;
             private List<Binding> dataBindigs = new ArrayList<Binding>();
+
             public RevisionEdit() {
                 pane = toolkit.createComposite(editPropertyForm, SWT.NONE);
                 createPane();
             }
+
             protected void createPane() {
                 pane.setLayout(new FormLayout());
-                Label nameLabel = toolkit.createLabel(pane, "Name: ");  
-                name  = toolkit.createText(pane, "");
-                name.setEditable(true);                
-                
-                Label descriptionLabel = toolkit.createLabel(pane, "Description: ");  
-                description  = toolkit.createText(pane, "", SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
-                description.setEditable(true);                
-                
-                Label referenceLabel = toolkit.createLabel(pane, "Reference: ");  
-                reference  = toolkit.createText(pane, "", SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+                Label nameLabel = toolkit.createLabel(pane, "Name: ");
+                name = toolkit.createText(pane, "");
+                name.setEditable(true);
+
+                Label descriptionLabel = toolkit.createLabel(pane, "Description: ");
+                description = toolkit.createText(pane, "", SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
+                description.setEditable(true);
+
+                Label referenceLabel = toolkit.createLabel(pane, "Reference: ");
+                reference = toolkit.createText(pane, "", SWT.MULTI | SWT.WRAP | SWT.V_SCROLL);
                 reference.setEditable(true);
-                
-                FormData data = new FormData ();
-                data.left = new FormAttachment (0, 0);
-                nameLabel.setLayoutData (data);
-                
-                data = new FormData ();
-                data.left = new FormAttachment (descriptionLabel, 0);
-                data.right = new FormAttachment (100, 0);
-                name.setLayoutData (data);
-                
-                data = new FormData ();
-                data.left = new FormAttachment (0, 0);
+
+                FormData data = new FormData();
+                data.left = new FormAttachment(0, 0);
+                nameLabel.setLayoutData(data);
+
+                data = new FormData();
+                data.left = new FormAttachment(descriptionLabel, 0);
+                data.right = new FormAttachment(100, 0);
+                name.setLayoutData(data);
+
+                data = new FormData();
+                data.left = new FormAttachment(0, 0);
                 data.top = new FormAttachment(name, H_OFFSET);
-                descriptionLabel.setLayoutData (data);
-                
-                data = new FormData ();
-                data.left = new FormAttachment (descriptionLabel, 0);
-                data.right = new FormAttachment (100, 0);
+                descriptionLabel.setLayoutData(data);
+
+                data = new FormData();
+                data.left = new FormAttachment(descriptionLabel, 0);
+                data.right = new FormAttachment(100, 0);
                 data.top = new FormAttachment(name, H_OFFSET);
                 data.bottom = new FormAttachment(description, TEXT_AREA_HEIGHT);
-                description.setLayoutData (data);
-                
-                data = new FormData ();
-                data.left = new FormAttachment (0, 0);
+                description.setLayoutData(data);
+
+                data = new FormData();
+                data.left = new FormAttachment(0, 0);
                 data.top = new FormAttachment(description, H_OFFSET);
-                referenceLabel.setLayoutData (data);
-                
-                data = new FormData ();
-                data.left = new FormAttachment (descriptionLabel, 0);
-                data.right = new FormAttachment (100, 0);
+                referenceLabel.setLayoutData(data);
+
+                data = new FormData();
+                data.left = new FormAttachment(descriptionLabel, 0);
+                data.right = new FormAttachment(100, 0);
                 data.top = new FormAttachment(description, H_OFFSET);
                 data.bottom = new FormAttachment(reference, TEXT_AREA_HEIGHT);
-                reference.setLayoutData (data);               
+                reference.setLayoutData(data);
             }
-            
+
             protected void addListeneres() {
                 removeBindings(dataBindigs);
                 dataBindigs.clear();
@@ -278,6 +280,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 dataBindigs.add(addTextFieldListener(this, description, YangTag.DESCRIPTION));
                 dataBindigs.add(addTextFieldListener(this, name, YangModelUtil.MODEL_PACKAGE.getNamedNode_Name()));
             }
+
             public void updateData() {
                 if (null != revision) {
                     name.setText(revision.getName());
@@ -286,6 +289,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                     addListeneres();
                 }
             }
+
             public Composite getPane(Revision revision) {
                 if (revision != this.revision) {
                     this.revision = revision;
@@ -293,51 +297,57 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 }
                 return pane;
             }
+
             @Override
             public Revision getBusinessObject() {
                 return revision;
-            } 
-            
+            }
+
         }
-        
-        protected class ImportEdit implements BusinessObjectWrapper<Import>{
+
+        protected class ImportEdit implements BusinessObjectWrapper<Import> {
             private Text name;
             private Text prefix;
             private Text revision;
             private Import importObj;
             private Composite pane;
             private List<Binding> dataBindigs = new ArrayList<Binding>();
+
             public ImportEdit() {
                 pane = toolkit.createComposite(editPropertyForm, SWT.NONE);
                 createPane();
             }
+
             protected void createPane() {
                 GridLayoutFactory.fillDefaults().numColumns(2).applyTo(pane);
-                toolkit.createLabel(pane, "Name: ");  
-                name  = toolkit.createText(pane, "");
+                toolkit.createLabel(pane, "Name: ");
+                name = toolkit.createText(pane, "");
                 name.setEditable(false);
                 name.setEnabled(false);
                 GridDataFactory.fillDefaults().grab(true, false).applyTo(name);
-                
-                toolkit.createLabel(pane, "Prefix: ");  
-                prefix  = toolkit.createText(pane, "");
+
+                toolkit.createLabel(pane, "Prefix: ");
+                prefix = toolkit.createText(pane, "");
                 prefix.setEditable(false);
                 prefix.setEnabled(false);
                 GridDataFactory.fillDefaults().grab(true, false).applyTo(prefix);
-                
-                toolkit.createLabel(pane, "Revision: ");  
-                revision  = toolkit.createText(pane, "");
+
+                toolkit.createLabel(pane, "Revision: ");
+                revision = toolkit.createText(pane, "");
                 revision.setEditable(false);
                 revision.setEnabled(false);
                 GridDataFactory.fillDefaults().grab(true, false).applyTo(revision);
-                
+
             }
+
             protected void addListeneres() {
                 removeBindings(dataBindigs);
                 dataBindigs.clear();
                 dataBindigs.add(addTextFieldListener(this, prefix, YangModelUtil.MODEL_PACKAGE.getImport_Prefix()));
-                dataBindigs.add(addTextFieldListener(this, revision, YangModelUtil.MODEL_PACKAGE.getImport_RevisionDate()));
+                dataBindigs.add(addTextFieldListener(this, revision,
+                        YangModelUtil.MODEL_PACKAGE.getImport_RevisionDate()));
             }
+
             public void updateData() {
                 if (null != importObj) {
                     name.setText(importObj.getModule());
@@ -346,7 +356,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                     addListeneres();
                 }
             }
-            
+
             public Composite getPane(Import importObj) {
                 if (importObj != this.importObj) {
                     this.importObj = importObj;
@@ -354,42 +364,43 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 }
                 return pane;
             }
+
             @Override
             public Import getBusinessObject() {
                 return importObj;
-            } 
-            
+            }
+
         }
 
         public PropertyEdit(Composite parent) {
             super(parent, SWT.HORIZONTAL);
             setLayoutData(new GridData(GridData.FILL_BOTH));
-            setLayout(new GridLayout(1, false));        
+            setLayout(new GridLayout(1, false));
         }
-        
+
         public void setRevision(Revision revision) {
             if (null == editRevision) {
                 editRevision = new RevisionEdit();
             }
             setMaximizedControl(editRevision.getPane(revision));
         }
-        
+
         public void setImport(Import importObj) {
             if (null == editImport) {
                 editImport = new ImportEdit();
             }
             setMaximizedControl(editImport.getPane(importObj));
         }
-        
+
     }
-    
-    public YangDiagramModuleInfoPanel(Composite parent, Module module, IFile file) {       
+
+    public YangDiagramModuleInfoPanel(Composite parent, Module module, IFile file) {
         this.module = module;
         this.file = file;
-        mainSashPanel  = new SashForm(parent, SWT.HORIZONTAL);
+        mainSashPanel = new SashForm(parent, SWT.HORIZONTAL);
         mainSashPanel.setLayoutData(new GridData(GridData.FILL, GridData.FILL, true, true));
         mainSashPanel.setLayout(new GridLayout(1, false));
-        
+
         leftPane = new Composite(mainSashPanel, SWT.NONE);
 
         leftPane.setLayout(new FillLayout(SWT.VERTICAL));
@@ -404,29 +415,29 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         layout.marginRight = 0;
         layout.verticalSpacing = 0;
         layout.horizontalSpacing = 0;
-        diagram.setLayout(layout);        
-        createModuleInfoPanel(leftPane);     
+        diagram.setLayout(layout);
+        createModuleInfoPanel(leftPane);
         setPropertiesPaneVisible(false);
-    }    
-    
+    }
+
     protected void createModuleInfoPanel(Composite parent) {
         toolkit = new FormToolkit(parent.getDisplay());
         toolkit.adapt(parent);
         ScrolledForm mainForm = toolkit.createScrolledForm(parent);
         mainForm.setText("Module Info");
         toolkit.decorateFormHeading(mainForm.getForm());
-       
+
         mainForm.getBody().setLayout(new FillLayout(SWT.VERTICAL));
         infoPane = new SashForm(mainForm.getBody(), SWT.HORIZONTAL);
         toolkit.adapt(infoPane);
 
         infoPane.setLayout(new FillLayout(SWT.VERTICAL));
         pane = toolkit.createScrolledForm(infoPane);
-        
+
         pane.getBody().setLayout(new YangPanelFillLayout());
-        
+
         ScrolledForm editForm = toolkit.createScrolledForm(infoPane);
-        
+
         editForm.getBody().setLayout(new YangPanelFillLayout());
         Section editSection = createSection(editForm, "Properties", Section.TITLE_BAR | Section.EXPANDED);
         editPropertyForm = new PropertyEdit(editSection);
@@ -437,33 +448,34 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         createRevisionSection(pane);
         createImportSection(pane);
         createMetaInfoSection(pane);
-        infoPane.setWeights(new int[] {1, 0});
+        infoPane.setWeights(new int[] { 1, 0 });
         infoPane.setMaximizedControl(pane);
         createPropertiesButtonToolbar(editSection, infoPane, pane);
         mainForm.pack();
         mainForm.reflow(true);
     }
-    
+
     protected void setPropertiesPaneVisible(boolean set) {
         if (set) {
-            infoPane.setWeights(new int[] {1, 1});
+            infoPane.setWeights(new int[] { 1, 1 });
             infoPane.setMaximizedControl(null);
-            mainSashPanel.setWeights(new int[] {4, 6});
-            
+            mainSashPanel.setWeights(new int[] { 4, 6 });
+
         } else {
-            infoPane.setWeights(new int[] {1, 0});
-            infoPane.setMaximizedControl(pane); 
-            mainSashPanel.setWeights(new int[] {2, 6});
+            infoPane.setWeights(new int[] { 1, 0 });
+            infoPane.setMaximizedControl(pane);
+            mainSashPanel.setWeights(new int[] { 2, 6 });
         }
     }
-    
-    protected void createPropertiesButtonToolbar(final Section editSection, final SashForm infoPane, final ScrolledForm pane) {
+
+    protected void createPropertiesButtonToolbar(final Section editSection, final SashForm infoPane,
+            final ScrolledForm pane) {
         ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolbar = toolBarManager.createControl(editSection);
         toolbar.setCursor(Display.getDefault().getSystemCursor(SWT.CURSOR_HAND));
-        
+
         Action closeButton = new Action("Close properties section", IAction.AS_CHECK_BOX) {
-            
+
             @Override
             public void run() {
                 super.run();
@@ -472,39 +484,28 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             }
         };
 
-        closeButton.setImageDescriptor(GraphitiUi.getImageService().getImageDescriptorForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_COLLAPSE_ALL_TOOL_PROPOSAL));
+        closeButton.setImageDescriptor(GraphitiUi.getImageService().getImageDescriptorForId(
+                YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID,
+                YangDiagramImageProvider.IMG_COLLAPSE_ALL_TOOL_PROPOSAL));
         closeButton.setEnabled(true);
         toolBarManager.add(closeButton);
         toolBarManager.update(true);
         editSection.setTextClient(toolbar);
     }
-    
+
     protected void createMetaInfoSection(ScrolledForm form) {
         Section section = createSection(form, "Meta information");
         Composite meta = toolkit.createComposite(section);
         meta.setLayout(new FormLayout());
-        
-        Label organization = toolkit.createLabel(meta, "Organization: ");  
+
+        Label organization = toolkit.createLabel(meta, "Organization: ");
         organizationText = new DialogText(meta) {
-            
+
             @Override
             protected Object openDialogBox(Text text) {
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Organization");
-                if (IStatus.OK == dialog.open()) {
-                    text.setText(dialog.getValue());
-                }
-                return null;
-            }
-        };
-        
-        Label contact = toolkit.createLabel(meta, "Contact: ");  
-        contactText  = new DialogText(meta) {
-            
-            @Override
-            protected Object openDialogBox(Text text) {
-                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Contact");
+                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()),
+                        "Organization");
                 if (IStatus.OK == dialog.open()) {
                     text.setText(dialog.getValue());
                 }
@@ -512,111 +513,130 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             }
         };
 
-        Label description = toolkit.createLabel(meta, "Description: ");  
-        descriptionText  = new DialogText(meta) {
-            
+        Label contact = toolkit.createLabel(meta, "Contact: ");
+        contactText = new DialogText(meta) {
+
             @Override
             protected Object openDialogBox(Text text) {
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Description");
+                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()),
+                        "Contact");
                 if (IStatus.OK == dialog.open()) {
                     text.setText(dialog.getValue());
                 }
                 return null;
             }
         };
-        
-        Label reference = toolkit.createLabel(meta, "Reference: ");  
-        referenceText  = new DialogText(meta) {
-            
+
+        Label description = toolkit.createLabel(meta, "Description: ");
+        descriptionText = new DialogText(meta) {
+
             @Override
             protected Object openDialogBox(Text text) {
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()), "Reference");
+                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()),
+                        "Description");
                 if (IStatus.OK == dialog.open()) {
                     text.setText(dialog.getValue());
                 }
                 return null;
             }
         };
-        
-        FormData data = new FormData ();
-        data.left = new FormAttachment (0, 0);
-        organization.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (organization, 0);
-        data.right = new FormAttachment (100, 0);
+
+        Label reference = toolkit.createLabel(meta, "Reference: ");
+        referenceText = new DialogText(meta) {
+
+            @Override
+            protected Object openDialogBox(Text text) {
+                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()),
+                        "Reference");
+                if (IStatus.OK == dialog.open()) {
+                    text.setText(dialog.getValue());
+                }
+                return null;
+            }
+        };
+
+        FormData data = new FormData();
+        data.left = new FormAttachment(0, 0);
+        organization.setLayoutData(data);
+
+        data = new FormData();
+        data.left = new FormAttachment(organization, 0);
+        data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(prefixText, H_OFFSET);
-        organizationText.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (0, 0);
+        organizationText.setLayoutData(data);
+
+        data = new FormData();
+        data.left = new FormAttachment(0, 0);
         data.top = new FormAttachment(organizationText.getControl(), H_OFFSET);
-        contact.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (organization, 0);
-        data.right = new FormAttachment (100, 0);
+        contact.setLayoutData(data);
+
+        data = new FormData();
+        data.left = new FormAttachment(organization, 0);
+        data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(organizationText.getControl(), H_OFFSET);
-        contactText.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (0, 0);
+        contactText.setLayoutData(data);
+
+        data = new FormData();
+        data.left = new FormAttachment(0, 0);
         data.top = new FormAttachment(contactText.getControl(), H_OFFSET);
-        description.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (organization, 0);
-        data.right = new FormAttachment (100, 0);
+        description.setLayoutData(data);
+
+        data = new FormData();
+        data.left = new FormAttachment(organization, 0);
+        data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(contactText.getControl(), H_OFFSET);
-        descriptionText.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (0, 0);
+        descriptionText.setLayoutData(data);
+
+        data = new FormData();
+        data.left = new FormAttachment(0, 0);
         data.top = new FormAttachment(descriptionText.getControl(), H_OFFSET);
-        reference.setLayoutData (data);
-        
-        data = new FormData ();
-        data.left = new FormAttachment (organization, 0);
-        data.right = new FormAttachment (100, 0);
+        reference.setLayoutData(data);
+
+        data = new FormData();
+        data.left = new FormAttachment(organization, 0);
+        data.right = new FormAttachment(100, 0);
         data.top = new FormAttachment(descriptionText.getControl(), H_OFFSET);
-        referenceText.setLayoutData (data);
-        
-        updateMetaInfoSection();;
+        referenceText.setLayoutData(data);
+
+        updateMetaInfoSection();
+        ;
         addMetaInfoSectionListeners();
         section.setClient(meta);
     }
-    
+
     protected void createGeneralSection(ScrolledForm form) {
         Section section = createSection(form, "General");
         Composite header = toolkit.createComposite(section);
         GridLayoutFactory.fillDefaults().numColumns(2).applyTo(header);
-        
-        toolkit.createLabel(header, "Name: ");  
+
+        toolkit.createLabel(header, "Name: ");
         nameText = toolkit.createText(header, "");
-        nameText.setEditable(true);        
+        nameText.setEditable(true);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(nameText);
-        
-        toolkit.createLabel(header, "Yang-version: ");          
-        yangVersionText  = toolkit.createText(header, "");
+
+        toolkit.createLabel(header, "Yang-version: ");
+        yangVersionText = toolkit.createText(header, "");
         yangVersionText.setEditable(true);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(yangVersionText);
-        
-        toolkit.createLabel(header, "Namespace: ");  
+
+        toolkit.createLabel(header, "Namespace: ");
         namespaceText = toolkit.createText(header, "");
         namespaceText.setEditable(true);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(namespaceText);
-        
-        toolkit.createLabel(header, "Prefix: ");  
-        prefixText  = toolkit.createText(header, "");
+
+        toolkit.createLabel(header, "Prefix: ");
+        prefixText = toolkit.createText(header, "");
         prefixText.setEditable(true);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(prefixText);
-        
+
         updateGeneralSection();
         addGeneralSectionListeners();
         section.setClient(header);
-    }    
+    }
+
     protected void updateMetaInfoSection() {
         if (null != module) {
             organizationText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.ORGANIZATION, module)));
@@ -625,7 +645,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             referenceText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.REFERENCE, module)));
         }
     }
-    
+
     protected void updateGeneralSection() {
         if (null != module) {
             nameText.setText(module.getName());
@@ -634,49 +654,51 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             prefixText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.PREFIX, module)));
         }
     }
-    
+
     protected void addMetaInfoSectionListeners() {
         addTextFieldListener(this, organizationText.getTextControl(), YangTag.ORGANIZATION);
         addTextFieldListener(this, contactText.getTextControl(), YangTag.CONTACT);
         addTextFieldListener(this, descriptionText.getTextControl(), YangTag.DESCRIPTION);
         addTextFieldListener(this, referenceText.getTextControl(), YangTag.REFERENCE);
     }
-    
+
     protected void addGeneralSectionListeners() {
         addTextFieldListener(this, nameText, YangModelUtil.MODEL_PACKAGE.getNamedNode_Name());
         addTextFieldListener(this, yangVersionText, YangTag.YANG_VERSION);
         addTextFieldListener(this, namespaceText, YangTag.NAMESPACE);
         addTextFieldListener(this, prefixText, YangTag.PREFIX);
     }
-    
+
     protected void removeBindings(List<Binding> bindings) {
         for (Binding b : bindings) {
             b.updateTargetToModel();
             bindingContext.removeBinding(b);
         }
     }
-    
-    protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends TaggedNode> node, Control text, final YangTag tag) {
-        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, text),
-                EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value())
-                    .observe(YangModelUtil.getTag(tag, node.getBusinessObject())));
+
+    protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends TaggedNode> node, Control text,
+            final YangTag tag) {
+        return bindingContext.bindValue(
+                WidgetProperties.text(SWT.Modify).observeDelayed(200, text),
+                EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value()).observe(
+                        YangModelUtil.getTag(tag, node.getBusinessObject())));
     }
-    
-    protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends EObject> node, final Text text, final EStructuralFeature esf) {
-        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, text),
-            EMFProperties.value(esf)
-                .observe(node.getBusinessObject()));
+
+    protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends EObject> node, final Text text,
+            final EStructuralFeature esf) {
+        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, text), EMFProperties
+                .value(esf).observe(node.getBusinessObject()));
     }
-    
+
     protected void createRevisionSection(final ScrolledForm form) {
-        Section section = createSection(form, "Revision");      
+        Section section = createSection(form, "Revision");
         Composite revisions = toolkit.createComposite(section);
         revisions.setLayout(new FillLayout(SWT.VERTICAL));
-        
+
         createRevisionTable(revisions);
         refreshRevisionTable();
         revisionTable.addSelectionChangedListener(new ISelectionChangedListener() {
-            
+
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 if (revisionTable.getSelection() instanceof IStructuredSelection) {
@@ -686,12 +708,12 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                         setPropertiesPaneVisible(true);
                     }
                 }
-                
+
             }
         });
         section.setClient(revisions);
     }
-    
+
     protected Composite createRevisionTable(Composite parent) {
         Table t = toolkit.createTable(parent, SWT.FULL_SELECTION | SWT.V_SCROLL);
         t.setLinesVisible(false);
@@ -703,7 +725,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         revisionTable.setContentProvider(new ArrayContentProvider());
         TableViewerColumn col = new TableViewerColumn(revisionTable, SWT.NONE);
         col.setLabelProvider(new ColumnLabelProvider() {
-            
+
             @Override
             public String getText(Object element) {
                 if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getRevision(), element)) {
@@ -715,32 +737,31 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         });
         return t;
     }
-    
+
     protected void createImportSection(final ScrolledForm form) {
-        final Section section = createSection(form, "Imports"); 
+        final Section section = createSection(form, "Imports");
         Composite imports = toolkit.createComposite(section);
         imports.setLayout(new FillLayout(SWT.VERTICAL));
         createImportTable(imports);
         createImportButtonToolbar(section);
         refreshImportTable();
         importTable.addSelectionChangedListener(new ISelectionChangedListener() {
-            
+
             @Override
             public void selectionChanged(SelectionChangedEvent event) {
                 Object selected = ((IStructuredSelection) importTable.getSelection()).getFirstElement();
                 if (null != selected && selected instanceof Import) {
                     editPropertyForm.setImport((Import) selected);
-                    setPropertiesPaneVisible(true);               
+                    setPropertiesPaneVisible(true);
                 }
-                
+
             }
         });
         section.setClient(imports);
     }
-       
 
     protected Composite createImportTable(Composite parent) {
-        Table t = toolkit.createTable(parent, SWT.FULL_SELECTION | SWT.V_SCROLL);
+        final Table t = toolkit.createTable(parent, SWT.FULL_SELECTION | SWT.V_SCROLL);
         t.setLinesVisible(false);
         t.setHeaderVisible(false);
         TableLayout tableLayout = new TableLayout();
@@ -748,12 +769,13 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         t.setLayout(tableLayout);
         importTable = new TableViewer(t);
         importTable.setContentProvider(new ArrayContentProvider());
-        TableViewerColumn col = new TableViewerColumn(importTable, SWT.NONE);
+        final TableViewerColumn col = new TableViewerColumn(importTable, SWT.NONE);
         col.setLabelProvider(new ColumnLabelProvider() {
 
             @Override
             public Image getImage(Object element) {
-                return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_IMPORT_PROPOSAL);
+                return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID,
+                        YangDiagramImageProvider.IMG_IMPORT_PROPOSAL);
             }
 
             @Override
@@ -763,11 +785,21 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 }
                 return super.getText(element);
             }
-
         });
+        t.addControlListener(new ControlListener() {
+            @Override
+            public void controlResized(ControlEvent e) {
+                col.getColumn().setWidth(t.getSize().x - 30);
+            }
+
+            @Override
+            public void controlMoved(ControlEvent e) {
+            }
+        });
+        col.getColumn().setWidth(t.getSize().x - 30);
         return t;
     }
-    
+
     protected void createImportButtonToolbar(Section section) {
         ToolBarManager toolBarManager = new ToolBarManager(SWT.FLAT);
         ToolBar toolbar = toolBarManager.createControl(section);
@@ -786,12 +818,13 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             }
         };
 
-        addButton.setImageDescriptor(GraphitiUi.getImageService().getImageDescriptorForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_ADD_TOOL_PROPOSAL));
+        addButton.setImageDescriptor(GraphitiUi.getImageService().getImageDescriptorForId(
+                YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_ADD_TOOL_PROPOSAL));
         addButton.setEnabled(true);
         toolBarManager.add(addButton);
 
         Action deleteButton = new Action("Delete selected import", IAction.AS_CHECK_BOX) {
-            
+
             @SuppressWarnings("unchecked")
             @Override
             public void run() {
@@ -807,31 +840,32 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             }
         };
 
-        deleteButton.setImageDescriptor(GraphitiUi.getImageService().getImageDescriptorForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_DELETE_TOOL_PROPOSAL));
+        deleteButton.setImageDescriptor(GraphitiUi.getImageService().getImageDescriptorForId(
+                YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_DELETE_TOOL_PROPOSAL));
         deleteButton.setEnabled(true);
         toolBarManager.add(deleteButton);
         toolBarManager.update(true);
         section.setTextClient(toolbar);
     }
-    
+
     public void refreshImportTable() {
         if (null != module) {
             importTable.setInput(YangModelUtil.filter(module.getChildren(), YangModelUtil.MODEL_PACKAGE.getImport()));
             pane.getBody().layout(true);
         }
     }
-    
+
     protected void refreshRevisionTable() {
         if (null != module) {
             revisionTable.setInput(module.getRevisions());
             pane.getBody().layout(true);
         }
     }
-    
+
     protected Section createSection(ScrolledForm form, String title) {
         return createSection(form, title, Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
     }
-    
+
     protected Section createSection(final ScrolledForm form, String title, int styles) {
         Section section = toolkit.createSection(form.getBody(), styles);
         section.setLayout(new FillLayout(SWT.VERTICAL));
@@ -843,11 +877,10 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         });
         return section;
     }
-    
+
     public Composite getDiagram() {
         return diagram;
     }
-
 
     @Override
     public Module getBusinessObject() {
