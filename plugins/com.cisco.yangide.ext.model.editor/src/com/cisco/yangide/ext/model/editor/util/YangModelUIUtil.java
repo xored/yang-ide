@@ -382,6 +382,7 @@ public class YangModelUIUtil {
             }
             text = Graphiti.getGaService().createPlainText(textShape, ((NamedNode) context.getNewObject()).getName());
             fp.link(textShape, new Object[] { context.getNewObject(), YangModelUtil.MODEL_PACKAGE.getNamedNode_Name() });
+            PropertyUtil.setObjectShapeProp(textShape, PropertyUtil.EDITABLE_SHAPE, true);
         } else {
             String qName = YangModelUtil.getQNamePresentation((EObject) context.getNewObject());
             if (null == qName) {
