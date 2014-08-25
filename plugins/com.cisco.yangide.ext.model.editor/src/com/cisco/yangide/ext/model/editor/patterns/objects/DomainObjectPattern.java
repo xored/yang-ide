@@ -26,12 +26,6 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
         super(null);
     }
 
-    /*
-     * @Override public boolean canRemove(IRemoveContext context) { return false; }
-     * 
-     * @Override public boolean canDelete(IDeleteContext context) { return true; }
-     */
-
     @Override
     public boolean canLayout(ILayoutContext context) {
         return super.canLayout(context) && context.getPictogramElement() instanceof ContainerShape;

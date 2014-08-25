@@ -439,14 +439,17 @@ public class YangModelUIUtil {
             drawBoxRelativeAnchor(result, context, fp);
         }
         PropertyUtil.setObjectShapeProp(result, PropertyUtil.BUSINESS_OBJECT_SHAPE_KEY, true);
-        layoutPictogramElement(result, fp);
+        
         // call the layout feature
-        if (!(context.getTargetContainer() instanceof Diagram)) {
-            layoutPictogramElement(context.getTargetContainer(), fp);
-        } else {
+        if (context.getTargetContainer() instanceof Diagram) {
             drawPictogramElementPositionInParent(result, fp);
+        } 
+        
+        ContainerShape layoutShape = result;
+        while (!(layoutShape.getContainer() instanceof Diagram)) {
+            layoutShape = layoutShape.getContainer();
         }
-
+        layoutPictogramElement(layoutShape, fp);
         return result;
     }
 

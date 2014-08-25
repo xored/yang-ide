@@ -63,7 +63,7 @@ public abstract class DialogText {
        }
    }
    protected Control createContents(Composite parent) {
-       text = new Text(parent, SWT.LEFT | SWT.BORDER);
+       text = new Text(parent, SWT.LEFT | SWT.BORDER | SWT.SINGLE);
        text.setFont(parent.getFont());
        text.setBackground(parent.getBackground());
        return text;
