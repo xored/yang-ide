@@ -102,9 +102,6 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
     }
 
     protected boolean canContain(ILocationContext context, ContainerShape shape) {
-        if (shape instanceof Diagram) {
-            return true;
-        }
         Object parent = getBusinessObjectForPictogramElement(shape);
         if (null != parent && YangModelUtil.canContain(parent) && parent instanceof EObject
                 && YangModelUtil.canContain(((EObject) parent).eClass(), getObjectEClass())) {

@@ -140,9 +140,16 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         ICreateFeature[] ret = new ICreateFeature[0];
         List<ICreateFeature> retList = new ArrayList<ICreateFeature>();
 
-        for (IPattern pattern : getPatterns()) {
+        for (final IPattern pattern : getPatterns()) {
             if (pattern.isPaletteApplicable()) {
                 retList.add(new CreateFeatureForPattern(this, pattern) {
+                    
+                    
+                    @Override
+                    public boolean canCreate(ICreateContext context) {
+                        return pattern.canCreate(context);
+                    }
+
                     @Override
                     public Object[] create(ICreateContext context) {
                         YangDiagramBehavior behavior = (YangDiagramBehavior) EditorFeatureProvider.this
