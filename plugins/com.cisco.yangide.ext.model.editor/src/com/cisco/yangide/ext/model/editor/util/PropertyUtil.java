@@ -14,6 +14,8 @@ public class PropertyUtil {
     public static final String BUSINESS_OBJECT_SHAPE_KEY = "business-object-shape-id";
     public static final String BUSINESS_OBJECT_TYPE_SHAPE_KEY = "business-object-type-shape-id";
     
+    public static final String EDITABLE_SHAPE = "editable-shape";
+    
     public static final void setObjectShapeProp(PictogramElement pe, String prop, boolean set) {
         Graphiti.getPeService().setPropertyValue(pe, prop,
             set ? Boolean.TRUE.toString() : Boolean.FALSE.toString());
