@@ -13,5 +13,5 @@ package com.cisco.yangide.ext.model;
  * @model
  * @generated
  */
-public interface Typedef extends NamedNode, TaggedNode {
+public interface Typedef extends NamedNode, TaggedNode, TypedNode {
 } // Typedef

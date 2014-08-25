@@ -24,7 +24,7 @@ import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 
 public class YangElementListSelectionDialog extends ElementListSelectionDialog {
-    
+
     protected class ElementComparator implements Comparator<Object> {
 
         @Override
@@ -67,35 +67,52 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
     public interface Transformer {
         public String transform(ElementIndexInfo info);
     }
-    protected Object[] list; 
-
-
-    public YangElementListSelectionDialog(Shell parent, ElementIndexType indexType, IFile file, String imageId, Module module, Transformer transformer) {
+    protected List<Object> list; 
+    
+    public YangElementListSelectionDialog(Shell parent, ElementIndexType indexType, IFile file, String imageId, Module module, Transformer transformer, String initialValue) {
         super(parent, new ElementLabelProvider(transformer));
-        reset(indexType, file, imageId, module);
+        reset(indexType, file, imageId, module, initialValue);
     }
     
-    public YangElementListSelectionDialog(Shell parent, ElementIndexType indexType, IFile file, String imageId, Module module) {
+    public YangElementListSelectionDialog(Shell parent, ElementIndexType indexType, IFile file, String imageId, Module module, String initialValue) {
         super(parent, new ElementLabelProvider(module));
-        reset(indexType, file, imageId, module);       
+        reset(indexType, file, imageId, module, initialValue);      
     }
     
-    public void reset(ElementIndexType indexType, IFile file, String imageId, Module m) {
+    public void reset(ElementIndexType indexType, IFile file, String imageId, Module m, String initialValue) {
         setTitle("Select element");
         setAllowDuplicates(false);
         setModule(m);
         setList(indexType, file, m);
         setImage(GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, imageId));
+        setInitialSelections(new Object[] {getElementByValue(initialValue)});
     }
     
+    private Object getElementByValue(String initialValue) {
+        if (list.contains(initialValue)) {
+            return initialValue;
+        } else if (null != initialValue) {
+            String test = initialValue.replaceAll(" ", "");
+            for (Object el : list) {
+                if (el instanceof ElementIndexInfo) {
+                    if (test.equals(((ElementIndexInfo) el).getName()) || (imports.containsKey(((ElementIndexInfo) el).getModule())
+                            && test.equals(imports.get(((ElementIndexInfo) el).getModule()) + ":" + ((ElementIndexInfo) el).getName()))) {
+                        return el;
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
     public void setList(ElementIndexType indexType, IFile file, Module module) {
         List<Object> result = new ArrayList<Object>();
         if (ElementIndexType.TYPE.equals(indexType)) {
             result.addAll(Arrays.asList(YangScanner.getTypes()));
         }
         result.addAll(Arrays.asList(YangModelManager.search(null, null, null, indexType, null == file ? null : file.getProject(), null)));
-        list = filterElements(result).toArray();
-        setElements(list);
+        list = filterElements(result);
+        setElements(list.toArray());
         
     }
     @Override
@@ -156,5 +173,10 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
         return module;
     }
     
+    protected void setSelection(String initialValue) {
+        if (null != initialValue) {
+            setSelection(new Object[] {initialValue});
+        }
+    }
 
 }

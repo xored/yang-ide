@@ -155,6 +155,7 @@ public class ModelSwitch<T> extends Switch<T> {
                 T result = caseTypedef(typedef);
                 if (result == null) result = caseNamedNode(typedef);
                 if (result == null) result = caseTaggedNode(typedef);
+                if (result == null) result = caseTypedNode(typedef);
                 if (result == null) result = caseNode(typedef);
                 if (result == null) result = defaultCase(theEObject);
                 return result;

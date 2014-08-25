@@ -6,8 +6,10 @@ import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.TaggedNode;
+import com.cisco.yangide.ext.model.TypedNode;
 import com.cisco.yangide.ext.model.Typedef;
 
+import com.cisco.yangide.ext.model.Typeref;
 import java.util.Collection;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
@@ -30,6 +32,7 @@ import org.eclipse.emf.ecore.util.InternalEList;
  *   <li>{@link com.cisco.yangide.ext.model.impl.TypedefImpl#getParent <em>Parent</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.TypedefImpl#getName <em>Name</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.TypedefImpl#getTags <em>Tags</em>}</li>
+ *   <li>{@link com.cisco.yangide.ext.model.impl.TypedefImpl#getType <em>Type</em>}</li>
  * </ul>
  * </p>
  *
@@ -72,6 +75,16 @@ public class TypedefImpl extends MinimalEObjectImpl.Container implements Typedef
      * @ordered
      */
     protected EList<Tag> tags;
+
+    /**
+     * The cached value of the '{@link #getType() <em>Type</em>}' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see #getType()
+     * @generated
+     * @ordered
+     */
+    protected Typeref type;
 
     /**
      * <!-- begin-user-doc -->
@@ -168,11 +181,56 @@ public class TypedefImpl extends MinimalEObjectImpl.Container implements Typedef
      * <!-- end-user-doc -->
      * @generated
      */
+    public Typeref getType() {
+        return type;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public NotificationChain basicSetType(Typeref newType, NotificationChain msgs) {
+        Typeref oldType = type;
+        type = newType;
+        if (eNotificationRequired()) {
+            ENotificationImpl notification = new ENotificationImpl(this, Notification.SET, ModelPackage.TYPEDEF__TYPE, oldType, newType);
+            if (msgs == null) msgs = notification; else msgs.add(notification);
+        }
+        return msgs;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setType(Typeref newType) {
+        if (newType != type) {
+            NotificationChain msgs = null;
+            if (type != null)
+                msgs = ((InternalEObject)type).eInverseRemove(this, EOPPOSITE_FEATURE_BASE - ModelPackage.TYPEDEF__TYPE, null, msgs);
+            if (newType != null)
+                msgs = ((InternalEObject)newType).eInverseAdd(this, EOPPOSITE_FEATURE_BASE - ModelPackage.TYPEDEF__TYPE, null, msgs);
+            msgs = basicSetType(newType, msgs);
+            if (msgs != null) msgs.dispatch();
+        }
+        else if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.TYPEDEF__TYPE, newType, newType));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
     @Override
     public NotificationChain eInverseRemove(InternalEObject otherEnd, int featureID, NotificationChain msgs) {
         switch (featureID) {
             case ModelPackage.TYPEDEF__TAGS:
                 return ((InternalEList<?>)getTags()).basicRemove(otherEnd, msgs);
+            case ModelPackage.TYPEDEF__TYPE:
+                return basicSetType(null, msgs);
         }
         return super.eInverseRemove(otherEnd, featureID, msgs);
     }
@@ -192,6 +250,8 @@ public class TypedefImpl extends MinimalEObjectImpl.Container implements Typedef
                 return getName();
             case ModelPackage.TYPEDEF__TAGS:
                 return getTags();
+            case ModelPackage.TYPEDEF__TYPE:
+                return getType();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -215,6 +275,9 @@ public class TypedefImpl extends MinimalEObjectImpl.Container implements Typedef
                 getTags().clear();
                 getTags().addAll((Collection<? extends Tag>)newValue);
                 return;
+            case ModelPackage.TYPEDEF__TYPE:
+                setType((Typeref)newValue);
+                return;
         }
         super.eSet(featureID, newValue);
     }
@@ -236,6 +299,9 @@ public class TypedefImpl extends MinimalEObjectImpl.Container implements Typedef
             case ModelPackage.TYPEDEF__TAGS:
                 getTags().clear();
                 return;
+            case ModelPackage.TYPEDEF__TYPE:
+                setType((Typeref)null);
+                return;
         }
         super.eUnset(featureID);
     }
@@ -254,6 +320,8 @@ public class TypedefImpl extends MinimalEObjectImpl.Container implements Typedef
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.TYPEDEF__TAGS:
                 return tags != null && !tags.isEmpty();
+            case ModelPackage.TYPEDEF__TYPE:
+                return type != null;
         }
         return super.eIsSet(featureID);
     }
@@ -271,6 +339,12 @@ public class TypedefImpl extends MinimalEObjectImpl.Container implements Typedef
                 default: return -1;
             }
         }
+        if (baseClass == TypedNode.class) {
+            switch (derivedFeatureID) {
+                case ModelPackage.TYPEDEF__TYPE: return ModelPackage.TYPED_NODE__TYPE;
+                default: return -1;
+            }
+        }
         return super.eBaseStructuralFeatureID(derivedFeatureID, baseClass);
     }
 
@@ -284,6 +358,12 @@ public class TypedefImpl extends MinimalEObjectImpl.Container implements Typedef
         if (baseClass == TaggedNode.class) {
             switch (baseFeatureID) {
                 case ModelPackage.TAGGED_NODE__TAGS: return ModelPackage.TYPEDEF__TAGS;
+                default: return -1;
+            }
+        }
+        if (baseClass == TypedNode.class) {
+            switch (baseFeatureID) {
+                case ModelPackage.TYPED_NODE__TYPE: return ModelPackage.TYPEDEF__TYPE;
                 default: return -1;
             }
         }

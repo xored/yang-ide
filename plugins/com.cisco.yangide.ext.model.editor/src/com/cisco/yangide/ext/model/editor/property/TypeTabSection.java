@@ -55,7 +55,7 @@ public class TypeTabSection extends GFPropertySection implements ITabbedProperty
             protected Object openDialogBox(Text text) {
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
                 Module module = (Module) getDiagramTypeProvider().getFeatureProvider().getBusinessObjectForPictogramElement(getDiagram());
-                YangElementListSelectionDialog dialog = new YangElementListSelectionDialog(shell, ElementIndexType.TYPE, null, YangDiagramImageProvider.IMG_CUSTOM_TYPE_PROPOSAL, module);
+                YangElementListSelectionDialog dialog = new YangElementListSelectionDialog(shell, ElementIndexType.TYPE, null, YangDiagramImageProvider.IMG_CUSTOM_TYPE_PROPOSAL, module, type.getText());
                 if (IStatus.OK == dialog.open()) {
                     setType(dialog.getValue());
                 }

@@ -31,7 +31,7 @@ Package model <http://www.example.org/model>
   Class Submodule -> Module
     Reference belongsTo : BelongsTo<<1..1>>
 
-  Class Typedef -> NamedNode, TaggedNode
+  Class Typedef -> NamedNode, TaggedNode, TypedNode
 
   Class Choice -> NamedContainingNode, TaggedNode
 

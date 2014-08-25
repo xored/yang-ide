@@ -1006,6 +1006,7 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         submoduleEClass.getESuperTypes().add(this.getModule());
         typedefEClass.getESuperTypes().add(this.getNamedNode());
         typedefEClass.getESuperTypes().add(this.getTaggedNode());
+        typedefEClass.getESuperTypes().add(this.getTypedNode());
         choiceEClass.getESuperTypes().add(this.getNamedContainingNode());
         choiceEClass.getESuperTypes().add(this.getTaggedNode());
         leafListEClass.getESuperTypes().add(this.getNamedNode());

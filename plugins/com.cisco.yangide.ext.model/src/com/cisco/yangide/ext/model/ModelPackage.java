@@ -643,13 +643,22 @@ public interface ModelPackage extends EPackage {
     int TYPEDEF__TAGS = NAMED_NODE_FEATURE_COUNT + 0;
 
     /**
+     * The feature id for the '<em><b>Type</b></em>' containment reference.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     * @ordered
+     */
+    int TYPEDEF__TYPE = NAMED_NODE_FEATURE_COUNT + 1;
+
+    /**
      * The number of structural features of the '<em>Typedef</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int TYPEDEF_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 1;
+    int TYPEDEF_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 2;
 
     /**
      * The number of operations of the '<em>Typedef</em>' class.

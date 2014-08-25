@@ -102,6 +102,7 @@ public class GeneralTabReferenceSection extends GFPropertySection implements ITa
                         EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getReferenceNode_Reference())
                             .observe(node));
             }
+            binding.updateModelToTarget();
             EClass reference = YangModelUtil.getConnectionReferenceClass(node);
             ElementIndexType indexType = ElementIndexType.GROUPING;
             String imageId = YangDiagramImageProvider.IMG_GROUPING_PROPOSAL;
@@ -116,11 +117,11 @@ public class GeneralTabReferenceSection extends GFPropertySection implements ITa
             if (null == dialog) {
                 
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                dialog = new YangElementListSelectionDialog(shell, indexType, null, imageId, module);
+                dialog = new YangElementListSelectionDialog(shell, indexType, null, imageId, module, text.getText());
             } else {
-                dialog.reset(indexType, null, imageId, module);
+                dialog.reset(indexType, null, imageId, module, text.getText());
             }
-            binding.updateModelToTarget();
+            
             binding.getModel().addChangeListener(new IChangeListener() {
                 
                 @Override

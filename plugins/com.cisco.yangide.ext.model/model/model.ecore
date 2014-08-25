@@ -28,7 +28,7 @@
     <eStructuralFeatures xsi:type="ecore:EReference" name="belongsTo" lowerBound="1"
         eType="#//BelongsTo"/>
   </eClassifiers>
-  <eClassifiers xsi:type="ecore:EClass" name="Typedef" eSuperTypes="#//NamedNode #//TaggedNode"/>
+  <eClassifiers xsi:type="ecore:EClass" name="Typedef" eSuperTypes="#//NamedNode #//TaggedNode #//TypedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Choice" eSuperTypes="#//NamedContainingNode #//TaggedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="LeafList" eSuperTypes="#//NamedNode #//TaggedNode #//TypedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Anyxml" eSuperTypes="#//NamedNode #//TaggedNode"/>
