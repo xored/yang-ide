@@ -467,15 +467,15 @@ public class YangModelUIUtil {
         gaService.setLocationAndSize(roundedRectangle, context.getX(), context.getY(), width, height);
 
         // create shape for line
-        final Shape shape = peCreateService.createContainerShape(containerShape, false);
+        final Shape shape = peCreateService.createShape(containerShape, false);
 
         // create and set graphics algorithm
         final Polyline polyline = gaService.createPlainPolyline(shape, new int[] { 0, DEFAULT_TEXT_HEIGHT, width,
                 DEFAULT_TEXT_HEIGHT });
         polyline.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
-
         // add feedback element
-        gaService.createPlatformGraphicsAlgorithm(shape, "feedback");
+        final Shape feedbackShape = peCreateService.createShape(containerShape, false);
+        gaService.createPlatformGraphicsAlgorithm(feedbackShape, "feedback");
 
         drawPictogramElementHeader(containerShape, context, fp, imageId, title, width, DEFAULT_TEXT_HEIGHT);
         return containerShape;
