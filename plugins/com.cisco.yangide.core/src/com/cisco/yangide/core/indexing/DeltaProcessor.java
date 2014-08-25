@@ -685,24 +685,19 @@ public class DeltaProcessor implements IResourceChangeListener, IElementChangedL
         for (IJavaElementDelta d : affectedChildren) {
             IJavaElement element = d.getElement();
             if (element instanceof IPackageFragmentRoot) {
-                IClasspathEntry entry;
-                try {
-                    entry = ((IPackageFragmentRoot) element).getResolvedClasspathEntry();
-                    IPath path = entry.getPath();
-                    if (path != null && path.toFile().exists() && path.lastSegment().toLowerCase().endsWith(".jar")) {
+                IPath path = ((IPackageFragmentRoot) element).getPath();
 
-                        switch (d.getKind()) {
-                        case IJavaElementDelta.ADDED:
-                        case IJavaElementDelta.CHANGED:
-                            this.manager.indexManager.addJarFile(element.getJavaProject().getProject(), path);
-                            break;
-                        case IJavaElementDelta.REMOVED:
-                            this.manager.indexManager.indexAll(element.getJavaProject().getProject());
-                            return false;
-                        }
+                if (path != null && path.toFile().exists() && path.lastSegment().toLowerCase().endsWith(".jar")) {
+
+                    switch (d.getKind()) {
+                    case IJavaElementDelta.ADDED:
+                    case IJavaElementDelta.CHANGED:
+                        this.manager.indexManager.addJarFile(element.getJavaProject().getProject(), path);
+                        break;
+                    case IJavaElementDelta.REMOVED:
+                        this.manager.indexManager.indexAll(element.getJavaProject().getProject());
+                        return false;
                     }
-                } catch (JavaModelException e) {
-                    YangCorePlugin.log(e);
                 }
             }
             if (!processJavaDeltas(d.getAffectedChildren())) {
