@@ -53,7 +53,7 @@ public class LayoutUtil {
 
     public static final int DEFAULT_DIAGRAM_LAYOUT_TYPE = 13;
     public static final double DEFAULT_DIAGRAM_LAYOUT_V_SHIFT = 10;
-    public static final double DEFAULT_SCREEN_WIDTH = 1500;
+    public static final double DEFAULT_SCREEN_WIDTH = 1200;
 
     /**
      * Used to keep track of the initial Connection locations for self connections<br/>
