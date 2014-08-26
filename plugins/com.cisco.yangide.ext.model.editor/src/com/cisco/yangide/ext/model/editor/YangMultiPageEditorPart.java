@@ -11,6 +11,7 @@ import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
 
+import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.editors.YangEditor;
 import com.cisco.yangide.editor.editors.YangSourceViewer;
@@ -129,7 +130,13 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
 
     @Override
     public void dispose() {
-        modelSynchronizer.dispose();
+        try {
+            yangSourceEditor.dispose();
+            yangDiagramEditor.dispose();
+            modelSynchronizer.dispose();
+        } catch (Exception e) {
+            YangCorePlugin.log(e);
+        }
         super.dispose();
     }
 }
