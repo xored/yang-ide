@@ -110,13 +110,11 @@ public class ModelSynchronizer implements IDocumentUndoListener, IReconcileHandl
     public void init() {
         this.yangSourceEditor.addReconcileHandler(this);
         DocumentUndoManagerRegistry.getDocumentUndoManager(yangSourceEditor.getDocument())
-        .addDocumentUndoListener(this);
+                .addDocumentUndoListener(this);
     }
 
     public void dispose() {
         this.yangSourceEditor.removeReconcileHandler(this);
-        DocumentUndoManagerRegistry.getDocumentUndoManager(yangSourceEditor.getDocument()).removeDocumentUndoListener(
-                this);
     }
 
     public void disableNotification() {
