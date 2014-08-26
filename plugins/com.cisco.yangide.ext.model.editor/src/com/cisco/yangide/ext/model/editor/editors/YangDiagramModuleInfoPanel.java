@@ -71,7 +71,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     private IFile file;
 
     private Composite diagram;
-//    private PropertyEdit editPropertyForm;
+    // private PropertyEdit editPropertyForm;
 
     private Text namespaceText;
     private DialogText organizationText;
@@ -82,7 +82,6 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     private DialogText referenceText;
     private TableViewer revisionTable;
     private SashForm infoPane;
-    private ScrolledForm pane;
     private Composite leftPane;
 
     private SashForm mainSashPanel;
@@ -104,7 +103,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             private List<Binding> dataBindigs = new ArrayList<Binding>();
 
             public RevisionEdit() {
-//                pane = toolkit.createComposite(editPropertyForm, SWT.NONE);
+                // pane = toolkit.createComposite(editPropertyForm, SWT.NONE);
                 createPane();
             }
 
@@ -166,7 +165,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             private List<Binding> dataBindigs = new ArrayList<Binding>();
 
             public ImportEdit() {
-//                pane = toolkit.createComposite(editPropertyForm, SWT.NONE);
+                // pane = toolkit.createComposite(editPropertyForm, SWT.NONE);
                 createPane();
             }
 
@@ -260,12 +259,12 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         GridLayoutFactory.fillDefaults().applyTo(diagram);
         GridDataFactory.fillDefaults().grab(false, true).applyTo(leftPane);
         GridLayoutFactory.fillDefaults().applyTo(leftPane);
-        
+
         createModuleInfoPanel(leftPane);
-        
+
         GridDataFactory.fillDefaults().grab(true, true).applyTo(diagram);
         setPropertiesPaneVisible(false);
-        mainSashPanel.setWeights(new int[]{1,5});
+        mainSashPanel.setWeights(new int[] { 1, 5 });
     }
 
     protected void createModuleInfoPanel(Composite parent) {
@@ -282,9 +281,9 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         toolkit.adapt(infoPane);
 
         infoPane.setLayout(new FillLayout(SWT.VERTICAL));
-        pane = toolkit.createScrolledForm(infoPane);
-
-        GridLayoutFactory.fillDefaults().applyTo(pane.getBody());
+        // pane = toolkit.createScrolledForm(infoPane);
+        Composite pane = toolkit.createComposite(infoPane);
+        GridLayoutFactory.fillDefaults().applyTo(pane);
         GridDataFactory.fillDefaults().grab(true, true).applyTo(pane);
 
         // ScrolledForm editForm = toolkit.createScrolledForm(infoPane);
@@ -347,8 +346,8 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         editSection.setTextClient(toolbar);
     }
 
-    protected void createMetaInfoSection(ScrolledForm form) {
-        Section section = createSection(form, "Meta information");
+    protected void createMetaInfoSection(Composite parent) {
+        Section section = createSection(parent, "Meta information");
         Composite meta = toolkit.createComposite(section);
         GridLayoutFactory.swtDefaults().numColumns(2).applyTo(meta);
         GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(section);
@@ -419,8 +418,8 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         section.setClient(meta);
     }
 
-    protected void createGeneralSection(ScrolledForm form) {
-        Section section = createSection(form, "General");
+    protected void createGeneralSection(Composite parent) {
+        Section section = createSection(parent, "General");
         Composite header = toolkit.createComposite(section);
         GridLayoutFactory.fillDefaults().numColumns(2).applyTo(header);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
@@ -503,8 +502,8 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 .value(esf).observe(node.getBusinessObject()));
     }
 
-    protected void createRevisionSection(final ScrolledForm form) {
-        Section section = createSection(form, "Revision");
+    protected void createRevisionSection(Composite parent) {
+        Section section = createSection(parent, "Revision");
         Composite revisions = toolkit.createComposite(section);
         GridLayoutFactory.swtDefaults().applyTo(revisions);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
@@ -518,7 +517,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 if (revisionTable.getSelection() instanceof IStructuredSelection) {
                     Object selected = ((IStructuredSelection) revisionTable.getSelection()).getFirstElement();
                     if (null != selected && selected instanceof Revision) {
-//                        editPropertyForm.setRevision((Revision) selected);
+                        // editPropertyForm.setRevision((Revision) selected);
                         setPropertiesPaneVisible(true);
                     }
                 }
@@ -562,8 +561,8 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         return t;
     }
 
-    protected void createImportSection(final ScrolledForm form) {
-        final Section section = createSection(form, "Imports");
+    protected void createImportSection(Composite parent) {
+        final Section section = createSection(parent, "Imports");
         Composite imports = toolkit.createComposite(section);
         GridLayoutFactory.swtDefaults().applyTo(imports);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
@@ -576,7 +575,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             public void selectionChanged(SelectionChangedEvent event) {
                 Object selected = ((IStructuredSelection) importTable.getSelection()).getFirstElement();
                 if (null != selected && selected instanceof Import) {
-//                    editPropertyForm.setImport((Import) selected);
+                    // editPropertyForm.setImport((Import) selected);
                     setPropertiesPaneVisible(true);
                 }
 
@@ -674,29 +673,28 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     public void refreshImportTable() {
         if (null != module) {
             importTable.setInput(YangModelUtil.filter(module.getChildren(), YangModelUtil.MODEL_PACKAGE.getImport()));
-            pane.getBody().layout(true);
         }
     }
 
     protected void refreshRevisionTable() {
         if (null != module) {
             revisionTable.setInput(module.getRevisions());
-            pane.getBody().layout(true);
         }
     }
 
-    protected Section createSection(ScrolledForm form, String title) {
-        return createSection(form, title, Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
+    protected Section createSection(Composite parent, String title) {
+        return createSection(parent, title, Section.TITLE_BAR | Section.TWISTIE | Section.EXPANDED);
     }
 
-    protected Section createSection(final ScrolledForm form, String title, int styles) {
-        Section section = toolkit.createSection(form.getBody(), styles);
+    protected Section createSection(final Composite parent, String title, int styles) {
+        Section section = toolkit.createSection(parent, styles);
         GridLayoutFactory.fillDefaults().applyTo(section);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
         section.setText(title);
         section.addExpansionListener(new ExpansionAdapter() {
+            @Override
             public void expansionStateChanged(ExpansionEvent e) {
-                form.reflow(false);
+                parent.layout();
             }
         });
         return section;

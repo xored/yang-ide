@@ -83,13 +83,13 @@
          </propertySection>
          <propertySection
                class="com.cisco.yangide.ext.model.editor.property.GeneralTabNameSection"
-               filter="com.cisco.yangide.ext.model.editor.property.GenaralTabNameFilter"
+               filter="com.cisco.yangide.ext.model.editor.property.GeneralTabNameFilter"
                id="com.cisco.yangide.ext.model.editor.GeneralTabName"
                tab="com.cisco.yangide.ext.model.editor.GeneralTab">
          </propertySection>
          <propertySection
                class="com.cisco.yangide.ext.model.editor.property.GeneralTabTypeSection"
-               filter="com.cisco.yangide.ext.model.editor.property.GenaralTabTypeFilter"
+               filter="com.cisco.yangide.ext.model.editor.property.GeneralTabTypeFilter"
                id="com.cisco.yangide.ext.model.editor.GeneralTabType"
                tab="com.cisco.yangide.ext.model.editor.GeneralTab">
          </propertySection>

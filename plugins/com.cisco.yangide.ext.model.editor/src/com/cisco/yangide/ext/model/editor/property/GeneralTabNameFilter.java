@@ -7,7 +7,7 @@ import org.eclipse.graphiti.ui.platform.AbstractPropertySectionFilter;
 
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 
-public class GenaralTabNameFilter extends AbstractPropertySectionFilter {
+public class GeneralTabNameFilter extends AbstractPropertySectionFilter {
 
     @Override
     protected boolean accept(PictogramElement pictogramElement) {
