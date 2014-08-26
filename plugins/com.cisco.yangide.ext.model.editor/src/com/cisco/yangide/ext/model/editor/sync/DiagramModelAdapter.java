@@ -206,10 +206,10 @@ final class DiagramModelAdapter extends EContentAdapter {
         ASTCompositeNode parent = (ASTCompositeNode) node;
 
         int insertPosition = parent.getBodyStartPosition() + 2;
-        if (parent.getChildren().size() > 0) {
+        if (0 != position && parent.getChildren().size() > 0) {
             int size = parent.getChildren().size();
             insertPosition = position < 0 || position >= size ? parent.getChildren().get(size - 1).getEndPosition() + 2
-                    : parent.getChildren().get(position).getEndPosition() + 2;
+                    : parent.getChildren().get(position - 1).getEndPosition() + 2;
         }
 
         if (node instanceof Module || node instanceof SubModule) {

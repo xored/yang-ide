@@ -122,7 +122,7 @@ public class YangModelUIUtil {
     }
 
     public static int getPositionInParent(ContainerShape parent, int y, IFeatureProvider fp) {
-        EList<Shape> elements = parent.getChildren();
+        List<Shape> elements = filterBusinessObjectShapes(parent.getChildren());
         sortPictogramElements(elements);
         int pos = 0;
         for (Shape shape : elements) {
