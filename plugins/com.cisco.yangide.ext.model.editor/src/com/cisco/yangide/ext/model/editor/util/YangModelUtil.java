@@ -19,6 +19,7 @@ import org.eclipse.ui.views.properties.IPropertyDescriptor;
 import com.cisco.yangide.core.dom.ASTCompositeNode;
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
+import com.cisco.yangide.core.dom.AnyXmlSchemaNode;
 import com.cisco.yangide.core.dom.AugmentationSchema;
 import com.cisco.yangide.core.dom.ChoiceCaseNode;
 import com.cisco.yangide.core.dom.ChoiceNode;
@@ -42,6 +43,7 @@ import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.TypeDefinition;
 import com.cisco.yangide.core.dom.TypeReference;
 import com.cisco.yangide.core.dom.UsesNode;
+import com.cisco.yangide.ext.model.Anyxml;
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.Grouping;
 import com.cisco.yangide.ext.model.Identity;
@@ -147,6 +149,7 @@ public class YangModelUtil {
         astNodes.put(ChoiceCaseNode.class, MODEL_PACKAGE.getChoiceCase());
         astNodes.put(TypeDefinition.class, MODEL_PACKAGE.getTypedef());
         astNodes.put(TypeReference.class, MODEL_PACKAGE.getTyperef());
+        astNodes.put(AnyXmlSchemaNode.class, MODEL_PACKAGE.getAnyxml());
 
         connections.put(MODEL_PACKAGE.getUses(), MODEL_PACKAGE.getGrouping());
         connections.put(MODEL_PACKAGE.getIdentity(), MODEL_PACKAGE.getIdentity());
