@@ -9,10 +9,10 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
@@ -37,21 +37,13 @@ public class GeneralTabNameSection extends GFPropertySection implements ITabbedP
  
         TabbedPropertySheetWidgetFactory factory = getWidgetFactory();
         Composite composite = factory.createFlatFormComposite(parent);
-        FormData data;
-       
-        nameText = factory.createText(composite, "");
-        data = new FormData();
-        data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(50, 0);
-        data.top = new FormAttachment(0, VSPACE);
-        nameText.setLayoutData(data);
- 
+        GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
         CLabel valueLabel = factory.createCLabel(composite, "Name:");
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(nameText, -HSPACE);
-        data.top = new FormAttachment(nameText, 0, SWT.CENTER);
-        valueLabel.setLayoutData(data);
+        GridDataFactory.fillDefaults().hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT).align(SWT.END, SWT.END).indent(HSPACE, VSPACE).applyTo(valueLabel);
+        nameText = factory.createText(composite, "");
+        GridDataFactory.fillDefaults().hint(200, SWT.DEFAULT).align(SWT.END, SWT.END).indent(HSPACE, VSPACE).applyTo(nameText);
+ 
+       
     }
  
     @Override

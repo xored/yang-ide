@@ -12,10 +12,10 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -46,8 +46,9 @@ public class TypeTabSection extends GFPropertySection implements ITabbedProperty
 
         TabbedPropertySheetWidgetFactory factory = getWidgetFactory();
         Composite composite = factory.createFlatFormComposite(parent);
-        FormData data;
-
+        GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
+        CLabel valueLabel = factory.createCLabel(composite, "Name:");
+        GridDataFactory.fillDefaults().hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT).align(SWT.END, SWT.END).indent(HSPACE, VSPACE).applyTo(valueLabel);
         type = new DialogText(composite, tabbedPropertySheetPage.getWidgetFactory()) {
 
             @Override
@@ -64,19 +65,7 @@ public class TypeTabSection extends GFPropertySection implements ITabbedProperty
                 return null;
             }
         };
-
-        data = new FormData();
-        data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, VSPACE);
-        type.setLayoutData(data);
-
-        CLabel valueLabel = factory.createCLabel(composite, "Name:");
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(type.getControl(), -HSPACE);
-        data.top = new FormAttachment(type.getControl(), 0, SWT.CENTER);
-        valueLabel.setLayoutData(data);
+        GridDataFactory.fillDefaults().hint(200, SWT.DEFAULT).align(SWT.END, SWT.END).indent(HSPACE, VSPACE).applyTo(type.getControl());
     }
 
     @Override
