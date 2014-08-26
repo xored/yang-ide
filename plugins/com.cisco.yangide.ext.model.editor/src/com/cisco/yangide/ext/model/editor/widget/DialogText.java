@@ -3,10 +3,10 @@ package com.cisco.yangide.ext.model.editor.widget;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
-import org.eclipse.swt.graphics.Color;
-import org.eclipse.swt.graphics.Font;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -35,13 +35,13 @@ public abstract class DialogText {
     protected Control createControl(Composite parent, FormToolkit toolkit) {
         editor = toolkit.createComposite(parent, SWT.NONE);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(editor);
-        GridLayoutFactory.fillDefaults().numColumns(2).spacing(0, 0).applyTo(editor);
+        GridLayoutFactory.fillDefaults().numColumns(2).spacing(2, 0).applyTo(editor);
         text = toolkit.createText(editor, "");
 
         contents = text;
         updateContents(value);
 
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(contents);
+        GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).hint(100, -1).grab(true, false).applyTo(contents);
 
         button = toolkit.createButton(editor, "...", SWT.PUSH);
         button.addSelectionListener(new SelectionAdapter() {
@@ -49,6 +49,9 @@ public abstract class DialogText {
                 openDialogBox(text);
             }
         });
+        parent.layout();
+        int h = text.getBounds().height;
+        GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).hint(h, h).grab(false, false).applyTo(button);
 
         return editor;
     }
