@@ -73,11 +73,10 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
             YangEditorPlugin.log(e);
         }
     }
-    
+
     private IFile getFile() {
         if (null != yangSourceEditor && null != yangSourceEditor.getEditorInput()) {
-            if (yangSourceEditor.getEditorInput() instanceof IFileEditorInput)
-            {
+            if (yangSourceEditor.getEditorInput() instanceof IFileEditorInput) {
                 IFileEditorInput fileEI = (IFileEditorInput) yangSourceEditor.getEditorInput();
                 return fileEI.getFile();
             }
@@ -110,6 +109,11 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
                 yangSourceViewer.getReconciler().uninstall();
             }
             yangSourceViewer.disableTextListeners();
+            try {
+                getEditorSite().getPage().showView("org.eclipse.ui.views.PropertySheet");
+            } catch (PartInitException e) {
+                YangEditorPlugin.log(e);
+            }
         } else {
             yangSourceViewer.enableTextListeners();
             yangSourceViewer.updateDocument();
