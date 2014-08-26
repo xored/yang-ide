@@ -30,6 +30,8 @@ import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -258,14 +260,17 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         diagram = new Composite(mainSashPanel, SWT.NONE);
 
         GridLayoutFactory.fillDefaults().applyTo(diagram);
-        GridDataFactory.fillDefaults().grab(false, true).applyTo(leftPane);
+        GridDataFactory.fillDefaults().grab(false, true).hint(200, -1).applyTo(leftPane);
         GridLayoutFactory.fillDefaults().applyTo(leftPane);
 
         createModuleInfoPanel(leftPane);
 
         GridDataFactory.fillDefaults().grab(true, true).applyTo(diagram);
+
         setPropertiesPaneVisible(false);
-        mainSashPanel.setWeights(new int[] { 1, 5 });
+        Point area = parent.computeSize(-1, -1);
+        double p = 100.0 / area.x;
+        mainSashPanel.setWeights(new int[] { (int) (150 * p), (int) ((area.x - 150) * p) });
     }
 
     protected void createModuleInfoPanel(Composite parent) {
@@ -506,7 +511,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     protected void createRevisionSection(Composite parent) {
         Section section = createSection(parent, "Revision");
         Composite revisions = toolkit.createComposite(section);
-        
+
         // Temporary code
         GridDataFactory.fillDefaults().grab(true, false).applyTo(revisions);
         GridLayoutFactory.fillDefaults().numColumns(2).applyTo(revisions);
@@ -516,7 +521,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
 
         toolkit.createLabel(revisions, "Description: ");
         final DialogText description = new DialogText(revisions, toolkit) {
-            
+
             @Override
             protected Object openDialogBox(Text text) {
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
@@ -532,7 +537,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
 
         toolkit.createLabel(revisions, "Reference: ");
         DialogText reference = new DialogText(revisions, toolkit) {
-            
+
             @Override
             protected Object openDialogBox(Text text) {
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
@@ -553,37 +558,35 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             Binding binding = bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, name),
                     EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getNamedNode_Name()).observe(revision));
             binding.updateModelToTarget();
-            binding = bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, description.getTextControl()),
+            binding = bindingContext.bindValue(
+                    WidgetProperties.text(SWT.Modify).observeDelayed(200, description.getTextControl()),
                     EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value()).observe(
                             YangModelUtil.getTag(YangTag.DESCRIPTION, revision)));
             binding.updateModelToTarget();
-            binding = bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, reference.getTextControl()),
+            binding = bindingContext.bindValue(
+                    WidgetProperties.text(SWT.Modify).observeDelayed(200, reference.getTextControl()),
                     EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value()).observe(
                             YangModelUtil.getTag(YangTag.REFERENCE, revision)));
             binding.updateModelToTarget();
         }
-        
+
         // end of Temporary code
-        
-        /*GridLayoutFactory.swtDefaults().applyTo(revisions);
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
 
-        createRevisionTable(revisions);
-        refreshRevisionTable();
-        revisionTable.addSelectionChangedListener(new ISelectionChangedListener() {
-
-            @Override
-            public void selectionChanged(SelectionChangedEvent event) {
-                if (revisionTable.getSelection() instanceof IStructuredSelection) {
-                    Object selected = ((IStructuredSelection) revisionTable.getSelection()).getFirstElement();
-                    if (null != selected && selected instanceof Revision) {
-                        // editPropertyForm.setRevision((Revision) selected);
-                        setPropertiesPaneVisible(true);
-                    }
-                }
-
-            }
-        });*/
+        /*
+         * GridLayoutFactory.swtDefaults().applyTo(revisions);
+         * GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
+         * 
+         * createRevisionTable(revisions); refreshRevisionTable();
+         * revisionTable.addSelectionChangedListener(new ISelectionChangedListener() {
+         * 
+         * @Override public void selectionChanged(SelectionChangedEvent event) { if
+         * (revisionTable.getSelection() instanceof IStructuredSelection) { Object selected =
+         * ((IStructuredSelection) revisionTable.getSelection()).getFirstElement(); if (null !=
+         * selected && selected instanceof Revision) { // editPropertyForm.setRevision((Revision)
+         * selected); setPropertiesPaneVisible(true); } }
+         * 
+         * } });
+         */
         section.setClient(revisions);
     }
 
