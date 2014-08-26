@@ -1,6 +1,6 @@
 package com.cisco.yangide.ext.model.editor.util;
 
-import org.eclipse.graphiti.mm.algorithms.styles.Font;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.algorithms.styles.Style;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -18,12 +18,15 @@ public class StyleUtil {
 
     public static final IColorConstant DOMAIN_OBJECT_TEXT_FOREGROUND = new ColorConstant(0, 0, 0);
     public static final IColorConstant DOMAIN_OBJECT_FOREGROUND = new ColorConstant(137, 173, 213);// new
-                                                                                                   // ColorConstant(98,
-                                                                                                   // 131,
-                                                                                                   // 167);
+    // ColorConstant(98,
+    // 131,
+    // 167);
     public static final IColorConstant DOMAIN_OBJECT_BACKGROUND = new ColorConstant(187, 218, 247);
 
     public static final IColorConstant DOMAIN_OBJECT_TYPE_TEXT_COLOR = new ColorConstant(149, 125, 71);
+
+    public static final String FONT_NAME = Platform.OS_MACOSX.equals(Platform.getOS()) ? "Helvetica" : "Arial";
+    public static final int FONT_SIZE = Platform.OS_MACOSX.equals(Platform.getOS()) ? 10 : 8;
 
     public static Style getStyleForCommonValues(Diagram diagram) {
         final String styleId = "COMMON-VALUES";
@@ -70,8 +73,7 @@ public class StyleUtil {
         if (style == null) { // style not found - create new style
             style = gaService.createPlainStyle(parentStyle, styleId);
             setCommonTextValues(diagram, gaService, style);
-            Font defaultFont = gaService.manageDefaultFont(diagram, false, false);
-            style.setFont(gaService.manageFont(diagram, defaultFont.getName(), 11));
+            style.setFont(gaService.manageFont(diagram, FONT_NAME, FONT_SIZE, false, false));
         }
         return style;
     }
@@ -87,8 +89,7 @@ public class StyleUtil {
         if (style == null) { // style not found - create new style
             style = gaService.createPlainStyle(parentStyle, styleId);
             setCommonTextValues(diagram, gaService, style);
-            Font defaultFont = gaService.manageDefaultFont(diagram, false, false);
-            style.setFont(gaService.manageFont(diagram, defaultFont.getName(), 11));
+            style.setFont(gaService.manageFont(diagram, FONT_NAME, FONT_SIZE, false, false));
             style.setForeground(gaService.manageColor(diagram, DOMAIN_OBJECT_TYPE_TEXT_COLOR));
         }
         return style;
@@ -105,8 +106,7 @@ public class StyleUtil {
         if (style == null) { // style not found - create new style
             style = gaService.createPlainStyle(parentStyle, styleId);
             setCommonTextValues(diagram, gaService, style);
-            Font defaultFont = gaService.manageDefaultFont(diagram, false, false);
-            style.setFont(gaService.manageFont(diagram, defaultFont.getName(), Math.max(6, defaultFont.getSize() - 2)));
+            style.setFont(gaService.manageFont(diagram, FONT_NAME, FONT_SIZE - 2, false, false));
         }
         return style;
     }
@@ -122,15 +122,13 @@ public class StyleUtil {
         if (style == null) { // style not found - create new style
             style = gaService.createPlainStyle(parentStyle, styleId);
             setCommonTextValues(diagram, gaService, style);
-            style.setFont(gaService.manageDefaultFont(diagram, true, false));
+            style.setFont(gaService.manageFont(diagram, FONT_NAME, FONT_SIZE, true, false));
         }
         return style;
     }
 
-    @SuppressWarnings("deprecation")
     private static void setCommonTextValues(Diagram diagram, IGaService gaService, Style style) {
         style.setFilled(false);
-        style.setAngle(0);
         style.setHorizontalAlignment(Orientation.ALIGNMENT_LEFT);
         style.setVerticalAlignment(Orientation.ALIGNMENT_CENTER);
         style.setForeground(gaService.manageColor(diagram, DOMAIN_OBJECT_TEXT_FOREGROUND));
