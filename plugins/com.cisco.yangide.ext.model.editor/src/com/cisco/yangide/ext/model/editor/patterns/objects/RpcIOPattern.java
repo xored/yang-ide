@@ -3,9 +3,7 @@ package com.cisco.yangide.ext.model.editor.patterns.objects;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.ICreateContext;
-import org.eclipse.graphiti.features.context.IDeleteContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
-import org.eclipse.graphiti.features.context.IRemoveContext;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 
 import com.cisco.yangide.ext.model.Node;
@@ -16,26 +14,47 @@ import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 
 public class RpcIOPattern extends DomainObjectPattern {
+    
+    private boolean input; 
+    
+    public RpcIOPattern(boolean input) {
+       super();
+       this.input = input;
+    }
+    
+    @Override
+    public boolean canCreate(ICreateContext context) {
+        Object obj = getBusinessObjectForPictogramElement(context.getTargetContainer());
+        return super.canCreate(context) && null != obj && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getRpc(), obj) && check((Rpc) obj);
+    }
+
+    @Override
+    public String getCreateImageId() {
+        if (input) {
+            return YangDiagramImageProvider.IMG_RPC_INPUT_PROPOSAL;
+        } else {
+            return YangDiagramImageProvider.IMG_RPC_OUTPUT_PROPOSAL;
+        }
+    }
+
+    @Override
+    public String getCreateName() {
+        if (input) {
+            return "input";
+        } else {
+            return "output";
+        }
+    }
+
+    @Override
+    public boolean isMainBusinessObjectApplicable(Object mainBusinessObject) {
+        return super.isMainBusinessObjectApplicable(mainBusinessObject) && input == ((RpcIO) mainBusinessObject).isInput();
+    }
 
     @Override
     protected EClass getObjectEClass() {
         return YangModelUtil.MODEL_PACKAGE.getRpcIO();
-    }
-
-    @Override
-    public boolean canDelete(IDeleteContext context) {
-        return false;
-    }
-
-    @Override
-    public boolean canCreate(ICreateContext context) {
-        return false;
-    }
-
-    @Override
-    public boolean canRemove(IRemoveContext context) {
-        return false;
-    }
+    }   
     
     @Override
     public boolean canAdd(IAddContext context) {
@@ -55,6 +74,15 @@ public class RpcIOPattern extends DomainObjectPattern {
         }
         return false;
     }
+    
+    private boolean check(Rpc rpc) {
+        for (Node n : YangModelUtil.filter(rpc.getChildren(), YangModelUtil.MODEL_PACKAGE.getRpcIO())) {
+            if (input == ((RpcIO) n).isInput()) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     @Override
     public boolean canMoveShape(IMoveShapeContext context) {
@@ -63,9 +91,7 @@ public class RpcIOPattern extends DomainObjectPattern {
 
     @Override
     public PictogramElement add(IAddContext context) {
-        RpcIO obj = (RpcIO) context.getNewObject();
-        return YangModelUIUtil.drawPictogramElement(context, getFeatureProvider(), obj.isInput() ? YangDiagramImageProvider.IMG_RPC_INPUT_PROPOSAL : YangDiagramImageProvider.IMG_RPC_OUTPUT_PROPOSAL, 
-                obj.isInput() ? "input" : "output");
+        return YangModelUIUtil.drawPictogramElement(context, getFeatureProvider(), getCreateImageId(),  getCreateName());
     }
 
 }

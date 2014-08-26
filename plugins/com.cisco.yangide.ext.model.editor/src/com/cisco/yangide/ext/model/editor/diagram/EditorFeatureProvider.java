@@ -71,7 +71,7 @@ import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 
 public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
     private static Map<String, String> TEMPLATES = new HashMap<>();
-    private static List<IPattern> additionalPatterns = Arrays.<IPattern>asList(new RpcIOPattern(), new ListKeyPattern());
+    private static List<IPattern> additionalPatterns = Arrays.<IPattern>asList(new ListKeyPattern());
 
     private ISourceModelManager sourceModelManager;
 
@@ -83,6 +83,8 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         addPattern(new ContainerPattern());
         addPattern(new AnyxmlPattern());
         addPattern(new RpcPattern());
+        addPattern(new RpcIOPattern(true));
+        addPattern(new RpcIOPattern(false));
         addPattern(new UsesPattern());
         addPattern(new NotificationPattern());
         addPattern(new AugmentPattern());
