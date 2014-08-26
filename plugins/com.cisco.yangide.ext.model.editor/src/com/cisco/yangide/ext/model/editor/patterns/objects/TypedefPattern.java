@@ -18,7 +18,7 @@ public class TypedefPattern extends DomainObjectPattern {
     }
 
     @Override
-    protected EClass getObjectEClass() {
+    public EClass getObjectEClass() {
         return YangModelUtil.MODEL_PACKAGE.getTypedef();
     }
 

@@ -3,7 +3,6 @@ package com.cisco.yangide.ext.model.editor.diagram;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,7 +15,6 @@ import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.ILayoutFeature;
-import org.eclipse.graphiti.features.IMoveShapeFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -24,18 +22,14 @@ import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.IDirectEditingContext;
 import org.eclipse.graphiti.features.context.ILayoutContext;
-import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.pattern.AddFeatureForPattern;
 import org.eclipse.graphiti.pattern.CreateFeatureForPattern;
 import org.eclipse.graphiti.pattern.DefaultFeatureProviderWithPatterns;
 import org.eclipse.graphiti.pattern.IPattern;
-import org.eclipse.graphiti.pattern.LayoutFeatureForPattern;
-import org.eclipse.graphiti.pattern.MoveShapeFeatureForPattern;
 import org.eclipse.swt.graphics.Point;
 
 import com.cisco.yangide.core.YangCorePlugin;
@@ -71,7 +65,6 @@ import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 
 public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
     private static Map<String, String> TEMPLATES = new HashMap<>();
-    private static List<IPattern> additionalPatterns = Arrays.<IPattern>asList(new ListKeyPattern());
 
     private ISourceModelManager sourceModelManager;
 
@@ -97,20 +90,13 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         addPattern(new ChoicePattern());
         addPattern(new ChoiceCasePattern());
         addPattern(new TypedefPattern());
-        for (IPattern pattern : additionalPatterns) {
-            pattern.setFeatureProvider(this);
-        }
+        addPattern(new ListKeyPattern());
     }
 
     @Override
     public IAddFeature getAddFeature(IAddContext context) {
         if (context instanceof IAddConnectionContext) {
             return new AddReferenceConnectionFeature(this);
-        }
-        for (IPattern pattern : additionalPatterns) {
-            if (pattern.isMainBusinessObjectApplicable(context.getNewObject())) {
-                return new AddFeatureForPattern(this, pattern);
-            }
         }
         return super.getAddFeature(context);
     }
@@ -138,24 +124,7 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         if (context.getPictogramElement() instanceof Diagram) {
             return new DiagramLayoutFeature(this);
         }
-        for (IPattern pattern : additionalPatterns) {
-            if (pattern.isMainBusinessObjectApplicable(getBusinessObjectForPictogramElement(context.getPictogramElement()))) {
-                return new LayoutFeatureForPattern(this, pattern);
-            }
-        }
         return super.getLayoutFeature(context);
-    }
-    
-    
-
-    @Override
-    public IMoveShapeFeature getMoveShapeFeature(IMoveShapeContext context) {
-        for (IPattern pattern : additionalPatterns) {
-            if (pattern.isMainBusinessObjectApplicable(getBusinessObjectForPictogramElement(context.getPictogramElement()))) {
-                return new MoveShapeFeatureForPattern(this, pattern);
-            }
-        }
-        return super.getMoveShapeFeature(context);
     }
 
     @Override

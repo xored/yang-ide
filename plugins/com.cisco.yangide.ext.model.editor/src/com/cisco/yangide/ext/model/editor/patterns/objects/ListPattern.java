@@ -18,7 +18,7 @@ public class ListPattern extends DomainObjectPattern {
     }
 
     @Override
-    protected EClass getObjectEClass() {
+    public EClass getObjectEClass() {
         return YangModelUtil.MODEL_PACKAGE.getList();
     }
 

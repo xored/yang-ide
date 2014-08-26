@@ -8,7 +8,7 @@ import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 public class ExtensionPattern extends DomainObjectPattern {
 
     @Override
-    protected EClass getObjectEClass() {
+    public EClass getObjectEClass() {
         return YangModelUtil.MODEL_PACKAGE.getExtension();
     }
 

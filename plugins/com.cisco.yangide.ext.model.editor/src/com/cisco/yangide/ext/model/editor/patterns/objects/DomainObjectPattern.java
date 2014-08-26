@@ -41,7 +41,7 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
         return false;
     }
 
-    protected abstract EClass getObjectEClass();
+    public abstract EClass getObjectEClass();
 
     protected String getHeaderText(Object obj) {
         return getCreateName();

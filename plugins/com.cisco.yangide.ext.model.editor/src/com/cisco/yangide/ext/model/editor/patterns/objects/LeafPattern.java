@@ -18,7 +18,7 @@ public class LeafPattern extends DomainObjectPattern {
     }
 
     @Override
-    protected EClass getObjectEClass() {
+    public EClass getObjectEClass() {
         return ModelPackage.eINSTANCE.getLeaf();
     }
 

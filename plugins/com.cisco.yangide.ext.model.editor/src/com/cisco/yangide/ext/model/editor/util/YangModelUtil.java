@@ -43,7 +43,6 @@ import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.TypeDefinition;
 import com.cisco.yangide.core.dom.TypeReference;
 import com.cisco.yangide.core.dom.UsesNode;
-import com.cisco.yangide.ext.model.Anyxml;
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.Grouping;
 import com.cisco.yangide.ext.model.Identity;
