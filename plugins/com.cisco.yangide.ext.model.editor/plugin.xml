@@ -118,4 +118,11 @@
       </factory>
    </extension>
 
+    <extension point="org.eclipse.ui.bindings">
+        <key
+            sequence="DEL"
+            commandId="org.eclipse.ui.edit.delete"
+            contextId="org.eclipse.graphiti.ui.diagramEditor"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/> 
+    </extension>
 </plugin>
