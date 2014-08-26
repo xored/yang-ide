@@ -11,6 +11,7 @@ import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EObject;
+import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -38,6 +39,7 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.services.IPeCreateService;
+import org.eclipse.graphiti.ui.services.GraphitiUi;
 
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.NamedNode;
@@ -417,9 +419,10 @@ public class YangModelUIUtil {
             final Shape textShape = Graphiti.getPeCreateService().createShape(shape, false);
             Text text = Graphiti.getGaService().createPlainText(textShape, pos.toString());
             text.setStyle(StyleUtil.getStyleForDomainObjectNumberText(fp.getDiagramTypeProvider().getDiagram()));
+            IDimension dim = GraphitiUi.getUiLayoutService().calculateTextSize(text.getValue(), text.getStyle().getFont());
             Graphiti.getGaService().setLocationAndSize(text,
-                    shape.getGraphicsAlgorithm().getWidth() - DEFAULT_OBJECT_NUMBER_IND, DEFAULT_OBJECT_NUMBER_IND, 10,
-                    10);
+                    shape.getGraphicsAlgorithm().getWidth() - DEFAULT_OBJECT_NUMBER_IND, DEFAULT_OBJECT_NUMBER_IND, dim.getWidth(),
+                    dim.getHeight());
             PropertyUtil.setObjectShapeProp(textShape, PropertyUtil.OBJECT_NUMBER_SHAPE_KEY, true);
         }
     }

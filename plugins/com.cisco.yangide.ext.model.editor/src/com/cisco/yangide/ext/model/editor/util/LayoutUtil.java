@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.impl.AddBendpointContext;
 import org.eclipse.graphiti.features.context.impl.LayoutContext;
@@ -557,7 +558,8 @@ public class LayoutUtil {
         
         GraphicsAlgorithm number = YangModelUIUtil.getObjectNumberElement(cs);
         if (null != number) {
-            number.setX(cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND - 10);
+            IDimension dim = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) number).getValue(), number.getStyle().getFont());
+            number.setX(cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND - dim.getWidth());
         }
         layoutDiagramConnections(fp);
     }
