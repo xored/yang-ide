@@ -49,6 +49,7 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
 import com.cisco.yangide.ext.model.Import;
+import com.cisco.yangide.ext.model.ModelFactory;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Revision;
 import com.cisco.yangide.ext.model.TaggedNode;
@@ -505,7 +506,66 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     protected void createRevisionSection(Composite parent) {
         Section section = createSection(parent, "Revision");
         Composite revisions = toolkit.createComposite(section);
-        GridLayoutFactory.swtDefaults().applyTo(revisions);
+        
+        // Temporary code
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(revisions);
+        GridLayoutFactory.fillDefaults().numColumns(2).applyTo(revisions);
+        toolkit.createLabel(revisions, "Name: ");
+        Text name = toolkit.createText(revisions, "");
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(name);
+
+        toolkit.createLabel(revisions, "Description: ");
+        final DialogText description = new DialogText(revisions, toolkit) {
+            
+            @Override
+            protected Object openDialogBox(Text text) {
+                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()),
+                        "Description");
+                if (IStatus.OK == dialog.open()) {
+                    text.setText(dialog.getValue());
+                }
+                return null;
+            }
+        };
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(description.getControl());
+
+        toolkit.createLabel(revisions, "Reference: ");
+        DialogText reference = new DialogText(revisions, toolkit) {
+            
+            @Override
+            protected Object openDialogBox(Text text) {
+                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
+                MultilineTextDialog dialog = new MultilineTextDialog(shell, Strings.getAsString(text.getText()),
+                        "Reference");
+                if (IStatus.OK == dialog.open()) {
+                    text.setText(dialog.getValue());
+                }
+                return null;
+            }
+        };
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(reference.getControl());
+        if (null != module) {
+            if (module.getRevisions().isEmpty()) {
+                module.getRevisions().add(ModelFactory.eINSTANCE.createRevision());
+            }
+            Revision revision = module.getRevisions().get(0);
+            Binding binding = bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, name),
+                    EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getNamedNode_Name()).observe(revision));
+            binding.updateModelToTarget();
+            binding = bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, description.getTextControl()),
+                    EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value()).observe(
+                            YangModelUtil.getTag(YangTag.DESCRIPTION, revision)));
+            binding.updateModelToTarget();
+            binding = bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, reference.getTextControl()),
+                    EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value()).observe(
+                            YangModelUtil.getTag(YangTag.REFERENCE, revision)));
+            binding.updateModelToTarget();
+        }
+        
+        // end of Temporary code
+        
+        /*GridLayoutFactory.swtDefaults().applyTo(revisions);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
 
         createRevisionTable(revisions);
@@ -523,7 +583,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 }
 
             }
-        });
+        });*/
         section.setClient(revisions);
     }
 
