@@ -565,10 +565,14 @@ public class LayoutUtil {
             }
         }
 
-        GraphicsAlgorithm number = YangModelUIUtil.getObjectNumberElement(cs);
+        GraphicsAlgorithm number = YangModelUIUtil.getObjectPropGA(cs, PropertyUtil.OBJECT_NUMBER_SHAPE_KEY);
         if (null != number) {
             IDimension dim = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) number).getValue(), number.getStyle().getFont());
             number.setX(cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND - dim.getWidth());
+            GraphicsAlgorithm header = YangModelUIUtil.getObjectPropGA(cs, PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY);
+            if (null != header) {
+                header.setWidth(Math.max(0, cs.getGraphicsAlgorithm().getWidth() - header.getX() - number.getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND));
+            }
         }
         layoutDiagramConnections(fp);
     }

@@ -222,9 +222,9 @@ public class YangModelUIUtil {
 
     }
 
-    public static GraphicsAlgorithm getObjectNumberElement(ContainerShape cs) {
+    public static GraphicsAlgorithm getObjectPropGA(ContainerShape cs, String prop) {
         for (Shape shape : cs.getChildren()) {
-            if (PropertyUtil.isObjectShapeProp(shape, PropertyUtil.OBJECT_NUMBER_SHAPE_KEY)) {
+            if (PropertyUtil.isObjectShapeProp(shape, prop)) {
                 return shape.getGraphicsAlgorithm();
             }
         }
