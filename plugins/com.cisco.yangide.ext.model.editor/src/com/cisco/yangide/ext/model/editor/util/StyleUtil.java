@@ -1,6 +1,5 @@
 package com.cisco.yangide.ext.model.editor.util;
 
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.graphiti.mm.algorithms.styles.Orientation;
 import org.eclipse.graphiti.mm.algorithms.styles.Style;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
@@ -9,7 +8,11 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.util.ColorConstant;
 import org.eclipse.graphiti.util.IColorConstant;
 import org.eclipse.graphiti.util.PredefinedColoredAreas;
+import org.eclipse.jface.resource.FontRegistry;
+import org.eclipse.swt.graphics.FontData;
+import org.eclipse.ui.internal.Workbench;
 
+@SuppressWarnings("restriction")
 public class StyleUtil {
 
     private StyleUtil() {
@@ -25,9 +28,6 @@ public class StyleUtil {
 
     public static final IColorConstant DOMAIN_OBJECT_TYPE_TEXT_COLOR = new ColorConstant(149, 125, 71);
 
-    public static final String FONT_NAME = Platform.OS_MACOSX.equals(Platform.getOS()) ? "Helvetica" : "Arial";
-    public static final int FONT_SIZE = Platform.OS_MACOSX.equals(Platform.getOS()) ? 10 : 8;
-
     public static Style getStyleForCommonValues(Diagram diagram) {
         final String styleId = "COMMON-VALUES";
         IGaService gaService = Graphiti.getGaService();
@@ -42,6 +42,7 @@ public class StyleUtil {
         return style;
     }
 
+    @SuppressWarnings("restriction")
     public static Style getStyleForDomainObject(Diagram diagram) {
         final String styleId = "DOMAIL-OBJECT";
         IGaService gaService = Graphiti.getGaService();
@@ -73,7 +74,8 @@ public class StyleUtil {
         if (style == null) { // style not found - create new style
             style = gaService.createPlainStyle(parentStyle, styleId);
             setCommonTextValues(diagram, gaService, style);
-            style.setFont(gaService.manageFont(diagram, FONT_NAME, FONT_SIZE, false, false));
+            FontData font = getDefaultFont();
+            style.setFont(gaService.manageFont(diagram, font.getName(), font.getHeight(), false, false));
         }
         return style;
     }
@@ -89,7 +91,8 @@ public class StyleUtil {
         if (style == null) { // style not found - create new style
             style = gaService.createPlainStyle(parentStyle, styleId);
             setCommonTextValues(diagram, gaService, style);
-            style.setFont(gaService.manageFont(diagram, FONT_NAME, FONT_SIZE, false, false));
+            FontData font = getDefaultFont();
+            style.setFont(gaService.manageFont(diagram, font.getName(), font.getHeight(), false, false));
             style.setForeground(gaService.manageColor(diagram, DOMAIN_OBJECT_TYPE_TEXT_COLOR));
         }
         return style;
@@ -106,7 +109,8 @@ public class StyleUtil {
         if (style == null) { // style not found - create new style
             style = gaService.createPlainStyle(parentStyle, styleId);
             setCommonTextValues(diagram, gaService, style);
-            style.setFont(gaService.manageFont(diagram, FONT_NAME, FONT_SIZE - 2, false, false));
+            FontData font = getDefaultFont();
+            style.setFont(gaService.manageFont(diagram, font.getName(), font.getHeight() - 2, false, false));
         }
         return style;
     }
@@ -122,7 +126,8 @@ public class StyleUtil {
         if (style == null) { // style not found - create new style
             style = gaService.createPlainStyle(parentStyle, styleId);
             setCommonTextValues(diagram, gaService, style);
-            style.setFont(gaService.manageFont(diagram, FONT_NAME, FONT_SIZE, true, false));
+            FontData font = getDefaultFont();
+            style.setFont(gaService.manageFont(diagram, font.getName(), font.getHeight(), true, false));
         }
         return style;
     }
@@ -139,5 +144,10 @@ public class StyleUtil {
         style.setLineVisible(true);
         // style.setLineWidth(2);
         style.setTransparency(0.0);
+    }
+
+    private static FontData getDefaultFont() {
+        FontRegistry registry = Workbench.getInstance().getThemeManager().getCurrentTheme().getFontRegistry();
+        return registry.getFontData("org.eclipse.jface.dialogfont")[0];
     }
 }
