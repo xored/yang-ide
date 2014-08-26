@@ -37,6 +37,7 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
         modelSynchronizer = new ModelSynchronizer(yangSourceEditor, yangDiagramEditor);
         initSourcePage();
         initDiagramPage();
+        modelSynchronizer.init();
         modelSynchronizer.enableNotification();
     }
 
@@ -124,5 +125,11 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
             }
         }
         super.pageChange(newPageIndex);
+    }
+
+    @Override
+    public void dispose() {
+        modelSynchronizer.dispose();
+        super.dispose();
     }
 }

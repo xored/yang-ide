@@ -22,6 +22,9 @@ import org.eclipse.emf.compare.scope.IComparisonScope;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.ltk.ui.refactoring.RefactoringWizardOpenOperation;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.text.undo.DocumentUndoEvent;
+import org.eclipse.text.undo.DocumentUndoManagerRegistry;
+import org.eclipse.text.undo.IDocumentUndoListener;
 import org.eclipse.ui.IFileEditorInput;
 
 import com.cisco.yangide.core.YangCorePlugin;
@@ -43,7 +46,7 @@ import com.cisco.yangide.ext.refactoring.ui.ExtractGroupingRefactoringWizard;
  * @author Konstantin Zaitsev
  * @date Aug 13, 2014
  */
-public class ModelSynchronizer {
+public class ModelSynchronizer implements IDocumentUndoListener, IReconcileHandler {
     private YangEditor yangSourceEditor;
 
     // modules to sync
@@ -102,21 +105,18 @@ public class ModelSynchronizer {
 
         this.diagModelMergeAdapter = new DiagramModelMergeAdapter(modelChangeHandler);
         this.diagModelAdapter = new DiagramModelAdapter(this, yangSourceEditor, mapping);
-        this.yangSourceEditor.addReconcileHandler(new IReconcileHandler() {
-            @Override
-            public void reconcile() {
-                YangEditor editor = ModelSynchronizer.this.yangSourceEditor;
-                try {
-                    com.cisco.yangide.core.dom.Module module = editor.getModule();
-                    sourceInvalid = module.getFlags() == ASTNode.MALFORMED;
-                    if (!isSourceInvalid()) {
-                        syncWithSource(module);
-                    }
-                } catch (YangModelException e) {
-                    YangCorePlugin.log(e);
-                }
-            }
-        });
+    }
+
+    public void init() {
+        this.yangSourceEditor.addReconcileHandler(this);
+        DocumentUndoManagerRegistry.getDocumentUndoManager(yangSourceEditor.getDocument())
+        .addDocumentUndoListener(this);
+    }
+
+    public void dispose() {
+        this.yangSourceEditor.removeReconcileHandler(this);
+        DocumentUndoManagerRegistry.getDocumentUndoManager(yangSourceEditor.getDocument()).removeDocumentUndoListener(
+                this);
     }
 
     public void disableNotification() {
@@ -243,5 +243,24 @@ public class ModelSynchronizer {
      */
     public void setSourceInvalid(boolean sourceInvalid) {
         this.sourceInvalid = sourceInvalid;
+    }
+
+    @Override
+    public void reconcile() {
+        YangEditor editor = ModelSynchronizer.this.yangSourceEditor;
+        try {
+            com.cisco.yangide.core.dom.Module module = editor.getModule();
+            sourceInvalid = module.getFlags() == ASTNode.MALFORMED;
+            if (!isSourceInvalid()) {
+                syncWithSource(module);
+            }
+        } catch (YangModelException e) {
+            YangCorePlugin.log(e);
+        }
+    }
+
+    @Override
+    public void documentUndoNotification(DocumentUndoEvent event) {
+        reconcile();
     }
 }
