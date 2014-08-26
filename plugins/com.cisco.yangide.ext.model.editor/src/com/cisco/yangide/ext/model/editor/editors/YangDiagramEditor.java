@@ -13,6 +13,8 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.editor.DiagramBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.IDiagramEditorInput;
+import org.eclipse.swt.events.ControlEvent;
+import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -85,14 +87,19 @@ public class YangDiagramEditor extends DiagramEditor {
             }
         }
     };
+    private URI uri;
 
     @Override
     protected DiagramBehavior createDiagramBehavior() {
         return new YangDiagramBehavior(this);
     }
 
+    private boolean layouted = false;
+    private Diagram diagram;
+    private Point diagramSize = new Point(1200, 200);
+
     @Override
-    public void createPartControl(Composite parent) {
+    public void createPartControl(final Composite parent) {
         GridLayout layout = new GridLayout();
         layout.numColumns = 1;
         layout.makeColumnsEqualWidth = false;
@@ -111,21 +118,49 @@ public class YangDiagramEditor extends DiagramEditor {
                 c.setLayoutData(new GridData(GridData.FILL_BOTH));
             }
         }
+
+        infoPane.getDiagram().addControlListener(new ControlListener() {
+
+            @Override
+            public void controlResized(ControlEvent e) {
+                if (infoPane.getDiagram().isDisposed()) {
+                    return;
+                }
+                diagramSize = infoPane.getDiagram().getSize();
+                ((EditorFeatureProvider) getDiagramTypeProvider().getFeatureProvider()).updateDiagramSize(
+                        diagramSize.x, diagramSize.y);
+                if (!layouted) {
+                    layouted = true;
+                    YangModelUIUtil.layoutPictogramElement(diagram, getDiagramTypeProvider().getFeatureProvider());
+                }
+            }
+
+            @Override
+            public void controlMoved(ControlEvent e) {
+            }
+        });
+        loadDiagram();
     }
 
     @Override
     protected void setInput(IEditorInput input) {
         super.setInput(input);
-        final URI uri = ((IDiagramEditorInput) input).getUri();
+        uri = ((IDiagramEditorInput) input).getUri();
         module = ((YangDiagramEditorInput) input).getModule();
-        getEditingDomain().getCommandStack().execute(new RecordingCommand(getEditingDomain()) {
+        loadDiagram();
+    }
 
-            @Override
-            protected void doExecute() {
-                ensureDiagramResource(uri);
-                importDiagram();
-            }
-        });
+    private void loadDiagram() {
+        if (getGraphicalViewer() != null) {
+            getEditingDomain().getCommandStack().execute(new RecordingCommand(getEditingDomain()) {
+
+                @Override
+                protected void doExecute() {
+                    ensureDiagramResource(uri);
+                    importDiagram();
+                }
+            });
+        }
     }
 
     private void ensureDiagramResource(URI uri) {
@@ -141,8 +176,9 @@ public class YangDiagramEditor extends DiagramEditor {
 
     private void importDiagram() {
         if (null != module) {
-            final Diagram diagram = getDiagramTypeProvider().getDiagram();
+            diagram = getDiagramTypeProvider().getDiagram();
             getDiagramTypeProvider().getFeatureProvider().link(diagram, module);
+
             DiagramImportSupport.importDiagram(diagram, getDiagramTypeProvider().getFeatureProvider());
         }
 

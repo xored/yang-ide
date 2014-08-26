@@ -42,6 +42,7 @@ import org.eclipse.zest.layouts.exampleStructures.SimpleNode;
 
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.Node;
+import com.cisco.yangide.ext.model.editor.diagram.EditorFeatureProvider;
 import com.cisco.yangide.ext.model.editor.util.connection.Position;
 import com.cisco.yangide.ext.model.editor.util.connection.RectilinearAvoidObstaclesPathFinder;
 import com.cisco.yangide.ext.model.editor.util.connection.RoutePath;
@@ -54,7 +55,6 @@ public class LayoutUtil {
 
     public static final int DEFAULT_DIAGRAM_LAYOUT_TYPE = 13;
     public static final double DEFAULT_DIAGRAM_LAYOUT_V_SHIFT = 10;
-    public static final double DEFAULT_SCREEN_WIDTH = 1200;
 
     /**
      * Used to keep track of the initial Connection locations for self connections<br/>
@@ -182,12 +182,13 @@ public class LayoutUtil {
         return result;
     }
 
-    private static double[] getAreaSizeAndArrangeLayout(List<SimpleNode> entities, LayoutAlgorithm layout) {
+    private static double[] getAreaSizeAndArrangeLayout(List<SimpleNode> entities, LayoutAlgorithm layout, int width,
+            int height) {
         double maxW = 0D;
         double maxH = 0D;
         double fullW = 0D;
         double fullH = 0D;
-        
+
         for (SimpleNode node : entities) {
             fullW += node.getWidth();
             if (maxW < node.getWidth()) {
@@ -200,8 +201,8 @@ public class LayoutUtil {
         }
         ((YangDiagramLayoutAlgorithm) layout).setMaxElementSizes(maxW, maxH);
         ((YangDiagramLayoutAlgorithm) layout).setFullElementSizes(fullW, fullH);
-        double h = Math.max(1, Math.ceil(entities.size() / (DEFAULT_SCREEN_WIDTH / maxW))) * maxH;
-        return new double[] { DEFAULT_SCREEN_WIDTH, h };
+        double h = Math.max(1, Math.ceil(entities.size() / (width / maxW))) * maxH;
+        return new double[] { width, h };
     }
 
     /**
@@ -282,7 +283,7 @@ public class LayoutUtil {
             this.graphData = o;
         }
     }
-    
+
     private static class LayoutEntityHeightComparator implements Comparator<LayoutEntity> {
 
         @Override
@@ -296,9 +297,10 @@ public class LayoutUtil {
             if (null == o1 && null != o2) {
                 return -1;
             }
-            return o1.getHeightInLayout() > o2.getHeightInLayout() ? 1 : o1.getHeightInLayout() == o2.getHeightInLayout() ? 0 : -1;
+            return o1.getHeightInLayout() > o2.getHeightInLayout() ? 1 : o1.getHeightInLayout() == o2
+                    .getHeightInLayout() ? 0 : -1;
         }
-        
+
     }
 
     private static class YangDiagramLayoutAlgorithm extends GridLayoutAlgorithm {
@@ -307,7 +309,8 @@ public class LayoutUtil {
         protected int cols;
         protected int rows;
         protected int numChildren;
-        @SuppressWarnings("unused") protected double fullW = YangModelUIUtil.DEFAULT_WIDTH;
+        @SuppressWarnings("unused")
+        protected double fullW = YangModelUIUtil.DEFAULT_WIDTH;
         protected double fullH = YangModelUIUtil.DEFAULT_COMPOSITE_HEIGHT;
         private static final int OFFSET = 40;
 
@@ -344,7 +347,7 @@ public class LayoutUtil {
             }
             for (int j = 0; j < cols; j++) {
                 double y = 0;
-                do { // set at least one element in the row              
+                do { // set at least one element in the row
                     if (index < numChildren) {
                         InternalNode sn = entitiesToLayout[index++];
                         double xmove = boundsX + j * (getMaxW() + OFFSET) + OFFSET;
@@ -404,16 +407,17 @@ public class LayoutUtil {
             org.eclipse.draw2d.geometry.Point start, end;
             Rectangle source = map.get(connection.getStart().getReferencedGraphicsAlgorithm());
             Rectangle target = map.get(connection.getEnd().getReferencedGraphicsAlgorithm());
-            
+
             // start always with right side because of box relative anchor
-            start = new org.eclipse.draw2d.geometry.Point(source.x + source.width, 
-                    Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart()).getY() - 3);
-            if (source.x < target.x) {                
+            start = new org.eclipse.draw2d.geometry.Point(source.x + source.width, Graphiti.getLayoutService()
+                    .getLocationRelativeToDiagram(connection.getStart()).getY() - 3);
+            if (source.x < target.x) {
                 end = new org.eclipse.draw2d.geometry.Point(target.x, target.y + target.height / 2);
             } else {
                 end = new org.eclipse.draw2d.geometry.Point(target.x + target.width, target.y + target.height / 2);
             }
-            RoutePath route = finder.find(Position.create(map.get(connection.getStart().getReferencedGraphicsAlgorithm()), start),
+            RoutePath route = finder.find(
+                    Position.create(map.get(connection.getStart().getReferencedGraphicsAlgorithm()), start),
                     Position.create(map.get(connection.getEnd().getReferencedGraphicsAlgorithm()), end), false);
             if (null != route && null != route.path) {
                 for (int i = 0; i < route.path.size(); i++) {
@@ -444,7 +448,10 @@ public class LayoutUtil {
                 // Setup the array of Shape LayoutEntity
                 List<SimpleNode> diagramEntities = filterDiagramLayoutEntities(map);
                 LayoutEntity[] entities = diagramEntities.toArray(new LayoutEntity[0]);
-                double[] preferedSize = getAreaSizeAndArrangeLayout(diagramEntities, layoutAlgorithm);
+                int diagramWidth = ((EditorFeatureProvider) fp).getDiagramWidth();
+                int diagramHeight = ((EditorFeatureProvider) fp).getDiagramHeight();
+                double[] preferedSize = getAreaSizeAndArrangeLayout(diagramEntities, layoutAlgorithm, diagramWidth,
+                        diagramHeight);
 
                 // Apply the LayoutAlgorithmn
                 layoutAlgorithm
@@ -466,21 +473,22 @@ public class LayoutUtil {
     public static void layoutDiagram(IFeatureProvider fp) {
         layoutDiagram(fp, DEFAULT_DIAGRAM_LAYOUT_TYPE);
     }
-    
+
     public static void layoutContainerShapeHeader(ContainerShape cs, IFeatureProvider fp) {
         Shape text = YangModelUIUtil.getBusinessObjectPropShape(cs, PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY);
         int textWidth = 0;
         if (null != text && text.getGraphicsAlgorithm() instanceof Text) {
             Text ga = (Text) text.getGraphicsAlgorithm();
-            textWidth = GraphitiUi.getUiLayoutService().calculateTextSize(ga.getValue(), ga.getStyle().getFont()).getWidth();
-            ga.setWidth(textWidth);            
+            textWidth = GraphitiUi.getUiLayoutService().calculateTextSize(ga.getValue(), ga.getStyle().getFont())
+                    .getWidth();
+            ga.setWidth(textWidth);
         }
         Shape type = YangModelUIUtil.getBusinessObjectPropShape(cs, PropertyUtil.BUSINESS_OBJECT_TYPE_SHAPE_KEY);
         if (null != type && type.getGraphicsAlgorithm() instanceof Text) {
             Text ga = (Text) type.getGraphicsAlgorithm();
             ga.setX(textWidth + YangModelUIUtil.DEFAULT_V_ALIGN + YangModelUIUtil.DEFAULT_TEXT_HEIGHT);
         }
-        
+
     }
 
     public static void layoutContainerShapeVertical(ContainerShape cs, IFeatureProvider fp) {
@@ -489,7 +497,7 @@ public class LayoutUtil {
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), bo)) {
             for (Node child : ((ContainingNode) bo).getChildren()) {
                 PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(fp, child);
-                if (cs.getChildren().contains(pe)) {   
+                if (cs.getChildren().contains(pe)) {
                     if (pe instanceof ContainerShape) {
                         layoutContainerShapeVertical((ContainerShape) pe, fp);
                     }
@@ -502,7 +510,7 @@ public class LayoutUtil {
             cs.getGraphicsAlgorithm().setHeight(y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN);
         }
     }
-    
+
     public static void layoutContainerShapeHorizontal(ContainerShape cs, IFeatureProvider fp) {
         if (!(cs instanceof Diagram)) {
             layoutContainerShapeHeader(cs, fp);
@@ -519,19 +527,20 @@ public class LayoutUtil {
             }
         }
     }
+
     public static void layoutContainerShape(ContainerShape cs, IFeatureProvider fp) {
         int y = YangModelUIUtil.DEFAULT_TEXT_HEIGHT;
         int x = 0;
-        //layoutContainerShapeHorizontal(cs, fp);
+        // layoutContainerShapeHorizontal(cs, fp);
         layoutContainerShapeHeader(cs, fp);
         Object bo = fp.getBusinessObjectForPictogramElement(cs);
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), bo)) {
             for (Node child : ((ContainingNode) bo).getChildren()) {
                 PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(fp, child);
-                if (cs.getChildren().contains(pe)) {   
+                if (cs.getChildren().contains(pe)) {
                     if (pe instanceof ContainerShape) {
                         layoutContainerShapeVertical((ContainerShape) pe, fp);
-                       
+
                     }
                     pe.getGraphicsAlgorithm().setX(YangModelUIUtil.DEFAULT_V_ALIGN);
                     pe.getGraphicsAlgorithm().setY(y + YangModelUIUtil.DEFAULT_H_ALIGN);
@@ -555,7 +564,7 @@ public class LayoutUtil {
                 points.get(1).setX(cs.getGraphicsAlgorithm().getWidth());
             }
         }
-        
+
         GraphicsAlgorithm number = YangModelUIUtil.getObjectNumberElement(cs);
         if (null != number) {
             IDimension dim = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) number).getValue(), number.getStyle().getFont());

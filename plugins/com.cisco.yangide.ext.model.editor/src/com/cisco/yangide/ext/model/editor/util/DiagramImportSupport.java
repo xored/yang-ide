@@ -14,32 +14,34 @@ import com.cisco.yangide.ext.model.ModelFactory;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Node;
 
-public class DiagramImportSupport {    
+public class DiagramImportSupport {
     public static void importDiagram(Diagram diagram, IFeatureProvider fp) {
         EObject obj = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(diagram);
         if (null == obj) {
             obj = ModelFactory.eINSTANCE.createModule();
             fp.link(diagram, obj);
         }
-        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getModule(), obj)){
+        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getModule(), obj)) {
             drawShapes(((Module) obj).getChildren(), diagram, fp);
             drawLines(((Module) obj).getChildren(), fp);
-            YangModelUIUtil.layoutPictogramElement(diagram, fp);
+//            YangModelUIUtil.layoutPictogramElement(diagram, fp);
         }
     }
-    
+
     public static void drawShapes(List<Node> list, ContainerShape cs, IFeatureProvider fp) {
         for (Node n : list) {
             int pos = cs.getGraphicsAlgorithm().getHeight();
             if (cs instanceof Diagram) {
                 pos = 0;
             }
-            PictogramElement pe = YangModelUIUtil.drawObject(n, cs, fp, 0, pos);            
-            if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), n) && null != pe && pe instanceof ContainerShape) {
+            PictogramElement pe = YangModelUIUtil.drawObject(n, cs, fp, 0, pos);
+            if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), n) && null != pe
+                    && pe instanceof ContainerShape) {
                 drawShapes(((ContainingNode) n).getChildren(), (ContainerShape) pe, fp);
             }
         }
     }
+
     public static void drawLines(List<Node> list, IFeatureProvider fp) {
         for (Node n : list) {
             YangModelUIUtil.updateConnections(n, fp);
@@ -48,5 +50,5 @@ public class DiagramImportSupport {
             }
         }
     }
-   
+
 }

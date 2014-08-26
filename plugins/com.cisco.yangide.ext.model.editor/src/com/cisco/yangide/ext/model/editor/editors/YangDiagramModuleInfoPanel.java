@@ -268,9 +268,39 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         GridDataFactory.fillDefaults().grab(true, true).applyTo(diagram);
 
         setPropertiesPaneVisible(false);
-        Point area = parent.computeSize(-1, -1);
-        double p = 100.0 / area.x;
-        mainSashPanel.setWeights(new int[] { (int) (150 * p), (int) ((area.x - 150) * p) });
+        parent.layout();
+        final Point leftSize = leftPane.computeSize(-1, -1);
+
+        leftPane.addControlListener(new ControlListener() {
+            @Override
+            public void controlResized(ControlEvent e) {
+                Point size = leftPane.getSize();
+                if (Math.abs(leftSize.x - size.x) > 5) {
+                    leftSize.x = size.x;
+                }
+            }
+
+            @Override
+            public void controlMoved(ControlEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+        });
+
+        mainSashPanel.addControlListener(new ControlListener() {
+            @Override
+            public void controlResized(ControlEvent e) {
+                Point area = mainSashPanel.getSize();
+                int x = Math.min(leftSize.x, leftPane.computeSize(leftSize.x, -1).x);
+                mainSashPanel.setWeights(new int[] { x, area.x - x });
+            }
+
+            @Override
+            public void controlMoved(ControlEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+        });
     }
 
     protected void createModuleInfoPanel(Composite parent) {

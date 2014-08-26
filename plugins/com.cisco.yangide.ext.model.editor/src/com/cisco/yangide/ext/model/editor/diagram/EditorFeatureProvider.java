@@ -68,6 +68,10 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
 
     private ISourceModelManager sourceModelManager;
 
+    private int diagramWidth;
+
+    private int diagramHeight;
+
     public EditorFeatureProvider(IDiagramTypeProvider dtp) {
         super(dtp);
         // objects
@@ -140,8 +144,7 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         for (final IPattern pattern : getPatterns()) {
             if (pattern.isPaletteApplicable()) {
                 retList.add(new CreateFeatureForPattern(this, pattern) {
-                    
-                    
+
                     @Override
                     public boolean canCreate(ICreateContext context) {
                         return pattern.canCreate(context);
@@ -207,6 +210,19 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         }
 
         return sb.toString();
+    }
+
+    public void updateDiagramSize(int x, int y) {
+        this.diagramWidth = x;
+        this.diagramHeight = y;
+    }
+
+    public int getDiagramHeight() {
+        return diagramHeight;
+    }
+
+    public int getDiagramWidth() {
+        return diagramWidth;
     }
 
 }

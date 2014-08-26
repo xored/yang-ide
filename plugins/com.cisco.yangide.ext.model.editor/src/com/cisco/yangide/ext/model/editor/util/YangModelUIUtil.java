@@ -90,8 +90,8 @@ public class YangModelUIUtil {
             }
             return o1.getGraphicsAlgorithm().getY() + o1.getGraphicsAlgorithm().getHeight() > o2.getGraphicsAlgorithm()
                     .getY() + o2.getGraphicsAlgorithm().getHeight() ? 1 : o1.getGraphicsAlgorithm().getY()
-                            + o1.getGraphicsAlgorithm().getHeight() == o2.getGraphicsAlgorithm().getY()
-                            + o2.getGraphicsAlgorithm().getHeight() ? 0 : -1;
+                    + o1.getGraphicsAlgorithm().getHeight() == o2.getGraphicsAlgorithm().getY()
+                    + o2.getGraphicsAlgorithm().getHeight() ? 0 : -1;
         }
 
     }
@@ -115,8 +115,8 @@ public class YangModelUIUtil {
             if (null != fp.getBusinessObjectForPictogramElement(shape)
                     && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(),
                             fp.getBusinessObjectForPictogramElement(parent))
-                            && ((ContainingNode) fp.getBusinessObjectForPictogramElement(parent)).getChildren().contains(
-                                    fp.getBusinessObjectForPictogramElement(shape))) {
+                    && ((ContainingNode) fp.getBusinessObjectForPictogramElement(parent)).getChildren().contains(
+                            fp.getBusinessObjectForPictogramElement(shape))) {
                 pos++;
             }
         }
@@ -131,8 +131,8 @@ public class YangModelUIUtil {
             if (null != fp.getBusinessObjectForPictogramElement(shape)
                     && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(),
                             fp.getBusinessObjectForPictogramElement(parent))
-                            && ((ContainingNode) fp.getBusinessObjectForPictogramElement(parent)).getChildren().contains(
-                                    fp.getBusinessObjectForPictogramElement(shape))) {
+                    && ((ContainingNode) fp.getBusinessObjectForPictogramElement(parent)).getChildren().contains(
+                            fp.getBusinessObjectForPictogramElement(shape))) {
                 if (y < shape.getGraphicsAlgorithm().getY()) {
                     return pos;
                 }
@@ -144,6 +144,7 @@ public class YangModelUIUtil {
 
     public static void layoutPictogramElement(PictogramElement diagram, IFeatureProvider fp) {
         LayoutContext lc = new LayoutContext(diagram);
+
         fp.layoutIfPossible(lc);
     }
 
@@ -443,12 +444,12 @@ public class YangModelUIUtil {
             drawBoxRelativeAnchor(result, context, fp);
         }
         PropertyUtil.setObjectShapeProp(result, PropertyUtil.BUSINESS_OBJECT_SHAPE_KEY, true);
-        
+
         // call the layout feature
         if (context.getTargetContainer() instanceof Diagram) {
             drawPictogramElementPositionInParent(result, fp);
-        } 
-        
+        }
+
         ContainerShape layoutShape = result;
         while (!(layoutShape.getContainer() instanceof Diagram)) {
             layoutShape = layoutShape.getContainer();
