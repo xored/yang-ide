@@ -20,9 +20,9 @@
 
    <requires>
       <import feature="com.cisco.yangide.feature" version="1.1" match="greaterOrEqual"/>
-      <import feature="org.eclipse.zest" version="1.5.100.201405261516" match="greaterOrEqual"/>
       <import feature="org.eclipse.graphiti.feature" version="0.11.0.v20140528-0646" match="greaterOrEqual"/>
       <import feature="org.eclipse.emf.compare" version="3.0.0.201406111328" match="greaterOrEqual"/>
+      <import feature="org.eclipse.emf" version="2.10.0.v20140519-0339"/>
    </requires>
 
    <plugin
