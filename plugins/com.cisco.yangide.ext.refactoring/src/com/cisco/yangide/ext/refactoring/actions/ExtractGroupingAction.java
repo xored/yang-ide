@@ -57,7 +57,7 @@ public class ExtractGroupingAction extends SelectionDispatchAction {
 
                 RefactoringWizardOpenOperation op = new RefactoringWizardOpenOperation(wizard);
                 op.run(getShell(), Messages.ExtractGroupingAction_name);
-
+                editor.reconcileModel();
             } catch (InterruptedException | YangModelException e) {
                 // do nothing
             }
