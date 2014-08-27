@@ -359,6 +359,7 @@ final class DiagramModelAdapter extends EContentAdapter {
         char[] content = yangSourceEditor.getDocument().get().toCharArray();
         com.cisco.yangide.core.dom.Module module = YangParserUtil.parseYangFile(content);
         modelSynchronizer.updateFromSource(module, true);
+        yangSourceEditor.reconcileModel();
     }
 
     private int getIndentLevel(ASTNode node) {
