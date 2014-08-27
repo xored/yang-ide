@@ -28,5 +28,26 @@ public class YangEditorMessages extends NLS {
 
     public static String ToggleComment_error_title;
     public static String ToggleComment_error_message;
+    public static String ContentFormat_label;
+    public static String ContentFormat_tooltip;
+    public static String ContentFormat_image;
+    public static String ContentFormat_description;
+
+    public static String ToggleComment_label;
+    public static String ToggleComment_tooltip;
+    public static String ToggleComment_description;
+
+    public static String AddBlockComment_label;
+    public static String AddBlockComment_tooltip;
+    public static String AddBlockComment_description;
+
+    public static String RemoveBlockComment_label;
+    public static String RemoveBlockComment_tooltip;
+    public static String RemoveBlockComment_description;
+
+    public static String OpenDeclaration_label;
+    public static String OpenDeclaration_tooltip;
+    public static String OpenDeclaration_image;
+    public static String OpenDeclaration_description;
 
 }

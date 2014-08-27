@@ -28,10 +28,10 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.ide.IDE;
 import org.eclipse.ui.part.FileEditorInput;
-import org.eclipse.ui.texteditor.ITextEditor;
 
 import com.cisco.yangide.core.YangJarFileEntryResource;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
+import com.cisco.yangide.editor.editors.IYangEditor;
 import com.cisco.yangide.ui.YangUIPlugin;
 
 /**
@@ -119,8 +119,8 @@ public class EditorUtility {
      * @param length the length
      */
     public static void revealInEditor(IEditorPart editor, final int offset, final int length) {
-        if (editor instanceof ITextEditor) {
-            ((ITextEditor) editor).selectAndReveal(offset, length);
+        if (editor instanceof IYangEditor) {
+            ((IYangEditor) editor).selectAndReveal(offset, length);
             return;
         }
 

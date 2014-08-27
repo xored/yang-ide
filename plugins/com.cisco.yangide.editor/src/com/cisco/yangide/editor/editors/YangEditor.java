@@ -71,6 +71,7 @@ import com.cisco.yangide.core.parser.YangParserUtil;
 import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.actions.AddBlockCommentAction;
 import com.cisco.yangide.editor.actions.IYangEditorActionDefinitionIds;
+import com.cisco.yangide.editor.actions.OpenDeclarationAction;
 import com.cisco.yangide.editor.actions.RemoveBlockCommentAction;
 import com.cisco.yangide.editor.actions.ToggleCommentAction;
 import com.cisco.yangide.editor.editors.text.YangFoldingStructureProvider;
@@ -83,7 +84,7 @@ import com.cisco.yangide.ui.preferences.IYangColorConstants;
  * @author Alexey Kholupko
  */
 @SuppressWarnings("restriction")
-public class YangEditor extends TextEditor implements IProjectionListener {
+public class YangEditor extends TextEditor implements IProjectionListener, IYangEditor {
     public final static String EDITOR_ID = "com.cisco.yangide.editor.editors.YANGEditor";
 
     // TODO extract logic to separate classes
@@ -330,26 +331,31 @@ public class YangEditor extends TextEditor implements IProjectionListener {
         IAction action = null;
         ResourceBundle bundle = ResourceBundle.getBundle(YangEditorMessages.getBundleName());
 
-        action = new TextOperationAction(bundle, "ContentFormat.", this, ISourceViewer.FORMAT); //$NON-NLS-1$
+        action = new TextOperationAction(bundle, "ContentFormat_", this, ISourceViewer.FORMAT); //$NON-NLS-1$
         action.setActionDefinitionId(IYangEditorActionDefinitionIds.FORMAT);
         setAction("FormatDocument", action); //$NON-NLS-1$
 
         action = getAction(ITextEditorActionConstants.CONTENT_ASSIST_CONTEXT_INFORMATION);
 
-        action = new ToggleCommentAction(bundle, "ToggleComment.", this); //$NON-NLS-1$
+        action = new OpenDeclarationAction(bundle, "OpenDeclaration_", this); //$NON-NLS-1$
+        action.setActionDefinitionId(IYangEditorActionDefinitionIds.OPEN_DECLARATION);
+        setAction("OpenDeclaration", action); //$NON-NLS-1$
+        markAsStateDependentAction("OpenDeclaration", true); //$NON-NLS-1$
+        markAsSelectionDependentAction("OpenDeclaration", true); //$NON-NLS-1$
 
+        action = new ToggleCommentAction(bundle, "ToggleComment_", this); //$NON-NLS-1$
         action.setActionDefinitionId(IYangEditorActionDefinitionIds.TOGGLE_COMMENT);
         setAction("ToggleComment", action); //$NON-NLS-1$
         markAsStateDependentAction("ToggleComment", true); //$NON-NLS-1$
         configureToggleCommentAction();
 
-        action = new AddBlockCommentAction(bundle, "AddBlockComment.", this); //$NON-NLS-1$
+        action = new AddBlockCommentAction(bundle, "AddBlockComment_", this); //$NON-NLS-1$
         action.setActionDefinitionId(IYangEditorActionDefinitionIds.ADD_BLOCK_COMMENT);
         setAction("AddBlockComment", action); //$NON-NLS-1$
         markAsStateDependentAction("AddBlockComment", true); //$NON-NLS-1$
         markAsSelectionDependentAction("AddBlockComment", true); //$NON-NLS-1$
 
-        action = new RemoveBlockCommentAction(bundle, "RemoveBlockComment.", this); //$NON-NLS-1$
+        action = new RemoveBlockCommentAction(bundle, "RemoveBlockComment_", this); //$NON-NLS-1$
         action.setActionDefinitionId(IYangEditorActionDefinitionIds.REMOVE_BLOCK_COMMENT);
         setAction("RemoveBlockComment", action); //$NON-NLS-1$
         markAsStateDependentAction("RemoveBlockComment", true); //$NON-NLS-1$

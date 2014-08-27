@@ -44,6 +44,8 @@ public class YangEditorActionContributor extends BasicTextEditorActionContributo
                 getAction(textEditor, "RemoveBlockComment")); //$NON-NLS-1$
         actionBars.setGlobalActionHandler(
                 "com.cisco.yangide.editor.actions.FormatDocument", getAction(textEditor, "FormatDocument")); //$NON-NLS-1$
+        actionBars.setGlobalActionHandler(
+                "com.cisco.yangide.editor.actions.OpenDeclaration", getAction(textEditor, "OpenDeclaration")); //$NON-NLS-1$
 
         if (part instanceof YangEditor) {
             List<ActionGroup> actionGroups = ((YangEditor) part).getActionGroups();

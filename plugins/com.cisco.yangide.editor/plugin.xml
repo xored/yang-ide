@@ -77,13 +77,10 @@
    </extension>
    
    <extension point="org.eclipse.ui.commands">
-      <command 
-           name="Open Declaration" 
-           description="Open an editor on the selected element"
+       <command 
            categoryId="com.cisco.yangide.category.navigate" 
-           defaultHandler="com.cisco.yangide.editor.handlers.OpenDeclarationHandler" 
-           id="com.cisco.yangide.navigate.open.declaration" />
-     
+           id="com.cisco.yangide.navigate.open.declaration"
+           name="Open Declaration"/>
      
       <command
             categoryId="com.cisco.yangide.category.source"
@@ -156,6 +153,14 @@
              <separator name="shiftGroup"/>
              <separator name="formatGroup"/>
           </menu>
+           <action
+                allowLabelUpdate="true"
+                definitionId="com.cisco.yangide.navigate.open.declaration"
+                id="com.cisco.yangide.editor.actions.OpenDeclaration"
+                label="Open Declaration"
+                menubarPath="navigate/open.ext"
+                retarget="true">
+          </action>
           <action
                 allowLabelUpdate="true"
                 definitionId="com.cisco.yangide.actions.remove.block.comment"
@@ -204,23 +209,17 @@
           </action>
        </actionSet>
     </extension>
-    <extension point="org.eclipse.ui.menus">
-        <menuContribution
-            locationURI="popup:#TextEditorContext?endof=group.open">
-                <command
-                    commandId="com.cisco.yangide.navigate.open.declaration" 
-                    label="Open Declaration"
-                    style="toggle">
-                <visibleWhen checkEnabled="true">
-                    <with variable="activeEditor">
-                        <instanceof value="com.cisco.yangide.editor.editors.YangEditor"/>
-                    </with>
-                </visibleWhen>
-                </command>
-        </menuContribution>
-    </extension>
     
     <extension point="org.eclipse.ui.menus">
+        <!-- Contribute a Open meno for popup-->
+        <menuContribution locationURI="popup:org.eclipse.ui.popup.any?endof=group.open">
+            <command id="OpenDeclaration"
+                commandId="com.cisco.yangide.navigate.open.declaration"
+                style="push">
+                <visibleWhen checkEnabled="false"><reference definitionId="com.cisco.yangide.activeContext.definition"/></visibleWhen>
+            </command>
+        </menuContribution>
+    
         <!-- Contribute a Source menu for popup -->
          <menuContribution locationURI="popup:org.eclipse.ui.popup.any?before=group.find">
             <menu id="sourceMenuId" label="%Source">

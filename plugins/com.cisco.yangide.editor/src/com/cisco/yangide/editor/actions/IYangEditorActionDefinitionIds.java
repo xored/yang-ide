@@ -35,4 +35,10 @@ public interface IYangEditorActionDefinitionIds {
      */
     public static final String FORMAT = "com.cisco.yangide.actions.format"; //$NON-NLS-1$
 
+    /**
+     * Action definition ID of the open declration action (value
+     * <code>"com.cisco.yangide.navigate.open.declaration"</code>).
+     */
+    public static final String OPEN_DECLARATION = "com.cisco.yangide.navigate.open.declaration"; //$NON-NLS-1$
+
 }
