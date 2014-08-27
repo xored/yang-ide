@@ -72,11 +72,11 @@ public class ExtractGroupingAction extends SelectionDispatchAction {
                     if (module != null) {
 
                         String txt = selection.getText().trim();
-                        ASTNode startNode = module.getNodeAtPosition(selection.getOffset()
-                                + selection.getText().indexOf(txt));
+                        int offset = selection.getOffset() + selection.getText().indexOf(txt);
+                        ASTNode startNode = module.getNodeAtPosition(offset);
                         int startLevel = RefactorUtil.getNodeLevel(startNode);
 
-                        ASTNode endNode = module.getNodeAtPosition(selection.getOffset() + selection.getLength() - 1);
+                        ASTNode endNode = module.getNodeAtPosition(offset + txt.length() - 1);
                         int endLevel = RefactorUtil.getNodeLevel(endNode);
                         if (endLevel == startLevel && startLevel > 0
                                 && startNode.getParent().equals(endNode.getParent())) {
