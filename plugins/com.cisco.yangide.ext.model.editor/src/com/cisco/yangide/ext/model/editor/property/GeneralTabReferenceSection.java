@@ -70,10 +70,10 @@ public class GeneralTabReferenceSection extends GFPropertySection implements ITa
 
     @Override
     public void refresh() {
-        if (null != binding) {
+        if (null != binding && !binding.isDisposed()) {
             binding.updateTargetToModel();
+            binding.dispose();
             bindingContext.removeBinding(binding);
-            binding = null;
         }
         final PictogramElement pe = getSelectedPictogramElement();
         if (pe != null) {

@@ -17,8 +17,8 @@ import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
 import org.eclipse.graphiti.features.context.impl.AddContext;
-import org.eclipse.graphiti.features.context.impl.DeleteContext;
 import org.eclipse.graphiti.features.context.impl.LayoutContext;
+import org.eclipse.graphiti.features.context.impl.RemoveContext;
 import org.eclipse.graphiti.features.context.impl.UpdateContext;
 import org.eclipse.graphiti.mm.algorithms.Ellipse;
 import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
@@ -248,8 +248,8 @@ public class YangModelUIUtil {
             }
             if (null == ref) {
                 if (null != con) {
-                    DeleteContext deleteContext = new DeleteContext(con);
-                    fp.getDeleteFeature(deleteContext).delete(deleteContext);
+                    RemoveContext removeContext = new RemoveContext(con);
+                    fp.getRemoveFeature(removeContext).remove(removeContext);
                     return true;
                 }
             } else {

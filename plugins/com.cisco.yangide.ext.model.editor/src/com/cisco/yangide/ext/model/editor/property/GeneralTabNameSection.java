@@ -48,7 +48,7 @@ public class GeneralTabNameSection extends GFPropertySection implements ITabbedP
  
     @Override
     public void refresh() {
-        if (null != binding) {
+        if (null != binding && !binding.isDisposed()) {
             binding.updateTargetToModel();
             binding.dispose();
             bindingContext.removeBinding(binding);
