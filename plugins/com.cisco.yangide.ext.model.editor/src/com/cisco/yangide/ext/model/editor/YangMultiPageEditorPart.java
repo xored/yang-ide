@@ -146,8 +146,6 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart implements IYan
     @Override
     public void dispose() {
         try {
-            yangSourceEditor.dispose();
-            yangDiagramEditor.dispose();
             modelSynchronizer.dispose();
         } catch (Exception e) {
             YangCorePlugin.log(e);
