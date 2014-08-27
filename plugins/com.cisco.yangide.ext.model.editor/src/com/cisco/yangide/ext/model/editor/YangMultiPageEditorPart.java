@@ -13,6 +13,7 @@ import org.eclipse.ui.part.MultiPageEditorPart;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.editor.editors.IYangEditor;
 import com.cisco.yangide.editor.editors.YangEditor;
 import com.cisco.yangide.editor.editors.YangSourceViewer;
 import com.cisco.yangide.ext.model.Module;
@@ -24,7 +25,7 @@ import com.cisco.yangide.ext.model.editor.sync.ModelSynchronizer;
  * @author Konstantin Zaitsev
  * @date Aug 7, 2014
  */
-public class YangMultiPageEditorPart extends MultiPageEditorPart {
+public class YangMultiPageEditorPart extends MultiPageEditorPart implements IYangEditor {
 
     private YangEditor yangSourceEditor;
     private YangSourceViewer yangSourceViewer;
@@ -128,6 +129,20 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
         super.pageChange(newPageIndex);
     }
 
+    /**
+     * @return the yangSourceEditor
+     */
+    public YangEditor getYangSourceEditor() {
+        return yangSourceEditor;
+    }
+
+    /**
+     * @return the yangDiagramEditor
+     */
+    public YangDiagramEditor getYangDiagramEditor() {
+        return yangDiagramEditor;
+    }
+
     @Override
     public void dispose() {
         try {
@@ -138,5 +153,10 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart {
             YangCorePlugin.log(e);
         }
         super.dispose();
+    }
+
+    @Override
+    public void selectAndReveal(int offset, int length) {
+        yangSourceEditor.selectAndReveal(offset, length);
     }
 }
