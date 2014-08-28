@@ -77,12 +77,9 @@ public class YangDiagramEditor extends DiagramEditor {
                 PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(getDiagramTypeProvider()
                         .getFeatureProvider(), parent);
                 if (null != pe && pe instanceof ContainerShape) {
-                    if (p == null) {
-                        p = new Point(0, 0);
-                    }
                     YangModelUIUtil.drawObject(child, (ContainerShape) pe, getDiagramTypeProvider()
-                            .getFeatureProvider(), p.x, p.y);
-                    if (pe instanceof Diagram) {
+                            .getFeatureProvider(), null == p ? 0 : p.x, null == p ? 0 : p.y);
+                    if (pe instanceof Diagram && null == p) {
                         getEditingDomain().getCommandStack().execute(new RecordingCommand(getEditingDomain()) {
 
                             @Override
@@ -180,6 +177,11 @@ public class YangDiagramEditor extends DiagramEditor {
                                 && !notification.getNewValue().equals(notification.getOldValue())) {
                             modelChangeHandler.nodeChanged((Node) notification.getNotifier(),
                                     (EAttribute) notification.getFeature(), notification.getNewValue());
+                            
+                            EClass type = YangModelUtil.getConnectionReferenceSubjectClass(notification.getNotifier());
+                            if (null != type) {
+                                YangModelUIUtil.updateConnections(type, getDiagramTypeProvider().getFeatureProvider());
+                            }
                         }
                     }
                 }
