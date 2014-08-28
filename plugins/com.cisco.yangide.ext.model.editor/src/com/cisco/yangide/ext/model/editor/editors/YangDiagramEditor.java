@@ -1,13 +1,12 @@
 package com.cisco.yangide.ext.model.editor.editors;
 
 import org.eclipse.core.resources.IFile;
-import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
-import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.transaction.RecordingCommand;
+import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.context.impl.RemoveContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -75,9 +74,12 @@ public class YangDiagramEditor extends DiagramEditor {
                 PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(getDiagramTypeProvider()
                         .getFeatureProvider(), parent);
                 if (null != pe && pe instanceof ContainerShape) {
+                    if (p == null) {
+                        p = new Point(0, 0);
+                    }
                     YangModelUIUtil.drawObject(child, (ContainerShape) pe, getDiagramTypeProvider()
-                            .getFeatureProvider(), null == p ? 0 : p.x, null == p ? 0 : p.y);
-                    if (pe instanceof Diagram && null == p) {                        
+                            .getFeatureProvider(), p.x, p.y);
+                    if (pe instanceof Diagram) {
                         getEditingDomain().getCommandStack().execute(new RecordingCommand(getEditingDomain()) {
 
                             @Override
@@ -85,7 +87,7 @@ public class YangDiagramEditor extends DiagramEditor {
                                 LayoutUtil.layoutDiagram(getDiagramTypeProvider().getFeatureProvider());
                             }
                         });
-                        
+
                     }
                 }
                 updateModuleInfoPane(child);
@@ -131,17 +133,20 @@ public class YangDiagramEditor extends DiagramEditor {
             }
         }
 
-        infoPane.getDiagram().addControlListener(new ControlListener() {
+        final GraphicalViewer viewer = (GraphicalViewer) YangDiagramEditor.this.getAdapter(GraphicalViewer.class);
+        viewer.getControl().addControlListener(new ControlListener() {
 
             @Override
             public void controlResized(ControlEvent e) {
-                if (infoPane.getDiagram().isDisposed()) {
+                if (viewer.getControl().isDisposed()) {
                     return;
                 }
-                diagramSize = infoPane.getDiagram().getSize();
+
+                diagramSize = viewer.getControl().getSize();
+
                 ((EditorFeatureProvider) getDiagramTypeProvider().getFeatureProvider()).updateDiagramSize(
                         diagramSize.x, diagramSize.y);
-                if (!layouted) {
+                if (!layouted && diagramSize.x != 0 && diagramSize.y != 0) {
                     layouted = true;
                     YangModelUIUtil.layoutPictogramElement(diagram, getDiagramTypeProvider().getFeatureProvider());
                 }
