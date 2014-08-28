@@ -177,11 +177,6 @@ public class YangDiagramEditor extends DiagramEditor {
                                 && !notification.getNewValue().equals(notification.getOldValue())) {
                             modelChangeHandler.nodeChanged((Node) notification.getNotifier(),
                                     (EAttribute) notification.getFeature(), notification.getNewValue());
-                            
-                            EClass type = YangModelUtil.getConnectionReferenceSubjectClass(notification.getNotifier());
-                            if (null != type) {
-                                YangModelUIUtil.updateConnections(type, getDiagramTypeProvider().getFeatureProvider());
-                            }
                         }
                     }
                 }
