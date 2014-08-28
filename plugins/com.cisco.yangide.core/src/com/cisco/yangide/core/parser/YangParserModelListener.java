@@ -22,8 +22,11 @@ import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Base_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Belongs_to_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Case_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Choice_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Config_argContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Config_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Contact_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Container_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Default_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Description_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Deviation_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Extension_stmtContext;
@@ -37,13 +40,20 @@ import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Key_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Leaf_list_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Leaf_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.List_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Mandatory_argContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Mandatory_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Max_elements_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Min_elements_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Module_header_stmtsContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Module_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Namespace_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Notification_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Ordered_by_argContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Ordered_by_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Organization_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Output_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Prefix_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Presence_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Reference_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Revision_date_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Revision_stmtContext;
@@ -55,6 +65,7 @@ import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Submodule_header_s
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Submodule_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Type_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Typedef_stmtContext;
+import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Units_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Uses_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParser.Yang_version_stmtContext;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangParserBaseListener;
@@ -524,6 +535,57 @@ public class YangParserModelListener extends YangParserBaseListener {
     @Override
     public void exitCase_stmt(Case_stmtContext ctx) {
         stack.pop();
+    }
+
+    @Override
+    public void enterConfig_stmt(Config_stmtContext ctx) {
+        Config_argContext val = getChildNode(ctx, Config_argContext.class);
+        SimpleNode<String> node = new SimpleNode<String>(stack.peek(), "config", stringFromNode(val));
+        updateNodePosition(node, ctx);
+    }
+
+    @Override
+    public void enterPresence_stmt(Presence_stmtContext ctx) {
+        SimpleNode<String> node = new SimpleNode<String>(stack.peek(), "presence", stringFromNode(ctx));
+        updateNodePosition(node, ctx);
+    }
+
+    @Override
+    public void enterMax_elements_stmt(Max_elements_stmtContext ctx) {
+        SimpleNode<String> node = new SimpleNode<String>(stack.peek(), "max-elements", stringFromNode(ctx));
+        updateNodePosition(node, ctx);
+    }
+
+    @Override
+    public void enterMin_elements_stmt(Min_elements_stmtContext ctx) {
+        SimpleNode<String> node = new SimpleNode<String>(stack.peek(), "min-elements", stringFromNode(ctx));
+        updateNodePosition(node, ctx);
+    }
+
+    @Override
+    public void enterOrdered_by_stmt(Ordered_by_stmtContext ctx) {
+        Ordered_by_argContext val = getChildNode(ctx, Ordered_by_argContext.class);
+        SimpleNode<String> node = new SimpleNode<String>(stack.peek(), "ordered-by", stringFromNode(val));
+        updateNodePosition(node, ctx);
+    }
+
+    @Override
+    public void enterUnits_stmt(Units_stmtContext ctx) {
+        SimpleNode<String> node = new SimpleNode<String>(stack.peek(), "units", stringFromNode(ctx));
+        updateNodePosition(node, ctx);
+    }
+
+    @Override
+    public void enterMandatory_stmt(Mandatory_stmtContext ctx) {
+        Mandatory_argContext val = getChildNode(ctx, Mandatory_argContext.class);
+        SimpleNode<String> node = new SimpleNode<String>(stack.peek(), "mandatory", stringFromNode(val));
+        updateNodePosition(node, ctx);
+    }
+
+    @Override
+    public void enterDefault_stmt(Default_stmtContext ctx) {
+        SimpleNode<String> node = new SimpleNode<String>(stack.peek(), "default", stringFromNode(ctx));
+        updateNodePosition(node, ctx);
     }
 
     /**
