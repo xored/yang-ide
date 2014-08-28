@@ -88,6 +88,7 @@ public class YangDiagramEditor extends DiagramEditor {
 
                     }
                 }
+                ((YangDiagramBehavior) getDiagramBehavior()).setCreatePosition(null);
                 updateModuleInfoPane(child);
             }
 
