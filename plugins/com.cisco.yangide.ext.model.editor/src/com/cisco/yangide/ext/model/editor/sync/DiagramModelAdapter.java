@@ -3,11 +3,13 @@
  */
 package com.cisco.yangide.ext.model.editor.sync;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.WeakHashMap;
 
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.jface.text.BadLocationException;
 import org.eclipse.jface.text.RewriteSessionEditProcessor;
@@ -23,9 +25,10 @@ import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.core.dom.ASTCompositeNode;
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
+import com.cisco.yangide.core.dom.BaseReference;
+import com.cisco.yangide.core.dom.IdentitySchemaNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
-import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.parser.YangFormattingPreferences;
 import com.cisco.yangide.core.parser.YangParserUtil;
@@ -47,6 +50,7 @@ final class DiagramModelAdapter extends EContentAdapter {
     private Map<Node, String> removedBlock = new WeakHashMap<>();
     private YangEditor yangSourceEditor;
     private Map<Node, ASTNode> mapping;
+    private Map<EClass, SourceNodePropertyUpdater<? extends ASTNode>> propertyUpdaters;
 
     /**
      * @param modelSynchronizer
@@ -55,8 +59,19 @@ final class DiagramModelAdapter extends EContentAdapter {
         this.modelSynchronizer = modelSynchronizer;
         this.yangSourceEditor = yangSourceEditor;
         this.mapping = mapping;
+        this.propertyUpdaters = new HashMap<>();
+        // init property updaters
+        this.propertyUpdaters.put(ModelPackage.Literals.NODE, new SourceNodePropertyUpdater<ASTNode>(this));
+        this.propertyUpdaters.put(ModelPackage.Literals.MODULE, new ModulePropertyUpdater(this));
+        this.propertyUpdaters.put(ModelPackage.Literals.CONTAINER, new ContainerPropertyUpdater(this));
+        this.propertyUpdaters.put(ModelPackage.Literals.LIST, new ListPropertyUpdater(this));
+        this.propertyUpdaters.put(ModelPackage.Literals.LEAF_LIST, new ListPropertyUpdater(this));
+        this.propertyUpdaters.put(ModelPackage.Literals.CHOICE, new ChoicePropertyUpdater(this));
+        this.propertyUpdaters.put(ModelPackage.Literals.TYPEDEF, new TypedefPropertyUpdater(this));
+        this.propertyUpdaters.put(ModelPackage.Literals.LEAF, new LeafPropertyUpdater(this));
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public synchronized void notifyChanged(Notification notification) {
         super.notifyChanged(notification);
@@ -104,6 +119,8 @@ final class DiagramModelAdapter extends EContentAdapter {
                                     || notification.getFeature() == ModelPackage.Literals.USES__QNAME) {
                                 updateName((Node) notification.getNotifier(), (EAttribute) notification.getFeature(),
                                         notification.getNewValue());
+                            } else if (notification.getFeature() == ModelPackage.Literals.REFERENCE_NODE__REFERENCE) {
+                                updateIdentityReference((Node) notification.getNotifier(), notification.getNewValue());
                             }
 
                             if (notification.getNotifier() instanceof Tag) {
@@ -114,14 +131,15 @@ final class DiagramModelAdapter extends EContentAdapter {
                                     throw new RuntimeException(
                                             "Cannot find references source block from diagram editor");
                                 }
-                                if (parent.eClass() == ModelPackage.Literals.MODULE) {
-                                    updateModuleProperty(astNode, tag.getName(), notification.getNewValue());
-                                } else if (parent.eClass() == ModelPackage.Literals.REVISION) {
-                                    updateRevisionProperty(astNode, tag.getName(), notification.getNewValue());
-                                } else if (parent.eClass() == ModelPackage.Literals.USES) {
-                                    updateUsesProperty(astNode, tag.getName(), notification.getNewValue());
+                                if (propertyUpdaters.containsKey(parent.eClass())) {
+                                    SourceNodePropertyUpdater<ASTNode> updater = (SourceNodePropertyUpdater<ASTNode>) propertyUpdaters
+                                            .get(parent.eClass());
+                                    updater.updateProperty(astNode, tag.getName(), notification.getNewValue(),
+                                            astNode.getBodyStartPosition() + 1);
                                 } else {
-                                    updateProperty(astNode, tag.getName(), notification.getNewValue(),
+                                    SourceNodePropertyUpdater<ASTNode> updater = (SourceNodePropertyUpdater<ASTNode>) propertyUpdaters
+                                            .get(ModelPackage.Literals.NODE);
+                                    updater.updateProperty(astNode, tag.getName(), notification.getNewValue(),
                                             astNode.getBodyStartPosition() + 1);
                                 }
                             }
@@ -249,99 +267,25 @@ final class DiagramModelAdapter extends EContentAdapter {
         performEdit(new ReplaceEdit(nnode.getNameStartPosition(), nnode.getNameLength(), (String) newValue));
     }
 
-    private void updateModuleProperty(ASTNode node, String name, Object newValue) {
-        Module module = (Module) node;
-        SimpleNode<String> prop = null;
-        boolean handle = false;
-
-        switch (name) {
-        case "namespace":
-            prop = module.getNamespaceNode();
-            handle = true;
-            break;
-        case "prefix":
-            prop = module.getPrefix();
-            handle = true;
-            break;
-        case "yang-version":
-            prop = module.getYangVersion();
-            handle = true;
-            break;
+    private void updateIdentityReference(Node node, Object newValue) {
+        ASTNode astNode = mapping.get(node);
+        if (astNode == null) {
+            throw new RuntimeException("Cannot find references source block from diagram editor");
         }
 
-        if (handle) {
-            if (prop == null) { // insert new property
-                int pos = node.getBodyStartPosition() + 1;
-                performEdit(new InsertEdit(pos, System.lineSeparator() + formatTag(node, name, (String) newValue)));
-            } else { // update property
-                performEdit(new ReplaceEdit(prop.getStartPosition(), prop.getLength() + 1, formatTag(node, name,
-                        (String) newValue).trim()));
-            }
-        }
-        ASTNode beforeRevisionNode = getAboveChildNode(module, module.getRevisionNode());
-        int beforeRevision = beforeRevisionNode != null ? beforeRevisionNode.getEndPosition() + 1 : node
-                .getBodyStartPosition() + 1;
-
-        updateProperty(node, name, newValue, beforeRevision);
-    }
-
-    private void updateRevisionProperty(ASTNode node, String name, Object newValue) {
-        updateProperty(node, name, newValue, node.getBodyStartPosition() + 1);
-    }
-
-    private void updateUsesProperty(ASTNode node, String name, Object newValue) {
-        updateProperty(node, name, newValue, node.getBodyStartPosition() + 1);
-    }
-
-    private void updateProperty(ASTNode node, String name, Object newValue, int startPosition) {
-        SimpleNode<String> prop = null;
-
-        switch (name) {
-        case "description":
-            prop = node.getDescriptionNode();
-            break;
-        case "reference":
-            prop = node.getReferenceNode();
-            break;
-        case "status":
-            prop = node.getStatusNode();
-            break;
-        case "organization":
-            prop = ((Module) node).getOrganization();
-            break;
-        case "contact":
-            prop = ((Module) node).getContact();
-            break;
-        default:
-            Activator.logError("unknoun tag: " + name);
-            return;
-        }
-
-        if (prop == null) { // insert new property
-            int pos = startPosition;
-            if (name.equals("status")) {
-                if (node.getReferenceNode() != null) {
-                    pos = node.getReferenceNode().getEndPosition() + 1;
-                } else if (node.getDescriptionNode() != null) {
-                    pos = node.getDescriptionNode().getEndPosition() + 1;
-                }
-            } else if (name.equals("reference") && node.getDescriptionNode() != null) {
-                pos = node.getDescriptionNode().getEndPosition() + 1;
-            }
-            performEdit(new InsertEdit(pos, System.lineSeparator() + formatTag(node, name, (String) newValue)));
-        } else if (newValue == null || ((String) newValue).isEmpty()) { // delete property
-            if (prop != null) {
-                performEdit(new DeleteEdit(prop.getStartPosition(), prop.getLength() + 1));
-            }
-        } else { // update property
-            if (prop != null) {
-                performEdit(new ReplaceEdit(prop.getStartPosition(), prop.getLength() + 1, formatTag(node, name,
-                        (String) newValue).trim()));
+        BaseReference base = ((IdentitySchemaNode) astNode).getBase();
+        if (base == null && newValue != null) {
+            performEdit(new InsertEdit(astNode.getBodyStartPosition() + 1, formatBase(astNode, (String) newValue)));
+        } else if (base != null) {
+            if (newValue != null && !((String) newValue).trim().isEmpty()) {
+                performEdit(new ReplaceEdit(base.getNameStartPosition(), base.getNameLength(), (String) newValue));
+            } else {
+                performEdit(new DeleteEdit(base.getStartPosition(), base.getLength() + 1));
             }
         }
     }
 
-    private synchronized void performEdit(final TextEdit edit) {
+    synchronized void performEdit(final TextEdit edit) {
         Display display = Display.getCurrent();
         if (display == null) {
             display = Display.getDefault();
@@ -366,7 +310,7 @@ final class DiagramModelAdapter extends EContentAdapter {
         yangSourceEditor.reconcileModel();
     }
 
-    private int getIndentLevel(ASTNode node) {
+    public int getIndentLevel(ASTNode node) {
         int level = 0;
         ASTNode parent = node;
         while (parent != null) {
@@ -376,8 +320,9 @@ final class DiagramModelAdapter extends EContentAdapter {
         return level;
     }
 
-    private String formatTag(ASTNode node, String name, String value) {
-        return trimTrailingSpaces(RefactorUtil.formatCodeSnipped(name + " \"" + value + "\";", getIndentLevel(node)));
+    private String formatBase(ASTNode node, String value) {
+        return trimTrailingSpaces(RefactorUtil.formatCodeSnipped("\nbase " + empty2Quote(value) + ";",
+                getIndentLevel(node)));
     }
 
     private String formatImport(Import newValue) {
@@ -389,17 +334,6 @@ final class DiagramModelAdapter extends EContentAdapter {
         return trimTrailingSpaces(RefactorUtil.formatCodeSnipped(sb.toString(), 1));
     }
 
-    private ASTNode getAboveChildNode(ASTCompositeNode parent, ASTNode node) {
-        ASTNode result = null;
-        for (ASTNode child : parent.getChildren()) {
-            if (child == node) {
-                return result;
-            }
-            result = child;
-        }
-        return null;
-    }
-
     private String trimTrailingSpaces(String str) {
         int len = str.length();
         char[] val = str.toCharArray();
@@ -408,5 +342,9 @@ final class DiagramModelAdapter extends EContentAdapter {
             len--;
         }
         return (len < str.length()) ? str.substring(0, len) : str;
+    }
+
+    private String empty2Quote(String str) {
+        return str == null || str.trim().isEmpty() ? ("\"" + str + "\"") : str;
     }
 }

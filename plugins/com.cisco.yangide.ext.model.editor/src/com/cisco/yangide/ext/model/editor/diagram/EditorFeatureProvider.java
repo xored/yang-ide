@@ -165,7 +165,8 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
                         if (parent instanceof ContainingNode) {
                             ContainingNode node = (ContainingNode) parent;
                             String template = TEMPLATES.get(name);
-                            template = template.replaceAll("@name@", name + node.getChildren().size());
+                            template = template.replaceAll("@name@", name.replaceAll("\\W", "-")
+                                    + node.getChildren().size());
                             sourceModelManager.createSourceElement(node, position, template);
                         }
 

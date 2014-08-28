@@ -4,12 +4,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
-import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.gef.GraphicalViewer;
-import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.context.impl.RemoveContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -172,7 +170,8 @@ public class YangDiagramEditor extends DiagramEditor {
             public void notifyChanged(Notification notification) {
                 if (notification.getNotifier() instanceof Node) {
                     if (notification.getFeature() == ModelPackage.Literals.NAMED_NODE__NAME
-                            || notification.getFeature() == ModelPackage.Literals.USES__QNAME) {
+                            || notification.getFeature() == ModelPackage.Literals.USES__QNAME
+                            || notification.getFeature() == ModelPackage.Literals.REFERENCE_NODE__REFERENCE) {
                         if (notification.getNewValue() != null
                                 && !notification.getNewValue().equals(notification.getOldValue())) {
                             modelChangeHandler.nodeChanged((Node) notification.getNotifier(),
@@ -230,7 +229,7 @@ public class YangDiagramEditor extends DiagramEditor {
 
     public void setSourceModelManager(ISourceModelManager sourceModelManage) {
         ((EditorFeatureProvider) getDiagramTypeProvider().getFeatureProvider())
-        .setSourceModelManager(sourceModelManage);
+                .setSourceModelManager(sourceModelManage);
     }
 
     private IFile getFile() {

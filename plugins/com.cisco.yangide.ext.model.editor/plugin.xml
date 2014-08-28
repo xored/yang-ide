@@ -105,7 +105,8 @@
                class="com.cisco.yangide.ext.model.editor.property.TypeTabSection"
                filter="com.cisco.yangide.ext.model.editor.property.TypeTabFilter"
                id="com.cisco.yangide.ext.model.editor.TypeTabSection"
-               tab="com.cisco.yangide.ext.model.editor.TypeTab">
+               afterSection="com.cisco.yangide.ext.model.editor.GeneralTabName"
+               tab="com.cisco.yangide.ext.model.editor.GeneralTab">
          </propertySection>
       </propertySections>
    </extension>

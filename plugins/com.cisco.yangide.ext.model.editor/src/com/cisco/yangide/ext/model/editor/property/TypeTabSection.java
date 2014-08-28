@@ -36,9 +36,9 @@ public class TypeTabSection extends YangPropertySection implements ITabbedProper
         TabbedPropertySheetWidgetFactory factory = getWidgetFactory();
         Composite composite = factory.createFlatFormComposite(parent);
         GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
-        CLabel valueLabel = factory.createCLabel(composite, "Name:");
+        CLabel valueLabel = factory.createCLabel(composite, "Type:");
         GridDataFactory.fillDefaults().hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT).align(SWT.END, SWT.END)
-                .indent(HSPACE, VSPACE).applyTo(valueLabel);
+        .indent(HSPACE, VSPACE).applyTo(valueLabel);
         type = new DialogText(composite, tabbedPropertySheetPage.getWidgetFactory()) {
 
             @Override
@@ -56,7 +56,7 @@ public class TypeTabSection extends YangPropertySection implements ITabbedProper
             }
         };
         GridDataFactory.fillDefaults().hint(200, SWT.DEFAULT).align(SWT.END, SWT.END).indent(HSPACE, VSPACE)
-                .applyTo(type.getControl());
+        .applyTo(type.getControl());
     }
 
     private void setType(String firstResult) {
