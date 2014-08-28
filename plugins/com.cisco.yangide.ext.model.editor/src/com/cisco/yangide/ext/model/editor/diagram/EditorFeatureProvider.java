@@ -15,6 +15,7 @@ import org.eclipse.graphiti.features.IAddFeature;
 import org.eclipse.graphiti.features.ICreateFeature;
 import org.eclipse.graphiti.features.IDirectEditingFeature;
 import org.eclipse.graphiti.features.ILayoutFeature;
+import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.IUpdateFeature;
 import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
@@ -22,9 +23,11 @@ import org.eclipse.graphiti.features.context.ICreateContext;
 import org.eclipse.graphiti.features.context.ICustomContext;
 import org.eclipse.graphiti.features.context.IDirectEditingContext;
 import org.eclipse.graphiti.features.context.ILayoutContext;
+import org.eclipse.graphiti.features.context.IRemoveContext;
 import org.eclipse.graphiti.features.context.IUpdateContext;
 import org.eclipse.graphiti.features.custom.ICustomFeature;
 import org.eclipse.graphiti.mm.algorithms.Text;
+import org.eclipse.graphiti.mm.pictograms.Connection;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.pattern.CreateFeatureForPattern;
@@ -40,6 +43,7 @@ import com.cisco.yangide.ext.model.editor.editors.YangDiagramBehavior;
 import com.cisco.yangide.ext.model.editor.features.AddReferenceConnectionFeature;
 import com.cisco.yangide.ext.model.editor.features.DiagramLayoutFeature;
 import com.cisco.yangide.ext.model.editor.features.ExtractGroupingCustomFeature;
+import com.cisco.yangide.ext.model.editor.features.RemoveConnectionFeature;
 import com.cisco.yangide.ext.model.editor.features.TextDirectEditingFeature;
 import com.cisco.yangide.ext.model.editor.features.UpdateTextFeature;
 import com.cisco.yangide.ext.model.editor.patterns.objects.AnyxmlPattern;
@@ -182,6 +186,14 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         }
 
         return retList.toArray(ret);
+    }
+    
+    @Override
+    public IRemoveFeature getRemoveFeature(IRemoveContext context) {
+        if (context.getPictogramElement() instanceof Connection) {
+            return new RemoveConnectionFeature(this);
+        }
+        return super.getRemoveFeature(context);
     }
 
     /**

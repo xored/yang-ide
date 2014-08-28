@@ -64,7 +64,7 @@ public class GeneralTabReferenceSection extends YangPropertySection implements I
     public void setInput(IWorkbenchPart part, ISelection selection) {
         super.setInput(part, selection);
         if (getEObject() != null && getDiagramTypeProvider() != null) {
-            EClass reference = YangModelUtil.getConnectionReferenceClass(getEObject());
+            EClass reference = YangModelUtil.getConnectionReferenceObjectClass(getEObject());
             ElementIndexType indexType = ElementIndexType.GROUPING;
             String imageId = YangDiagramImageProvider.IMG_GROUPING_PROPOSAL;
             if (YangModelUtil.MODEL_PACKAGE.getIdentity().equals(reference)) {

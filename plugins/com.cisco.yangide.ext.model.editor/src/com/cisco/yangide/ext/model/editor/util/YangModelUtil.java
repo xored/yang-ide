@@ -229,17 +229,31 @@ public class YangModelUtil {
     }
 
     public static boolean hasReference(EObject tested) {
-        return null != getConnectionReferenceClass(tested);
+        return null != getConnectionReferenceObjectClass(tested);
     }
-    public static EClass getConnectionReferenceClass(EObject tested) {
-        if (null == connections.get(tested.eClass())) {
-            for (Map.Entry<EClass, EClass> c : connections.entrySet()) {
-                if (checkType(c.getKey(), tested)) {
-                    return c.getValue();
+    public static EClass getConnectionReferenceObjectClass(EObject tested) {
+        if (null != tested) {
+            if (null == connections.get(tested.eClass())) {
+                for (Map.Entry<EClass, EClass> c : connections.entrySet()) {
+                    if (checkType(c.getKey(), tested)) {
+                        return c.getValue();
+                    }
                 }
+            } else {
+                return connections.get(tested.eClass());
             }
-        } else {
-            return connections.get(tested.eClass());
+        }
+        return null;
+    }
+    
+    public static boolean canBeReferenced(Object tested) {
+        return null != getConnectionReferenceSubjectClass(tested);
+    }
+    public static EClass getConnectionReferenceSubjectClass(Object tested) {
+        for (Map.Entry<EClass, EClass> c : connections.entrySet()) {
+            if (checkType(c.getValue(), tested)) {
+                return c.getKey();
+            }
         }
         return null;
     }
@@ -254,7 +268,7 @@ public class YangModelUtil {
     }
     
     public static EObject getReferencedObject(IFeatureProvider fp, EObject obj) {
-        EClass referencedClass = getConnectionReferenceClass(obj);
+        EClass referencedClass = getConnectionReferenceObjectClass(obj);
         if (null != referencedClass) {
            Object module = fp.getBusinessObjectForPictogramElement(fp.getDiagramTypeProvider().getDiagram());
            for(EObject o : filter(getAllBusinessObjects((EObject) module, null), referencedClass)) {

@@ -10,9 +10,11 @@ import java.util.Map;
 import org.eclipse.emf.common.util.ECollections;
 import org.eclipse.emf.common.util.EList;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.features.IFeatureProvider;
+import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.context.IAddConnectionContext;
 import org.eclipse.graphiti.features.context.IAddContext;
 import org.eclipse.graphiti.features.context.impl.AddConnectionContext;
@@ -223,13 +225,19 @@ public class YangModelUIUtil {
     }
 
     public static GraphicsAlgorithm getObjectPropGA(ContainerShape cs, String prop) {
-        for (Shape shape : cs.getChildren()) {
-            if (PropertyUtil.isObjectShapeProp(shape, prop)) {
-                return shape.getGraphicsAlgorithm();
-            }
+        Shape shape = getBusinessObjectPropShape(cs, prop);
+        if (null != shape) {
+            return shape.getGraphicsAlgorithm();
         }
         return null;
 
+    }
+    
+    public static void deletePictogramElement(IFeatureProvider fp, PictogramElement pe) {
+        
+        RemoveContext removeContext = new RemoveContext(pe);
+        IRemoveFeature f = fp.getRemoveFeature(removeContext);
+        f.remove(removeContext);
     }
 
     public static void updatePictogramElement(IFeatureProvider fp, PictogramElement pe) {
@@ -248,8 +256,9 @@ public class YangModelUIUtil {
             }
             if (null == ref) {
                 if (null != con) {
-                    RemoveContext removeContext = new RemoveContext(con);
-                    fp.getRemoveFeature(removeContext).remove(removeContext);
+                    deletePictogramElement(fp, con);
+                    //RemoveContext removeContext = new RemoveContext(con);
+                    //fp.getRemoveFeature(removeContext).remove(removeContext);
                     return true;
                 }
             } else {
@@ -267,6 +276,17 @@ public class YangModelUIUtil {
                     LayoutUtil.layoutDiagramConnections(fp);
                     return true;
                 }
+            }
+        }
+        return false;
+    }
+    
+    public static boolean updateConnections(EClass type, IFeatureProvider fp) {
+        Object module = fp.getBusinessObjectForPictogramElement(fp.getDiagramTypeProvider().getDiagram());
+        if (null != module && module instanceof EObject) {
+            List<EObject> objects = YangModelUtil.filter(YangModelUtil.getAllBusinessObjects((EObject) module, null), type);
+            for (EObject obj : objects) {
+                updateConnections(obj, fp);
             }
         }
         return false;
@@ -304,7 +324,7 @@ public class YangModelUIUtil {
         polyline.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
 
         // create link and wire it
-        fp.link(connection, addedEReference);
+        //fp.link(connection, addedEReference);
         // add dynamic text decorator for the reference name
 
         ConnectionDecorator textDecorator = peCreateService.createConnectionDecorator(connection, true, 0.5, true);
