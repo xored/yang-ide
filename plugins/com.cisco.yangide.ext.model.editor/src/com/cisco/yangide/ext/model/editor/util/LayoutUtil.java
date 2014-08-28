@@ -8,7 +8,6 @@ import java.util.Map;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.impl.AddBendpointContext;
@@ -17,26 +16,20 @@ import org.eclipse.graphiti.mm.algorithms.GraphicsAlgorithm;
 import org.eclipse.graphiti.mm.algorithms.Polyline;
 import org.eclipse.graphiti.mm.algorithms.Text;
 import org.eclipse.graphiti.mm.algorithms.styles.Point;
-import org.eclipse.graphiti.mm.pictograms.Anchor;
-import org.eclipse.graphiti.mm.pictograms.AnchorContainer;
 import org.eclipse.graphiti.mm.pictograms.Connection;
-import org.eclipse.graphiti.mm.pictograms.ConnectionDecorator;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.FreeFormConnection;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.eclipse.zest.layouts.InvalidLayoutConfiguration;
 import org.eclipse.zest.layouts.LayoutAlgorithm;
-import org.eclipse.zest.layouts.LayoutBendPoint;
 import org.eclipse.zest.layouts.LayoutEntity;
 import org.eclipse.zest.layouts.LayoutRelationship;
 import org.eclipse.zest.layouts.LayoutStyles;
 import org.eclipse.zest.layouts.algorithms.GridLayoutAlgorithm;
-import org.eclipse.zest.layouts.dataStructures.BendPoint;
 import org.eclipse.zest.layouts.dataStructures.InternalNode;
 import org.eclipse.zest.layouts.dataStructures.InternalRelationship;
 import org.eclipse.zest.layouts.exampleStructures.SimpleNode;
@@ -54,60 +47,7 @@ public class LayoutUtil {
         super();
     }
 
-    public static final int DEFAULT_DIAGRAM_LAYOUT_TYPE = 13;
     public static final double DEFAULT_DIAGRAM_LAYOUT_V_SHIFT = 10;
-
-    /**
-     * Used to keep track of the initial Connection locations for self connections<br/>
-     * The self connections cannot be computed by the LayoutAlgorithmn but the Nodes will probably
-     * be moved<br/>
-     * So we need to recompute the bend points locations based on the offset of the Anchor from the
-     * initial location
-     * 
-     * @return a {@link Map} of initial {@link Anchor} location {@link Point} per {@link Connection}
-     * s
-     */
-    private static Map<Connection, Point> getSelfConnections(Diagram diagram) {
-        IGaService gaService = Graphiti.getGaService();
-        Map<Connection, Point> selves = new HashMap<Connection, Point>();
-        EList<Connection> connections = diagram.getConnections();
-        for (Connection connection : connections) {
-            AnchorContainer source = connection.getStart().getParent();
-            AnchorContainer target = connection.getEnd().getParent();
-            if (source == target) {
-                GraphicsAlgorithm p = source.getGraphicsAlgorithm();
-                Point start = gaService.createPoint(p.getX(), p.getY());
-                selves.put(connection, start);
-            }
-        }
-        return selves;
-    }
-
-    /**
-     * Reposition the bendpoints based on the offset from the initial {@link Anchor} location to the
-     * new location
-     * 
-     * @param selves The {@link Map} of initial {@link Anchor} location {@link Point} per
-     * {@link Connection}s
-     */
-    private static void adaptSelfBendPoints(Map<Connection, Point> selves) {
-        for (Connection connection : selves.keySet()) {
-            Point p = selves.get(connection);
-            FreeFormConnection ffcon = (FreeFormConnection) connection;
-            EList<Point> pointList = ffcon.getBendpoints();
-            AnchorContainer source = connection.getStart().getParent();
-            GraphicsAlgorithm start = source.getGraphicsAlgorithm();
-            int deltaX = start.getX() - p.getX();
-            int deltaY = start.getY() - p.getY();
-            for (int i = 0; i < pointList.size(); i++) {
-                Point bendPoint = pointList.get(i);
-                int x = bendPoint.getX();
-                bendPoint.setX(x + deltaX);
-                int y = bendPoint.getY();
-                bendPoint.setY(y + deltaY);
-            }
-        }
-    }
 
     /**
      * Reposition the Graphiti {@link PictogramElement}s and {@link Connection}s based on the Zest
@@ -129,57 +69,25 @@ public class LayoutUtil {
             shape.getGraphicsAlgorithm().setWidth(width.intValue());
             shape.getGraphicsAlgorithm().setHeight(height.intValue());
         }
-
-        IGaService gaService = Graphiti.getGaService();
-        for (LayoutRelationship relationship : connections) {
-            SimpleRelationship rel = (SimpleRelationship) relationship;
-            // Using FreeFormConnections with BendPoints, we reset them to the Zest computed
-            // locations
-            FreeFormConnection connection = (FreeFormConnection) rel.getGraphData();
-            connection.getBendpoints().clear();
-            LayoutBendPoint[] bendPoints = rel.getBendPoints();
-            for (LayoutBendPoint bendPoint : bendPoints) {
-                Double x = bendPoint.getX();
-                Double y = bendPoint.getY();
-                Point p = gaService.createPoint(x.intValue(), y.intValue());
-                connection.getBendpoints().add(p);
-            }
-        }
     }
 
     /**
      * @return a {@link Map} of {@link SimpleNode} per {@link Shape}
      */
-    private static Map<Shape, SimpleNode> getLayoutEntities(IFeatureProvider fp) {
-        return getLayoutEntities(fp, fp.getDiagramTypeProvider().getDiagram(), null, new HashMap<Shape, SimpleNode>());
+    private static List<SimpleNode> getLayoutEntities(IFeatureProvider fp) {
+        return getLayoutEntities(fp, fp.getDiagramTypeProvider().getDiagram());
     }
 
-    private static Map<Shape, SimpleNode> getLayoutEntities(IFeatureProvider fp, ContainerShape parent,
-            SimpleNode entity, Map<Shape, SimpleNode> map) {
+    private static List<SimpleNode> getLayoutEntities(IFeatureProvider fp, ContainerShape parent) {
         EList<Shape> children = parent.getChildren();
+        List<SimpleNode> result = new ArrayList<SimpleNode>();
         for (Shape shape : children) {
             Object bo = fp.getBusinessObjectForPictogramElement(shape);
             if (null != bo) {
                 GraphicsAlgorithm ga = shape.getGraphicsAlgorithm();
-                SimpleNode currentEntity = entity;
                 int pos = YangModelUtil.getPositionInParent(fp.getBusinessObjectForPictogramElement(fp.getDiagramTypeProvider().getDiagram()), bo);
-                if (null == currentEntity) { // connect inner shapes with the elements on diagram
-                    currentEntity = new YangSimpleNode(shape, ga.getX(), ga.getY(), ga.getWidth(), ga.getHeight(), pos);
-                }
-                map.put(shape, currentEntity);
-                if (shape instanceof ContainerShape) {
-                    getLayoutEntities(fp, (ContainerShape) shape, currentEntity, map);
-                }
-            }
-        }
-        return map;
-    }
-
-    private static List<SimpleNode> filterDiagramLayoutEntities(Map<Shape, SimpleNode> map) {
-        List<SimpleNode> result = new ArrayList<SimpleNode>();
-        for (Map.Entry<Shape, SimpleNode> entry : map.entrySet()) {
-            if (entry.getKey().getContainer() instanceof Diagram) {
-                result.add(entry.getValue());
+                SimpleNode currentEntity = new YangSimpleNode(shape, ga.getX(), ga.getY(), ga.getWidth(), ga.getHeight(), pos);
+                result.add(currentEntity);
             }
         }
         return result;
@@ -208,85 +116,6 @@ public class LayoutUtil {
         return new double[] { width, h };
     }
 
-    /**
-     * @param map a {@link Map} of {@link SimpleNode} per {@link Shape} - used to link
-     * {@link SimpleRelationship} to source and target entities
-     * @return the array of {@link LayoutRelationship}s to compute
-     */
-    private static LayoutRelationship[] getConnectionEntities(Diagram diagram, Map<Shape, SimpleNode> map) {
-        List<LayoutRelationship> liste = new ArrayList<LayoutRelationship>();
-        EList<Connection> connections = diagram.getConnections();
-        for (Connection connection : connections) {
-
-            String label = null;
-            EList<ConnectionDecorator> decorators = connection.getConnectionDecorators();
-            for (ConnectionDecorator decorator : decorators) {
-                if (decorator.getGraphicsAlgorithm() instanceof Text) {
-                    label = ((Text) decorator.getGraphicsAlgorithm()).getValue();
-                }
-            }
-
-            // get the SimpleNode already created from the map:
-            Shape source = (Shape) connection.getStart().getParent();
-            SimpleNode sourceEntity = map.get(source);
-            Shape target = (Shape) connection.getEnd().getParent();
-            SimpleNode targetEntity = map.get(target);
-
-            if (source != target) { // we don't add self relations to avoid Cycle errors
-                SimpleRelationship relationship = new SimpleRelationship(sourceEntity, targetEntity, (source != target));
-                relationship.setGraphData(connection);
-                relationship.clearBendPoints();
-                relationship.setLabel(label);
-                FreeFormConnection ffcon = (FreeFormConnection) connection;
-
-                EList<Point> pointList = ffcon.getBendpoints();
-                List<LayoutBendPoint> bendPoints = new ArrayList<LayoutBendPoint>();
-                for (int i = 0; i < pointList.size(); i++) {
-                    Point point = pointList.get(i);
-                    boolean isControlPoint = (i != 0) && (i != pointList.size() - 1);
-                    LayoutBendPoint bendPoint = new BendPoint(point.getX(), point.getY(), isControlPoint);
-                    bendPoints.add(bendPoint);
-                }
-                relationship.setBendPoints(bendPoints.toArray(new LayoutBendPoint[0]));
-                liste.add(relationship);
-                sourceEntity.addRelationship(relationship);
-                targetEntity.addRelationship(relationship);
-            }
-        }
-        return liste.toArray(new LayoutRelationship[0]);
-    }
-
-    /**
-     * @param current
-     * @return
-     */
-    private static LayoutAlgorithm getLayoutAlgorithmn(int current) {
-        return new YangDiagramLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING); // YangDiagramLayoutAlgorithm
-    }
-
-    /**
-     * A {@link org.eclipse.zest.layouts.exampleStructures.SimpleRelationship} subclass used to hold
-     * the Graphiti connection reference
-     */
-    private static class SimpleRelationship extends org.eclipse.zest.layouts.exampleStructures.SimpleRelationship {
-
-        private Object graphData;
-
-        public SimpleRelationship(LayoutEntity sourceEntity, LayoutEntity destinationEntity, boolean bidirectional) {
-            super(sourceEntity, destinationEntity, bidirectional);
-        }
-
-        @Override
-        public Object getGraphData() {
-            return graphData;
-        }
-
-        @Override
-        public void setGraphData(Object o) {
-            this.graphData = o;
-        }
-    }
-
     public static class YangSimpleNode extends SimpleNode {
         private int pos;
 
@@ -301,7 +130,76 @@ public class LayoutUtil {
         
     }
     
-    private static class LayoutEntityHeightComparator implements Comparator<LayoutEntity> {
+    public static class YangCompositeSimpleNode {
+        private int pos;
+        private List<YangCompositeSimpleNode> children;
+        private int x, y, width, height;
+        private ContainerShape realObject;
+
+        public YangCompositeSimpleNode(ContainerShape realObject, int pos) {
+            this.realObject = realObject;
+            this.x = realObject.getGraphicsAlgorithm().getX();
+            this.y = realObject.getGraphicsAlgorithm().getY();
+            this.height = realObject.getGraphicsAlgorithm().getHeight();
+            this.width = realObject.getGraphicsAlgorithm().getWidth();
+            this.pos = pos;
+        }
+        
+        public int getPositionInParent() {
+            return pos;
+        }
+
+        public List<YangCompositeSimpleNode> getChildren() {
+            if (null == children) {
+                children = new ArrayList<YangCompositeSimpleNode>();
+            }
+            return children;
+        }
+
+        public void addChild(YangCompositeSimpleNode child) {
+            getChildren().add(child);
+        }
+
+        public int getX() {
+            return x;
+        }
+
+        public int getY() {
+            return y;
+        }
+        
+        public void setLocation(int x, int y) {
+            this.x = x;
+            this.y = y;
+        }
+
+        public int getWidth() {
+            return width;
+        }
+
+        public int getHeight() {
+            return height;
+        }
+
+        public void setSize(int width, int height) {
+            this.width = width;
+            this.height = height;
+        }
+        
+        public void updateRealObject(IFeatureProvider fp) {
+            realObject.getGraphicsAlgorithm().setX(x);
+            realObject.getGraphicsAlgorithm().setY(y);
+            realObject.getGraphicsAlgorithm().setHeight(height);
+            realObject.getGraphicsAlgorithm().setWidth(width);
+            layoutContainerShapeHeader(realObject, fp);
+            for (YangCompositeSimpleNode child : getChildren()) {
+                child.updateRealObject(fp);
+            }
+        }
+        
+    }
+    
+    /*private static class LayoutEntityHeightComparator implements Comparator<LayoutEntity> {
 
         @Override
         public int compare(LayoutEntity o1, LayoutEntity o2) {
@@ -318,7 +216,7 @@ public class LayoutUtil {
                     .getHeightInLayout() ? 0 : -1;
         }
 
-    }
+    }*/
     
     private static class LayoutEntityOrderComparator implements Comparator<LayoutEntity> {
 
@@ -342,6 +240,23 @@ public class LayoutUtil {
         }
 
     }
+    
+    protected static int layoutCompositeSimpleNode(YangCompositeSimpleNode element, int boundsWidth) {
+
+        int y = YangModelUIUtil.DEFAULT_TEXT_HEIGHT;
+        for (YangCompositeSimpleNode sn : element.getChildren()) {
+            int elementHeight = layoutCompositeSimpleNode(sn, Math.max(0, boundsWidth - 2 * YangModelUIUtil.DEFAULT_V_ALIGN)) + 2 * YangModelUIUtil.DEFAULT_H_ALIGN;
+            int xmove = YangModelUIUtil.DEFAULT_V_ALIGN;
+            int ymove = y + YangModelUIUtil.DEFAULT_H_ALIGN;
+            sn.setLocation(xmove, ymove);
+            sn.setSize(Math.max(0, boundsWidth - 2 * YangModelUIUtil.DEFAULT_V_ALIGN), Math.max(elementHeight, sn.getHeight()));
+            y = y + sn.getHeight() + YangModelUIUtil.DEFAULT_H_ALIGN;
+            
+        }
+        element.setSize(boundsWidth, Math.max(y  + 2 * YangModelUIUtil.DEFAULT_H_ALIGN, element.getHeight()));
+        return y;
+    }
+
 
     private static class YangDiagramLayoutAlgorithm extends GridLayoutAlgorithm {
         protected double maxW = YangModelUIUtil.DEFAULT_WIDTH;
@@ -469,24 +384,18 @@ public class LayoutUtil {
         }
     }
 
-    public static void layoutDiagram(IFeatureProvider fp, int type) {
-        // get a map of the self connection anchor locations
-        final Map<Connection, Point> selves = getSelfConnections(fp.getDiagramTypeProvider().getDiagram());
+    public static void layoutDiagram(IFeatureProvider fp) {
 
         // get the chosen LayoutAlgorithmn instance
-        LayoutAlgorithm layoutAlgorithm = getLayoutAlgorithmn(type);
+        LayoutAlgorithm layoutAlgorithm = new YangDiagramLayoutAlgorithm(LayoutStyles.NO_LAYOUT_NODE_RESIZING);
 
         if (layoutAlgorithm != null) {
             try {
-
-                // Get the map of SimpleNode per Shapes
-                Map<Shape, SimpleNode> map = getLayoutEntities(fp);
-
                 // Get the array of Connection LayoutRelationships
-                LayoutRelationship[] connections = getConnectionEntities(fp.getDiagramTypeProvider().getDiagram(), map);
+                LayoutRelationship[] connections = new LayoutRelationship[0];//getConnectionEntities(fp.getDiagramTypeProvider().getDiagram(), map);
 
                 // Setup the array of Shape LayoutEntity
-                List<SimpleNode> diagramEntities = filterDiagramLayoutEntities(map);
+                List<SimpleNode> diagramEntities = getLayoutEntities(fp);
                 LayoutEntity[] entities = diagramEntities.toArray(new LayoutEntity[0]);
                 int diagramWidth = ((EditorFeatureProvider) fp).getDiagramWidth();
                 int diagramHeight = ((EditorFeatureProvider) fp).getDiagramHeight();
@@ -500,9 +409,6 @@ public class LayoutUtil {
                 // Update the Graphiti Shapes and Connections locations
                 updateGraphCoordinates(entities, connections);
 
-                // Reposition the self connections bendpoints:
-                adaptSelfBendPoints(selves);
-
             } catch (InvalidLayoutConfiguration e) {
                 e.printStackTrace();
             }
@@ -510,25 +416,43 @@ public class LayoutUtil {
         layoutDiagramConnections(fp);
     }
 
-    public static void layoutDiagram(IFeatureProvider fp) {
-        layoutDiagram(fp, DEFAULT_DIAGRAM_LAYOUT_TYPE);
-    }
-
     public static void layoutContainerShapeHeader(ContainerShape cs, IFeatureProvider fp) {
-        Shape text = YangModelUIUtil.getBusinessObjectPropShape(cs, PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY);
-        int textWidth = 0;
-        if (null != text && text.getGraphicsAlgorithm() instanceof Text) {
-            Text ga = (Text) text.getGraphicsAlgorithm();
-            textWidth = GraphitiUi.getUiLayoutService().calculateTextSize(ga.getValue(), ga.getStyle().getFont())
-                    .getWidth();
-            ga.setWidth(textWidth);
+        GraphicsAlgorithm text = YangModelUIUtil.getObjectPropGA(cs, PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY);
+        GraphicsAlgorithm type = YangModelUIUtil.getObjectPropGA(cs, PropertyUtil.BUSINESS_OBJECT_TYPE_SHAPE_KEY);
+        GraphicsAlgorithm number = YangModelUIUtil.getObjectPropGA(cs, PropertyUtil.OBJECT_NUMBER_SHAPE_KEY);
+        int textWidth = Math.max(0, cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_TEXT_HEIGHT);
+        if (null != number) {
+            IDimension dim = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) number).getValue(), number.getStyle().getFont());
+            number.setX(Math.max(0, cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND - dim.getWidth()));
+            textWidth = Math.max(0, textWidth - number.getWidth());
         }
-        Shape type = YangModelUIUtil.getBusinessObjectPropShape(cs, PropertyUtil.BUSINESS_OBJECT_TYPE_SHAPE_KEY);
-        if (null != type && type.getGraphicsAlgorithm() instanceof Text) {
-            Text ga = (Text) type.getGraphicsAlgorithm();
-            ga.setX(textWidth + YangModelUIUtil.DEFAULT_V_ALIGN + YangModelUIUtil.DEFAULT_TEXT_HEIGHT);
+        int typeWidth = 0;
+        if (null != type && type instanceof Text) {
+            typeWidth = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) type).getValue(), type.getStyle().getFont()).getWidth();
         }
-
+        int nameWidth = 0;
+        if (null != text && text instanceof Text) {            
+            nameWidth = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) text).getValue(), text.getStyle().getFont()).getWidth();
+            if (0 != typeWidth && typeWidth + nameWidth + YangModelUIUtil.DEFAULT_H_ALIGN > textWidth) {
+                nameWidth = (int) Math.min(nameWidth, (0.5 * Math.max(0, textWidth)));
+            }
+            text.setWidth(Math.min(nameWidth, textWidth));
+        }
+        
+        if (null != type && type instanceof Text) {
+            Text ga = (Text) type;
+            ga.setX(nameWidth + YangModelUIUtil.DEFAULT_TEXT_HEIGHT + YangModelUIUtil.DEFAULT_H_ALIGN);
+            ga.setWidth(Math.max(0, textWidth - ga.getX()));
+        }      
+        
+        Polyline line = YangModelUIUtil.getPolyline(cs);
+        if (null != line) {
+            EList<Point> points = line.getPoints();
+            if (1 < points.size()) {
+                points.get(1).setX(cs.getGraphicsAlgorithm().getWidth());
+            }
+        }
+        
     }
 
     public static void layoutContainerShapeVertical(ContainerShape cs, IFeatureProvider fp) {
@@ -567,12 +491,24 @@ public class LayoutUtil {
             }
         }
     }
+    
+    protected static YangCompositeSimpleNode createCompositeSimpleNode(ContainerShape cs, IFeatureProvider fp) {
+        Object bo = fp.getBusinessObjectForPictogramElement(cs);
+        YangCompositeSimpleNode result = new YangCompositeSimpleNode(cs, YangModelUtil.getPositionInParent(fp.getBusinessObjectForPictogramElement(cs.getContainer()), bo));
+        for (Shape shape : YangModelUIUtil.filterBusinessObjectShapes(cs.getChildren())) {
+            if (shape instanceof ContainerShape) {
+                result.addChild(createCompositeSimpleNode((ContainerShape) shape, fp));
+            }
+        }
+        return result;
+    }
 
-    public static void layoutContainerShape(ContainerShape cs, IFeatureProvider fp) {
-        int y = YangModelUIUtil.DEFAULT_TEXT_HEIGHT;
-        int x = 0;
+    public static void layoutContainerShape(ContainerShape cs, IFeatureProvider fp, boolean layoutConnections) {
+        YangCompositeSimpleNode node = createCompositeSimpleNode(cs, fp);
+        layoutCompositeSimpleNode(node, cs.getGraphicsAlgorithm().getWidth());
+        node.updateRealObject(fp);
         // layoutContainerShapeHorizontal(cs, fp);
-        layoutContainerShapeHeader(cs, fp);
+        /*layoutContainerShapeHeader(cs, fp);
         Object bo = fp.getBusinessObjectForPictogramElement(cs);
         if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(), bo)) {
             for (Node child : ((ContainingNode) bo).getChildren()) {
@@ -596,25 +532,10 @@ public class LayoutUtil {
         }
         if (y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN > cs.getGraphicsAlgorithm().getHeight()) {
             cs.getGraphicsAlgorithm().setHeight(y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN);
+        }*/
+        if (layoutConnections) {
+            layoutDiagramConnections(fp);
         }
-        Polyline line = YangModelUIUtil.getPolyline(cs);
-        if (null != line) {
-            EList<Point> points = line.getPoints();
-            if (1 < points.size()) {
-                points.get(1).setX(cs.getGraphicsAlgorithm().getWidth());
-            }
-        }
-
-        GraphicsAlgorithm number = YangModelUIUtil.getObjectPropGA(cs, PropertyUtil.OBJECT_NUMBER_SHAPE_KEY);
-        if (null != number) {
-            IDimension dim = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) number).getValue(), number.getStyle().getFont());
-            number.setX(cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND - dim.getWidth());
-            GraphicsAlgorithm header = YangModelUIUtil.getObjectPropGA(cs, PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY);
-            if (null != header) {
-                header.setWidth(Math.max(0, cs.getGraphicsAlgorithm().getWidth() - header.getX() - number.getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND));
-            }
-        }
-        layoutDiagramConnections(fp);
     }
 
     /**
