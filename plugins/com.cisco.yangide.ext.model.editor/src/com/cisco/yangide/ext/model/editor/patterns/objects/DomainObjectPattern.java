@@ -75,8 +75,8 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
         addGraphicalRepresentation(context, newDomainObject);
         getDiagram().eResource().getContents().add(newDomainObject);
         YangModelUtil
-                .add(getBusinessObjectForPictogramElement(con), newDomainObject, YangModelUIUtil.getPositionInParent(
-                        context.getTargetContainer(), context.getY(), getFeatureProvider()));
+        .add(getBusinessObjectForPictogramElement(con), newDomainObject, YangModelUIUtil.getPositionInParent(
+                context.getTargetContainer(), context.getY(), getFeatureProvider()));
         return new Object[] { newDomainObject };
     }
 

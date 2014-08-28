@@ -2,25 +2,20 @@ package com.cisco.yangide.ext.model.editor.property;
 
 import org.eclipse.core.databinding.Binding;
 import org.eclipse.core.databinding.DataBindingContext;
-import org.eclipse.core.databinding.observable.ChangeEvent;
-import org.eclipse.core.databinding.observable.IChangeListener;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.emf.databinding.EMFProperties;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.EObject;
-import org.eclipse.graphiti.mm.pictograms.ContainerShape;
-import org.eclipse.graphiti.mm.pictograms.PictogramElement;
-import org.eclipse.graphiti.mm.pictograms.Shape;
-import org.eclipse.graphiti.services.Graphiti;
-import org.eclipse.graphiti.ui.platform.GFPropertySection;
 import org.eclipse.jface.databinding.swt.WidgetProperties;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
+import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -29,20 +24,15 @@ import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.editor.dialog.YangElementListSelectionDialog;
-import com.cisco.yangide.ext.model.editor.util.PropertyUtil;
 import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
-import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 import com.cisco.yangide.ext.model.editor.widget.DialogText;
 
-public class GeneralTabReferenceSection extends GFPropertySection implements ITabbedPropertyConstants {
+public class GeneralTabReferenceSection extends YangPropertySection implements ITabbedPropertyConstants {
 
     private DialogText text;
     private CLabel valueLabel;
-    private DataBindingContext bindingContext = new DataBindingContext();
-    private Binding binding;
     YangElementListSelectionDialog dialog;
-    private EObject node;
 
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
@@ -52,7 +42,8 @@ public class GeneralTabReferenceSection extends GFPropertySection implements ITa
         Composite composite = factory.createFlatFormComposite(parent);
         GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
         valueLabel = factory.createCLabel(composite, "Reference:");
-        GridDataFactory.fillDefaults().hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT).align(SWT.END, SWT.END).indent(HSPACE, VSPACE).applyTo(valueLabel);
+        GridDataFactory.fillDefaults().hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT).align(SWT.END, SWT.END)
+        .indent(HSPACE, VSPACE).applyTo(valueLabel);
         text = new DialogText(composite, tabbedPropertySheetPage.getWidgetFactory()) {
 
             @Override
@@ -65,33 +56,15 @@ public class GeneralTabReferenceSection extends GFPropertySection implements ITa
                 return null;
             }
         };
-        GridDataFactory.fillDefaults().hint(200, SWT.DEFAULT).align(SWT.END, SWT.END).indent(HSPACE, VSPACE).applyTo(text.getControl());
+        GridDataFactory.fillDefaults().hint(200, SWT.DEFAULT).align(SWT.END, SWT.END).indent(HSPACE, VSPACE)
+        .applyTo(text.getControl());
     }
 
     @Override
-    public void refresh() {
-        if (null != binding && !binding.isDisposed()) {
-            binding.updateTargetToModel();
-            binding.dispose();
-            bindingContext.removeBinding(binding);
-        }
-        final PictogramElement pe = getSelectedPictogramElement();
-        if (pe != null) {
-            node = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(pe);
-            if (node == null) {
-                return;
-            }
-            if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getUses(), node)) {
-                binding = bindingContext.bindValue(
-                        WidgetProperties.text(SWT.Modify).observeDelayed(2000, text.getTextControl()), EMFProperties
-                                .value(YangModelUtil.MODEL_PACKAGE.getUses_QName()).observe(node));
-            } else if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getReferenceNode(), node)) {
-                binding = bindingContext.bindValue(
-                        WidgetProperties.text(SWT.Modify).observeDelayed(2000, text.getTextControl()), EMFProperties
-                                .value(YangModelUtil.MODEL_PACKAGE.getReferenceNode_Reference()).observe(node));
-            }
-            binding.updateModelToTarget();
-            EClass reference = YangModelUtil.getConnectionReferenceClass(node);
+    public void setInput(IWorkbenchPart part, ISelection selection) {
+        super.setInput(part, selection);
+        if (getEObject() != null && getDiagramTypeProvider() != null) {
+            EClass reference = YangModelUtil.getConnectionReferenceClass(getEObject());
             ElementIndexType indexType = ElementIndexType.GROUPING;
             String imageId = YangDiagramImageProvider.IMG_GROUPING_PROPOSAL;
             if (YangModelUtil.MODEL_PACKAGE.getIdentity().equals(reference)) {
@@ -104,32 +77,33 @@ public class GeneralTabReferenceSection extends GFPropertySection implements ITa
             Module module = (Module) getDiagramTypeProvider().getFeatureProvider()
                     .getBusinessObjectForPictogramElement(getDiagram());
             if (null == dialog) {
-
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
                 dialog = new YangElementListSelectionDialog(shell, indexType, null, imageId, module, text.getText());
             } else {
                 dialog.reset(indexType, null, imageId, module, text.getText());
             }
-
-            binding.getModel().addChangeListener(new IChangeListener() {
-
-                @Override
-                public void handleChange(ChangeEvent event) {
-                    if (pe instanceof ContainerShape) {
-                        Shape shape = YangModelUIUtil.getBusinessObjectPropShape((ContainerShape) pe,
-                                PropertyUtil.OBJECT_HEADER_TEXT_SHAPE_KEY);
-                        if (null != shape) {
-                            YangModelUIUtil
-                                    .updatePictogramElement(getDiagramTypeProvider().getFeatureProvider(), shape);
-                        }
-                    }
-                }
-            });
         }
     }
 
     private void setValue(String firstResult) {
         text.setText(firstResult);
+    }
+
+    @Override
+    protected Binding createBinding(DataBindingContext bindingContext, EObject obj) {
+        if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getUses(), obj)) {
+            return bindingContext.bindValue(
+                    WidgetProperties.text(SWT.Modify).observeDelayed(1000, text.getTextControl()),
+                    EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getUses_QName()).observe(obj));
+        }
+        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(1000, text.getTextControl()),
+                EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getReferenceNode_Reference()).observe(obj));
+    }
+
+    @Override
+    protected boolean isApplied(Object bo) {
+        return YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getUses(), bo)
+                || YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getReferenceNode(), bo);
     }
 
 }

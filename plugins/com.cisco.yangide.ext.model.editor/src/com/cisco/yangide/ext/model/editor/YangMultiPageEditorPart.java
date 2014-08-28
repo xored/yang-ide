@@ -7,9 +7,14 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
+import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.MultiPageEditorPart;
+import org.eclipse.ui.part.MultiPageEditorSite;
 
 import com.cisco.yangide.core.YangCorePlugin;
 import com.cisco.yangide.editor.YangEditorPlugin;
@@ -61,6 +66,19 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart implements IYan
     @Override
     public boolean isDirty() {
         return yangSourceEditor.isDirty();
+    }
+
+    @Override
+    protected IEditorSite createSite(IEditorPart editor) {
+        return new MultiPageEditorSite(this, editor) {
+            @Override
+            protected void handlePostSelectionChanged(SelectionChangedEvent event) {
+                if ((event.getSelection() instanceof StructuredSelection && getActivePage() == 1)
+                        || (getActivePage() == 0 && !(event.getSelection() instanceof StructuredSelection))) {
+                    super.handlePostSelectionChanged(event);
+                }
+            }
+        };
     }
 
     private void initDiagramPage() {

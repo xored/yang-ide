@@ -35,6 +35,7 @@ import com.cisco.yangide.editor.editors.IReconcileHandler;
 import com.cisco.yangide.editor.editors.YangEditor;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Node;
+import com.cisco.yangide.ext.model.editor.Activator;
 import com.cisco.yangide.ext.model.editor.editors.IModelChangeHandler;
 import com.cisco.yangide.ext.model.editor.editors.ISourceModelManager;
 import com.cisco.yangide.ext.model.editor.editors.YangDiagramEditor;
@@ -110,7 +111,7 @@ public class ModelSynchronizer implements IDocumentUndoListener, IReconcileHandl
     public void init() {
         this.yangSourceEditor.addReconcileHandler(this);
         DocumentUndoManagerRegistry.getDocumentUndoManager(yangSourceEditor.getDocument())
-                .addDocumentUndoListener(this);
+        .addDocumentUndoListener(this);
     }
 
     public void dispose() {
@@ -161,7 +162,9 @@ public class ModelSynchronizer implements IDocumentUndoListener, IReconcileHandl
     }
 
     void updateFromSource(com.cisco.yangide.core.dom.Module module, boolean notify) {
-        System.out.println("from source " + notify);
+        if (Activator.getDefault().isDebugging()) {
+            System.out.println("from source");
+        }
         final Map<Node, ASTNode> newMapping = new HashMap<>();
 
         astModule = module;

@@ -65,7 +65,9 @@ final class DiagramModelAdapter extends EContentAdapter {
             if (this.modelSynchronizer.isNotificationEnabled()) {
                 try {
                     this.modelSynchronizer.disableNotification();
-                    System.out.println("from diag: " + notification);
+                    if (Activator.getDefault().isDebugging()) {
+                        System.out.println("from diag: " + notification);
+                    }
                     switch (notification.getEventType()) {
                     case Notification.ADD:
                         ASTNode node = mapping.get(notification.getNotifier());
@@ -74,7 +76,9 @@ final class DiagramModelAdapter extends EContentAdapter {
                             String content = null;
                             if (removedBlock.containsKey(newValue)) { // block moved from another
                                 // location
-                                System.out.println("block moved");
+                                if (Activator.getDefault().isDebugging()) {
+                                    System.out.println("block moved");
+                                }
                                 content = removedBlock.remove(newValue);
                                 add(node, content, notification.getPosition());
                             }

@@ -1,10 +1,12 @@
 package com.cisco.yangide.ext.model.editor.editors;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.gef.GraphicalViewer;
 import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
@@ -167,6 +169,23 @@ public class YangDiagramEditor extends DiagramEditor {
         super.setInput(input);
         uri = ((IDiagramEditorInput) input).getUri();
         module = ((YangDiagramEditorInput) input).getModule();
+        // added self changes listener
+        module.eAdapters().add(new EContentAdapter() {
+            @Override
+            public void notifyChanged(Notification notification) {
+                if (notification.getNotifier() instanceof Node) {
+                    if (notification.getFeature() == ModelPackage.Literals.NAMED_NODE__NAME
+                            || notification.getFeature() == ModelPackage.Literals.USES__QNAME) {
+                        if (notification.getNewValue() != null
+                                && !notification.getNewValue().equals(notification.getOldValue())) {
+                            modelChangeHandler.nodeChanged((Node) notification.getNotifier(),
+                                    (EAttribute) notification.getFeature(), notification.getNewValue());
+                        }
+                    }
+                }
+                super.notifyChanged(notification);
+            }
+        });
         loadDiagram();
     }
 
@@ -214,7 +233,7 @@ public class YangDiagramEditor extends DiagramEditor {
 
     public void setSourceModelManager(ISourceModelManager sourceModelManage) {
         ((EditorFeatureProvider) getDiagramTypeProvider().getFeatureProvider())
-                .setSourceModelManager(sourceModelManage);
+        .setSourceModelManager(sourceModelManage);
     }
 
     private IFile getFile() {
