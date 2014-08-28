@@ -503,7 +503,7 @@ public class LayoutUtil {
         return result;
     }
 
-    public static void layoutContainerShape(ContainerShape cs, IFeatureProvider fp, boolean layoutConnections) {
+    public static void layoutContainerShape(ContainerShape cs, IFeatureProvider fp) {
         YangCompositeSimpleNode node = createCompositeSimpleNode(cs, fp);
         layoutCompositeSimpleNode(node, cs.getGraphicsAlgorithm().getWidth());
         node.updateRealObject(fp);
@@ -533,9 +533,7 @@ public class LayoutUtil {
         if (y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN > cs.getGraphicsAlgorithm().getHeight()) {
             cs.getGraphicsAlgorithm().setHeight(y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN);
         }*/
-        if (layoutConnections) {
-            layoutDiagramConnections(fp);
-        }
+        layoutDiagramConnections(fp);
     }
 
     /**
