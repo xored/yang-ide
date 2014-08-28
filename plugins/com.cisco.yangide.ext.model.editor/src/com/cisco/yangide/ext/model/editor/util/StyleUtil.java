@@ -42,7 +42,6 @@ public class StyleUtil {
         return style;
     }
 
-    @SuppressWarnings("restriction")
     public static Style getStyleForDomainObject(Diagram diagram) {
         final String styleId = "DOMAIL-OBJECT";
         IGaService gaService = Graphiti.getGaService();

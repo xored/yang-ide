@@ -327,7 +327,7 @@ public class YangModelUIUtil {
         //fp.link(connection, addedEReference);
         // add dynamic text decorator for the reference name
 
-        ConnectionDecorator textDecorator = peCreateService.createConnectionDecorator(connection, true, 0.5, true);
+        ConnectionDecorator textDecorator = peCreateService.createConnectionDecorator(connection, false, 0.5, true);
         Text text = gaService.createPlainText(textDecorator);
         text.setStyle(StyleUtil.getStyleForTextDecorator(fp.getDiagramTypeProvider().getDiagram()));
         gaService.setLocation(text, 10, 0);

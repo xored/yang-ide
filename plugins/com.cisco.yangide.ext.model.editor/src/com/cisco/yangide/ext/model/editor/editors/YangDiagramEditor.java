@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -177,6 +178,18 @@ public class YangDiagramEditor extends DiagramEditor {
                                 && !notification.getNewValue().equals(notification.getOldValue())) {
                             modelChangeHandler.nodeChanged((Node) notification.getNotifier(),
                                     (EAttribute) notification.getFeature(), notification.getNewValue());
+                            final EClass type = YangModelUtil.getConnectionReferenceSubjectClass(notification.getNotifier());
+                            if (null != type) {
+                                getDiagramBehavior().getEditingDomain().getCommandStack()
+                                        .execute(new RecordingCommand(getDiagramBehavior().getEditingDomain()) {
+
+                                            @Override
+                                            protected void doExecute() {
+                                                YangModelUIUtil.updateConnections(type, getDiagramTypeProvider()
+                                                        .getFeatureProvider());
+                                            }
+                                        });
+                            }
                         }
                     }
                 }

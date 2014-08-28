@@ -64,10 +64,6 @@ public class LayoutUtil {
             Double y = node.getY();
             shape.getGraphicsAlgorithm().setX(x.intValue());
             shape.getGraphicsAlgorithm().setY(y.intValue());
-            Double width = node.getWidth();
-            Double height = node.getHeight();
-            shape.getGraphicsAlgorithm().setWidth(width.intValue());
-            shape.getGraphicsAlgorithm().setHeight(height.intValue());
         }
     }
 
@@ -311,7 +307,7 @@ public class LayoutUtil {
                         y += sn.getHeightInLayout() + OFFSET;
                         leftH -= sn.getHeightInLayout();
                     }
-                } while ((j == cols - 1 || leftH / (cols - j - 1) > averageH) && index < numChildren);
+                } while ((j == cols - 1 || (leftH / (cols - j - 1) > averageH && cols - j - 1 < numChildren - index )) && index < numChildren);
                 fireProgressEvent(2 + j, totalProgress);
             }
             updateLayoutLocations(entitiesToLayout);

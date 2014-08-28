@@ -28,13 +28,4 @@ public class RemoveConnectionFeature extends DefaultRemoveFeature {
         }
     }
 
-    /*@Override
-    public void remove(IRemoveContext context) {
-        if (context.getPictogramElement() instanceof Connection) {
-            Connection con = (Connection) context.getPictogramElement();
-            Anchor start = con.getStart();
-            start.getOutgoingConnections().clear();
-        }
-    }   */
-
 }

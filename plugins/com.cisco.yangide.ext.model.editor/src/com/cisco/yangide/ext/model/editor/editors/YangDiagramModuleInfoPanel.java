@@ -31,7 +31,6 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -88,9 +87,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     private Composite leftPane;
 
     private SashForm mainSashPanel;
-
-    private static final int H_OFFSET = 2;
-    private static final int TEXT_AREA_HEIGHT = 80;
+    
     private DataBindingContext bindingContext = new DataBindingContext();
 
     protected class PropertyEdit extends SashForm {
@@ -388,7 +385,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         GridLayoutFactory.swtDefaults().numColumns(2).applyTo(meta);
         GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(section);
 
-        Label organization = toolkit.createLabel(meta, "Organization: ");
+        toolkit.createLabel(meta, "Organization: ");
         organizationText = new DialogText(meta, toolkit) {
 
             @Override
@@ -403,7 +400,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             }
         };
 
-        Label contact = toolkit.createLabel(meta, "Contact: ");
+        toolkit.createLabel(meta, "Contact: ");
         contactText = new DialogText(meta, toolkit) {
 
             @Override
@@ -418,7 +415,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             }
         };
 
-        Label description = toolkit.createLabel(meta, "Description: ");
+        toolkit.createLabel(meta, "Description: ");
         descriptionText = new DialogText(meta, toolkit) {
 
             @Override
@@ -433,7 +430,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             }
         };
 
-        Label reference = toolkit.createLabel(meta, "Reference: ");
+        toolkit.createLabel(meta, "Reference: ");
         referenceText = new DialogText(meta, toolkit) {
 
             @Override
