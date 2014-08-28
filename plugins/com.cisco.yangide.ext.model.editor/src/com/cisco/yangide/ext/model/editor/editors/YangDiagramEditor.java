@@ -1,9 +1,13 @@
 package com.cisco.yangide.ext.model.editor.editors;
 
 import org.eclipse.core.resources.IFile;
+import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
+import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.context.impl.RemoveContext;
@@ -22,10 +26,12 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
 
+import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.editor.diagram.EditorFeatureProvider;
 import com.cisco.yangide.ext.model.editor.util.DiagramImportSupport;
+import com.cisco.yangide.ext.model.editor.util.LayoutUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 
@@ -75,6 +81,16 @@ public class YangDiagramEditor extends DiagramEditor {
                     }
                     YangModelUIUtil.drawObject(child, (ContainerShape) pe, getDiagramTypeProvider()
                             .getFeatureProvider(), p.x, p.y);
+                    if (pe instanceof Diagram) {                        
+                        getEditingDomain().getCommandStack().execute(new RecordingCommand(getEditingDomain()) {
+
+                            @Override
+                            protected void doExecute() {
+                                LayoutUtil.layoutDiagram(getDiagramTypeProvider().getFeatureProvider());
+                            }
+                        });
+                        
+                    }
                 }
                 updateModuleInfoPane(child);
             }
@@ -180,6 +196,7 @@ public class YangDiagramEditor extends DiagramEditor {
             getDiagramTypeProvider().getFeatureProvider().link(diagram, module);
 
             DiagramImportSupport.importDiagram(diagram, getDiagramTypeProvider().getFeatureProvider());
+           
         }
 
     }
