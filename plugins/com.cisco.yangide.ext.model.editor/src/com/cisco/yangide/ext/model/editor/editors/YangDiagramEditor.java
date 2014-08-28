@@ -5,7 +5,6 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
-import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -76,12 +75,9 @@ public class YangDiagramEditor extends DiagramEditor {
                 PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(getDiagramTypeProvider()
                         .getFeatureProvider(), parent);
                 if (null != pe && pe instanceof ContainerShape) {
-                    if (p == null) {
-                        p = new Point(0, 0);
-                    }
                     YangModelUIUtil.drawObject(child, (ContainerShape) pe, getDiagramTypeProvider()
-                            .getFeatureProvider(), p.x, p.y);
-                    if (pe instanceof Diagram) {                        
+                            .getFeatureProvider(), null == p ? 0 : p.x, null == p ? 0 : p.y);
+                    if (pe instanceof Diagram && null == p) {                        
                         getEditingDomain().getCommandStack().execute(new RecordingCommand(getEditingDomain()) {
 
                             @Override
@@ -196,7 +192,7 @@ public class YangDiagramEditor extends DiagramEditor {
             getDiagramTypeProvider().getFeatureProvider().link(diagram, module);
 
             DiagramImportSupport.importDiagram(diagram, getDiagramTypeProvider().getFeatureProvider());
-           
+            
         }
 
     }
