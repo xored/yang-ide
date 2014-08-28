@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.eclipse.draw2d.geometry.Rectangle;
 import org.eclipse.emf.common.util.EList;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.datatypes.IDimension;
 import org.eclipse.graphiti.features.IFeatureProvider;
 import org.eclipse.graphiti.features.context.impl.AddBendpointContext;
@@ -157,11 +158,13 @@ public class LayoutUtil {
             SimpleNode entity, Map<Shape, SimpleNode> map) {
         EList<Shape> children = parent.getChildren();
         for (Shape shape : children) {
-            if (null != fp.getBusinessObjectForPictogramElement(shape)) {
+            Object bo = fp.getBusinessObjectForPictogramElement(shape);
+            if (null != bo) {
                 GraphicsAlgorithm ga = shape.getGraphicsAlgorithm();
                 SimpleNode currentEntity = entity;
+                int pos = YangModelUtil.getPositionInParent(fp.getBusinessObjectForPictogramElement(fp.getDiagramTypeProvider().getDiagram()), bo);
                 if (null == currentEntity) { // connect inner shapes with the elements on diagram
-                    currentEntity = new SimpleNode(shape, ga.getX(), ga.getY(), ga.getWidth(), ga.getHeight());
+                    currentEntity = new YangSimpleNode(shape, ga.getX(), ga.getY(), ga.getWidth(), ga.getHeight(), pos);
                 }
                 map.put(shape, currentEntity);
                 if (shape instanceof ContainerShape) {
@@ -284,6 +287,20 @@ public class LayoutUtil {
         }
     }
 
+    public static class YangSimpleNode extends SimpleNode {
+        private int pos;
+
+        public YangSimpleNode(Object realObject, double x, double y, double width, double height, int pos) {
+            super(realObject, x, y, width, height);
+            this.pos = pos;
+        }
+        
+        public int getPositionInParent() {
+            return pos;
+        }
+        
+    }
+    
     private static class LayoutEntityHeightComparator implements Comparator<LayoutEntity> {
 
         @Override
@@ -296,6 +313,29 @@ public class LayoutUtil {
             }
             if (null == o1 && null != o2) {
                 return -1;
+            }
+            return o1.getHeightInLayout() > o2.getHeightInLayout() ? 1 : o1.getHeightInLayout() == o2
+                    .getHeightInLayout() ? 0 : -1;
+        }
+
+    }
+    
+    private static class LayoutEntityOrderComparator implements Comparator<LayoutEntity> {
+
+        @Override
+        public int compare(LayoutEntity o1, LayoutEntity o2) {
+            if (null == o1 && null == o2) {
+                return 0;
+            }
+            if (null != o1 && null == o2) {
+                return 1;
+            }
+            if (null == o1 && null != o2) {
+                return -1;
+            }
+            if (o1 instanceof YangSimpleNode && o2 instanceof YangSimpleNode) {
+                return ((YangSimpleNode) o1).getPositionInParent() > ((YangSimpleNode) o2).getPositionInParent() ? 1 : 
+                    ((YangSimpleNode) o1).getPositionInParent() == ((YangSimpleNode) o2).getPositionInParent() ? 0 : -1;
             }
             return o1.getHeightInLayout() > o2.getHeightInLayout() ? 1 : o1.getHeightInLayout() == o2
                     .getHeightInLayout() ? 0 : -1;
@@ -316,7 +356,7 @@ public class LayoutUtil {
 
         public YangDiagramLayoutAlgorithm(int styles) {
             super(styles);
-            setComparator(new LayoutEntityHeightComparator());
+            setComparator(new LayoutEntityOrderComparator());
         }
 
         @Override
