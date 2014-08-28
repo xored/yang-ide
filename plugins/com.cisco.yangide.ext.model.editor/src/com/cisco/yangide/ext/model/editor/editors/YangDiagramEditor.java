@@ -7,6 +7,7 @@ import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.transaction.RecordingCommand;
 import org.eclipse.gef.GraphicalViewer;
+import org.eclipse.gef.ui.parts.ScrollingGraphicalViewer;
 import org.eclipse.graphiti.features.IRemoveFeature;
 import org.eclipse.graphiti.features.context.impl.RemoveContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
@@ -149,6 +150,8 @@ public class YangDiagramEditor extends DiagramEditor {
                 if (!layouted && diagramSize.x != 0 && diagramSize.y != 0) {
                     layouted = true;
                     YangModelUIUtil.layoutPictogramElement(diagram, getDiagramTypeProvider().getFeatureProvider());
+                    viewer.select(viewer.getRootEditPart());
+                    viewer.reveal(viewer.getRootEditPart());
                 }
             }
 
@@ -197,7 +200,7 @@ public class YangDiagramEditor extends DiagramEditor {
             getDiagramTypeProvider().getFeatureProvider().link(diagram, module);
 
             DiagramImportSupport.importDiagram(diagram, getDiagramTypeProvider().getFeatureProvider());
-            
+
         }
 
     }
