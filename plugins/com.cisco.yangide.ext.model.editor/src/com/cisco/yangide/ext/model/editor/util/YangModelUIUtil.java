@@ -52,7 +52,7 @@ public class YangModelUIUtil {
         super();
     }
 
-    public static final int DEFAULT_WIDTH = 150;
+    public static final int DEFAULT_WIDTH = 225;
     public static final int DEFAULT_TEXT_HEIGHT = 18;
     public static final int DEFAULT_V_ALIGN = 5;
     public static final int DEFAULT_H_ALIGN = 2;

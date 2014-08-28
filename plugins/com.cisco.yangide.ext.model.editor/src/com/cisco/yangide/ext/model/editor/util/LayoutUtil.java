@@ -421,6 +421,7 @@ public class LayoutUtil {
         GraphicsAlgorithm type = YangModelUIUtil.getObjectPropGA(cs, PropertyUtil.BUSINESS_OBJECT_TYPE_SHAPE_KEY);
         GraphicsAlgorithm number = YangModelUIUtil.getObjectPropGA(cs, PropertyUtil.OBJECT_NUMBER_SHAPE_KEY);
         int textWidth = Math.max(0, cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_TEXT_HEIGHT);
+
         if (null != number) {
             IDimension dim = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) number).getValue(), number.getStyle().getFont());
             number.setX(Math.max(0, cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND - dim.getWidth()));
@@ -429,6 +430,7 @@ public class LayoutUtil {
         int typeWidth = 0;
         if (null != type && type instanceof Text) {
             typeWidth = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) type).getValue(), type.getStyle().getFont()).getWidth();
+            textWidth += YangModelUIUtil.DEFAULT_TEXT_HEIGHT;
         }
         int nameWidth = 0;
         if (null != text && text instanceof Text) {            
