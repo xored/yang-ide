@@ -51,19 +51,20 @@ public abstract class DialogText {
             }
         });
         parent.layout();
-        int h = text.getBounds().height;
+        int h = text.computeSize(-1, -1).y;
         if( h == 0) {
-            h = 15;
+            h = 25;
         }
         GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).hint(h, h).grab(false, false).applyTo(button);
         editor.addControlListener(new ControlListener() {
             @Override
             public void controlResized(ControlEvent e) {
                 int h = text.getBounds().height;
-                if (((GridData) button.getLayoutData()).heightHint != h) {
+                if (((GridData) button.getLayoutData()).heightHint != h && h != 0) {
                     GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).hint(h, h).grab(false, false)
                             .applyTo(button);
                     editor.layout();
+                    editor.getParent().layout();
                 }
             }
 

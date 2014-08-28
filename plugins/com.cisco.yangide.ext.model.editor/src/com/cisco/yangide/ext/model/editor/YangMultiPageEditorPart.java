@@ -67,6 +67,7 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart implements IYan
     public boolean isDirty() {
         return yangSourceEditor.isDirty();
     }
+        
 
     @Override
     protected IEditorSite createSite(IEditorPart editor) {

@@ -40,10 +40,9 @@ public class GeneralTabReferenceSection extends YangPropertySection implements I
 
         TabbedPropertySheetWidgetFactory factory = getWidgetFactory();
         Composite composite = factory.createFlatFormComposite(parent);
-        GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
+        GridLayoutFactory.swtDefaults().numColumns(2).applyTo(composite);
         valueLabel = factory.createCLabel(composite, "Reference:");
-        GridDataFactory.fillDefaults().hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT).align(SWT.END, SWT.END)
-        .indent(HSPACE, VSPACE).applyTo(valueLabel);
+        GridDataFactory.fillDefaults().hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT).applyTo(valueLabel);
         text = new DialogText(composite, tabbedPropertySheetPage.getWidgetFactory()) {
 
             @Override
@@ -56,8 +55,7 @@ public class GeneralTabReferenceSection extends YangPropertySection implements I
                 return null;
             }
         };
-        GridDataFactory.fillDefaults().hint(200, SWT.DEFAULT).align(SWT.END, SWT.END).indent(HSPACE, VSPACE)
-        .applyTo(text.getControl());
+        GridDataFactory.fillDefaults().hint(200, SWT.DEFAULT).applyTo(text.getControl());
     }
 
     @Override

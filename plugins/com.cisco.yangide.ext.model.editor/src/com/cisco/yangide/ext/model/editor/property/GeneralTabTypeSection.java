@@ -4,10 +4,10 @@ import org.eclipse.emf.ecore.EObject;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.platform.GFPropertySection;
+import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.CLabel;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
@@ -25,21 +25,13 @@ public class GeneralTabTypeSection extends GFPropertySection implements ITabbedP
 
         TabbedPropertySheetWidgetFactory factory = getWidgetFactory();
         Composite composite = factory.createFlatFormComposite(parent);
-        FormData data;
 
+        GridLayoutFactory.swtDefaults().numColumns(2).applyTo(composite);
+
+        CLabel label = factory.createCLabel(composite, "Type:");
+        GridDataFactory.fillDefaults().hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT).applyTo(label);
         typeText = factory.createCLabel(composite, "");
-        data = new FormData();
-        data.left = new FormAttachment(0, STANDARD_LABEL_WIDTH);
-        data.right = new FormAttachment(100, 0);
-        data.top = new FormAttachment(0, VSPACE);
-        typeText.setLayoutData(data);
 
-        CLabel valueLabel = factory.createCLabel(composite, "Type:");
-        data = new FormData();
-        data.left = new FormAttachment(0, 0);
-        data.right = new FormAttachment(typeText, -HSPACE);
-        data.top = new FormAttachment(typeText, 0, SWT.CENTER);
-        valueLabel.setLayoutData(data);
     }
 
     @Override

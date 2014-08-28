@@ -26,13 +26,11 @@ public class GeneralTabNameSection extends YangPropertySection implements ITabbe
 
         TabbedPropertySheetWidgetFactory factory = getWidgetFactory();
         Composite composite = factory.createFlatFormComposite(parent);
-        GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
+        GridLayoutFactory.swtDefaults().numColumns(2).applyTo(composite);
         CLabel valueLabel = factory.createCLabel(composite, "Name:");
-        GridDataFactory.fillDefaults().hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT).align(SWT.END, SWT.END)
-                .indent(HSPACE, VSPACE).applyTo(valueLabel);
+        GridDataFactory.fillDefaults().hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT).applyTo(valueLabel);
         nameText = factory.createText(composite, "");
-        GridDataFactory.fillDefaults().hint(200, SWT.DEFAULT).align(SWT.END, SWT.END).indent(HSPACE, VSPACE)
-                .applyTo(nameText);
+        GridDataFactory.fillDefaults().hint(200, SWT.DEFAULT).applyTo(nameText);
 
     }
 
@@ -43,7 +41,7 @@ public class GeneralTabNameSection extends YangPropertySection implements ITabbe
 
     @Override
     protected Binding createBinding(DataBindingContext bindingContext, EObject obj) {
-        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(500, nameText), EMFProperties
+        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(150, nameText), EMFProperties
                 .value(YangModelUtil.MODEL_PACKAGE.getNamedNode_Name()).observe(obj));
     }
 

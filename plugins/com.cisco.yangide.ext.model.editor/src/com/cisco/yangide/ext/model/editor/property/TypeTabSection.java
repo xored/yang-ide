@@ -35,10 +35,10 @@ public class TypeTabSection extends YangPropertySection implements ITabbedProper
 
         TabbedPropertySheetWidgetFactory factory = getWidgetFactory();
         Composite composite = factory.createFlatFormComposite(parent);
-        GridLayoutFactory.fillDefaults().numColumns(2).applyTo(composite);
+
+        GridLayoutFactory.swtDefaults().numColumns(2).applyTo(composite);
         CLabel valueLabel = factory.createCLabel(composite, "Type:");
-        GridDataFactory.fillDefaults().hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT).align(SWT.END, SWT.END)
-        .indent(HSPACE, VSPACE).applyTo(valueLabel);
+        GridDataFactory.fillDefaults().hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT).applyTo(valueLabel);
         type = new DialogText(composite, tabbedPropertySheetPage.getWidgetFactory()) {
 
             @Override
@@ -55,8 +55,7 @@ public class TypeTabSection extends YangPropertySection implements ITabbedProper
                 return null;
             }
         };
-        GridDataFactory.fillDefaults().hint(200, SWT.DEFAULT).align(SWT.END, SWT.END).indent(HSPACE, VSPACE)
-        .applyTo(type.getControl());
+        GridDataFactory.fillDefaults().hint(200, SWT.DEFAULT).grab(false, false).applyTo(type.getControl());
     }
 
     private void setType(String firstResult) {
@@ -66,7 +65,7 @@ public class TypeTabSection extends YangPropertySection implements ITabbedProper
     @Override
     protected Binding createBinding(DataBindingContext bindingContext, EObject obj) {
         return bindingContext.bindValue(
-                WidgetProperties.text(SWT.Modify).observeDelayed(200, type.getTextControl()),
+                WidgetProperties.text(SWT.Modify).observeDelayed(150, type.getTextControl()),
                 EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getNamedNode_Name()).observe(
                         ((TypedNode) obj).getType()));
     }
