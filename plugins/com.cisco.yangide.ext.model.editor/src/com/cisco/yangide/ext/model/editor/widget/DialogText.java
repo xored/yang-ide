@@ -7,6 +7,7 @@ import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
@@ -32,7 +33,7 @@ public abstract class DialogText {
      */
     private Object value = null;
 
-    protected Control createControl(Composite parent, FormToolkit toolkit) {
+    protected Control createControl(final Composite parent, FormToolkit toolkit) {
         editor = toolkit.createComposite(parent, SWT.NONE);
         GridDataFactory.fillDefaults().grab(true, false).applyTo(editor);
         GridLayoutFactory.fillDefaults().numColumns(2).spacing(2, 0).applyTo(editor);
@@ -51,7 +52,27 @@ public abstract class DialogText {
         });
         parent.layout();
         int h = text.getBounds().height;
+        if( h == 0) {
+            h = 15;
+        }
         GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).hint(h, h).grab(false, false).applyTo(button);
+        editor.addControlListener(new ControlListener() {
+            @Override
+            public void controlResized(ControlEvent e) {
+                int h = text.getBounds().height;
+                if (((GridData) button.getLayoutData()).heightHint != h) {
+                    GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).hint(h, h).grab(false, false)
+                            .applyTo(button);
+                    editor.layout();
+                }
+            }
+
+            @Override
+            public void controlMoved(ControlEvent e) {
+                // TODO Auto-generated method stub
+
+            }
+        });
 
         return editor;
     }
