@@ -108,6 +108,13 @@
                afterSection="com.cisco.yangide.ext.model.editor.GeneralTabName"
                tab="com.cisco.yangide.ext.model.editor.GeneralTab">
          </propertySection>
+         <propertySection
+               class="com.cisco.yangide.ext.model.editor.property.GeneralTabDescriptionSection"
+               filter="com.cisco.yangide.ext.model.editor.property.GeneralTabDescriptionFilter"
+               id="com.cisco.yangide.ext.model.editor.GeneralTabDescriptionSection"
+               afterSection="com.cisco.yangide.ext.model.editor.TypeTabSection"
+               tab="com.cisco.yangide.ext.model.editor.GeneralTab">
+         </propertySection>
       </propertySections>
    </extension>
    <extension

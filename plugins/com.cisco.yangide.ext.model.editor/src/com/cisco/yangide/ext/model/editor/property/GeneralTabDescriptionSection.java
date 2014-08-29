@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ */
 package com.cisco.yangide.ext.model.editor.property;
 
 import org.eclipse.core.databinding.Binding;
@@ -15,10 +18,16 @@ import org.eclipse.ui.views.properties.tabbed.ITabbedPropertyConstants;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetPage;
 import org.eclipse.ui.views.properties.tabbed.TabbedPropertySheetWidgetFactory;
 
+import com.cisco.yangide.ext.model.TaggedNode;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
+import com.cisco.yangide.ext.model.editor.util.YangTag;
 
-public class GeneralTabNameSection extends YangPropertySection implements ITabbedPropertyConstants {
-    private Text nameText;
+/**
+ * @author Konstantin Zaitsev
+ * @date Aug 29, 2014
+ */
+public class GeneralTabDescriptionSection extends YangPropertySection implements ITabbedPropertyConstants {
+    private Text descriptionText;
 
     @Override
     public void createControls(Composite parent, TabbedPropertySheetPage tabbedPropertySheetPage) {
@@ -27,21 +36,25 @@ public class GeneralTabNameSection extends YangPropertySection implements ITabbe
         TabbedPropertySheetWidgetFactory factory = getWidgetFactory();
         Composite composite = factory.createFlatFormComposite(parent);
         GridLayoutFactory.swtDefaults().numColumns(2).applyTo(composite);
-        CLabel valueLabel = factory.createCLabel(composite, "Name:");
-        GridDataFactory.fillDefaults().hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT).applyTo(valueLabel);
-        nameText = factory.createText(composite, "");
-        GridDataFactory.swtDefaults().hint(200, SWT.DEFAULT).applyTo(nameText);
+        CLabel valueLabel = factory.createCLabel(composite, "Description:");
+        GridDataFactory.fillDefaults().align(SWT.BEGINNING, SWT.TOP).hint(STANDARD_LABEL_WIDTH, SWT.DEFAULT)
+                .applyTo(valueLabel);
+        descriptionText = factory.createText(composite, "", SWT.MULTI | SWT.WRAP);
+        GridDataFactory.swtDefaults().hint(200, 100).applyTo(descriptionText);
     }
 
     @Override
     protected boolean isApplied(Object bo) {
-        return YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getNamedNode(), bo);
+        return YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getTaggedNode(), bo)
+                && YangModelUtil.getTag(YangTag.DESCRIPTION, (TaggedNode) bo) != null;
     }
 
     @Override
     protected Binding createBinding(DataBindingContext bindingContext, EObject obj) {
-        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(150, nameText), EMFProperties
-                .value(YangModelUtil.MODEL_PACKAGE.getNamedNode_Name()).observe(obj));
+        return bindingContext.bindValue(
+                WidgetProperties.text(SWT.Modify).observeDelayed(150, descriptionText),
+                EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value()).observe(
+                        YangModelUtil.getTag(YangTag.DESCRIPTION, (TaggedNode) obj)));
     }
 
 }

@@ -46,13 +46,14 @@ public abstract class DialogText {
 
         button = toolkit.createButton(editor, "...", SWT.PUSH);
         button.addSelectionListener(new SelectionAdapter() {
+            @Override
             public void widgetSelected(SelectionEvent event) {
                 openDialogBox(text);
             }
         });
         parent.layout();
         int h = text.computeSize(-1, -1).y;
-        if( h == 0) {
+        if (h == 0) {
             h = 25;
         }
         GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).hint(h, h).grab(false, false).applyTo(button);
@@ -62,7 +63,7 @@ public abstract class DialogText {
                 int h = text.getBounds().height;
                 if (((GridData) button.getLayoutData()).heightHint != h && h != 0) {
                     GridDataFactory.swtDefaults().align(SWT.FILL, SWT.TOP).hint(h, h).grab(false, false)
-                            .applyTo(button);
+                    .applyTo(button);
                     editor.layout();
                     editor.getParent().layout();
                 }
@@ -70,8 +71,6 @@ public abstract class DialogText {
 
             @Override
             public void controlMoved(ControlEvent e) {
-                // TODO Auto-generated method stub
-
             }
         });
 
