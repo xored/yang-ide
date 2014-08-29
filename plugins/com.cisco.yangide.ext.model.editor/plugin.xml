@@ -117,6 +117,16 @@
          </propertySection>
       </propertySections>
    </extension>
+   
+   <extension point="org.eclipse.ui.preferencePages">
+      <page
+            category="com.cisco.yangide.ui.preferences.YANGBasePreferencePage"
+            class="com.cisco.yangide.ext.model.editor.preferences.ModelEditorPreferencePage"
+            id="com.cisco.yangide.ext.model.editor.preferences.ModelEditorPreferencePage"
+            name="Model Editor">
+      </page>
+   </extension>
+   
    <extension
          point="org.eclipse.core.runtime.adapters">
       <factory

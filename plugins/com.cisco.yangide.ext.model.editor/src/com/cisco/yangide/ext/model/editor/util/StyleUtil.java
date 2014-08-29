@@ -8,9 +8,12 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.util.ColorConstant;
 import org.eclipse.graphiti.util.IColorConstant;
 import org.eclipse.graphiti.util.PredefinedColoredAreas;
-import org.eclipse.jface.resource.FontRegistry;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.FontData;
-import org.eclipse.ui.internal.Workbench;
+
+import com.cisco.yangide.ext.model.editor.Activator;
+import com.cisco.yangide.ext.model.editor.preferences.ModelEditorPreferences;
 
 @SuppressWarnings("restriction")
 public class StyleUtil {
@@ -146,7 +149,16 @@ public class StyleUtil {
     }
 
     private static FontData getDefaultFont() {
-        FontRegistry registry = Workbench.getInstance().getThemeManager().getCurrentTheme().getFontRegistry();
-        return registry.getFontData("org.eclipse.jface.dialogfont")[0];
+        FontData fontData = StringConverter.asFontData(Activator.getDefault().getPreferenceStore()
+                .getString(ModelEditorPreferences.DIAGRAM_EDITOR_FONT));
+        if (fontData == null) {
+            FontData fd = JFaceResources.getDefaultFont().getFontData()[0];
+            // workaround for issue with MacOS fonts
+            if ("Helvetica Neue Deskinterface".equals(fd.getName()) && fd.getHeight() == 11) {
+                fd.setName("Helvetica");
+            }
+            return fd;
+        }
+        return fontData;
     }
 }
