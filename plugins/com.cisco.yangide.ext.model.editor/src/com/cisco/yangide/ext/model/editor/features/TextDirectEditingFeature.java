@@ -39,6 +39,11 @@ public class TextDirectEditingFeature extends AbstractDirectEditingFeature {
             ((EObject) objects[0]).eSet(((EStructuralFeature) objects[1]), value);
         }
         updatePictogramElement(((Shape) context.getPictogramElement()));
+    }
+
+    @Override
+    public boolean stretchFieldToFitText() {
+        return true;
     }    
 
 }
