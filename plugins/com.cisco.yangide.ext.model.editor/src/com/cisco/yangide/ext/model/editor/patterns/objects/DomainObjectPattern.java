@@ -83,9 +83,7 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
     protected boolean canContain(ILocationContext context, ContainerShape shape, Object n) {
         Object parent = getBusinessObjectForPictogramElement(shape);
         if (null != parent && YangModelUtil.canContain(parent) && YangModelUtil.canContain(parent, n)) {
-            context.putProperty("parent", shape);
-            context.putProperty("parent_position",
-                    YangModelUIUtil.getPositionInParent(shape, context.getY(), getFeatureProvider()));
+            setFeedBackPosition(context, shape);
             return true;
         }
 
@@ -96,9 +94,7 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
         Object parent = getBusinessObjectForPictogramElement(shape);
         if (null != parent && YangModelUtil.canContain(parent) && parent instanceof EObject
                 && YangModelUtil.canContain(((EObject) parent).eClass(), getObjectEClass())) {
-            context.putProperty("parent", shape);
-            context.putProperty("parent_position",
-                    YangModelUIUtil.getPositionInParent(shape, context.getY(), getFeatureProvider()));
+            setFeedBackPosition(context, shape);
             return true;
         }
         return false;
@@ -106,18 +102,17 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
 
     @Override
     public boolean canMoveShape(IMoveShapeContext context) {
-        return context.getTargetContainer() == context.getSourceContainer()
-                || canContain(context, context.getTargetContainer(),
+        if (context.getTargetContainer() == context.getSourceContainer()) {
+            setFeedBackPosition(context, context.getTargetContainer());
+            return true;
+        }
+        return canContain(context, context.getTargetContainer(),
                         getBusinessObjectForPictogramElement(context.getPictogramElement()));
     }
 
     @Override
     public void moveShape(IMoveShapeContext context) {
         super.moveShape(context);
-        if (!(context.getTargetContainer() instanceof Diagram)) {
-            layoutPictogramElement(context.getTargetContainer());
-        }
-        LayoutUtil.layoutDiagramConnections(getFeatureProvider());
 
         if (!(context.getTargetContainer() instanceof Diagram && context.getSourceContainer() instanceof Diagram)) {
             int pos = YangModelUtil.getPositionInParent(
@@ -129,8 +124,12 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
                 YangModelUtil.move(getBusinessObjectForPictogramElement(context.getSourceContainer()),
                         getBusinessObjectForPictogramElement(context.getTargetContainer()),
                         getBusinessObjectForPictogramElement(context.getPictogramElement()), newPos);
+                if (!(context.getTargetContainer() instanceof Diagram)) {
+                    layoutPictogramElement(context.getTargetContainer());
+                }
             }
         }
+        LayoutUtil.layoutDiagramConnections(getFeatureProvider());
     }
 
     @Override
@@ -170,6 +169,12 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
     @Override
     public String getCreateDescription() {
         return "Creates new " + getCreateName() + " object";
+    }
+    
+    protected void setFeedBackPosition(ILocationContext context, ContainerShape parent) {
+        context.putProperty("parent", parent);
+        context.putProperty("parent_position",
+                YangModelUIUtil.getPositionInParent(parent, context.getY(), getFeatureProvider()));
     }
 
 }
