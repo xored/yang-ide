@@ -323,8 +323,6 @@ public class YangModelUIUtil {
         Polyline polyline = gaService.createPlainPolyline(connection);
         polyline.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
 
-        // create link and wire it
-        //fp.link(connection, addedEReference);
         // add dynamic text decorator for the reference name
 
         ConnectionDecorator textDecorator = peCreateService.createConnectionDecorator(connection, false, 0.5, true);
