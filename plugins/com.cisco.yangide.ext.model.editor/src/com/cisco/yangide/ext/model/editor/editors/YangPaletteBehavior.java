@@ -12,6 +12,7 @@ import org.eclipse.draw2d.IFigure;
 import org.eclipse.draw2d.text.FlowPage;
 import org.eclipse.draw2d.text.TextFlow;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.gef.EditPart;
 import org.eclipse.gef.KeyHandler;
 import org.eclipse.gef.Tool;
@@ -137,7 +138,10 @@ public class YangPaletteBehavior extends DefaultPaletteBehavior {
             EditPart editPart = (EditPart) ((StructuredSelection) selection).getFirstElement();
             if (editPart.getModel() != null && editPart.getModel() instanceof PictogramElement) {
                 PictogramElement model = (PictogramElement) editPart.getModel();
-                container = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(model).eClass();
+                EObject eObject = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(model);
+                if (eObject != null) {
+                    container = eObject.eClass();
+                }
             }
         }
 

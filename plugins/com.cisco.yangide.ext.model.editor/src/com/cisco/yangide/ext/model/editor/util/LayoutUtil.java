@@ -37,11 +37,11 @@ public class LayoutUtil {
     }
 
     public static final double DEFAULT_DIAGRAM_LAYOUT_V_SHIFT = 10;
-    protected static final  Comparator<YangDiagramNode> COMPARATOR = new LayoutEntityOrderComparator();
+    protected static final Comparator<YangDiagramNode> COMPARATOR = new LayoutEntityOrderComparator();
 
     private static void updateGraphCoordinates(List<YangDiagramNode> nodes) {
         for (YangDiagramNode node : nodes) {
-            node.updateRealObject();            
+            node.updateRealObject();
         }
     }
 
@@ -51,7 +51,8 @@ public class LayoutUtil {
         for (Shape shape : children) {
             Object bo = fp.getBusinessObjectForPictogramElement(shape);
             if (null != bo) {
-                int pos = YangModelUtil.getPositionInParent(fp.getBusinessObjectForPictogramElement(fp.getDiagramTypeProvider().getDiagram()), bo);
+                int pos = YangModelUtil.getPositionInParent(
+                        fp.getBusinessObjectForPictogramElement(fp.getDiagramTypeProvider().getDiagram()), bo);
                 YangDiagramNode currentEntity = new YangDiagramNode(shape, pos);
                 result.add(currentEntity);
             }
@@ -59,8 +60,8 @@ public class LayoutUtil {
         return result;
     }
 
-    private static double[] getAreaSizeAndArrangeLayout(List<YangDiagramNode> entities, YangDiagramLayoutAlgorithm layout, int width,
-            int height) {
+    private static double[] getAreaSizeAndArrangeLayout(List<YangDiagramNode> entities,
+            YangDiagramLayoutAlgorithm layout, int width, int height) {
         double maxW = 0D;
         double maxH = 0D;
         double fullW = 0D;
@@ -76,8 +77,8 @@ public class LayoutUtil {
                 maxH = node.getHeight();
             }
         }
-        ((YangDiagramLayoutAlgorithm) layout).setMaxElementSizes(maxW, maxH);
-        ((YangDiagramLayoutAlgorithm) layout).setFullElementSizes(fullW, fullH);
+        layout.setMaxElementSizes(maxW, maxH);
+        layout.setFullElementSizes(fullW, fullH);
         double h = Math.max(1, Math.ceil(entities.size() / (width / maxW))) * maxH;
         return new double[] { width, h };
     }
@@ -95,11 +96,11 @@ public class LayoutUtil {
             this.width = realObject.getGraphicsAlgorithm().getWidth();
             this.pos = pos;
         }
-        
+
         public int getPositionInParent() {
             return pos;
         }
-        
+
         public double getX() {
             return x;
         }
@@ -120,20 +121,21 @@ public class LayoutUtil {
         public double getHeight() {
             return height;
         }
-        
+
         public void updateRealObject() {
             realObject.getGraphicsAlgorithm().setX((int) x);
-            realObject.getGraphicsAlgorithm().setY((int) y);            
+            realObject.getGraphicsAlgorithm().setY((int) y);
         }
     }
-    
+
     public static class YangCompositeSimpleNode extends YangDiagramNode {
         private List<YangCompositeSimpleNode> children;
 
         public YangCompositeSimpleNode(ContainerShape realObject, int pos) {
             super(realObject, pos);
         }
-        
+
+        @Override
         public int getPositionInParent() {
             return pos;
         }
@@ -153,7 +155,7 @@ public class LayoutUtil {
             this.width = width;
             this.height = height;
         }
-        
+
         public void updateRealObject(IFeatureProvider fp) {
             realObject.getGraphicsAlgorithm().setX((int) x);
             realObject.getGraphicsAlgorithm().setY((int) y);
@@ -164,9 +166,9 @@ public class LayoutUtil {
                 child.updateRealObject(fp);
             }
         }
-        
+
     }
-    
+
     private static class LayoutEntityOrderComparator implements Comparator<YangDiagramNode> {
 
         @Override
@@ -180,40 +182,44 @@ public class LayoutUtil {
             if (null == o1 && null != o2) {
                 return -1;
             }
-            return ((YangDiagramNode) o1).getPositionInParent() > ((YangDiagramNode) o2).getPositionInParent() ? 1 : 
-                ((YangDiagramNode) o1).getPositionInParent() == ((YangDiagramNode) o2).getPositionInParent() ? 0 : -1;
+            return o1.getPositionInParent() > o2.getPositionInParent() ? 1 : o1.getPositionInParent() == o2
+                    .getPositionInParent() ? 0 : -1;
         }
 
     }
-    
+
     protected static int layoutCompositeSimpleNode(YangCompositeSimpleNode element, int boundsWidth) {
 
         int y = YangModelUIUtil.DEFAULT_TEXT_HEIGHT;
         for (YangCompositeSimpleNode sn : element.getChildren()) {
-            int elementHeight = layoutCompositeSimpleNode(sn, Math.max(0, boundsWidth - 2 * YangModelUIUtil.DEFAULT_V_ALIGN)) + 2 * YangModelUIUtil.DEFAULT_H_ALIGN;
+            int elementHeight = layoutCompositeSimpleNode(sn,
+                    Math.max(0, boundsWidth - 2 * YangModelUIUtil.DEFAULT_V_ALIGN))
+                    + 2 * YangModelUIUtil.DEFAULT_H_ALIGN;
             int xmove = YangModelUIUtil.DEFAULT_V_ALIGN;
             int ymove = y + YangModelUIUtil.DEFAULT_H_ALIGN;
             sn.setLocation(xmove, ymove);
-            sn.setSize(Math.max(0, boundsWidth - 2 * YangModelUIUtil.DEFAULT_V_ALIGN), (int) Math.max(elementHeight, sn.getHeight()));
+            sn.setSize(Math.max(0, boundsWidth - 2 * YangModelUIUtil.DEFAULT_V_ALIGN),
+                    (int) Math.max(elementHeight, sn.getHeight()));
             y = (int) (y + sn.getHeight() + YangModelUIUtil.DEFAULT_H_ALIGN);
-            
+
         }
-        element.setSize(boundsWidth, (int) Math.max(y  + 2 * YangModelUIUtil.DEFAULT_H_ALIGN, element.getHeight()));
+        element.setSize(boundsWidth, (int) Math.max(y + 2 * YangModelUIUtil.DEFAULT_H_ALIGN, element.getHeight()));
         return y;
     }
 
-
     private static class YangDiagramLayoutAlgorithm {
-        
+
         protected double maxW = YangModelUIUtil.DEFAULT_WIDTH;
-        @SuppressWarnings("unused") protected double maxH = YangModelUIUtil.DEFAULT_COMPOSITE_HEIGHT;
+        @SuppressWarnings("unused")
+        protected double maxH = YangModelUIUtil.DEFAULT_COMPOSITE_HEIGHT;
         protected int cols;
         protected int rows;
-        
-        @SuppressWarnings("unused") protected double fullW = YangModelUIUtil.DEFAULT_WIDTH;
+
+        @SuppressWarnings("unused")
+        protected double fullW = YangModelUIUtil.DEFAULT_WIDTH;
         protected double fullH = YangModelUIUtil.DEFAULT_COMPOSITE_HEIGHT;
         public static final int OFFSET = 40;
-        
+
         protected int[] calculateNumberOfRowsAndCols(int numChildren, double boundX, double boundY, double boundWidth,
                 double boundHeight) {
             cols = Math.max(1, (int) Math.min(numChildren, boundWidth / (getMaxW() + OFFSET)));
@@ -222,7 +228,8 @@ public class LayoutUtil {
             return new int[] { cols, rows };
         }
 
-        public void applyLayout(List<YangDiagramNode> entitiesToLayout, double boundX, double boundY, double boundWidth, double boundHeight) {
+        public void applyLayout(List<YangDiagramNode> entitiesToLayout, double boundX, double boundY,
+                double boundWidth, double boundHeight) {
             Collections.sort(entitiesToLayout, COMPARATOR);
             calculateNumberOfRowsAndCols(entitiesToLayout.size(), boundX, boundY, boundWidth, boundHeight);
             int index = 0;
@@ -242,7 +249,9 @@ public class LayoutUtil {
                         y += sn.getHeight() + OFFSET;
                         leftH -= sn.getHeight();
                     }
-                } while ((j == cols - 1 || (leftH / (cols - j - 1) > averageH && cols - j - 1 < entitiesToLayout.size() - index )) && index < entitiesToLayout.size());
+                } while ((j == cols - 1 || (leftH / (cols - j - 1) > averageH && cols - j - 1 < entitiesToLayout.size()
+                        - index))
+                        && index < entitiesToLayout.size());
 
             }
         }
@@ -255,7 +264,7 @@ public class LayoutUtil {
             this.maxW = maxW;
             this.maxH = maxH;
         }
-        
+
         public void setFullElementSizes(double fullW, double fullH) {
             this.fullW = fullW;
             this.fullH = fullH;
@@ -325,7 +334,7 @@ public class LayoutUtil {
         layoutAlgorithm.applyLayout(diagramEntities, 0D, 0D, preferedSize[0], preferedSize[1]);
 
         updateGraphCoordinates(diagramEntities);
-        
+
         layoutDiagramConnections(fp);
     }
 
@@ -336,30 +345,37 @@ public class LayoutUtil {
         int textWidth = Math.max(0, cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_TEXT_HEIGHT);
 
         if (null != number) {
-            IDimension dim = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) number).getValue(), number.getStyle().getFont());
-            number.setX(Math.max(0, cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND - dim.getWidth()));
+            IDimension dim = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) number).getValue(),
+                    number.getStyle().getFont());
+            number.setX(Math.max(0, cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND
+                    - dim.getWidth()));
             textWidth = Math.max(0, textWidth - number.getWidth());
         }
         int typeWidth = 0;
         if (null != type && type instanceof Text) {
-            typeWidth = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) type).getValue(), type.getStyle().getFont()).getWidth();
-            textWidth += YangModelUIUtil.DEFAULT_TEXT_HEIGHT;
+            IDimension size = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) type).getValue(),
+                    type.getStyle().getFont());
+            if (size != null) {
+                typeWidth = size.getWidth();
+                textWidth += YangModelUIUtil.DEFAULT_TEXT_HEIGHT;
+            }
         }
         int nameWidth = 0;
-        if (null != text && text instanceof Text) {            
-            nameWidth = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) text).getValue(), text.getStyle().getFont()).getWidth();
+        if (null != text && text instanceof Text) {
+            nameWidth = GraphitiUi.getUiLayoutService()
+                    .calculateTextSize(((Text) text).getValue(), text.getStyle().getFont()).getWidth();
             if (0 != typeWidth && typeWidth + nameWidth + YangModelUIUtil.DEFAULT_H_ALIGN > textWidth) {
                 nameWidth = (int) Math.min(nameWidth, (0.5 * Math.max(0, textWidth)));
             }
             text.setWidth(Math.min(nameWidth, textWidth));
         }
-        
+
         if (null != type && type instanceof Text) {
             Text ga = (Text) type;
             ga.setX(nameWidth + YangModelUIUtil.DEFAULT_TEXT_HEIGHT + YangModelUIUtil.DEFAULT_H_ALIGN);
             ga.setWidth(Math.max(0, textWidth - ga.getX()));
-        }      
-        
+        }
+
         Polyline line = YangModelUIUtil.getPolyline(cs);
         if (null != line) {
             EList<Point> points = line.getPoints();
@@ -367,12 +383,13 @@ public class LayoutUtil {
                 points.get(1).setX(cs.getGraphicsAlgorithm().getWidth());
             }
         }
-        
+
     }
-    
+
     protected static YangCompositeSimpleNode createCompositeSimpleNode(ContainerShape cs, IFeatureProvider fp) {
         Object bo = fp.getBusinessObjectForPictogramElement(cs);
-        YangCompositeSimpleNode result = new YangCompositeSimpleNode(cs, YangModelUtil.getPositionInParent(fp.getBusinessObjectForPictogramElement(cs.getContainer()), bo));
+        YangCompositeSimpleNode result = new YangCompositeSimpleNode(cs, YangModelUtil.getPositionInParent(
+                fp.getBusinessObjectForPictogramElement(cs.getContainer()), bo));
         for (Shape shape : YangModelUIUtil.filterBusinessObjectShapes(cs.getChildren())) {
             if (shape instanceof ContainerShape) {
                 result.addChild(createCompositeSimpleNode((ContainerShape) shape, fp));
@@ -391,7 +408,7 @@ public class LayoutUtil {
 
     /**
      * calls layout feature for {@link PictogramElement}
-     * 
+     *
      * @param pe
      * @param fp
      */
