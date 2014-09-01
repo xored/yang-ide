@@ -495,9 +495,6 @@ public class YangModelUtil {
 
     public static String getQName(EObject obj) {
         if (checkType(MODEL_PACKAGE.getUses(), obj)) {
-            if (null != obj && null != ((Uses) obj).getGrouping() && null != ((Uses) obj).getGrouping().getName()) {
-                return ((Uses) obj).getGrouping().getName();
-            }
             if (null != obj && null != ((Uses) obj).getQName()) {
                 return ((Uses) obj).getQName();
             }

@@ -2,16 +2,12 @@
  */
 package com.cisco.yangide.ext.model.impl;
 
-import com.cisco.yangide.ext.model.Grouping;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Uses;
-
 import org.eclipse.emf.common.notify.Notification;
-
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
-
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
@@ -23,7 +19,6 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * The following features are implemented:
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.UsesImpl#getParent <em>Parent</em>}</li>
- *   <li>{@link com.cisco.yangide.ext.model.impl.UsesImpl#getGrouping <em>Grouping</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.UsesImpl#getQName <em>QName</em>}</li>
  * </ul>
  * </p>
@@ -40,16 +35,6 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
      * @ordered
      */
     protected Node parent;
-
-    /**
-     * The cached value of the '{@link #getGrouping() <em>Grouping</em>}' reference.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getGrouping()
-     * @generated
-     * @ordered
-     */
-    protected Grouping grouping;
 
     /**
      * The default value of the '{@link #getQName() <em>QName</em>}' attribute.
@@ -133,44 +118,6 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
      * <!-- end-user-doc -->
      * @generated
      */
-    public Grouping getGrouping() {
-        if (grouping != null && grouping.eIsProxy()) {
-            InternalEObject oldGrouping = (InternalEObject)grouping;
-            grouping = (Grouping)eResolveProxy(oldGrouping);
-            if (grouping != oldGrouping) {
-                if (eNotificationRequired())
-                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, ModelPackage.USES__GROUPING, oldGrouping, grouping));
-            }
-        }
-        return grouping;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public Grouping basicGetGrouping() {
-        return grouping;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setGrouping(Grouping newGrouping) {
-        Grouping oldGrouping = grouping;
-        grouping = newGrouping;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.USES__GROUPING, oldGrouping, grouping));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public String getQName() {
         return qName;
     }
@@ -198,9 +145,6 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
             case ModelPackage.USES__PARENT:
                 if (resolve) return getParent();
                 return basicGetParent();
-            case ModelPackage.USES__GROUPING:
-                if (resolve) return getGrouping();
-                return basicGetGrouping();
             case ModelPackage.USES__QNAME:
                 return getQName();
         }
@@ -217,9 +161,6 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
         switch (featureID) {
             case ModelPackage.USES__PARENT:
                 setParent((Node)newValue);
-                return;
-            case ModelPackage.USES__GROUPING:
-                setGrouping((Grouping)newValue);
                 return;
             case ModelPackage.USES__QNAME:
                 setQName((String)newValue);
@@ -239,9 +180,6 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
             case ModelPackage.USES__PARENT:
                 setParent((Node)null);
                 return;
-            case ModelPackage.USES__GROUPING:
-                setGrouping((Grouping)null);
-                return;
             case ModelPackage.USES__QNAME:
                 setQName(QNAME_EDEFAULT);
                 return;
@@ -259,8 +197,6 @@ public class UsesImpl extends MinimalEObjectImpl.Container implements Uses {
         switch (featureID) {
             case ModelPackage.USES__PARENT:
                 return parent != null;
-            case ModelPackage.USES__GROUPING:
-                return grouping != null;
             case ModelPackage.USES__QNAME:
                 return QNAME_EDEFAULT == null ? qName != null : !QNAME_EDEFAULT.equals(qName);
         }

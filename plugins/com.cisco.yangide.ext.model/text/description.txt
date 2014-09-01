@@ -62,7 +62,6 @@ Package model <http://www.example.org/model>
     Reference tags : Tag<<0..*>>
 
   Class Uses -> Node
-    Reference grouping : Grouping
     Attribute qName : String
 
   Class Rpc -> NamedContainingNode, TaggedNode
@@ -81,7 +80,6 @@ Package model <http://www.example.org/model>
   Class Deviation -> NamedNode
 
   Class Identity -> NamedNode, ReferenceNode
-    Reference base : Identity
 
   Class TypedNode
     Reference type : Typeref

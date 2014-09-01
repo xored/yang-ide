@@ -11,7 +11,6 @@ package com.cisco.yangide.ext.model;
  * <p>
  * The following features are supported:
  * <ul>
- *   <li>{@link com.cisco.yangide.ext.model.Uses#getGrouping <em>Grouping</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.Uses#getQName <em>QName</em>}</li>
  * </ul>
  * </p>
@@ -21,32 +20,6 @@ package com.cisco.yangide.ext.model;
  * @generated
  */
 public interface Uses extends Node {
-    /**
-     * Returns the value of the '<em><b>Grouping</b></em>' reference.
-     * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Grouping</em>' reference isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-     * @return the value of the '<em>Grouping</em>' reference.
-     * @see #setGrouping(Grouping)
-     * @see com.cisco.yangide.ext.model.ModelPackage#getUses_Grouping()
-     * @model
-     * @generated
-     */
-    Grouping getGrouping();
-
-    /**
-     * Sets the value of the '{@link com.cisco.yangide.ext.model.Uses#getGrouping <em>Grouping</em>}' reference.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @param value the new value of the '<em>Grouping</em>' reference.
-     * @see #getGrouping()
-     * @generated
-     */
-    void setGrouping(Grouping value);
-
     /**
      * Returns the value of the '<em><b>QName</b></em>' attribute.
      * <!-- begin-user-doc -->

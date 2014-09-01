@@ -676,17 +676,8 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EReference getUses_Grouping() {
-        return (EReference)usesEClass.getEStructuralFeatures().get(0);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public EAttribute getUses_QName() {
-        return (EAttribute)usesEClass.getEStructuralFeatures().get(1);
+        return (EAttribute)usesEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -768,15 +759,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      */
     public EClass getIdentity() {
         return identityEClass;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public EReference getIdentity_Base() {
-        return (EReference)identityEClass.getEStructuralFeatures().get(0);
     }
 
     /**
@@ -925,7 +907,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         createEReference(taggedNodeEClass, TAGGED_NODE__TAGS);
 
         usesEClass = createEClass(USES);
-        createEReference(usesEClass, USES__GROUPING);
         createEAttribute(usesEClass, USES__QNAME);
 
         rpcEClass = createEClass(RPC);
@@ -944,7 +925,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         deviationEClass = createEClass(DEVIATION);
 
         identityEClass = createEClass(IDENTITY);
-        createEReference(identityEClass, IDENTITY__BASE);
 
         typedNodeEClass = createEClass(TYPED_NODE);
         createEReference(typedNodeEClass, TYPED_NODE__TYPE);
@@ -1092,7 +1072,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEReference(getTaggedNode_Tags(), this.getTag(), null, "tags", null, 0, -1, TaggedNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(usesEClass, Uses.class, "Uses", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getUses_Grouping(), this.getGrouping(), null, "grouping", null, 0, 1, Uses.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
         initEAttribute(getUses_QName(), theXMLTypePackage.getString(), "qName", null, 0, 1, Uses.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_UNSETTABLE, !IS_ID, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(rpcEClass, Rpc.class, "Rpc", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
@@ -1111,7 +1090,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
         initEClass(deviationEClass, Deviation.class, "Deviation", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
 
         initEClass(identityEClass, Identity.class, "Identity", !IS_ABSTRACT, !IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
-        initEReference(getIdentity_Base(), this.getIdentity(), null, "base", null, 0, 1, Identity.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, !IS_COMPOSITE, IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);
 
         initEClass(typedNodeEClass, TypedNode.class, "TypedNode", IS_ABSTRACT, IS_INTERFACE, IS_GENERATED_INSTANCE_CLASS);
         initEReference(getTypedNode_Type(), this.getTyperef(), null, "type", null, 0, 1, TypedNode.class, !IS_TRANSIENT, !IS_VOLATILE, IS_CHANGEABLE, IS_COMPOSITE, !IS_RESOLVE_PROXIES, !IS_UNSETTABLE, IS_UNIQUE, !IS_DERIVED, IS_ORDERED);

@@ -57,7 +57,6 @@
         containment="true"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Uses" eSuperTypes="#//Node">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="grouping" eType="#//Grouping"/>
     <eStructuralFeatures xsi:type="ecore:EAttribute" name="qName" eType="ecore:EDataType http://www.eclipse.org/emf/2003/XMLType#//String"/>
   </eClassifiers>
   <eClassifiers xsi:type="ecore:EClass" name="Rpc" eSuperTypes="#//NamedContainingNode #//TaggedNode"/>
@@ -69,9 +68,7 @@
   <eClassifiers xsi:type="ecore:EClass" name="Extension" eSuperTypes="#//NamedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Feature" eSuperTypes="#//NamedNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="Deviation" eSuperTypes="#//NamedNode"/>
-  <eClassifiers xsi:type="ecore:EClass" name="Identity" eSuperTypes="#//NamedNode #//ReferenceNode">
-    <eStructuralFeatures xsi:type="ecore:EReference" name="base" eType="#//Identity"/>
-  </eClassifiers>
+  <eClassifiers xsi:type="ecore:EClass" name="Identity" eSuperTypes="#//NamedNode #//ReferenceNode"/>
   <eClassifiers xsi:type="ecore:EClass" name="TypedNode" abstract="true" interface="true">
     <eStructuralFeatures xsi:type="ecore:EReference" name="type" eType="#//Typeref"
         containment="true"/>

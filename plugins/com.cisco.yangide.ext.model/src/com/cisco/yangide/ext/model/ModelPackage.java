@@ -1221,22 +1221,13 @@ public interface ModelPackage extends EPackage {
     int USES__PARENT = NODE__PARENT;
 
     /**
-     * The feature id for the '<em><b>Grouping</b></em>' reference.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int USES__GROUPING = NODE_FEATURE_COUNT + 0;
-
-    /**
      * The feature id for the '<em><b>QName</b></em>' attribute.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int USES__QNAME = NODE_FEATURE_COUNT + 1;
+    int USES__QNAME = NODE_FEATURE_COUNT + 0;
 
     /**
      * The number of structural features of the '<em>Uses</em>' class.
@@ -1245,7 +1236,7 @@ public interface ModelPackage extends EPackage {
      * @generated
      * @ordered
      */
-    int USES_FEATURE_COUNT = NODE_FEATURE_COUNT + 2;
+    int USES_FEATURE_COUNT = NODE_FEATURE_COUNT + 1;
 
     /**
      * The number of operations of the '<em>Uses</em>' class.
@@ -1661,22 +1652,13 @@ public interface ModelPackage extends EPackage {
     int IDENTITY__REFERENCE = NAMED_NODE_FEATURE_COUNT + 0;
 
     /**
-     * The feature id for the '<em><b>Base</b></em>' reference.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     * @ordered
-     */
-    int IDENTITY__BASE = NAMED_NODE_FEATURE_COUNT + 1;
-
-    /**
      * The number of structural features of the '<em>Identity</em>' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
      * @generated
      * @ordered
      */
-    int IDENTITY_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 2;
+    int IDENTITY_FEATURE_COUNT = NAMED_NODE_FEATURE_COUNT + 1;
 
     /**
      * The number of operations of the '<em>Identity</em>' class.
@@ -2287,17 +2269,6 @@ public interface ModelPackage extends EPackage {
     EClass getUses();
 
     /**
-     * Returns the meta object for the reference '{@link com.cisco.yangide.ext.model.Uses#getGrouping <em>Grouping</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the reference '<em>Grouping</em>'.
-     * @see com.cisco.yangide.ext.model.Uses#getGrouping()
-     * @see #getUses()
-     * @generated
-     */
-    EReference getUses_Grouping();
-
-    /**
      * Returns the meta object for the attribute '{@link com.cisco.yangide.ext.model.Uses#getQName <em>QName</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2398,17 +2369,6 @@ public interface ModelPackage extends EPackage {
      * @generated
      */
     EClass getIdentity();
-
-    /**
-     * Returns the meta object for the reference '{@link com.cisco.yangide.ext.model.Identity#getBase <em>Base</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the reference '<em>Base</em>'.
-     * @see com.cisco.yangide.ext.model.Identity#getBase()
-     * @see #getIdentity()
-     * @generated
-     */
-    EReference getIdentity_Base();
 
     /**
      * Returns the meta object for class '{@link com.cisco.yangide.ext.model.TypedNode <em>Typed Node</em>}'.
@@ -2828,14 +2788,6 @@ public interface ModelPackage extends EPackage {
         EClass USES = eINSTANCE.getUses();
 
         /**
-         * The meta object literal for the '<em><b>Grouping</b></em>' reference feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EReference USES__GROUPING = eINSTANCE.getUses_Grouping();
-
-        /**
          * The meta object literal for the '<em><b>QName</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -2930,14 +2882,6 @@ public interface ModelPackage extends EPackage {
          * @generated
          */
         EClass IDENTITY = eINSTANCE.getIdentity();
-
-        /**
-         * The meta object literal for the '<em><b>Base</b></em>' reference feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EReference IDENTITY__BASE = eINSTANCE.getIdentity_Base();
 
         /**
          * The meta object literal for the '{@link com.cisco.yangide.ext.model.TypedNode <em>Typed Node</em>}' class.

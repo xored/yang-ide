@@ -25,7 +25,6 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  *   <li>{@link com.cisco.yangide.ext.model.impl.IdentityImpl#getParent <em>Parent</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.IdentityImpl#getName <em>Name</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.IdentityImpl#getReference <em>Reference</em>}</li>
- *   <li>{@link com.cisco.yangide.ext.model.impl.IdentityImpl#getBase <em>Base</em>}</li>
  * </ul>
  * </p>
  *
@@ -81,16 +80,6 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
      * @ordered
      */
     protected String reference = REFERENCE_EDEFAULT;
-
-    /**
-     * The cached value of the '{@link #getBase() <em>Base</em>}' reference.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see #getBase()
-     * @generated
-     * @ordered
-     */
-    protected Identity base;
 
     /**
      * <!-- begin-user-doc -->
@@ -196,44 +185,6 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
      * <!-- end-user-doc -->
      * @generated
      */
-    public Identity getBase() {
-        if (base != null && base.eIsProxy()) {
-            InternalEObject oldBase = (InternalEObject)base;
-            base = (Identity)eResolveProxy(oldBase);
-            if (base != oldBase) {
-                if (eNotificationRequired())
-                    eNotify(new ENotificationImpl(this, Notification.RESOLVE, ModelPackage.IDENTITY__BASE, oldBase, base));
-            }
-        }
-        return base;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public Identity basicGetBase() {
-        return base;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setBase(Identity newBase) {
-        Identity oldBase = base;
-        base = newBase;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.IDENTITY__BASE, oldBase, base));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     @Override
     public Object eGet(int featureID, boolean resolve, boolean coreType) {
         switch (featureID) {
@@ -244,9 +195,6 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
                 return getName();
             case ModelPackage.IDENTITY__REFERENCE:
                 return getReference();
-            case ModelPackage.IDENTITY__BASE:
-                if (resolve) return getBase();
-                return basicGetBase();
         }
         return super.eGet(featureID, resolve, coreType);
     }
@@ -267,9 +215,6 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
                 return;
             case ModelPackage.IDENTITY__REFERENCE:
                 setReference((String)newValue);
-                return;
-            case ModelPackage.IDENTITY__BASE:
-                setBase((Identity)newValue);
                 return;
         }
         super.eSet(featureID, newValue);
@@ -292,9 +237,6 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
             case ModelPackage.IDENTITY__REFERENCE:
                 setReference(REFERENCE_EDEFAULT);
                 return;
-            case ModelPackage.IDENTITY__BASE:
-                setBase((Identity)null);
-                return;
         }
         super.eUnset(featureID);
     }
@@ -313,8 +255,6 @@ public class IdentityImpl extends MinimalEObjectImpl.Container implements Identi
                 return NAME_EDEFAULT == null ? name != null : !NAME_EDEFAULT.equals(name);
             case ModelPackage.IDENTITY__REFERENCE:
                 return REFERENCE_EDEFAULT == null ? reference != null : !REFERENCE_EDEFAULT.equals(reference);
-            case ModelPackage.IDENTITY__BASE:
-                return base != null;
         }
         return super.eIsSet(featureID);
     }
