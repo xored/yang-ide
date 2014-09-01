@@ -287,9 +287,12 @@ public class YangParserModelListener extends YangParserBaseListener {
 
     @Override
     public void enterTypedef_stmt(Typedef_stmtContext ctx) {
-        TypeDefinition typeDefinition = new TypeDefinition(module);
+        ASTNode parent = stack.peek();
+        TypeDefinition typeDefinition = new TypeDefinition(parent);
         updateNamedNode(typeDefinition, ctx);
-        module.getTypeDefinitions().add(typeDefinition);
+        if (parent instanceof Module) {
+            module.getTypeDefinitions().add(typeDefinition);
+        }
         stack.push(typeDefinition);
     }
 
