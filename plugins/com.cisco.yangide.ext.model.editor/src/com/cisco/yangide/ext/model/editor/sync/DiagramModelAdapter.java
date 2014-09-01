@@ -204,7 +204,7 @@ final class DiagramModelAdapter extends EContentAdapter {
         if (0 != position && parent.getChildren().size() > 0) {
             int size = parent.getChildren().size();
             insertPosition = position < 0 || position >= size ? parent.getChildren().get(size - 1).getEndPosition() + 2
-                    : parent.getChildren().get(position - 1).getEndPosition() + 2;
+                    : parent.getChildren().get(parent.getChildren().contains(child) && position < oldPosition ? position - 1 : position).getEndPosition() + 2;
         }
 
         try {
