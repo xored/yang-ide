@@ -26,7 +26,7 @@ import com.cisco.yangide.editor.preferences.YangPreferencesMessages;
 
 /**
  * Semantic highlightings
- * 
+ *
  * @author Alexey Kholupko
  */
 public class SemanticHighlightings {
@@ -35,7 +35,7 @@ public class SemanticHighlightings {
      * A named preference part that controls the highlighting of fields.
      */
     public static final String TYPE = "type"; //$NON-NLS-1$
-    public static final String GROUPING = "grouping"; //$NON-NLS-1$	
+    public static final String GROUPING = "grouping"; //$NON-NLS-1$
     public static final String PREFIX = "prefix"; //$NON-NLS-1$
 
     /**
@@ -115,7 +115,7 @@ public class SemanticHighlightings {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * com.cisco.yangide.editor.editors.SemanticHighlighting#getHiglightingOffset(com.cisco.
          * yangide.core.dom.ASTNode)
@@ -124,8 +124,9 @@ public class SemanticHighlightings {
         public int getHiglightingOffset(ASTNode node) {
             int result = -1;
             String nodeModulePrefix = null;
-            if (node instanceof TypeReference)
+            if (node instanceof TypeReference) {
                 nodeModulePrefix = ((TypeReference) node).getType().getPrefix();
+            }
 
             result = getHiglightingOffset(node, nodeModulePrefix);
             return result;
@@ -133,7 +134,7 @@ public class SemanticHighlightings {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * com.cisco.yangide.editor.editors.SemanticHighlighting#getHiglightingLength(com.cisco.
          * yangide.core.dom.ASTNode)
@@ -142,8 +143,9 @@ public class SemanticHighlightings {
         public int getHiglightingLength(ASTNode node) {
             int result = -1;
             String nodeModulePrefix = null;
-            if (node instanceof TypeReference)
+            if (node instanceof TypeReference) {
                 nodeModulePrefix = ((TypeReference) node).getType().getPrefix();
+            }
 
             result = getHiglightingLength(node, nodeModulePrefix);
             return result;
@@ -217,7 +219,7 @@ public class SemanticHighlightings {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * com.cisco.yangide.editor.editors.SemanticHighlighting#getHiglightingOffset(com.cisco.
          * yangide.core.dom.ASTNode)
@@ -227,8 +229,9 @@ public class SemanticHighlightings {
             int result = -1;
 
             String nodeModulePrefix = null;
-            if (node instanceof UsesNode)
+            if (node instanceof UsesNode) {
                 nodeModulePrefix = ((UsesNode) node).getGrouping().getPrefix();
+            }
 
             result = getHiglightingOffset(node, nodeModulePrefix);
             return result;
@@ -236,7 +239,7 @@ public class SemanticHighlightings {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * com.cisco.yangide.editor.editors.SemanticHighlighting#getHiglightingLength(com.cisco.
          * yangide.core.dom.ASTNode)
@@ -246,8 +249,9 @@ public class SemanticHighlightings {
             int result = -1;
 
             String nodeModulePrefix = null;
-            if (node instanceof UsesNode)
+            if (node instanceof UsesNode) {
                 nodeModulePrefix = ((UsesNode) node).getGrouping().getPrefix();
+            }
 
             result = getHiglightingLength(node, nodeModulePrefix);
             return result;
@@ -318,10 +322,11 @@ public class SemanticHighlightings {
 
             String thisModulePrefix = null;
             ASTNode thisModule = node.getModule();
-            if (thisModule instanceof SubModule)
+            if (thisModule instanceof SubModule) {
                 thisModulePrefix = null;// ((SubModule) thisModule).getParentPrefix();
-            else
+            } else {
                 thisModulePrefix = ((Module) thisModule).getPrefix().getValue();
+            }
 
             if (node instanceof TypeReference) {
                 String typeWholeName = ((TypeReference) node).getName();
@@ -341,33 +346,39 @@ public class SemanticHighlightings {
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * com.cisco.yangide.editor.editors.SemanticHighlighting#getHiglightingOffset(com.cisco.
          * yangide.core.dom.ASTNode)
          */
         @Override
         public int getHiglightingOffset(ASTNode node) {
-            if (node instanceof ASTNamedNode)
-                return ((ASTNamedNode) node).getNameStartPosition();
+            if (node instanceof ASTNamedNode) {
+                ASTNamedNode nnode = (ASTNamedNode) node;
+                // increase offset because of quoted name
+                return nnode.getName().length() != nnode.getNameLength() ? nnode.getNameStartPosition() + 1 : nnode
+                        .getNameStartPosition();
+            }
 
             return -1;
         }
 
         /*
          * (non-Javadoc)
-         * 
+         *
          * @see
          * com.cisco.yangide.editor.editors.SemanticHighlighting#getHiglightingLength(com.cisco.
          * yangide.core.dom.ASTNode)
          */
         @Override
         public int getHiglightingLength(ASTNode node) {
-            if (node instanceof TypeReference)
+            if (node instanceof TypeReference) {
                 return ((TypeReference) node).getType().getPrefix().length();
+            }
 
-            if (node instanceof UsesNode)
+            if (node instanceof UsesNode) {
                 return ((UsesNode) node).getGrouping().getPrefix().length();
+            }
 
             return -1;
         }
@@ -430,17 +441,17 @@ public class SemanticHighlightings {
      * match wins.
      */
     public static SemanticHighlighting[] getSemanticHighlightings() {
-        if (fgSemanticHighlightings == null)
+        if (fgSemanticHighlightings == null) {
             fgSemanticHighlightings = new SemanticHighlighting[] { new TypeHighlighting(), new GroupingHighlighting(),
                     new PrefixHighlighting() };
+        }
         return fgSemanticHighlightings;
     }
 
     /**
      * Initialize default preferences in the given preference store.
-     * 
-     * @param store The preference store
-     * TODO refactor and call from PreferenceInitializer
+     *
+     * @param store The preference store TODO refactor and call from PreferenceInitializer
      */
     public static void initDefaults(IPreferenceStore store) {
         SemanticHighlighting[] semanticHighlightings = getSemanticHighlightings();
@@ -475,15 +486,18 @@ public class SemanticHighlightings {
                 break;
             }
         }
-        if (relevantKey == null)
+        if (relevantKey == null) {
             return false;
+        }
 
         for (int i = 0; i < highlightings.length; i++) {
             String key = getEnabledPreferenceKey(highlightings[i]);
-            if (key.equals(relevantKey))
+            if (key.equals(relevantKey)) {
                 continue;
-            if (store.getBoolean(key))
+            }
+            if (store.getBoolean(key)) {
                 return false; // another is still enabled or was enabled before
+            }
         }
 
         // all others are disabled, so toggling relevantKey affects the enablement
@@ -512,13 +526,15 @@ public class SemanticHighlightings {
      */
     private static void setDefaultAndFireEvent(IPreferenceStore store, String key, RGB newValue) {
         RGB oldValue = null;
-        if (store.isDefault(key))
+        if (store.isDefault(key)) {
             oldValue = PreferenceConverter.getDefaultColor(store, key);
+        }
 
         PreferenceConverter.setDefault(store, key, newValue);
 
-        if (oldValue != null && !oldValue.equals(newValue))
+        if (oldValue != null && !oldValue.equals(newValue)) {
             store.firePropertyChangeEvent(key, oldValue, newValue);
+        }
     }
 
     /**

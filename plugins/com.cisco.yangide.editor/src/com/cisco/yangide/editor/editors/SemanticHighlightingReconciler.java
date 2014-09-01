@@ -37,7 +37,7 @@ import com.cisco.yangide.editor.editors.SemanticHighlightingManager.Highlighting
 
 /**
  * Semantic highlighting reconciler - Background thread implementation.
- * 
+ *
  * @author Alexey Kholupko
  */
 public class SemanticHighlightingReconciler implements ITextInputListener {
@@ -49,61 +49,76 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
 
         /** The semantic token */
         private ASTNode fToken = null;
-        
+
         /*
          * @see org.eclipse.jdt.core.dom.ASTVisitor#visit(org.eclipse.jdt.core.dom.SimpleName)
          */
+        @Override
         public boolean visit(Module node) {
+            return true;
+        }
+
+        /*
+         * @see org.eclipse.jdt.core.dom.ASTVisitor#visit(org.eclipse.jdt.core.dom.SimpleName)
+         */
+        @Override
+        public boolean visit(TypeReference node) {
             if ((node.getFlags() & ASTNode.MALFORMED) == ASTNode.MALFORMED) {
                 retainPositions(node.getStartPosition(), node.getLength());
                 return false;
             }
-            return true;            
-        }
-
-        /*
-         * @see org.eclipse.jdt.core.dom.ASTVisitor#visit(org.eclipse.jdt.core.dom.SimpleName)
-         */
-        public boolean visit(TypeReference node) {
             fToken = node;
             for (int i = 0, n = fJobSemanticHighlightings.length; i < n; i++) {
                 SemanticHighlighting semanticHighlighting = fJobSemanticHighlightings[i];
                 if (fJobHighlightings[i].isEnabled() && semanticHighlighting.consumes(fToken)) {
                     int offset = semanticHighlighting.getHiglightingOffset(node);
                     int length = semanticHighlighting.getHiglightingLength(node);
-                    if (offset > -1 && length > 0)
+                    if (offset > -1 && length > 0) {
                         addPosition(offset, length, fJobHighlightings[i]);
-                    // break;
+                        // break;
+                    }
                 }
             }
             return true;
         }
 
+        @Override
         public boolean visit(UsesNode node) {
+            if ((node.getFlags() & ASTNode.MALFORMED) == ASTNode.MALFORMED) {
+                retainPositions(node.getStartPosition(), node.getLength());
+                return false;
+            }
             fToken = node;
             for (int i = 0, n = fJobSemanticHighlightings.length; i < n; i++) {
                 SemanticHighlighting semanticHighlighting = fJobSemanticHighlightings[i];
                 if (fJobHighlightings[i].isEnabled() && semanticHighlighting.consumes(fToken)) {
                     int offset = semanticHighlighting.getHiglightingOffset(node);
                     int length = semanticHighlighting.getHiglightingLength(node);
-                    if (offset > -1 && length > 0)
+                    if (offset > -1 && length > 0) {
                         addPosition(offset, length, fJobHighlightings[i]);
-                    // break;
+                        // break;
+                    }
                 }
             }
             return true;
         }
 
+        @Override
         public boolean visit(GroupingDefinition node) {
+            if ((node.getFlags() & ASTNode.MALFORMED) == ASTNode.MALFORMED) {
+                retainPositions(node.getStartPosition(), node.getLength());
+                return false;
+            }
             fToken = node;
             for (int i = 0, n = fJobSemanticHighlightings.length; i < n; i++) {
                 SemanticHighlighting semanticHighlighting = fJobSemanticHighlightings[i];
                 if (fJobHighlightings[i].isEnabled() && semanticHighlighting.consumes(fToken)) {
                     int offset = semanticHighlighting.getHiglightingOffset(node);
                     int length = semanticHighlighting.getHiglightingLength(node);
-                    if (offset > -1 && length > 0)
+                    if (offset > -1 && length > 0) {
                         addPosition(offset, length, fJobHighlightings[i]);
-                    // break;
+                        // break;
+                    }
                 }
             }
             return true;
@@ -111,14 +126,19 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
 
         @Override
         public boolean visit(TypeDefinition node) {
+            if ((node.getFlags() & ASTNode.MALFORMED) == ASTNode.MALFORMED) {
+                retainPositions(node.getStartPosition(), node.getLength());
+                return false;
+            }
             fToken = node;
             for (int i = 0, n = fJobSemanticHighlightings.length; i < n; i++) {
                 SemanticHighlighting semanticHighlighting = fJobSemanticHighlightings[i];
                 if (fJobHighlightings[i].isEnabled() && semanticHighlighting.consumes(fToken)) {
                     int offset = semanticHighlighting.getHiglightingOffset(node);
                     int length = semanticHighlighting.getHiglightingLength(node);
-                    if (offset > -1 && length > 0)
+                    if (offset > -1 && length > 0) {
                         addPosition(offset, length, fJobHighlightings[i]);
+                    }
                     break;
                 }
             }
@@ -127,7 +147,7 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
 
         /**
          * Add a position with the given range and highlighting iff it does not exist already.
-         * 
+         *
          * @param offset The range offset
          * @param length The range length
          * @param highlighting The highlighting
@@ -137,8 +157,9 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
             // TODO: use binary search
             for (int i = 0, n = fRemovedPositions.size(); i < n; i++) {
                 HighlightedPosition position = (HighlightedPosition) fRemovedPositions.get(i);
-                if (position == null)
+                if (position == null) {
                     continue;
+                }
                 if (position.isEqual(offset, length, highlighting)) {
                     isExisting = true;
                     fRemovedPositions.set(i, null);
@@ -155,7 +176,7 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
 
         /**
          * Retain the positions completely contained in the given range.
-         * 
+         *
          * @param offset The range offset
          * @param length The range length
          */
@@ -234,27 +255,31 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
     public void reconciled(ASTNode ast, boolean forced, IProgressMonitor progressMonitor) {
         // ensure at most one thread can be reconciling at any time
         synchronized (fReconcileLock) {
-            if (fIsReconciling)
+            if (fIsReconciling) {
                 return;
-            else
+            } else {
                 fIsReconciling = true;
+            }
         }
         fJobPresenter = fPresenter;
         fJobSemanticHighlightings = fSemanticHighlightings;
         fJobHighlightings = fHighlightings;
 
         try {
-            if (fJobPresenter == null || fJobSemanticHighlightings == null || fJobHighlightings == null)
+            if (fJobPresenter == null || fJobSemanticHighlightings == null || fJobHighlightings == null) {
                 return;
+            }
 
             fJobPresenter.setCanceled(progressMonitor.isCanceled());
 
-            if (ast == null || fJobPresenter.isCanceled())
+            if (ast == null || fJobPresenter.isCanceled()) {
                 return;
+            }
 
             ASTNode[] subtrees = getAffectedSubtrees(ast);
-            if (subtrees.length == 0)
+            if (subtrees.length == 0) {
                 return;
+            }
 
             startReconcilingPositions();
 
@@ -263,11 +288,13 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
             }
 
             TextPresentation textPresentation = null;
-            if (!fJobPresenter.isCanceled())
+            if (!fJobPresenter.isCanceled()) {
                 textPresentation = fJobPresenter.createPresentation(fAddedPositions, fRemovedPositions);
+            }
 
-            if (!fJobPresenter.isCanceled())
+            if (!fJobPresenter.isCanceled()) {
                 updatePresentation(textPresentation, fAddedPositions, fRemovedPositions);
+            }
 
             stopReconcilingPositions();
         } finally {
@@ -300,27 +327,29 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
 
     /**
      * Reconcile positions based on the AST subtrees
-     * 
+     *
      * @param subtrees the AST subtrees
      */
     private void reconcilePositions(ASTNode[] subtrees) {
         // FIXME: remove positions not covered by subtrees
 
-        for (int i = 0, n = subtrees.length; i < n; i++)
+        for (int i = 0, n = subtrees.length; i < n; i++) {
             subtrees[i].accept(fCollector);
+        }
         List<Position> oldPositions = fRemovedPositions;
         List<Position> newPositions = new ArrayList<Position>(fNOfRemovedPositions);
         for (int i = 0, n = oldPositions.size(); i < n; i++) {
             Position current = oldPositions.get(i);
-            if (current != null)
+            if (current != null) {
                 newPositions.add(current);
+            }
         }
         fRemovedPositions = newPositions;
     }
 
     /**
      * Update the presentation.
-     * 
+     *
      * @param textPresentation the text presentation
      * @param addedPositions the added positions
      * @param removedPositions the removed positions
@@ -328,24 +357,29 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
     private void updatePresentation(TextPresentation textPresentation, List<Position> addedPositions,
             List<Position> removedPositions) {
         Runnable runnable = fJobPresenter.createUpdateRunnable(textPresentation, addedPositions, removedPositions);
-        if (runnable == null)
+        if (runnable == null) {
             return;
+        }
 
         YangEditor editor = fEditor;
-        if (editor == null)
+        if (editor == null) {
             return;
+        }
 
         IWorkbenchPartSite site = editor.getSite();
-        if (site == null)
+        if (site == null) {
             return;
+        }
 
         Shell shell = site.getShell();
-        if (shell == null || shell.isDisposed())
+        if (shell == null || shell.isDisposed()) {
             return;
+        }
 
         Display display = shell.getDisplay();
-        if (display == null || display.isDisposed())
+        if (display == null || display.isDisposed()) {
             return;
+        }
 
         display.asyncExec(runnable);
     }
@@ -361,7 +395,7 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
 
     /**
      * Install this reconciler on the given editor, presenter and highlightings.
-     * 
+     *
      * @param editor the editor
      * @param sourceViewer the source viewer
      * @param presenter the semantic highlighting presenter
@@ -380,16 +414,18 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
         fSourceViewer.addTextInputListener(this);
         // fEditor.addReconcileListener(this);
         fEditor.updateSemanticHigliting();
-        if (fEditor == null)
+        if (fEditor == null) {
             scheduleJob();
+        }
     }
 
     /**
      * Uninstall this reconciler from the editor
      */
     public void uninstall() {
-        if (fPresenter != null)
+        if (fPresenter != null) {
             fPresenter.setCanceled(true);
+        }
 
         if (fEditor != null) {
             fSourceViewer.removeTextInputListener(this);
@@ -429,11 +465,10 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
                             return Status.CANCEL_STATUS;
                         }
                     }
-                    if (monitor.isCanceled())
+                    if (monitor.isCanceled()) {
                         return Status.CANCEL_STATUS;
+                    }
 
-                    // Module ast =
-                    // YangParserUtil.parseYangFile(fEditor.getDocument().get().toCharArray());
                     Module ast;
                     try {
                         ast = fEditor.getModule();
@@ -445,8 +480,9 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
                     reconciled(ast, false, monitor);
                     synchronized (fJobLock) {
                         // allow the job to be gc'ed
-                        if (fJob == this)
+                        if (fJob == this) {
                             fJob = null;
+                        }
                     }
                     return Status.OK_STATUS;
                 }
@@ -463,6 +499,7 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
      * org.eclipse.jface.text.ITextInputListener#inputDocumentAboutToBeChanged(org.eclipse.jface
      * .text.IDocument, org.eclipse.jface.text.IDocument)
      */
+    @Override
     public void inputDocumentAboutToBeChanged(IDocument oldInput, IDocument newInput) {
         synchronized (fJobLock) {
             if (fJob != null) {
@@ -477,9 +514,11 @@ public class SemanticHighlightingReconciler implements ITextInputListener {
      * org.eclipse.jface.text.ITextInputListener#inputDocumentChanged(org.eclipse.jface.text.IDocument
      * , org.eclipse.jface.text.IDocument)
      */
+    @Override
     public void inputDocumentChanged(IDocument oldInput, IDocument newInput) {
-        if (newInput != null)
+        if (newInput != null) {
             scheduleJob();
+        }
     }
 
     /**
