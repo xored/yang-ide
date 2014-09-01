@@ -17,6 +17,8 @@ import org.eclipse.graphiti.mm.pictograms.PictogramElement;
 import org.eclipse.graphiti.ui.editor.DiagramBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.IDiagramEditorInput;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
 import org.eclipse.swt.graphics.Point;
@@ -162,6 +164,20 @@ public class YangDiagramEditor extends DiagramEditor {
     }
 
     @Override
+    public void initializeGraphicalViewer() {
+        super.initializeGraphicalViewer();
+        if (getGraphicalViewer() != null) {
+            getGraphicalViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+                @Override
+                public void selectionChanged(SelectionChangedEvent event) {
+                    ((YangDiagramBehavior) getDiagramBehavior()).getYangPaletteBehavior().updateSelection(
+                            event.getSelection());
+                }
+            });
+        }
+    }
+
+    @Override
     protected void setInput(IEditorInput input) {
         super.setInput(input);
         uri = ((IDiagramEditorInput) input).getUri();
@@ -178,17 +194,18 @@ public class YangDiagramEditor extends DiagramEditor {
                                 && !notification.getNewValue().equals(notification.getOldValue())) {
                             modelChangeHandler.nodeChanged((Node) notification.getNotifier(),
                                     (EAttribute) notification.getFeature(), notification.getNewValue());
-                            final EClass type = YangModelUtil.getConnectionReferenceSubjectClass(notification.getNotifier());
+                            final EClass type = YangModelUtil.getConnectionReferenceSubjectClass(notification
+                                    .getNotifier());
                             if (null != type) {
                                 getDiagramBehavior().getEditingDomain().getCommandStack()
-                                        .execute(new RecordingCommand(getDiagramBehavior().getEditingDomain()) {
+                                .execute(new RecordingCommand(getDiagramBehavior().getEditingDomain()) {
 
-                                            @Override
-                                            protected void doExecute() {
-                                                YangModelUIUtil.updateConnections(type, getDiagramTypeProvider()
-                                                        .getFeatureProvider());
-                                            }
-                                        });
+                                    @Override
+                                    protected void doExecute() {
+                                        YangModelUIUtil.updateConnections(type, getDiagramTypeProvider()
+                                                .getFeatureProvider());
+                                    }
+                                });
                             }
                         }
                     }
@@ -243,7 +260,7 @@ public class YangDiagramEditor extends DiagramEditor {
 
     public void setSourceModelManager(ISourceModelManager sourceModelManage) {
         ((EditorFeatureProvider) getDiagramTypeProvider().getFeatureProvider())
-                .setSourceModelManager(sourceModelManage);
+        .setSourceModelManager(sourceModelManage);
     }
 
     private IFile getFile() {

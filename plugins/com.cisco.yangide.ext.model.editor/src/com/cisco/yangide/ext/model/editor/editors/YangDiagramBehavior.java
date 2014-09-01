@@ -1,6 +1,7 @@
 package com.cisco.yangide.ext.model.editor.editors;
 
 import org.eclipse.gef.ContextMenuProvider;
+import org.eclipse.graphiti.ui.editor.DefaultPaletteBehavior;
 import org.eclipse.graphiti.ui.editor.DefaultPersistencyBehavior;
 import org.eclipse.graphiti.ui.editor.DefaultRefreshBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramBehavior;
@@ -54,5 +55,14 @@ public class YangDiagramBehavior extends DiagramBehavior {
                 super.addActionToMenuIfAvailable(manager, actionId, menuGroup);
             }
         };
+    }
+
+    @Override
+    protected DefaultPaletteBehavior createPaletteBehaviour() {
+        return new YangPaletteBehavior(this);
+    }
+
+    public YangPaletteBehavior getYangPaletteBehavior() {
+        return (YangPaletteBehavior) getPaletteBehavior();
     }
 }
