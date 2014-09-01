@@ -8,6 +8,7 @@ import org.eclipse.graphiti.services.IGaService;
 import org.eclipse.graphiti.util.ColorConstant;
 import org.eclipse.graphiti.util.IColorConstant;
 import org.eclipse.graphiti.util.PredefinedColoredAreas;
+import org.eclipse.jface.resource.DataFormatException;
 import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.resource.StringConverter;
 import org.eclipse.swt.graphics.FontData;
@@ -149,8 +150,13 @@ public class StyleUtil {
     }
 
     private static FontData getDefaultFont() {
-        FontData fontData = StringConverter.asFontData(Activator.getDefault().getPreferenceStore()
-                .getString(ModelEditorPreferences.DIAGRAM_EDITOR_FONT));
+        FontData fontData = null;
+        try {
+            fontData = StringConverter.asFontData(Activator.getDefault().getPreferenceStore()
+                    .getString(ModelEditorPreferences.DIAGRAM_EDITOR_FONT));
+        } catch (DataFormatException e) {
+            // ignore incorrect format
+        }
         if (fontData == null) {
             FontData fd = JFaceResources.getDefaultFont().getFontData()[0];
             // workaround for issue with MacOS fonts
