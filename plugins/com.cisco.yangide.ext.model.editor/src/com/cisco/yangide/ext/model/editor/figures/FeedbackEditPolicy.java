@@ -10,6 +10,7 @@ import org.eclipse.gef.RequestConstants;
 import org.eclipse.gef.commands.Command;
 import org.eclipse.gef.editpolicies.GraphicalEditPolicy;
 import org.eclipse.graphiti.features.context.IContext;
+import org.eclipse.graphiti.features.context.ITargetContext;
 import org.eclipse.graphiti.internal.command.CommandContainer;
 import org.eclipse.graphiti.internal.command.ICommand;
 import org.eclipse.graphiti.internal.command.MoveShapeFeatureCommandWithContext;
@@ -57,20 +58,37 @@ public class FeedbackEditPolicy extends GraphicalEditPolicy {
             if (command.canExecute()) {
                 int position = 0;
                 IContext context = getCommandContext(command);
+                EditPart container = getHost();
+                if (context instanceof ITargetContext) {                    
+                    while (!container.getModel().equals(((ITargetContext) context).getTargetContainer())) {
+                        container = container.getParent();
+                    }
+                }
+                
                 if (null != context && null != context.getProperty("parent_position")) {
                     position = (int) context.getProperty("parent_position");
                 }
-                feedbackFigure.setPosition(position);
-                feedbackFigure.setVisible(true);
-                feedbackFigure.repaint();
+                EditPolicy policy = container.getEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE);
+                if (policy instanceof FeedbackEditPolicy) {
+                    ((FeedbackEditPolicy) policy).showFeedback(position);
+                }
             } else {
-                feedbackFigure.setVisible(false);
-                feedbackFigure.repaint();
+                hideFeedback();              
             }
         }
         editPolicy.showTargetFeedback(request);
     }
     
+    public void showFeedback(int position) {
+        feedbackFigure.setPosition(position);
+        feedbackFigure.setVisible(true);
+        feedbackFigure.repaint();
+    }
+    
+    public void hideFeedback() {
+        feedbackFigure.setVisible(false);
+        feedbackFigure.repaint();
+    }
     protected IContext getCommandContext(Command command) {
         if (command instanceof CreateModelObjectCommand) {
             return ((CreateModelObjectCommand) command).getContext();

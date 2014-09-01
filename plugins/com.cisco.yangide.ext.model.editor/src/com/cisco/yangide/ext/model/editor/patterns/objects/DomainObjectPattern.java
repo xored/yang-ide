@@ -8,6 +8,9 @@ import org.eclipse.graphiti.features.context.ILayoutContext;
 import org.eclipse.graphiti.features.context.ILocationContext;
 import org.eclipse.graphiti.features.context.IMoveShapeContext;
 import org.eclipse.graphiti.features.context.IResizeShapeContext;
+import org.eclipse.graphiti.features.context.impl.AddContext;
+import org.eclipse.graphiti.features.context.impl.CreateContext;
+import org.eclipse.graphiti.features.context.impl.MoveShapeContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
@@ -15,10 +18,10 @@ import org.eclipse.graphiti.mm.pictograms.Shape;
 import org.eclipse.graphiti.pattern.AbstractPattern;
 import org.eclipse.graphiti.pattern.IPattern;
 
+import com.cisco.yangide.ext.model.ModelFactory;
 import com.cisco.yangide.ext.model.editor.util.LayoutUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
-import com.cisco.yangide.ext.model.impl.ModelFactoryImpl;
 
 public abstract class DomainObjectPattern extends AbstractPattern implements IPattern {
 
@@ -49,6 +52,16 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
 
     @Override
     public boolean canCreate(ICreateContext context) {
+        boolean canCreate = canCreateInitial(context);
+        while (!canCreate && !(context.getTargetContainer().getContainer() instanceof Diagram)) {
+            ((CreateContext) context).setY(context.getY() + context.getTargetContainer().getGraphicsAlgorithm().getY());
+            ((CreateContext) context).setTargetContainer(context.getTargetContainer().getContainer());
+            canCreate = canCreateInitial(context);
+        }
+        return canCreate;
+    }
+    
+    public boolean canCreateInitial(ICreateContext context) {
         return canContain(context, context.getTargetContainer());
     }
 
@@ -65,7 +78,7 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
     }
 
     protected EObject createEObject() {
-        return ModelFactoryImpl.eINSTANCE.create(getObjectEClass());
+        return ModelFactory.eINSTANCE.create(getObjectEClass());
     }
 
     @Override
@@ -102,6 +115,16 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
 
     @Override
     public boolean canMoveShape(IMoveShapeContext context) {
+        boolean canMove = canMoveInitial(context);
+        while (!canMove && !(context.getTargetContainer().getContainer() instanceof Diagram)) {
+            ((MoveShapeContext) context).setY(context.getY() + context.getTargetContainer().getGraphicsAlgorithm().getY());
+            ((MoveShapeContext) context).setTargetContainer(context.getTargetContainer().getContainer());
+            canMove = canMoveInitial(context);
+        }
+        return canMove;
+    }
+    
+    public boolean canMoveInitial(IMoveShapeContext context) {
         if (context.getTargetContainer() == context.getSourceContainer()) {
             setFeedBackPosition(context, context.getTargetContainer());
             return true;
@@ -148,6 +171,16 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
 
     @Override
     public boolean canAdd(IAddContext context) {
+        boolean canAdd = canAddInitial(context);
+        while (!canAdd && !(context.getTargetContainer().getContainer() instanceof Diagram)) {
+            ((AddContext) context).setY(context.getY() + context.getTargetContainer().getGraphicsAlgorithm().getY());
+            ((AddContext) context).setTargetContainer(context.getTargetContainer().getContainer());            
+            canAdd = canAddInitial(context);
+        }
+        return canAdd;
+    }
+    
+    public boolean canAddInitial(IAddContext context) {
         Object parent = getBusinessObjectForPictogramElement(context.getTargetContainer());
         return canContain(context, context.getTargetContainer(), context.getNewObject())
                 && checkEClass(context.getNewObject()) && null != parent
@@ -156,6 +189,7 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
 
     @Override
     public PictogramElement add(IAddContext context) {
+
         PictogramElement result = YangModelUIUtil.drawPictogramElement(context, getFeatureProvider(),
                 getCreateImageId(), getHeaderText(context.getNewObject()));
         YangModelUIUtil.updateConnections((EObject) context.getNewObject(), getFeatureProvider());

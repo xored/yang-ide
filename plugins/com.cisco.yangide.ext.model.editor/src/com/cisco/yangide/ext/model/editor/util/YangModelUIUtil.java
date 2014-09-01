@@ -467,6 +467,10 @@ public class YangModelUIUtil {
         if (context.getTargetContainer() instanceof Diagram) {
             drawPictogramElementPositionInParent(result, fp);
         }
+        
+        // add feedback element
+        final Shape feedbackShape = Graphiti.getPeCreateService().createShape(result, false);
+        Graphiti.getGaService().createPlatformGraphicsAlgorithm(feedbackShape, "feedback");
 
         ContainerShape layoutShape = result;
         while (!(layoutShape.getContainer() instanceof Diagram)) {
@@ -499,9 +503,6 @@ public class YangModelUIUtil {
         final Polyline polyline = gaService.createPlainPolyline(shape, new int[] { 0, DEFAULT_TEXT_HEIGHT, width,
                 DEFAULT_TEXT_HEIGHT });
         polyline.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
-        // add feedback element
-        final Shape feedbackShape = peCreateService.createShape(containerShape, false);
-        gaService.createPlatformGraphicsAlgorithm(feedbackShape, "feedback");
 
         drawPictogramElementHeader(containerShape, context, fp, imageId, title, width, DEFAULT_TEXT_HEIGHT);
         return containerShape;
