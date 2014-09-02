@@ -1,0 +1,124 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: RenameGrouping
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _7S3O0DKMEeSzJ-2otsp1aw
+Runtime-Version: 1.5.0.201406151150
+Save-Time: 9/2/14 5:38 PM
+Testcase-Type: ecl
+
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+get-view "Package Explorer" | get-tree | select "module2/src\\/main\\/yang/group-test2.yang" | double-click
+with [get-editor "group-test2.yang" | get-text-viewer] {
+    set-caret-pos 10 16
+    get-menu "Refactor/Rename..." | click
+    get-menu "Refactor/Rename..." | click
+}
+with [get-window Refactoring] {
+    get-editbox -after [get-label "New name:"] | get-property text | equals gr1 | verify-true
+    get-button "Preview >" | get-property enablement | equals false | verify-true
+}
+with [get-window Refactoring] {
+    get-editbox -after [get-label "New name:"] | set-text group2
+    get-button "Preview >" | click
+}
+with [get-window Refactoring] {
+    with [get-tree] {
+        get-property itemCount | equals 2 | verify-true
+        get-item "group-test2.yang - module2\\/src\\/main\\/yang" | get-property caption 
+            | equals "group-test2.yang - module2/src/main/yang" | verify-true
+        get-item "group-test.yang - module1\\/src\\/main\\/yang" | get-property caption 
+            | equals "group-test.yang - module1/src/main/yang" | verify-true
+    }
+    get-text-viewer | get-property text | equals "// Contents of \"group-test2\"\n"
+        + "module group-test2 {\n"
+        + "    namespace \"urn:opendaylight:group-test2\";\n"
+        + "    prefix \"group-test2\";\n\n"
+        + "    revision 2014-09-02 {\n"
+        + "        description \"Initial revision\";\n"
+        + "    }\n\n"
+        + "    grouping gr1 {\n"
+        + "    \tcontainer container-gr {\n"
+        + "    \t\tleaf test {\n"
+        + "    \t\t\ttype string;\n"
+        + "    \t\t}\n"
+        + "    \t}\n"
+        + "    }\n"
+        + "    \n"
+        + "    rpc op {\n"
+        + "    \tinput {\n"
+        + "    \t\tuses gr1;\n"
+        + "    \t}\n"
+        + "    }\n"
+        + "}" | verify-true
+    get-text-viewer -after [get-label "Refactored Source"] -index 1 | get-property text 
+        | equals "// Contents of \"group-test2\"\n"
+        + "module group-test2 {\n"
+        + "    namespace \"urn:opendaylight:group-test2\";\n"
+        + "    prefix \"group-test2\";\n\n"
+        + "    revision 2014-09-02 {\n"
+        + "        description \"Initial revision\";\n"
+        + "    }\n\n"
+        + "    grouping group2 {\n"
+        + "    \tcontainer container-gr {\n"
+        + "    \t\tleaf test {\n"
+        + "    \t\t\ttype string;\n"
+        + "    \t\t}\n"
+        + "    \t}\n"
+        + "    }\n"
+        + "    \n"
+        + "    rpc op {\n"
+        + "    \tinput {\n"
+        + "    \t\tuses group2;\n"
+        + "    \t}\n"
+        + "    }\n"
+        + "}" | verify-true
+}
+get-window Refactoring | get-tree | select "group-test.yang - module1\\/src\\/main\\/yang"
+with [get-window Refactoring] {
+    get-text-viewer | get-property text | equals "// Contents of \"group-test\"\n"
+        + "module group-test {\n"
+        + "    namespace \"urn:opendaylight:group-test\";\n"
+        + "    prefix \"group-test\";\n"
+        + "\t\n"
+        + "    import group-test2 { prefix group-test2; revision-date 2014-09-02; }\n"
+        + "\t\n"
+        + "    revision 2014-09-02 {\n"
+        + "        description \"Initial revision\";\n"
+        + "    }\n\n"
+        + "    container container1 {\n"
+        + "    \tleaf-list user {\n"
+        + "    \t\ttype string;\n"
+        + "    \t}\n"
+        + "    \tuses  group-test2:gr1;\n"
+        + "    }\n"
+        + "}" | verify-true
+    get-text-viewer -after [get-label "Refactored Source"] -index 1 | get-property text 
+        | equals "// Contents of \"group-test\"\n"
+        + "module group-test {\n"
+        + "    namespace \"urn:opendaylight:group-test\";\n"
+        + "    prefix \"group-test\";\n"
+        + "\t\n"
+        + "    import group-test2 { prefix group-test2; revision-date 2014-09-02; }\n"
+        + "\t\n"
+        + "    revision 2014-09-02 {\n"
+        + "        description \"Initial revision\";\n"
+        + "    }\n\n"
+        + "    container container1 {\n"
+        + "    \tleaf-list user {\n"
+        + "    \t\ttype string;\n"
+        + "    \t}\n"
+        + "    \tuses  group-test2:group2;\n"
+        + "    }\n"
+        + "}" | verify-true
+}
+with [get-window Refactoring] {
+    get-tree | select "group-test2.yang - module2\\/src\\/main\\/yang"
+    get-button Cancel | click
+}
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--
