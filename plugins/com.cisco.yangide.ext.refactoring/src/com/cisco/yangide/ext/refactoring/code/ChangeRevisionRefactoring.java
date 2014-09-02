@@ -67,7 +67,7 @@ public class ChangeRevisionRefactoring extends Refactoring {
 
     @Override
     public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
-    OperationCanceledException {
+            OperationCanceledException {
         return new RefactoringStatus();
     }
 
@@ -97,7 +97,8 @@ public class ChangeRevisionRefactoring extends Refactoring {
             composite.addTextEdit(file.getFullPath().toString(), editName, editName,
                     revisionNode.getNameStartPosition(), revisionNode.getNameLength(), "\"" + revision + "\""); //$NON-NLS-1$//$NON-NLS-2$
             composite.addTextEdit(file.getFullPath().toString(), editName, editName, revisionNode.getDescriptionNode()
-                    .getStartPosition(), revisionNode.getLength() + 1, "description \"" + description + "\";");
+                    .getStartPosition(), revisionNode.getDescriptionNode().getLength() + 1, "description \"" //$NON-NLS-1$
+                    + description + "\";"); //$NON-NLS-1$
         }
 
         YangCompositeChange refComposite = new YangCompositeChange(
