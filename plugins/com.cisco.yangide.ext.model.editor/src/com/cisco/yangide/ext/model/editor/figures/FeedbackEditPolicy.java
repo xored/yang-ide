@@ -70,19 +70,20 @@ public class FeedbackEditPolicy extends GraphicalEditPolicy {
                 }
                 EditPolicy policy = container.getEditPolicy(EditPolicy.SELECTION_FEEDBACK_ROLE);
                 if (policy instanceof FeedbackEditPolicy) {
-                    ((FeedbackEditPolicy) policy).showFeedback(position);
+                    ((FeedbackEditPolicy) policy).showFeedback(request, position);
                 }
             } else {
                 hideFeedback();              
             }
         }
-        editPolicy.showTargetFeedback(request);
+        
     }
     
-    public void showFeedback(int position) {
+    public void showFeedback(Request request, int position) {
         feedbackFigure.setPosition(position);
         feedbackFigure.setVisible(true);
         feedbackFigure.repaint();
+        editPolicy.showTargetFeedback(request);
     }
     
     public void hideFeedback() {
