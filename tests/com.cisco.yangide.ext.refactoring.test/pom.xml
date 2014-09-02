@@ -42,6 +42,7 @@
                 <features>
                   <feature>com.cisco.yangide.feature.feature.group</feature>
                   <feature>com.cisco.yangide.m2e.yang.feature.feature.group</feature>
+                  <feature>com.cisco.yangide.ext.feature.feature.group</feature>
                 </features>
               </injection>
 
