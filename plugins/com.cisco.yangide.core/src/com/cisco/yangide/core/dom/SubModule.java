@@ -38,6 +38,9 @@ public class SubModule extends Module {
      * @return the parentPrefix
      */
     public String getParentPrefix() {
+        if (parentPrefix == null) {
+            parentPrefix = prefix != null ? prefix.getValue() : null;
+        }
         return parentPrefix;
     }
 

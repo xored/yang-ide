@@ -25,7 +25,7 @@ public class Module extends ASTCompositeNode {
     private SimpleNode<String> namespaceNode;
     private ASTNamedNode revisionNode;
     private SimpleNode<String> sourcePath;
-    private SimpleNode<String> prefix;
+    protected SimpleNode<String> prefix;
     private SimpleNode<String> yangVersion;
     private SimpleNode<String> organization;
     private SimpleNode<String> contact;
