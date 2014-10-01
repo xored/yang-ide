@@ -1,0 +1,146 @@
+diff --git a/plugins/com.cisco.yangide.ext.model.editor/META-INF/MANIFEST.MF b/plugins/com.cisco.yangide.ext.model.editor/META-INF/MANIFEST.MF
+index 659bcac..8486bcd 100644
+--- a/plugins/com.cisco.yangide.ext.model.editor/META-INF/MANIFEST.MF
++++ b/plugins/com.cisco.yangide.ext.model.editor/META-INF/MANIFEST.MF
+@@ -2,7 +2,7 @@ Manifest-Version: 1.0
+ Bundle-ManifestVersion: 2
+ Bundle-Name: Editor
+ Bundle-SymbolicName: com.cisco.yangide.ext.model.editor;singleton:=true
+-Bundle-Version: 1.1.0.qualifier
++Bundle-Version: 1.1.1.qualifier
+ Bundle-Activator: com.cisco.yangide.ext.model.editor.Activator
+ Bundle-Vendor: CISCO
+ Require-Bundle: org.eclipse.ui,
+diff --git a/plugins/com.cisco.yangide.ext.model.editor/pom.xml b/plugins/com.cisco.yangide.ext.model.editor/pom.xml
+index a02f97f..47e12cf 100644
+--- a/plugins/com.cisco.yangide.ext.model.editor/pom.xml
++++ b/plugins/com.cisco.yangide.ext.model.editor/pom.xml
+@@ -8,7 +8,7 @@
+   <parent>
+     <groupId>com.cisco.yangide.ext</groupId>
+     <artifactId>com.cisco.yangide.ext.parent</artifactId>
+-    <version>1.1.0-SNAPSHOT</version>
++    <version>1.1.1-SNAPSHOT</version>
+     <relativePath>../..</relativePath>
+   </parent>
+ 
+diff --git a/plugins/com.cisco.yangide.ext.model/META-INF/MANIFEST.MF b/plugins/com.cisco.yangide.ext.model/META-INF/MANIFEST.MF
+index df09655..0999d56 100644
+--- a/plugins/com.cisco.yangide.ext.model/META-INF/MANIFEST.MF
++++ b/plugins/com.cisco.yangide.ext.model/META-INF/MANIFEST.MF
+@@ -2,7 +2,7 @@ Manifest-Version: 1.0
+ Bundle-ManifestVersion: 2
+ Bundle-Name: %pluginName
+ Bundle-SymbolicName: com.cisco.yangide.ext.model;singleton:=true
+-Bundle-Version: 1.1.0.qualifier
++Bundle-Version: 1.1.1.qualifier
+ Bundle-ClassPath: .
+ Bundle-Vendor: %providerName
+ Bundle-Localization: plugin
+diff --git a/plugins/com.cisco.yangide.ext.model/pom.xml b/plugins/com.cisco.yangide.ext.model/pom.xml
+index d9e4b86..872a3c9 100644
+--- a/plugins/com.cisco.yangide.ext.model/pom.xml
++++ b/plugins/com.cisco.yangide.ext.model/pom.xml
+@@ -8,7 +8,7 @@
+   <parent>
+     <groupId>com.cisco.yangide.ext</groupId>
+     <artifactId>com.cisco.yangide.ext.parent</artifactId>
+-    <version>1.1.0-SNAPSHOT</version>
++    <version>1.1.1-SNAPSHOT</version>
+     <relativePath>../..</relativePath>
+   </parent>
+ 
+diff --git a/plugins/com.cisco.yangide.ext.refactoring/META-INF/MANIFEST.MF b/plugins/com.cisco.yangide.ext.refactoring/META-INF/MANIFEST.MF
+index e3c34a5..c1a467b 100644
+--- a/plugins/com.cisco.yangide.ext.refactoring/META-INF/MANIFEST.MF
++++ b/plugins/com.cisco.yangide.ext.refactoring/META-INF/MANIFEST.MF
+@@ -2,7 +2,7 @@ Manifest-Version: 1.0
+ Bundle-ManifestVersion: 2
+ Bundle-Name: com.cisco.yangide.ext.refactoring
+ Bundle-SymbolicName: com.cisco.yangide.ext.refactoring;singleton:=true
+-Bundle-Version: 1.1.0.qualifier
++Bundle-Version: 1.1.1.qualifier
+ Bundle-Activator: com.cisco.yangide.ext.refactoring.YangRefactoringPlugin
+ Bundle-Vendor: Cisco Systems, Inc.
+ Bundle-Localization: plugin
+diff --git a/plugins/com.cisco.yangide.ext.refactoring/pom.xml b/plugins/com.cisco.yangide.ext.refactoring/pom.xml
+index 58346f2..e3c20db 100644
+--- a/plugins/com.cisco.yangide.ext.refactoring/pom.xml
++++ b/plugins/com.cisco.yangide.ext.refactoring/pom.xml
+@@ -8,7 +8,7 @@
+   <parent>
+     <groupId>com.cisco.yangide.ext</groupId>
+     <artifactId>com.cisco.yangide.ext.parent</artifactId>
+-    <version>1.1.0-SNAPSHOT</version>
++    <version>1.1.1-SNAPSHOT</version>
+     <relativePath>../..</relativePath>
+   </parent>
+ 
+diff --git a/pom.xml b/pom.xml
+index 8f197b0..b2eb65d 100644
+--- a/pom.xml
++++ b/pom.xml
+@@ -6,7 +6,7 @@
+   <modelVersion>4.0.0</modelVersion>
+   <groupId>com.cisco.yangide.ext</groupId>
+   <artifactId>com.cisco.yangide.ext.parent</artifactId>
+-  <version>1.1.0-SNAPSHOT</version>
++  <version>1.1.1-SNAPSHOT</version>
+   <packaging>pom</packaging>
+   <name>YANG IDE Extension Parent</name>
+   <properties>
+diff --git a/product/target-platform/pom.xml b/product/target-platform/pom.xml
+index d387e08..cec59cd 100644
+--- a/product/target-platform/pom.xml
++++ b/product/target-platform/pom.xml
+@@ -6,7 +6,7 @@
+   <parent>
+     <groupId>com.cisco.yangide.ext</groupId>
+     <artifactId>com.cisco.yangide.ext.parent</artifactId>
+-    <version>1.1.0-SNAPSHOT</version>
++    <version>1.1.1-SNAPSHOT</version>
+     <relativePath>../..</relativePath>
+   </parent>
+   
+diff --git a/product/update-site/category.xml b/product/update-site/category.xml
+index 5fce488..7ac0ab1 100644
+--- a/product/update-site/category.xml
++++ b/product/update-site/category.xml
+@@ -1,19 +1,19 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <site>
+-	<feature id="com.cisco.yangide.ext.feature" url="features/com.cisco.yangide.ext.feature_1.1.0.qualifier.jar" version="1.1.0.qualifier">
++	<feature id="com.cisco.yangide.ext.feature" url="features/com.cisco.yangide.ext.feature_1.1.1.qualifier.jar" version="1.1.1.qualifier">
+ 		<category name="yang-ide-ext"/>
+ 	</feature>
+ 	<category-def label="YANG IDE Extensions" name="yang-ide-ext"/>
+-	<feature id="com.cisco.yangide.feature" url="features/com.cisco.yangide.feature_1.1.0.qualifier.jar" version="1.1.0.qualifier">
++	<feature id="com.cisco.yangide.feature" url="features/com.cisco.yangide.feature_1.1.1.qualifier.jar" version="1.1.1.qualifier">
+ 		<category name="yang-ide"/>
+ 	</feature>
+-	<feature id="com.cisco.yangide.m2e.yang.feature" url="features/com.cisco.yangide.m2e.yang.feature_1.1.0.qualifier.jar" version="1.1.0.qualifier">
++	<feature id="com.cisco.yangide.m2e.yang.feature" url="features/com.cisco.yangide.m2e.yang.feature_1.1.1.qualifier.jar" version="1.1.1.qualifier">
+ 		<category name="yang-ide"/>
+ 	</feature>
+-	<feature id="com.cisco.yangide.feature.source" url="features/com.cisco.yangide.feature.source_1.1.0.qualifier.jar" version="1.1.0.qualifier">
++	<feature id="com.cisco.yangide.feature.source" url="features/com.cisco.yangide.feature.source_1.1.1.qualifier.jar" version="1.1.1.qualifier">
+ 		<category name="yang-ide"/>
+ 	</feature>
+-	<feature id="com.cisco.yangide.m2e.yang.feature.source" url="features/com.cisco.yangide.m2e.yang.feature.source_1.1.0.qualifier.jar" version="1.1.0.qualifier">
++	<feature id="com.cisco.yangide.m2e.yang.feature.source" url="features/com.cisco.yangide.m2e.yang.feature.source_1.1.1.qualifier.jar" version="1.1.1.qualifier">
+ 		<category name="yang-ide"/>
+ 	</feature>
+ 	<category-def label="YANG IDE" name="yang-ide"/>
+diff --git a/product/update-site/pom.xml b/product/update-site/pom.xml
+index f84dc80..718b77c 100644
+--- a/product/update-site/pom.xml
++++ b/product/update-site/pom.xml
+@@ -5,7 +5,7 @@
+   <parent>
+     <groupId>com.cisco.yangide.ext</groupId>
+     <artifactId>com.cisco.yangide.ext.parent</artifactId>
+-    <version>1.1.0-SNAPSHOT</version>
++    <version>1.1.1-SNAPSHOT</version>
+     <relativePath>../..</relativePath>
+   </parent>
+   
