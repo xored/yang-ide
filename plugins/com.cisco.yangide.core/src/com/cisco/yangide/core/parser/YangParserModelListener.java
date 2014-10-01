@@ -146,15 +146,17 @@ public class YangParserModelListener extends YangParserBaseListener {
     public void enterBelongs_to_stmt(Belongs_to_stmtContext ctx) {
         if (module instanceof SubModule) {
             String moduleName = stringFromNode(ctx);
-            String prefix = null;
             for (int i = 0; i < ctx.getChildCount(); ++i) {
                 final ParseTree treeNode = ctx.getChild(i);
                 if (treeNode instanceof Prefix_stmtContext) {
-                    prefix = stringFromNode(treeNode);
+                    yangModelPrefix = stringFromNode(treeNode);
+                    SimpleNode<String> astNode = new SimpleNode<String>(module, ((Prefix_stmtContext) treeNode)
+                            .PREFIX_KEYWORD().getText(), yangModelPrefix);
+                    updateNodePosition(astNode, treeNode);
+                    module.setPrefix(astNode);
                 }
             }
             ((SubModule) module).setParentModule(moduleName);
-            ((SubModule) module).setParentPrefix(prefix);
         }
     }
 
