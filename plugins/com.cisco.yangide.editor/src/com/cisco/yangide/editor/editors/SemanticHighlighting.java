@@ -13,6 +13,7 @@ import com.cisco.yangide.core.dom.ASTCompositeNode;
 import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
+import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
 
 /**
@@ -91,7 +92,10 @@ public abstract class SemanticHighlighting {
             if (thisModule instanceof SubModule) {
                 thisModulePrefix = ((SubModule) thisModule).getParentPrefix();
             } else {
-                thisModulePrefix = ((Module) thisModule).getPrefix().getValue();
+                SimpleNode<String> prefixNode = ((Module) thisModule).getPrefix();
+                if (prefixNode != null) {
+                    thisModulePrefix = prefixNode.getValue();
+                }
             }
 
             result = ((ASTNamedNode) node).getNameStartPosition();
@@ -126,7 +130,10 @@ public abstract class SemanticHighlighting {
             if (thisModule instanceof SubModule) {
                 thisModulePrefix = ((SubModule) thisModule).getParentPrefix();
             } else {
-                thisModulePrefix = ((Module) thisModule).getPrefix().getValue();
+                SimpleNode<String> prefixNode = ((Module) thisModule).getPrefix();
+                if (prefixNode != null) {
+                    thisModulePrefix = prefixNode.getValue();
+                }
             }
 
             result = ((ASTNamedNode) node).getNameLength();

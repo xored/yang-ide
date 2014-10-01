@@ -18,6 +18,7 @@ import com.cisco.yangide.core.dom.ASTNamedNode;
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.GroupingDefinition;
 import com.cisco.yangide.core.dom.Module;
+import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.TypeDefinition;
 import com.cisco.yangide.core.dom.TypeReference;
@@ -325,7 +326,10 @@ public class SemanticHighlightings {
             if (thisModule instanceof SubModule) {
                 thisModulePrefix = null;// ((SubModule) thisModule).getParentPrefix();
             } else {
-                thisModulePrefix = ((Module) thisModule).getPrefix().getValue();
+                SimpleNode<String> prefixNode = ((Module) thisModule).getPrefix();
+                if (prefixNode != null) {
+                    thisModulePrefix = prefixNode.getValue();
+                }
             }
 
             if (node instanceof TypeReference) {
@@ -338,7 +342,9 @@ public class SemanticHighlightings {
 
             if (node instanceof UsesNode) {
                 String usesPrefix = ((UsesNode) node).getGrouping().getPrefix();
-                return !usesPrefix.equals(thisModulePrefix);
+                if (usesPrefix != null) {
+                    return !usesPrefix.equals(thisModulePrefix);
+                }
             }
 
             return false;
