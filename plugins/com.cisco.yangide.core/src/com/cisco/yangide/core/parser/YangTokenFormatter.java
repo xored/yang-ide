@@ -13,6 +13,8 @@ import static org.opendaylight.yangtools.antlrv4.code.gen.YangLexer.S;
 import static org.opendaylight.yangtools.antlrv4.code.gen.YangLexer.SEMICOLON;
 import static org.opendaylight.yangtools.antlrv4.code.gen.YangLexer.STRING;
 import static org.opendaylight.yangtools.antlrv4.code.gen.YangLexer.WS;
+import static org.opendaylight.yangtools.antlrv4.code.gen.YangLexer.LINE_COMMENT;
+import static org.opendaylight.yangtools.antlrv4.code.gen.YangLexer.END_BLOCK_COMMENT;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -360,6 +362,8 @@ public class YangTokenFormatter implements ITokenFormatter {
     /**
      * Cleans 'new line' tokens before block separators. We assume that we already clean all 'new
      * line' that occurred more 2 times.
+     * <br>
+     * New line token is not erased if it followed a comment. 
      */
     private void cleanTokens() {
         int idx = 0;
@@ -367,14 +371,22 @@ public class YangTokenFormatter implements ITokenFormatter {
             if (isWS(tokens.get(idx)) && isNewLine(tokens.get(idx + 1))) {
                 tokens.remove(tokens.get(idx));
                 idx--;
-            } else if (isNewLine(tokens.get(idx))
-                    && (isBlockSeparator(tokens.get(idx + 1)) || (isBlockSeparator(tokens.get(idx + 1)) && isBlockSeparator(tokens
-                            .get(idx + 2))))) {
+            } 
+            else if (isNewLine(tokens.get(idx)) && isBlockSeparator(tokens.get(idx + 1)) && !isComment(idx-1))
+            {
                 tokens.remove(tokens.get(idx));
                 idx--;
             } else {
                 idx++;
             }
         }
+    }
+
+    /**
+     * Returns true if token at idx is a line comment or is a block comment end.
+     */
+    private boolean isComment(int idx) 
+    {
+        return idx > 0 && (tokens.get(idx).getType() == LINE_COMMENT || tokens.get(idx).getType() == END_BLOCK_COMMENT);
     }
 }
