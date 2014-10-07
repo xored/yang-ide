@@ -7,11 +7,7 @@
  */
 package com.cisco.yangide.core.parser;
 
-import java.util.ArrayList;
 import java.util.BitSet;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
@@ -149,29 +145,30 @@ public class YangParserUtil {
             formatter.process(tokens.LT(1));
             tokens.consume();
         }
-        if (errorListener.getErrors().size() > 0) // Source that contains parsing errors should never be formatted
+        if (errorListener.isErrorDetected()) {
+            // Source that contains parsing errors should never be formatted
             return String.valueOf(content);
+        }
         return formatter.getFormattedContent();
     }
 
     private static final class LexerErrorListener extends BaseErrorListener {
-        final List<String> errors = new ArrayList<>();
+        private boolean anErrorDetected = false;
 
         @Override
         public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
                 String msg, RecognitionException e) {
-            errors.add(msg);
+            anErrorDetected = true;
         }
 
         @Override
         public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, BitSet ambigAlts,
                 ATNConfigSet configs) {
-            errors.add("An ambiguity was detected.");
+            anErrorDetected = true;
         }
         
-        public Collection<String> getErrors()
-        {
-            return Collections.unmodifiableList(errors);
+        public boolean isErrorDetected() {
+            return anErrorDetected;
         }
     }
 }
