@@ -7,15 +7,24 @@
  */
 package com.cisco.yangide.core.parser;
 
+import java.util.ArrayList;
+import java.util.BitSet;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
 import org.antlr.v4.runtime.ANTLRInputStream;
 import org.antlr.v4.runtime.BaseErrorListener;
 import org.antlr.v4.runtime.BufferedTokenStream;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.IntStream;
+import org.antlr.v4.runtime.Parser;
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.RecognitionException;
 import org.antlr.v4.runtime.Recognizer;
 import org.antlr.v4.runtime.Token;
+import org.antlr.v4.runtime.atn.ATNConfigSet;
+import org.antlr.v4.runtime.dfa.DFA;
 import org.antlr.v4.runtime.tree.ParseTreeWalker;
 import org.eclipse.core.resources.IProject;
 import org.opendaylight.yangtools.antlrv4.code.gen.YangLexer;
@@ -132,12 +141,37 @@ public class YangParserUtil {
                 // disable skipping of comment tokens
             }
         };
+        LexerErrorListener errorListener = new LexerErrorListener();
+        lexer.addErrorListener(errorListener);
         final BufferedTokenStream tokens = new BufferedTokenStream(lexer);
         final ITokenFormatter formatter = new YangTokenFormatter(preferences, indentationLevel, lineSeparator);
         while (tokens.LT(1).getType() != IntStream.EOF) {
             formatter.process(tokens.LT(1));
             tokens.consume();
         }
+        if (errorListener.getErrors().size() > 0) // Source that contains parsing errors should never be formatted
+            return String.valueOf(content);
         return formatter.getFormattedContent();
+    }
+
+    private static final class LexerErrorListener extends BaseErrorListener {
+        final List<String> errors = new ArrayList<>();
+
+        @Override
+        public void syntaxError(Recognizer<?, ?> recognizer, Object offendingSymbol, int line, int charPositionInLine,
+                String msg, RecognitionException e) {
+            errors.add(msg);
+        }
+
+        @Override
+        public void reportAmbiguity(Parser recognizer, DFA dfa, int startIndex, int stopIndex, BitSet ambigAlts,
+                ATNConfigSet configs) {
+            errors.add("An ambiguity was detected.");
+        }
+        
+        public Collection<String> getErrors()
+        {
+            return Collections.unmodifiableList(errors);
+        }
     }
 }
