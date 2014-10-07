@@ -4,6 +4,7 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.graphiti.ui.services.GraphitiUi;
 import org.eclipse.jface.dialogs.IDialogConstants;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.layout.GridLayoutFactory;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.SWT;
@@ -73,6 +74,7 @@ public class AddImportDialog extends ElementListSelectionDialog {
     @Override
     protected Control createDialogArea(Composite parent) {
         Composite content = new Composite(parent, SWT.NONE);
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(content);
         GridLayoutFactory.fillDefaults().numColumns(1).applyTo(content);
         super.createDialogArea(content);
         
