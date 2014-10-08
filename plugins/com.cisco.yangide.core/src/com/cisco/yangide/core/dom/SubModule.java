@@ -12,7 +12,7 @@ package com.cisco.yangide.core.dom;
  * @date Jul 4, 2014
  */
 public class SubModule extends Module {
-    private String parentModule;
+    private SimpleNode<String> parentModule;
     private String parentPrefix;
 
     @Override
@@ -23,14 +23,14 @@ public class SubModule extends Module {
     /**
      * @return the parentModule
      */
-    public String getParentModule() {
+    public SimpleNode<String> getParentModule() {
         return parentModule;
     }
 
     /**
      * @param parentModule the parentModule to set
      */
-    public void setParentModule(String parentModule) {
+    public void setParentModule(SimpleNode<String> parentModule) {
         this.parentModule = parentModule;
     }
 

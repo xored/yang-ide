@@ -65,7 +65,7 @@ public class YangParserTest extends TestCase {
 
             SubModule module = (SubModule) YangParserUtil.parseYangFile(getContent(in));
             assertNotNull(module);
-            assertEquals("acme-system", module.getParentModule());
+            assertEquals("acme-system", module.getParentModule().getValue());
             assertEquals("acme", module.getParentPrefix());
         }
     }
