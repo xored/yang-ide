@@ -40,9 +40,11 @@ import com.cisco.yangide.core.dom.RpcInputNode;
 import com.cisco.yangide.core.dom.RpcOutputNode;
 import com.cisco.yangide.core.dom.SimpleNamedNode;
 import com.cisco.yangide.core.dom.SimpleNode;
+import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.TypeDefinition;
 import com.cisco.yangide.core.dom.TypeReference;
 import com.cisco.yangide.core.dom.UsesNode;
+import com.cisco.yangide.ext.model.BelongsTo;
 import com.cisco.yangide.ext.model.ContainingNode;
 import com.cisco.yangide.ext.model.Grouping;
 import com.cisco.yangide.ext.model.Identity;
@@ -54,6 +56,7 @@ import com.cisco.yangide.ext.model.NamedNode;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.ReferenceNode;
 import com.cisco.yangide.ext.model.RpcIO;
+import com.cisco.yangide.ext.model.Submodule;
 import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.TaggedNode;
 import com.cisco.yangide.ext.model.Uses;
@@ -134,6 +137,8 @@ public class YangModelUtil {
                 YangTag.MANDATORY, YangTag.REFERENCE, YangTag.STATUS, YangTag.UNITS));
         taggedNodeMap.put(MODEL_PACKAGE.getModule(), Arrays.asList(YangTag.CONTACT, YangTag.DESCRIPTION,
                 YangTag.NAMESPACE, YangTag.ORGANIZATION, YangTag.PREFIX, YangTag.REFERENCE, YangTag.YANG_VERSION));
+        taggedNodeMap.put(MODEL_PACKAGE.getSubmodule(), Arrays.asList(YangTag.CONTACT, YangTag.DESCRIPTION,
+                YangTag.ORGANIZATION, YangTag.REFERENCE, YangTag.YANG_VERSION));
         taggedNodeMap.put(MODEL_PACKAGE.getRevision(), Arrays.asList(YangTag.DESCRIPTION, YangTag.REFERENCE));
         taggedNodeMap.put(MODEL_PACKAGE.getLeafList(), Arrays.asList(YangTag.CONFIG, YangTag.DESCRIPTION,
                 YangTag.MAX_ELEMENTS, YangTag.MIN_ELEMENTS, YangTag.ORDERED_BY, YangTag.REFERENCE, YangTag.STATUS,
@@ -465,6 +470,23 @@ public class YangModelUtil {
         if (checkType(MODEL_PACKAGE.getIdentity(), o)) {
             if (n instanceof IdentitySchemaNode && null != ((IdentitySchemaNode) n).getBase()) {
                 ((Identity) o).setReference(((IdentitySchemaNode) n).getBase().getName());
+            }
+        }
+        if (checkType(MODEL_PACKAGE.getSubmodule(), o)) {
+            if (n instanceof SubModule){
+                SubModule subModule = (SubModule) n;
+                SimpleNode<String> pmNode = subModule.getParentModule();
+                if (pmNode != null) {
+                    BelongsTo belongsTo = ModelFactory.eINSTANCE.createBelongsTo();
+                    Module parentModule = ModelFactory.eINSTANCE.createModule();
+                    
+                    parentModule.setName(pmNode.getValue());
+                    
+                    belongsTo.setOwnerModule(parentModule);
+                    setValue(YangTag.PREFIX, parentModule, subModule.getParentPrefix());
+                    
+                    ((Submodule) o).setBelongsTo(belongsTo);
+                }
             }
         }
     }

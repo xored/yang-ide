@@ -5,6 +5,7 @@ import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.emf.ecore.EAttribute;
 import org.eclipse.emf.ecore.EClass;
+import org.eclipse.emf.ecore.EObject;
 import org.eclipse.emf.ecore.resource.Resource;
 import org.eclipse.emf.ecore.util.EContentAdapter;
 import org.eclipse.emf.transaction.RecordingCommand;
@@ -53,18 +54,20 @@ public class YangDiagramEditor extends DiagramEditor {
                 IRemoveFeature feature = getDiagramTypeProvider().getFeatureProvider().getRemoveFeature(context);
                 getDiagramBehavior().executeFeature(feature, context);
             }
-            updateModuleInfoPane(node);
+            infoPane.update();
         }
 
         @Override
-        public void nodeChanged(Node node, EAttribute attribute, Object newValue) {
+        public void nodeChanged(Node node, EObject object, Object newValue) {
             System.out.println("Changed " + node);
-            PictogramElement pe = YangModelUIUtil.getBusinessObjectPropShape(getDiagramTypeProvider()
-                    .getFeatureProvider(), node, attribute);
-            if (null != pe) {
-                YangModelUIUtil.updatePictogramElement(getDiagramTypeProvider().getFeatureProvider(), pe);
+            if (object instanceof EAttribute) {
+                PictogramElement pe = YangModelUIUtil.getBusinessObjectPropShape(getDiagramTypeProvider()
+                        .getFeatureProvider(), node, (EAttribute)object);
+                if (null != pe) {
+                    YangModelUIUtil.updatePictogramElement(getDiagramTypeProvider().getFeatureProvider(), pe);
+                }
             }
-            updateModuleInfoPane(node);
+            infoPane.update();
         }
 
         @Override
@@ -92,15 +95,9 @@ public class YangDiagramEditor extends DiagramEditor {
                     }
                 }
                 ((YangDiagramBehavior) getDiagramBehavior()).setCreatePosition(null);
-                updateModuleInfoPane(child);
+                infoPane.update();
             }
 
-        }
-
-        protected void updateModuleInfoPane(Node node) {
-            if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getImport(), node)) {
-                infoPane.refreshImportTable();
-            }
         }
     };
     private URI uri;
@@ -189,11 +186,12 @@ public class YangDiagramEditor extends DiagramEditor {
                 if (notification.getNotifier() instanceof Node) {
                     if (notification.getFeature() == ModelPackage.Literals.NAMED_NODE__NAME
                             || notification.getFeature() == ModelPackage.Literals.USES__QNAME
-                            || notification.getFeature() == ModelPackage.Literals.REFERENCE_NODE__REFERENCE) {
+                            || notification.getFeature() == ModelPackage.Literals.REFERENCE_NODE__REFERENCE
+                            || notification.getFeature() == ModelPackage.Literals.SUBMODULE__BELONGS_TO) {
                         if (notification.getNewValue() != null
                                 && !notification.getNewValue().equals(notification.getOldValue())) {
                             modelChangeHandler.nodeChanged((Node) notification.getNotifier(),
-                                    (EAttribute) notification.getFeature(), notification.getNewValue());
+                                    (EObject) notification.getFeature(), notification.getNewValue());
                             final EClass type = YangModelUtil.getConnectionReferenceSubjectClass(notification
                                     .getNotifier());
                             if (null != type) {

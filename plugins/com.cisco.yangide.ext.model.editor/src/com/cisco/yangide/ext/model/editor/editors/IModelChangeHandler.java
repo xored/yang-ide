@@ -3,7 +3,8 @@
  */
 package com.cisco.yangide.ext.model.editor.editors;
 
-import org.eclipse.emf.ecore.EAttribute;
+import org.eclipse.emf.ecore.EObject;
+
 import com.cisco.yangide.ext.model.Node;
 
 /**
@@ -31,8 +32,8 @@ public interface IModelChangeHandler {
      * Fired when nodes attributes was changed
      *
      * @param node node
-     * @param attribute attribute references
+     * @param object object references
      * @param newValue new value
      */
-    void nodeChanged(Node node, EAttribute attribute, Object newValue);
+    void nodeChanged(Node node, EObject object, Object newValue);
 }
