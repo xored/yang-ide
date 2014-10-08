@@ -145,18 +145,18 @@ public class YangParserModelListener extends YangParserBaseListener {
     @Override
     public void enterBelongs_to_stmt(Belongs_to_stmtContext ctx) {
         if (module instanceof SubModule) {
-            String parentModuleName = stringFromNode(ctx);
-            String parentPrefix = null;
+            String moduleName = stringFromNode(ctx);
             for (int i = 0; i < ctx.getChildCount(); ++i) {
                 final ParseTree treeNode = ctx.getChild(i);
                 if (treeNode instanceof Prefix_stmtContext) {
-                    parentPrefix = stringFromNode(treeNode);
-                    ((SubModule) module).setParentPrefix(parentPrefix);
+                    yangModelPrefix = stringFromNode(treeNode);
+                    SimpleNode<String> astNode = new SimpleNode<String>(module, ((Prefix_stmtContext) treeNode)
+                            .PREFIX_KEYWORD().getText(), yangModelPrefix);
+                    updateNodePosition(astNode, treeNode);
+                    module.setPrefix(astNode);
                 }
             }
-            SimpleNode<String> astNode = new SimpleNode<String>(module, ctx.BELONGS_TO_KEYWORD().getText(), parentModuleName);
-            updateNodePosition(astNode, ctx);
-            ((SubModule) module).setParentModule(astNode);
+            ((SubModule) module).setParentModule(moduleName);
         }
     }
 
@@ -615,7 +615,7 @@ public class YangParserModelListener extends YangParserBaseListener {
             if (module instanceof SubModule) {
                 SubModule subModule = (SubModule) module;
                 if (parts[0].equals(subModule.getParentPrefix())) {
-                    return new QName(subModule.getParentModule().getValue(), parts[0], parts[1], null);
+                    return new QName(subModule.getParentModule(), parts[0], parts[1], null);
                 }
             }
         }

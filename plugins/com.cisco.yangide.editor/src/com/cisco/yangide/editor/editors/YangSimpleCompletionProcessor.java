@@ -40,7 +40,6 @@ import org.eclipse.swt.graphics.Image;
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
-import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.SubModuleInclude;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
@@ -718,8 +717,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             if (module.getName().equals(elementIndexInfo.getModule())) {
                 result = elementIndexInfo.getName();
             } else if (module instanceof SubModule) {
-                SimpleNode<String> pmNode = ((SubModule) module).getParentModule();
-                if (pmNode.getValue().equals(elementIndexInfo.getModule())) {
+                if (((SubModule) module).getParentModule().equals(elementIndexInfo.getModule())) {
                     result = ((SubModule) module).getParentPrefix() + ":" + elementIndexInfo.getName();
                 }
             } else {
