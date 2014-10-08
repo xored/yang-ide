@@ -17,6 +17,7 @@ import com.cisco.yangide.core.dom.ASTVisitor;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
 import com.cisco.yangide.core.dom.QName;
+import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.SubModuleInclude;
 import com.cisco.yangide.core.dom.TypeReference;
@@ -56,11 +57,13 @@ public class SemanticValidations {
     private void validateSubModule() {
         if (module instanceof SubModule) {
             SubModule subModule = (SubModule) module;
-            ElementIndexInfo[] infos = search(null, null, subModule.getParentModule(), ElementIndexType.MODULE,
-                    project, null);
-            if (infos.length == 0) {
-                String msg = String.format("Parent module '%s' not found", subModule.getParentModule());
-                reportError(msg, subModule);
+            SimpleNode<String> pmNode = subModule.getParentModule();
+            if (pmNode != null) {
+                ElementIndexInfo[] infos = search(null, null, pmNode.getValue(), ElementIndexType.MODULE, project, null);
+                if (infos.length == 0) {
+                    String msg = String.format("Parent module '%s' not found", pmNode.getValue());
+                    reportError(msg, subModule);
+                }
             }
         }
         for (SubModuleInclude include : module.getIncludes().values()) {
