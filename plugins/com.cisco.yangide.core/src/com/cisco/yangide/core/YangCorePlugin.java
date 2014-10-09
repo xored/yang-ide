@@ -159,6 +159,15 @@ public class YangCorePlugin extends Plugin {
     }
 
     /**
+     * Returns a parsed model of the yang file that resides at the given {@code path}.
+     * @return a {@link YangFile} object
+     */
+    public static YangFile createYangFile(String path) {
+        IFile file = ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(path));
+        return createYangFile(file);
+    }
+    
+    /**
      * @param resource
      */
     public static YangFile createYangFile(IResource resource) {
