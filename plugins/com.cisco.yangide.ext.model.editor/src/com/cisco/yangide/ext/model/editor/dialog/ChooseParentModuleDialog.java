@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
+ */
 package com.cisco.yangide.ext.model.editor.dialog;
 
 import org.eclipse.core.resources.IFile;
@@ -29,6 +32,10 @@ import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 import com.cisco.yangide.ext.model.editor.util.YangTag;
 
+/**
+ * @author Victor Kachesov
+ * @date Oct 08, 2014
+ */
 public class ChooseParentModuleDialog extends ElementListSelectionDialog {
     
     private Text prefix;
