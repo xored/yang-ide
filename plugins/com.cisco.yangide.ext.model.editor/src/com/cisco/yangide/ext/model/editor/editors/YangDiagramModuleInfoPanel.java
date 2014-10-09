@@ -724,6 +724,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
                 AddImportDialog dialog = new AddImportDialog(shell, module, file);
                 if (0 <= dialog.open()) {
+                    YangModelUtil.add(module, dialog.getResultImport(), module.getChildren().size());
                     refreshImportTable();
                 }
                 setChecked(false);
