@@ -475,15 +475,15 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(yangVersionText);
 
         if (!(module instanceof Submodule)) {
-            toolkit.createLabel(header, "Namespace: ");
-            namespaceText = toolkit.createText(header, "");
-            namespaceText.setEditable(true);
-            GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(namespaceText);
+        toolkit.createLabel(header, "Namespace: ");
+        namespaceText = toolkit.createText(header, "");
+        namespaceText.setEditable(true);
+        GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(namespaceText);
 
-            toolkit.createLabel(header, "Prefix: ");
-            prefixText = toolkit.createText(header, "");
-            prefixText.setEditable(true);
-            GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(prefixText);
+        toolkit.createLabel(header, "Prefix: ");
+        prefixText = toolkit.createText(header, "");
+        prefixText.setEditable(true);
+        GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(prefixText);
         }
 
         updateGeneralSection();
@@ -505,10 +505,10 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             nameText.setText(module.getName());
             yangVersionText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.YANG_VERSION, module)));
             if (!(module instanceof Submodule)) {
-                namespaceText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.NAMESPACE, module)));
-                prefixText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.PREFIX, module)));
-            }
+            namespaceText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.NAMESPACE, module)));
+            prefixText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.PREFIX, module)));
         }
+    }
     }
 
     protected void addMetaInfoSectionListeners() {
@@ -522,9 +522,9 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         addTextFieldListener(this, nameText, YangModelUtil.MODEL_PACKAGE.getNamedNode_Name());
         addTextFieldListener(this, yangVersionText, YangTag.YANG_VERSION);
         if (!(module instanceof Submodule)) {
-            addTextFieldListener(this, namespaceText, YangTag.NAMESPACE);
-            addTextFieldListener(this, prefixText, YangTag.PREFIX);
-        }
+        addTextFieldListener(this, namespaceText, YangTag.NAMESPACE);
+        addTextFieldListener(this, prefixText, YangTag.PREFIX);
+    }
     }
 
     protected void removeBindings(List<Binding> bindings) {
@@ -747,6 +747,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
                 AddImportDialog dialog = new AddImportDialog(shell, module, file);
                 if (0 <= dialog.open()) {
+                    YangModelUtil.add(module, dialog.getResultImport(), module.getChildren().size());
                     updateImportTable();
                 }
                 setChecked(false);
