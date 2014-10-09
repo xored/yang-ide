@@ -548,7 +548,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 .value(esf).observe(node.getBusinessObject()));
     }
 
-    protected void createBelongsToSection(Composite parent) {
+    protected void createBelongsToSection(final Composite parent) {
         Section section = createSection(parent, "Belongs to");
         Composite belongsTo = toolkit.createComposite(section);
 
@@ -560,8 +560,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             
             @Override
             protected Object openDialogBox(Text text) {
-                Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
-                ChooseParentModuleDialog dialog = new ChooseParentModuleDialog(shell, (Submodule)module, file);
+                ChooseParentModuleDialog dialog = new ChooseParentModuleDialog(parent.getShell(), (Submodule)module, file);
                 if (IStatus.OK == dialog.open()) {
                     updateBelongsTo();
                 }
