@@ -29,16 +29,20 @@ import com.cisco.yangide.core.dom.BaseReference;
 import com.cisco.yangide.core.dom.IdentitySchemaNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
+import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.parser.YangFormattingPreferences;
 import com.cisco.yangide.core.parser.YangParserUtil;
 import com.cisco.yangide.editor.editors.YangEditor;
 import com.cisco.yangide.editor.editors.YangSourceViewer;
+import com.cisco.yangide.ext.model.BelongsTo;
 import com.cisco.yangide.ext.model.Import;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Tag;
 import com.cisco.yangide.ext.model.editor.Activator;
+import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
+import com.cisco.yangide.ext.model.editor.util.YangTag;
 import com.cisco.yangide.ext.refactoring.RefactorUtil;
 
 /**
@@ -63,6 +67,7 @@ final class DiagramModelAdapter extends EContentAdapter {
         // init property updaters
         this.propertyUpdaters.put(ModelPackage.Literals.NODE, new SourceNodePropertyUpdater<ASTNode>(this));
         this.propertyUpdaters.put(ModelPackage.Literals.MODULE, new ModulePropertyUpdater(this));
+        this.propertyUpdaters.put(ModelPackage.Literals.SUBMODULE, new ModulePropertyUpdater(this));
         this.propertyUpdaters.put(ModelPackage.Literals.CONTAINER, new ContainerPropertyUpdater(this));
         this.propertyUpdaters.put(ModelPackage.Literals.LIST, new ListPropertyUpdater(this));
         this.propertyUpdaters.put(ModelPackage.Literals.LEAF_LIST, new ListPropertyUpdater(this));
@@ -121,6 +126,8 @@ final class DiagramModelAdapter extends EContentAdapter {
                                         notification.getNewValue());
                             } else if (notification.getFeature() == ModelPackage.Literals.REFERENCE_NODE__REFERENCE) {
                                 updateIdentityReference((Node) notification.getNotifier(), notification.getNewValue());
+                            } else if (notification.getFeature() == ModelPackage.Literals.SUBMODULE__BELONGS_TO){
+                                updateBelongsTo((Node) notification.getNotifier(), notification.getOldValue(), notification.getNewValue());
                             }
 
                             if (notification.getNotifier() instanceof Tag) {
@@ -284,6 +291,22 @@ final class DiagramModelAdapter extends EContentAdapter {
             }
         }
     }
+    
+    private void updateBelongsTo(Node node, Object oldValue, Object newValue){
+        ASTNode astNode = mapping.get(node);
+        if (astNode == null) {
+            throw new RuntimeException("Cannot find references source block from diagram editor");
+        }
+        
+        com.cisco.yangide.core.dom.SubModule subModule = (com.cisco.yangide.core.dom.SubModule) astNode;
+        SimpleNode<String> btNode = subModule.getParentModule(); 
+        if (btNode != null){
+            performEdit(new ReplaceEdit(btNode.getStartPosition(), btNode.getLength() + 1, formatBelongsTo((BelongsTo) newValue)));
+        }
+        else {
+            performEdit(new InsertEdit(subModule.getBodyStartPosition() + 1, System.lineSeparator() + formatBelongsTo((BelongsTo) newValue)));
+        }
+    }
 
     synchronized void performEdit(final TextEdit edit) {
         Display display = Display.getCurrent();
@@ -332,6 +355,16 @@ final class DiagramModelAdapter extends EContentAdapter {
         sb.append("revision-date \"").append(newValue.getRevisionDate()).append("\";\n");
         sb.append("}");
         return trimTrailingSpaces(RefactorUtil.formatCodeSnipped(sb.toString(), 1));
+    }
+    
+    private String formatBelongsTo(BelongsTo belongsTo) {
+        com.cisco.yangide.ext.model.Module parentModule = belongsTo.getOwnerModule();
+        String prefix = (String) YangModelUtil.getValue(YangTag.PREFIX, parentModule);
+        StringBuilder sb = new StringBuilder();
+        sb.append("belongs-to ").append(parentModule.getName()).append(" {\n");
+        sb.append("prefix ").append(prefix).append(";\n");
+        sb.append("}");
+        return trimTrailingSpaces(RefactorUtil.formatCodeSnipped(sb.toString(), 0));
     }
 
     private String trimTrailingSpaces(String str) {

@@ -49,12 +49,15 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.Section;
 
+import com.cisco.yangide.ext.model.BelongsTo;
 import com.cisco.yangide.ext.model.Import;
 import com.cisco.yangide.ext.model.ModelFactory;
 import com.cisco.yangide.ext.model.Module;
+import com.cisco.yangide.ext.model.Submodule;
 import com.cisco.yangide.ext.model.Revision;
 import com.cisco.yangide.ext.model.TaggedNode;
 import com.cisco.yangide.ext.model.editor.dialog.AddImportDialog;
+import com.cisco.yangide.ext.model.editor.dialog.ChooseParentModuleDialog;
 import com.cisco.yangide.ext.model.editor.dialog.MultilineTextDialog;
 import com.cisco.yangide.ext.model.editor.util.BusinessObjectWrapper;
 import com.cisco.yangide.ext.model.editor.util.Strings;
@@ -76,6 +79,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     // private PropertyEdit editPropertyForm;
 
     private Text namespaceText;
+    private DialogText parentModuleText;
     private DialogText organizationText;
     private DialogText contactText;
     private Text prefixText;
@@ -331,6 +335,9 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         // editSection.setClient(editPropertyForm);
 
         createGeneralSection(pane);
+        if (module instanceof Submodule) {
+            createBelongsToSection(pane);
+        }
         createRevisionSection(pane);
         createImportSection(pane);
         createMetaInfoSection(pane);
@@ -467,15 +474,17 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         yangVersionText.setEditable(true);
         GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(yangVersionText);
 
-        toolkit.createLabel(header, "Namespace: ");
-        namespaceText = toolkit.createText(header, "");
-        namespaceText.setEditable(true);
-        GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(namespaceText);
+        if (!(module instanceof Submodule)) {
+            toolkit.createLabel(header, "Namespace: ");
+            namespaceText = toolkit.createText(header, "");
+            namespaceText.setEditable(true);
+            GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(namespaceText);
 
-        toolkit.createLabel(header, "Prefix: ");
-        prefixText = toolkit.createText(header, "");
-        prefixText.setEditable(true);
-        GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(prefixText);
+            toolkit.createLabel(header, "Prefix: ");
+            prefixText = toolkit.createText(header, "");
+            prefixText.setEditable(true);
+            GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(prefixText);
+        }
 
         updateGeneralSection();
         addGeneralSectionListeners();
@@ -495,8 +504,10 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         if (null != module) {
             nameText.setText(module.getName());
             yangVersionText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.YANG_VERSION, module)));
-            namespaceText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.NAMESPACE, module)));
-            prefixText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.PREFIX, module)));
+            if (!(module instanceof Submodule)) {
+                namespaceText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.NAMESPACE, module)));
+                prefixText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.PREFIX, module)));
+            }
         }
     }
 
@@ -510,8 +521,10 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     protected void addGeneralSectionListeners() {
         addTextFieldListener(this, nameText, YangModelUtil.MODEL_PACKAGE.getNamedNode_Name());
         addTextFieldListener(this, yangVersionText, YangTag.YANG_VERSION);
-        addTextFieldListener(this, namespaceText, YangTag.NAMESPACE);
-        addTextFieldListener(this, prefixText, YangTag.PREFIX);
+        if (!(module instanceof Submodule)) {
+            addTextFieldListener(this, namespaceText, YangTag.NAMESPACE);
+            addTextFieldListener(this, prefixText, YangTag.PREFIX);
+        }
     }
 
     protected void removeBindings(List<Binding> bindings) {
@@ -535,6 +548,50 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 .value(esf).observe(node.getBusinessObject()));
     }
 
+    protected void createBelongsToSection(final Composite parent) {
+        Section section = createSection(parent, "Belongs to");
+        Composite belongsTo = toolkit.createComposite(section);
+
+        GridDataFactory.fillDefaults().grab(true, false).applyTo(belongsTo);
+        GridLayoutFactory.fillDefaults().numColumns(2).applyTo(belongsTo);
+        
+        toolkit.createLabel(belongsTo, "Module: ");
+        parentModuleText = new DialogText(belongsTo, toolkit) {
+            
+            @Override
+            protected Object openDialogBox(Text text) {
+                ChooseParentModuleDialog dialog = new ChooseParentModuleDialog(parent.getShell(), (Submodule)module, file);
+                if (IStatus.OK == dialog.open()) {
+                    updateBelongsTo();
+                }
+                
+                return null;
+            }
+        };
+        GridDataFactory.fillDefaults().grab(true, true).applyTo(parentModuleText.getControl());
+        
+        updateBelongsTo();
+        section.setClient(belongsTo);
+    }
+
+    protected void updateBelongsTo() {
+        if (null != module && module instanceof Submodule) {
+            Submodule submodule = ((Submodule) module);
+            
+            String text = Strings.EMPTY_STRING;
+            BelongsTo belongsTo = submodule.getBelongsTo();
+            if (belongsTo != null) {
+                Module ownerModule = belongsTo.getOwnerModule();
+                if (ownerModule != null) {
+                    String parentModuleName = ownerModule.getName();
+                    String parentPrefix = Strings.getAsString(YangModelUtil.getValue(YangTag.PREFIX, ownerModule));
+                    text = parentPrefix + " : " + parentModuleName;
+                }
+            }
+            parentModuleText.setText(text);
+        }
+    }
+    
     protected void createRevisionSection(Composite parent) {
         Section section = createSection(parent, "Revision");
         Composite revisions = toolkit.createComposite(section);
@@ -617,40 +674,6 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         section.setClient(revisions);
     }
 
-    protected Composite createRevisionTable(Composite parent) {
-        final Table t = toolkit.createTable(parent, SWT.FULL_SELECTION | SWT.V_SCROLL);
-
-        GridDataFactory.fillDefaults().grab(true, false).applyTo(t);
-        t.setLinesVisible(false);
-        t.setHeaderVisible(false);
-        revisionTable = new TableViewer(t);
-        revisionTable.setContentProvider(new ArrayContentProvider());
-        final TableViewerColumn col = new TableViewerColumn(revisionTable, SWT.NONE);
-
-        col.setLabelProvider(new ColumnLabelProvider() {
-
-            @Override
-            public String getText(Object element) {
-                if (YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getRevision(), element)) {
-                    return ((Revision) element).getName();
-                }
-                return super.getText(element);
-            }
-        });
-        t.addControlListener(new ControlListener() {
-            @Override
-            public void controlResized(ControlEvent e) {
-                col.getColumn().setWidth(t.getSize().x - 30);
-            }
-
-            @Override
-            public void controlMoved(ControlEvent e) {
-            }
-        });
-        col.getColumn().setWidth(t.getSize().x - 30);
-        return t;
-    }
-
     protected void createImportSection(Composite parent) {
         final Section section = createSection(parent, "Imports");
         Composite imports = toolkit.createComposite(section);
@@ -658,7 +681,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         GridDataFactory.fillDefaults().grab(true, false).applyTo(section);
         createImportTable(imports);
         createImportButtonToolbar(section);
-        refreshImportTable();
+        updateImportTable();
         importTable.addSelectionChangedListener(new ISelectionChangedListener() {
 
             @Override
@@ -724,7 +747,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
                 AddImportDialog dialog = new AddImportDialog(shell, module, file);
                 if (0 <= dialog.open()) {
-                    refreshImportTable();
+                    updateImportTable();
                 }
                 setChecked(false);
             }
@@ -746,7 +769,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                     while (iter.hasNext()) {
                         module.getChildren().remove(iter.next());
                     }
-                    refreshImportTable();
+                    updateImportTable();
                     setChecked(false);
                 }
             }
@@ -760,7 +783,12 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         section.setTextClient(toolbar);
     }
 
-    public void refreshImportTable() {
+    public void update(){
+        updateImportTable();
+        updateBelongsTo();
+    }
+    
+    protected void updateImportTable() {
         if (null != module) {
             importTable.setInput(YangModelUtil.filter(module.getChildren(), YangModelUtil.MODEL_PACKAGE.getImport()));
         }
