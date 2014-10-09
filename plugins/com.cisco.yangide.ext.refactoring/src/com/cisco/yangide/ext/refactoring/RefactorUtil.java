@@ -98,8 +98,7 @@ public final class RefactorUtil {
             if (info.getEntry() != null && !info.getEntry().isEmpty()) {
                 module = YangCorePlugin.createJarEntry(new Path(info.getPath()), info.getEntry()).getModule();
             } else {
-                module = YangCorePlugin.createYangFile(
-                        ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(info.getPath()))).getModule();
+                module = getModule(info.getPath());
             }
             return module.getNodeAtPosition(info.getStartPosition());
         } catch (YangModelException e) {
@@ -113,9 +112,7 @@ public final class RefactorUtil {
      */
     public static ASTNode resolveIndexInfo(ElementIndexReferenceInfo info) {
         try {
-            Module module = YangCorePlugin.createYangFile(
-                    ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(info.getPath()))).getModule();
-            return module.getNodeAtPosition(info.getStartPosition());
+            return getModule(info.getPath()).getNodeAtPosition(info.getStartPosition());
         } catch (YangModelException e) {
             return null;
         }
@@ -201,4 +198,9 @@ public final class RefactorUtil {
         }
         return nodeLevel >= 0 ? nodeLevel : 0;
     }
+
+    private static Module getModule(String path) throws YangModelException {
+        return YangCorePlugin.createYangFile(path).getModule();
+    }
+
 }
