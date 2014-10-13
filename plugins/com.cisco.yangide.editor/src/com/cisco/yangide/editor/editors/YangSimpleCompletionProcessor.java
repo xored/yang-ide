@@ -24,7 +24,6 @@ import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
 import org.eclipse.jface.text.ITextViewer;
 import org.eclipse.jface.text.Region;
-import org.eclipse.jface.text.contentassist.CompletionProposal;
 import org.eclipse.jface.text.contentassist.ContextInformation;
 import org.eclipse.jface.text.contentassist.ICompletionProposal;
 import org.eclipse.jface.text.contentassist.IContentAssistProcessor;
@@ -36,6 +35,7 @@ import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.text.edits.ReplaceEdit;
 
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
@@ -46,11 +46,14 @@ import com.cisco.yangide.core.dom.SubModuleInclude;
 import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.core.model.YangModelManager;
+import com.cisco.yangide.core.model.YangModelUtil;
 import com.cisco.yangide.core.parser.YangParserUtil;
 import com.cisco.yangide.editor.YangEditorPlugin;
 import com.cisco.yangide.editor.editors.text.Symbols;
 import com.cisco.yangide.editor.editors.text.YangHeuristicScanner;
 import com.cisco.yangide.editor.editors.text.YangIndenter;
+import com.cisco.yangide.editor.editors.text.help.IndexInfoProposalHelpGenerator;
+import com.cisco.yangide.editor.editors.text.help.YangCompletionProposal;
 import com.cisco.yangide.editor.templates.GeneralContextType;
 import com.cisco.yangide.editor.templates.YangTemplateAccess;
 import com.cisco.yangide.ui.internal.IYangUIConstants;
@@ -58,6 +61,8 @@ import com.cisco.yangide.ui.internal.YangUIImages;
 
 /**
  * @author Alexey Kholupko
+ * 
+ * TODO: 'base' keyword completion proposals: existing 'identity' 
  */
 public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor implements IContentAssistProcessor {
 
@@ -225,7 +230,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         keywordHierarchyMap.put(
                 "uses",
                 Arrays.asList(new String[] { "augment", "description", "if-feature", "refine", "reference", "status",
-                "when" }));
+                        "when" }));
         keywordHierarchyMap.put(
                 "rpc",
                 Arrays.asList(new String[] { "description", "grouping", "if-feature", "input", "output", "reference",
@@ -258,7 +263,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         keywordHierarchyMap.put("feature",
                 Arrays.asList(new String[] { "description", "if-feature", "status", "reference" }));
         keywordHierarchyMap
-        .put("deviation", Arrays.asList(new String[] { "description", "deviate", "n", "reference" }));
+                .put("deviation", Arrays.asList(new String[] { "description", "deviate", "n", "reference" }));
         keywordHierarchyMap.put(
                 "deviate",
                 Arrays.asList(new String[] { "config", "default", "mandatory", "max-elements", "min-elements", "must",
@@ -271,7 +276,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 Arrays.asList(new String[] { "description", "error-app-tag", "error-message", "reference" }));
         keywordHierarchyMap.put("enum", Arrays.asList(new String[] { "description", "reference", "status", "value" }));
         keywordHierarchyMap
-        .put("bit", Arrays.asList(new String[] { "description", "reference", "status", "position" }));
+                .put("bit", Arrays.asList(new String[] { "description", "reference", "status", "position" }));
 
         return keywordHierarchyMap;
     }
@@ -301,7 +306,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             result[i] = new ContextInformation(MessageFormat.format(
                     "{0} {1}", new Object[] { new Integer(i), new Integer(documentOffset) }), //$NON-NLS-1$
                     MessageFormat
-                    .format("{0} {1}", new Object[] { new Integer(i), new Integer(documentOffset - 5), new Integer(documentOffset + 5) })); //$NON-NLS-1$
+                            .format("{0} {1}", new Object[] { new Integer(i), new Integer(documentOffset - 5), new Integer(documentOffset + 5) })); //$NON-NLS-1$
         }
         return result;
     }
@@ -470,12 +475,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
                 if (usedRevision == null || !usedRevision.equals(info.getRevision())) {
                     usedImports.put(info.getName(), info.getRevision());
-                    String importModuleName = info.getName();
-
-                    String revision = info.getRevision();
-
-                    ICompletionProposal proposal = generateImportProposal(previousWord, prefix, importModuleName,
-                            revision, addModuleRevision);
+                    ICompletionProposal proposal = generateImportProposal(previousWord, prefix, info, addModuleRevision);
 
                     if (proposal != null) {
                         moduleProposals.add(proposal);
@@ -502,12 +502,13 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     }
 
-    private ICompletionProposal generateImportProposal(String previousWord, String prefix, String importModuleName,
-            String revision, boolean addModuleRevision) {
+    private ICompletionProposal generateImportProposal(String previousWord, String prefix, ElementIndexInfo info,
+            boolean addModuleRevision) {
 
         ICompletionProposal resultProposal = null;
 
-        boolean isImportProposal = true;
+        String importModuleName = info.getName();
+        String revision = info.getRevision();
 
         String displayString = importModuleName;
         String replacementString = importModuleName;
@@ -516,8 +517,8 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         int replacementOffset = cursorPosition - prefix.length();
         int replacementLength = prefix.length();
         int replCursorPosition = cursorPosition;
-        isImportProposal = true;
 
+        ASTNode nodeAtPos;
         switch (previousWord) {
         case "import":
             if (revision != null && !revision.isEmpty()) {
@@ -526,18 +527,18 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                     moduleRevision = "revision-date " + revision + "; ";
                 }
 
-                replacementString = importModuleName + " { prefix " + importModuleName + "; " + moduleRevision + "}";
+                String modulePrefix = YangModelUtil.retrieveModulePrefix(info);
+                replacementString = importModuleName + " { prefix " + modulePrefix + "; " + moduleRevision + "}";
                 displayString = importModuleName += " (" + revision + ")";
-                replCursorPosition = importModuleName.length();
+                replCursorPosition = replacementString.length();
                 break;
-
             }
 
         case "revision-date":
-            ASTNode nodeAtPos = module.getNodeAtPosition(cursorPosition);
+            nodeAtPos = module.getNodeAtPosition(cursorPosition);
             if (nodeAtPos instanceof ModuleImport) {
                 if (importModuleName.equals(((ModuleImport) nodeAtPos).getName())) {
-                    replacementString = revision;
+                    replacementString = revision + "; ";
                     displayString = revision;
                     replCursorPosition = revision.length();
                     break;
@@ -545,16 +546,25 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             }
 
         case "prefix":
+            nodeAtPos = module.getNodeAtPosition(cursorPosition);
+            if (nodeAtPos instanceof ModuleImport) {
+                if (importModuleName.equals(((ModuleImport) nodeAtPos).getName())) {
+                    String modulePrefix = YangModelUtil.retrieveModulePrefix(info);
+                    replacementString = modulePrefix + "; ";
+                    displayString = importModuleName;
+                    replCursorPosition = replacementString.length();
+                    break;
+                }
+            }
+
         default:
-            isImportProposal = false;
-            break;
+            return null;
         }
 
-        if (isImportProposal && ((prefix.length() == 0 || importModuleName.startsWith(prefix)))) {
-
-            resultProposal = new CompletionProposal(replacementString, replacementOffset, replacementLength,
+        if (prefix.length() == 0 || importModuleName.startsWith(prefix)) {
+            resultProposal = new YangCompletionProposal(replacementString, replacementOffset, replacementLength,
                     replCursorPosition, YangUIImages.getImage(IYangUIConstants.IMG_IMPORT_PROPOSAL), displayString,
-                    null, null);
+                    IndexInfoProposalHelpGenerator.module(info));
         }
 
         return resultProposal;
@@ -577,9 +587,10 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         List<ICompletionProposal> proposalsList = new ArrayList<ICompletionProposal>();
         for (String proposal : keywordProposals) {
             if (proposal.startsWith(prefix)) {
-                proposalsList.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix.length(),
-                        proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_KEYWORD_PROPOSAL), proposal,
-                        null, null));
+                String replacement = proposal + ' ';
+                proposalsList.add(new YangCompletionProposal(replacement, cursorPosition - prefix.length(), prefix
+                        .length(), replacement.length(), YangUIImages.getImage(IYangUIConstants.IMG_KEYWORD_PROPOSAL),
+                        proposal)); // TODO: Add additional info about the keyword
             }
         }
 
@@ -596,9 +607,9 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         List<ICompletionProposal> bltInTypesProposals = new ArrayList<ICompletionProposal>();
         for (String proposal : fgBuiltinTypes) {
             if (proposal.startsWith(prefix)) {
-                bltInTypesProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix
+                bltInTypesProposals.add(new YangCompletionProposal(proposal, cursorPosition - prefix.length(), prefix
                         .length(), proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_TYPE_PROPOSAL),
-                        proposal, null, null));
+                        proposal)); // TODO no proposal context help
             }
         }
         Collections.sort(bltInTypesProposals, proposalComparator);
@@ -616,9 +627,10 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
                 String proposal = computeProposalForElement(info);
                 if (proposal != null && (prefix.length() == 0 || proposal.startsWith(prefix))) {
-                    customTypesProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix
-                            .length(), proposal.length(), YangUIImages
-                            .getImage(IYangUIConstants.IMG_CUSTOM_TYPE_PROPOSAL), proposal, null, null));
+                    customTypesProposals.add(new YangCompletionProposal(proposal, cursorPosition - prefix.length(),
+                            prefix.length(), proposal.length(), YangUIImages
+                                    .getImage(IYangUIConstants.IMG_CUSTOM_TYPE_PROPOSAL), proposal,
+                            IndexInfoProposalHelpGenerator.type(info)));
                 }
             }
         }
@@ -649,9 +661,10 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
                 String proposal = computeProposalForElement(info);
                 if (proposal != null && (prefix.length() == 0 || proposal.startsWith(prefix))) {
-                    groupingProposals.add(new CompletionProposal(proposal, cursorPosition - prefix.length(), prefix
+                    groupingProposals.add(new YangCompletionProposal(proposal, cursorPosition - prefix.length(), prefix
                             .length(), proposal.length(),
-                            YangUIImages.getImage(IYangUIConstants.IMG_GROUPING_PROPOSAL), proposal, null, null));
+                            YangUIImages.getImage(IYangUIConstants.IMG_GROUPING_PROPOSAL), proposal,
+                            IndexInfoProposalHelpGenerator.grouping(info)));
                 }
             }
         }
@@ -689,9 +702,10 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 }
 
                 if (prefix.length() == 0 || proposal.startsWith(prefix)) {
-                    submoduleProposals.add(new CompletionProposal(replacementString, cursorPosition - prefix.length(),
-                            prefix.length(), proposal.length(), YangUIImages
-                            .getImage(IYangUIConstants.IMG_GROUPING_PROPOSAL), displayString, null, null));
+                    submoduleProposals.add(new YangCompletionProposal(replacementString, cursorPosition
+                            - prefix.length(), prefix.length(), proposal.length(), YangUIImages
+                            .getImage(IYangUIConstants.IMG_GROUPING_PROPOSAL), displayString,
+                            IndexInfoProposalHelpGenerator.submodule(info)));
                 }
             }
         }
@@ -857,7 +871,8 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 continue;
             }
             if ((template.getName().startsWith(prefix) && template.matches(prefix, context.getContextType().getId()))) {
-                matches.add(createProposal(template, context, (IRegion) region, getRelevance(template, prefix)));
+                matches.add(// ! all proposals should be treated
+                createProposal(template, context, (IRegion) region, getRelevance(template, prefix)));
             }
         }
 
@@ -918,7 +933,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see
      * org.eclipse.jface.text.templates.TemplateCompletionProcessor#getImage(org.eclipse.jface.text
      * .templates.Template)
@@ -927,5 +942,4 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
     protected Image getImage(Template template) {
         return YangUIImages.getImage(IYangUIConstants.IMG_TEMPLATE_PROPOSAL);
     }
-
 }

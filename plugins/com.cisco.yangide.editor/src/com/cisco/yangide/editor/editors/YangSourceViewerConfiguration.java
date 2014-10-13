@@ -11,8 +11,11 @@ import org.eclipse.jdt.ui.text.IColorManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.preference.JFacePreferences;
 import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.text.DefaultInformationControl;
 import org.eclipse.jface.text.IAutoEditStrategy;
 import org.eclipse.jface.text.IDocument;
+import org.eclipse.jface.text.IInformationControl;
+import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.ITextDoubleClickStrategy;
 import org.eclipse.jface.text.ITextHover;
 import org.eclipse.jface.text.contentassist.ContentAssistant;
@@ -29,6 +32,7 @@ import org.eclipse.jface.text.rules.DefaultDamagerRepairer;
 import org.eclipse.jface.text.source.ISourceViewer;
 import org.eclipse.jface.util.PropertyChangeEvent;
 import org.eclipse.swt.graphics.Color;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.editors.text.TextSourceViewerConfiguration;
 import org.eclipse.ui.texteditor.AbstractDecoratedTextEditorPreferenceConstants;
 import org.eclipse.ui.texteditor.ITextEditor;
@@ -194,6 +198,7 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
         assistant.setAutoActivationDelay(200);
         assistant.setProposalPopupOrientation(ContentAssistant.PROPOSAL_REMOVE);
         assistant.setContextInformationPopupOrientation(ContentAssistant.CONTEXT_INFO_ABOVE);
+        assistant.setInformationControlCreator(getInformationControlCreator());
 
         Color background = JFaceResources.getColorRegistry().get(JFacePreferences.CONTENT_ASSIST_BACKGROUND_COLOR);
         assistant.setContextInformationPopupBackground(background);
@@ -256,6 +261,17 @@ public class YangSourceViewerConfiguration extends TextSourceViewerConfiguration
         return editor;
     }
 
+    /**
+     * A copy-paste from {@link TextSourceViewerConfiguration}.getQuickAssistAssistantInformationControlCreator()
+     */
+    private IInformationControlCreator getInformationControlCreator() {
+        return new IInformationControlCreator() {
+            public IInformationControl createInformationControl(Shell parent) {
+                return new DefaultInformationControl(parent, "Press 'Tab' from proposal table or click for focus");
+            }
+        };
+    }
+    
     // @Override
     // public IInformationPresenter getInformationPresenter(ISourceViewer sourceViewer) {
     // InformationPresenter presenter = new
