@@ -25,7 +25,6 @@ import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.editor.YangEditorPlugin;
-import com.cisco.yangide.editor.editors.text.hover.YangTextHover;
 
 /**
  * Utilities aimed to be used in different context-oriented help providers for YANG source
@@ -37,6 +36,8 @@ import com.cisco.yangide.editor.editors.text.hover.YangTextHover;
 @SuppressWarnings("restriction")
 public class HelpCompositionUtils {
 
+    private static String styleSheet = null;
+    
     /**
      * Gets quick help related to the provided {@code node}.
      * 
@@ -154,11 +155,11 @@ public class HelpCompositionUtils {
      * Returns a stylesheet used among quick-help infopopups. 
      */
     public static String getStyleSheet() {
-        if (YangTextHover.styleSheet == null) {
-            YangTextHover.styleSheet = YangEditorPlugin.getDefault().getBundleFileContent(
+        if (styleSheet == null) {
+            styleSheet = YangEditorPlugin.getDefault().getBundleFileContent(
                     "/resources/HoverStyleSheet.css");
         }
-        String css = YangTextHover.styleSheet;
+        String css = styleSheet;
         if (css != null) {
             FontData fontData = JFaceResources.getFontRegistry().getFontData(
                     PreferenceConstants.APPEARANCE_JAVADOC_FONT)[0];

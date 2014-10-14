@@ -33,8 +33,6 @@ import com.cisco.yangide.editor.editors.text.help.HelpCompositionUtils;
 @SuppressWarnings("restriction")
 public class YangTextHover extends DefaultTextHover implements ITextHoverExtension {
 
-    public static String styleSheet = null;
-
     private IInformationControlCreator hoverControlCreator;
     private IInformationControlCreator presenterCtrlCreator;
     private IEditorPart editor;

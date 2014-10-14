@@ -36,8 +36,9 @@ public class YangModelUtil {
             Module importedModule = YangCorePlugin.createYangFile(info.getPath())
                     .getModule();
             SimpleNode<String> prefixNode = importedModule.getPrefix();
-            if (prefixNode != null)
+            if (prefixNode != null) {
                 defaultPrefix = prefixNode.getValue();
+            }
         } catch (YangModelException ex) {
             YangCorePlugin.log(ex, "Yang source file could not be loaded.");
         }
