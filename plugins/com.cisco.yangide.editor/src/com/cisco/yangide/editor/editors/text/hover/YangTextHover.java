@@ -7,7 +7,6 @@
  */
 package com.cisco.yangide.editor.editors.text.hover;
 
-import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.text.DefaultTextHover;
 import org.eclipse.jface.text.IInformationControlCreator;
 import org.eclipse.jface.text.IRegion;
@@ -30,7 +29,6 @@ import com.cisco.yangide.editor.editors.text.help.HelpCompositionUtils;
  * @author Konstantin Zaitsev
  * @date Jul 23, 2014
  */
-@SuppressWarnings("restriction")
 public class YangTextHover extends DefaultTextHover implements ITextHoverExtension {
 
     private IInformationControlCreator hoverControlCreator;
@@ -60,10 +58,7 @@ public class YangTextHover extends DefaultTextHover implements ITextHoverExtensi
         @SuppressWarnings("deprecation")
         String info = super.getHoverInfo(textViewer, hoverRegion);
         if (info != null) {
-            StringBuffer sb = new StringBuffer(info);
-            HTMLPrinter.insertPageProlog(sb, 0, HelpCompositionUtils.getStyleSheet());
-            HTMLPrinter.addPageEpilog(sb);
-            return sb.toString();
+            return HelpCompositionUtils.wrapHtmlText(info, null);
         }
 
         String hoverInfo = null;

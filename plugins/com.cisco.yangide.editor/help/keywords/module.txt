@@ -1,0 +1,33 @@
+<p>
+The "module" statement defines the module's name, and groups all statements that belong to the module together.  The "module" statement's argument is the name of the module, followed by a block of substatements that hold detailed module information.  The module name follows the rules for identifiers. 
+</p><p>
+Names of modules published in RFC streams [RFC4844] MUST be assigned by IANA.
+</p><p>
+Private module names are assigned by the organization owning the module without a central registry. It is RECOMMENDED to choose module names that will have a low probability of colliding with standard or other enterprise modules and submodules, e.g., by using the enterprise or organization name as a prefix for the module name.
+</p><p>
+   A module typically has the following layout:
+</p><pre>
+     module <module-name> {
+
+         // header information
+         &lt;yang-version statement&gt;
+         &lt;namespace statement&gt;
+         &lt;prefix statement&gt;
+
+         // linkage statements
+         &lt;import statements&gt;
+         &lt;include statements&gt;
+
+         // meta information
+         &lt;organization statement&gt;
+         &lt;contact statement&gt;
+         &lt;description statement&gt;
+         &lt;reference statement&gt;
+
+         // revision history
+         &lt;revision statements&gt;
+
+         // module definitions
+         &lt;other statements&gt;
+     }
+</pre>

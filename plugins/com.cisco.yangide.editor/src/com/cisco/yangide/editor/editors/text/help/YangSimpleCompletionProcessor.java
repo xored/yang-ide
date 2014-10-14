@@ -588,7 +588,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 String replacement = proposal + ' ';
                 proposalsList.add(new YangCompletionProposal(replacement, cursorPosition - prefix.length(), prefix
                         .length(), replacement.length(), YangUIImages.getImage(IYangUIConstants.IMG_KEYWORD_PROPOSAL),
-                        proposal)); // TODO: Add additional info about the keyword
+                        proposal, LanguageProposalHelpGenerator.keyword(proposal)));
             }
         }
 
@@ -607,7 +607,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             if (proposal.startsWith(prefix)) {
                 bltInTypesProposals.add(new YangCompletionProposal(proposal, cursorPosition - prefix.length(), prefix
                         .length(), proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_TYPE_PROPOSAL),
-                        proposal)); // TODO no proposal context help
+                        proposal, LanguageProposalHelpGenerator.type(proposal))); 
             }
         }
         Collections.sort(bltInTypesProposals, proposalComparator);
