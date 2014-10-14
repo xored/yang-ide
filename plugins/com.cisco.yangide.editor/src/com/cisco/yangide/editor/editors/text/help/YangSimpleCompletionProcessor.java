@@ -5,7 +5,7 @@
  * terms of the Eclipse Public License v1.0 which accompanies this distribution,
  * and is available at http://www.eclipse.org/legal/epl-v10.html
  */
-package com.cisco.yangide.editor.editors;
+package com.cisco.yangide.editor.editors.text.help;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -35,7 +35,6 @@ import org.eclipse.jface.text.templates.TemplateContext;
 import org.eclipse.jface.text.templates.TemplateContextType;
 import org.eclipse.jface.text.templates.TemplateException;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.text.edits.ReplaceEdit;
 
 import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.core.dom.Module;
@@ -49,11 +48,10 @@ import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.core.model.YangModelUtil;
 import com.cisco.yangide.core.parser.YangParserUtil;
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.editor.editors.YangScanner;
 import com.cisco.yangide.editor.editors.text.Symbols;
 import com.cisco.yangide.editor.editors.text.YangHeuristicScanner;
 import com.cisco.yangide.editor.editors.text.YangIndenter;
-import com.cisco.yangide.editor.editors.text.help.IndexInfoProposalHelpGenerator;
-import com.cisco.yangide.editor.editors.text.help.YangCompletionProposal;
 import com.cisco.yangide.editor.templates.GeneralContextType;
 import com.cisco.yangide.editor.templates.YangTemplateAccess;
 import com.cisco.yangide.ui.internal.IYangUIConstants;
@@ -108,9 +106,9 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
         CompletionKind type;
     }
 
-    private final static String[] fgKeywordProposals = YangScanner.keywords;
+    private final static String[] fgKeywordProposals = YangScanner.getKeywords();
 
-    private final static String[] fgBuiltinTypes = YangScanner.types;
+    private final static String[] fgBuiltinTypes = YangScanner.getTypes();
 
     private final static Map<String, List<String>> keywordHierarchyMap = createKeywordHierarchyMap();
 

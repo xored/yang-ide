@@ -40,6 +40,7 @@ import org.eclipse.ui.texteditor.ITextEditor;
 import com.cisco.yangide.editor.editors.text.CompositeReconcilingStrategy;
 import com.cisco.yangide.editor.editors.text.YangFormattingStrategy;
 import com.cisco.yangide.editor.editors.text.YangReconcilingStrategy;
+import com.cisco.yangide.editor.editors.text.help.YangSimpleCompletionProcessor;
 import com.cisco.yangide.editor.editors.text.hover.YangTextHover;
 import com.cisco.yangide.editor.preferences.YangDocumentSetupParticipant;
 
