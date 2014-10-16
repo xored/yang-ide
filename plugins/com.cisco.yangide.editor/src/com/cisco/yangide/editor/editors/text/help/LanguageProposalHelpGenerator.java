@@ -32,33 +32,27 @@ import com.cisco.yangide.editor.YangEditorPlugin;
  */
 public class LanguageProposalHelpGenerator implements IProposalHelpGenerator {
 
-    private enum DefinitionType {
-        Keyword, Type
+    /**
+     * Possible kinds of YANG definitions
+     */
+    public enum DefinitionKind {
+
+        TYPE("types"), //$NON-NLS-1$
+        KEYWORD("keywords"); //$NON-NLS-1$
+
+        final String subdir;
+
+        DefinitionKind(String subdir) {
+            this.subdir = subdir;
+        }
     }
 
     private final String definition;
-    private final DefinitionType definitionType;
+    private final IPath path;
 
-    private LanguageProposalHelpGenerator(String definition, DefinitionType definitionType) {
-        super();
+    public LanguageProposalHelpGenerator(String definition, DefinitionKind kind) {
         this.definition = definition;
-        this.definitionType = definitionType;
-    }
-
-    /**
-     * @return an implementation of {@link IProposalHelpGenerator} that generates quick help for a
-     * YANG built-in type
-     */
-    public static IProposalHelpGenerator type(String definition) {
-        return new LanguageProposalHelpGenerator(definition, DefinitionType.Type);
-    }
-
-    /**
-     * @return an implementation of {@link IProposalHelpGenerator} that generates quick help for a
-     * YANG language keyword.
-     */
-    public static IProposalHelpGenerator keyword(String definition) {
-        return new LanguageProposalHelpGenerator(definition, DefinitionType.Keyword);
+        path = new Path("help").append(kind.subdir).append(definition).addFileExtension("txt"); //$NON-NLS-1$ //$NON-NLS-2$
     }
 
     /**
@@ -73,7 +67,7 @@ public class LanguageProposalHelpGenerator implements IProposalHelpGenerator {
                                                                 // HTML that contains it.
         URL url = null;
         try {
-            url = FileLocator.find(YangEditorPlugin.getDefault().getBundle(), getPath(), null);
+            url = FileLocator.find(YangEditorPlugin.getDefault().getBundle(), path, null);
             if (url == null) {
                 YangEditorPlugin.logWarning(NLS.bind("There's no help topic about \"{0}\".", definition), null); //$NON-NLS-1$
                 return null;
@@ -97,25 +91,4 @@ public class LanguageProposalHelpGenerator implements IProposalHelpGenerator {
         }
         return null;
     }
-
-    /**
-     * Computes path to a file that contains help related to the definition.
-     */
-    private IPath getPath() {
-        String subdir = ""; //$NON-NLS-1$
-        switch (definitionType) {
-        case Keyword:
-            subdir = "keywords"; //$NON-NLS-1$
-            break;
-
-        case Type:
-            subdir = "types"; //$NON-NLS-1$
-            break;
-
-        default:
-            break;
-        }
-        return new Path("help").append(subdir).append(definition).addFileExtension("txt"); //$NON-NLS-1$ //$NON-NLS-2$
-    }
-
 }

@@ -7,6 +7,9 @@
  */
 package com.cisco.yangide.editor.editors.text.help;
 
+import static com.cisco.yangide.editor.editors.text.help.LanguageProposalHelpGenerator.DefinitionKind.KEYWORD;
+import static com.cisco.yangide.editor.editors.text.help.LanguageProposalHelpGenerator.DefinitionKind.TYPE;
+
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -588,7 +591,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
                 String replacement = proposal + ' ';
                 proposalsList.add(new YangCompletionProposal(replacement, cursorPosition - prefix.length(), prefix
                         .length(), replacement.length(), YangUIImages.getImage(IYangUIConstants.IMG_KEYWORD_PROPOSAL),
-                        proposal, LanguageProposalHelpGenerator.keyword(proposal)));
+                        proposal, new LanguageProposalHelpGenerator(proposal, KEYWORD)));
             }
         }
 
@@ -607,7 +610,7 @@ public class YangSimpleCompletionProcessor extends TemplateCompletionProcessor i
             if (proposal.startsWith(prefix)) {
                 bltInTypesProposals.add(new YangCompletionProposal(proposal, cursorPosition - prefix.length(), prefix
                         .length(), proposal.length(), YangUIImages.getImage(IYangUIConstants.IMG_TYPE_PROPOSAL),
-                        proposal, LanguageProposalHelpGenerator.type(proposal))); 
+                        proposal, new LanguageProposalHelpGenerator(proposal, TYPE))); 
             }
         }
         Collections.sort(bltInTypesProposals, proposalComparator);
