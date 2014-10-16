@@ -7,8 +7,8 @@
  */
 package com.cisco.yangide.editor.editors.text.help;
 
-import static com.cisco.yangide.editor.editors.text.help.LanguageProposalHelpGenerator.DefinitionKind.KEYWORD;
-import static com.cisco.yangide.editor.editors.text.help.LanguageProposalHelpGenerator.DefinitionKind.TYPE;
+import static com.cisco.yangide.editor.editors.text.help.YangLanguageHelpLoader.DefinitionKind.KEYWORD;
+import static com.cisco.yangide.editor.editors.text.help.YangLanguageHelpLoader.DefinitionKind.TYPE;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;

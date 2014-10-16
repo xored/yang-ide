@@ -27,6 +27,7 @@ import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.editor.editors.text.help.YangLanguageHelpLoader.DefinitionKind;
 
 /**
  * Utilities aimed to be used in different context-oriented help providers for YANG source
@@ -49,7 +50,10 @@ public class HelpCompositionUtils {
         if (node.getDescription() != null && node.getDescription().length() > 0) {
             return getLocalInfo(node);
         }
-        return getIndexedInfo(node);
+        String info = getIndexedInfo(node);
+        if (info == null)
+            info = getLanguageHelp(node);
+        return info;
     }
 
     /**
@@ -139,6 +143,13 @@ public class HelpCompositionUtils {
         return finish(buffer);
     }
 
+    public static String getLanguageHelp(ASTNode node) {
+        if (node instanceof TypeReference)
+            return new LanguageProposalHelpGenerator(((TypeReference) node).getName(), DefinitionKind.TYPE).get(null);
+        else
+            return new LanguageProposalHelpGenerator(node.getNodeName(), DefinitionKind.KEYWORD).get(null);
+    }
+    
     /**
      * Adds standard HTML header and footer to a partial HTML given in {@code text}.
      * Adds the given {@code title} if one is specified. 
