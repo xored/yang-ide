@@ -91,12 +91,38 @@ public class YangEditorPlugin extends AbstractUIPlugin {
     }
 
     /**
-     * Logs the specified throwable with this plug-in's log.
+     * Logs the specified throwable as an error with this plug-in's log.
      *
      * @param t throwable to log
      */
     public static void log(Throwable t) {
-        IStatus status = new Status(IStatus.ERROR, PLUGIN_ID, 500, "Error logged from YANG Editor: ", t); //$NON-NLS-1$
+        logError("Error logged from YANG Editor: ", t); //$NON-NLS-1$
+    }
+
+    /**
+     * Logs the specified throwable as an error with this plug-in's log, using the provided message.
+     *
+     * @param msg  a message that describes the error
+     * @param t throwable to log
+     */
+    public static void logError(String msg, Throwable t) {
+        log(new Status(IStatus.ERROR, PLUGIN_ID, 500, msg, t)); 
+    }
+
+    /**
+     * Logs the specified throwable as a warning with this plug-in's log, using the provided message.
+     *
+     * @param msg  a message that describes the error
+     * @param t throwable to log
+     */
+    public static void logWarning(String msg, Throwable t) {
+        log(new Status(IStatus.WARNING, PLUGIN_ID, 500, msg, t)); 
+    }
+
+    /**
+     * Logs the specified status with this plug-in's log.
+     */
+    public static void log(IStatus status) {
         getDefault().getLog().log(status);
     }
 

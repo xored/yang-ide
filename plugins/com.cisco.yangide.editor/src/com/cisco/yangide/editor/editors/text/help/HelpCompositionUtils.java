@@ -7,6 +7,8 @@
  */ 
 package com.cisco.yangide.editor.editors.text.help;
 
+import java.util.Objects;
+
 import org.eclipse.jdt.ui.PreferenceConstants;
 import org.eclipse.jface.internal.text.html.HTMLPrinter;
 import org.eclipse.jface.resource.JFaceResources;
@@ -25,6 +27,7 @@ import com.cisco.yangide.core.indexing.ElementIndexInfo;
 import com.cisco.yangide.core.indexing.ElementIndexType;
 import com.cisco.yangide.core.model.YangModelManager;
 import com.cisco.yangide.editor.YangEditorPlugin;
+import com.cisco.yangide.editor.editors.text.help.YangLanguageHelpLoader.DefinitionKind;
 
 /**
  * Utilities aimed to be used in different context-oriented help providers for YANG source
@@ -47,7 +50,10 @@ public class HelpCompositionUtils {
         if (node.getDescription() != null && node.getDescription().length() > 0) {
             return getLocalInfo(node);
         }
-        return getIndexedInfo(node);
+        String info = getIndexedInfo(node);
+        if (info == null)
+            info = getLanguageHelp(node);
+        return info;
     }
 
     /**
@@ -107,9 +113,7 @@ public class HelpCompositionUtils {
         addValue(buffer, "Organization", info.getOrganization());
         addValue(buffer, "Contact", info.getContact());
         buffer.append("</dl>");
-        HTMLPrinter.insertPageProlog(buffer, 0, getStyleSheet());
-        HTMLPrinter.addPageEpilog(buffer);
-        return buffer.toString();
+        return finish(buffer);
     }
 
     /**
@@ -136,9 +140,36 @@ public class HelpCompositionUtils {
         addValue(buffer, "Reference", node.getReference());
         addValue(buffer, "Status", node.getStatus());
         buffer.append("</dl>");
-        HTMLPrinter.insertPageProlog(buffer, 0, getStyleSheet());
-        HTMLPrinter.addPageEpilog(buffer);
-        return buffer.toString();
+        return finish(buffer);
+    }
+
+    public static String getLanguageHelp(ASTNode node) {
+        if (node instanceof TypeReference)
+            return new LanguageProposalHelpGenerator(((TypeReference) node).getName(), DefinitionKind.TYPE).get(null);
+        else
+            return new LanguageProposalHelpGenerator(node.getNodeName(), DefinitionKind.KEYWORD).get(null);
+    }
+    
+    /**
+     * Adds standard HTML header and footer to a partial HTML given in {@code text}.
+     * Adds the given {@code title} if one is specified. 
+     * 
+     * @param text  the wrapped HTML text
+     * @param title  an optional title
+     * @return  a String that contains fully equipped HTML text 
+     */
+    public static String wrapHtmlText(String text, String title)
+    {
+        Objects.requireNonNull(text, "The wrapped HTML content must not be null");
+        StringBuffer buffer = new StringBuffer();
+        if (title != null && !title.isEmpty()) {
+            HTMLPrinter.addSmallHeader(buffer, title);
+        }
+        if (text.contains("<")) // has formatting
+            buffer.append(text);
+        else
+            HTMLPrinter.addParagraph(buffer, text);
+        return finish(buffer);
     }
 
     private static String formatValue(String source) {
@@ -151,10 +182,16 @@ public class HelpCompositionUtils {
         }
     }
 
+    private static String finish(StringBuffer buffer) {
+        HTMLPrinter.insertPageProlog(buffer, 0, getStyleSheet());
+        HTMLPrinter.addPageEpilog(buffer);
+        return buffer.toString();
+    }
+
     /**
      * Returns a stylesheet used among quick-help infopopups. 
      */
-    public static String getStyleSheet() {
+    private static String getStyleSheet() {
         if (styleSheet == null) {
             styleSheet = YangEditorPlugin.getDefault().getBundleFileContent(
                     "/resources/HoverStyleSheet.css");
@@ -168,5 +205,4 @@ public class HelpCompositionUtils {
 
         return css;
     }
-
 }

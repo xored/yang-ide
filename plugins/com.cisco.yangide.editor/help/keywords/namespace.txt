@@ -1,0 +1,1 @@
+The "namespace" statement defines the XML namespace that all identifiers defined by the module are qualified by, with the exception of data node identifiers defined inside a grouping. The argument to the "namespace" statement is the URI of the namespace.
