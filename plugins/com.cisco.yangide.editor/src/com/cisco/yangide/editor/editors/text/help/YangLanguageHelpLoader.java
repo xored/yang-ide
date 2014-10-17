@@ -66,21 +66,20 @@ public class YangLanguageHelpLoader {
         URL url = null;
         try {
             url = FileLocator.find(YangEditorPlugin.getDefault().getBundle(), path, null);
-            if (url == null) {
-                YangEditorPlugin.logWarning(NLS.bind("There's no help topic about \"{0}\".", definition), null); //$NON-NLS-1$
-                return null;
-            }
-            try (InputStream inputStream = url.openStream();
-                    BufferedReader r = new BufferedReader(new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
-                StringBuilder sb = new StringBuilder();
-                for (String str = null; (str = r.readLine()) != null;) {
-                    sb.append(str).append("\n"); // line breaks are important if the help file //$NON-NLS-1$
-                                                 // contains <pre> HTML tags
+            if (url != null) {
+                try (InputStream inputStream = url.openStream();
+                        BufferedReader r = new BufferedReader(
+                                new InputStreamReader(inputStream, StandardCharsets.UTF_8))) {
+                    StringBuilder sb = new StringBuilder();
+                    for (String str = null; (str = r.readLine()) != null;) {
+                        sb.append(str).append("\n"); // line breaks are important if the help file //$NON-NLS-1$
+                                                     // contains <pre> HTML tags
+                    }
+                    subMonitor.worked(1); // reading completed
+                    String wrapHtmlText = HelpCompositionUtils.wrapHtmlText(sb.toString(), definition);
+                    subMonitor.worked(1); // HTML construction completed
+                    return wrapHtmlText;
                 }
-                subMonitor.worked(1); // reading completed
-                String wrapHtmlText = HelpCompositionUtils.wrapHtmlText(sb.toString(), definition);
-                subMonitor.worked(1); // HTML construction completed
-                return wrapHtmlText;
             }
         } catch (IOException e) {
             YangEditorPlugin.logError("Failed to load help contents from " + url, e); //$NON-NLS-1$
