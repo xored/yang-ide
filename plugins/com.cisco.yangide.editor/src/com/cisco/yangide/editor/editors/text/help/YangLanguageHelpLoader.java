@@ -18,6 +18,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.SubMonitor;
 import org.eclipse.osgi.util.NLS;
 
@@ -67,7 +68,9 @@ public class YangLanguageHelpLoader {
         try {
             url = FileLocator.find(YangEditorPlugin.getDefault().getBundle(), path, null);
             if (url == null) {
-                YangEditorPlugin.logWarning(NLS.bind("There's no help topic about \"{0}\".", definition), null); //$NON-NLS-1$
+                if (isInHelpTracingMode()) {
+                    YangEditorPlugin.logWarning(NLS.bind("There's no help topic about \"{0}\".", definition), null); //$NON-NLS-1$
+                }
                 return null;
             }
             try (InputStream inputStream = url.openStream();
@@ -88,6 +91,11 @@ public class YangLanguageHelpLoader {
             subMonitor.done();
         }
         return null;
+    }
+    
+    public static boolean isInHelpTracingMode()
+    {
+        return Boolean.valueOf(Platform.getDebugOption(YangEditorPlugin.PLUGIN_ID + "/editor/help")); //$NON-NLS-1$
     }
 
 }
