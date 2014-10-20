@@ -7,8 +7,10 @@ import org.eclipse.core.resources.IFile;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.emf.common.util.URI;
 import org.eclipse.jface.dialogs.MessageDialog;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.StructuredSelection;
+import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.IFileEditorInput;
@@ -40,7 +42,7 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart implements IYan
     @Override
     protected void createPages() {
         yangSourceEditor = new YangEditor();
-        yangDiagramEditor = new YangDiagramEditor();
+        yangDiagramEditor = new YangDiagramEditor(yangSourceEditor);
         modelSynchronizer = new ModelSynchronizer(yangSourceEditor, yangDiagramEditor);
         initSourcePage();
         initDiagramPage();
@@ -67,7 +69,6 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart implements IYan
     public boolean isDirty() {
         return yangSourceEditor.isDirty();
     }
-        
 
     @Override
     protected IEditorSite createSite(IEditorPart editor) {
@@ -136,7 +137,10 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart implements IYan
             } catch (PartInitException e) {
                 YangEditorPlugin.log(e);
             }
+            yangDiagramEditor.startSourceSelectionUpdater();
         } else {
+            yangDiagramEditor.stopSourceSelectionUpdater();
+            IRegion highlightRange = yangSourceEditor.getHighlightRange();
             yangSourceViewer.enableTextListeners();
             yangSourceViewer.updateDocument();
 
@@ -144,8 +148,18 @@ public class YangMultiPageEditorPart extends MultiPageEditorPart implements IYan
             if (yangSourceViewer.getReconciler() != null) {
                 yangSourceViewer.getReconciler().install(yangSourceEditor.getViewer());
             }
+            setSourceSelection(highlightRange);
         }
         super.pageChange(newPageIndex);
+    }
+
+    private void setSourceSelection(IRegion highlightRange) {
+        if (highlightRange != null) {
+            Point selectedRange = yangSourceViewer.getSelectedRange();
+            if (selectedRange.x != highlightRange.getOffset() && selectedRange.y != highlightRange.getLength()) {
+                yangSourceEditor.selectAndReveal(highlightRange.getOffset(), highlightRange.getLength());
+            }
+        }
     }
 
     /**

@@ -5,6 +5,7 @@ package com.cisco.yangide.ext.model.editor.editors;
 
 import java.util.List;
 
+import com.cisco.yangide.core.dom.ASTNode;
 import com.cisco.yangide.ext.model.Node;
 
 /**
@@ -27,4 +28,6 @@ public interface ISourceModelManager {
      * @param nodes nodes to be extracted
      */
     void extractGrouping(List<Node> nodes);
+
+    ASTNode getModuleNode(Node node);
 }
