@@ -8,7 +8,6 @@
 package com.cisco.yangide.editor.editors;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -25,7 +24,9 @@ import org.eclipse.jface.action.IMenuManager;
 import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.text.IDocument;
 import org.eclipse.jface.text.IDocumentExtension3;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.text.ITextSelection;
+import org.eclipse.jface.text.Region;
 import org.eclipse.jface.text.source.DefaultCharacterPairMatcher;
 import org.eclipse.jface.text.source.ICharacterPairMatcher;
 import org.eclipse.jface.text.source.ISourceViewer;
@@ -160,25 +161,36 @@ public class YangEditor extends TextEditor implements IProjectionListener, IYang
 
     private class YangOutlineSelectionChangedListener extends AbstractSelectionChangedListener {
         @Override
-        @SuppressWarnings("unchecked")
         public void selectionChanged(SelectionChangedEvent event) {
-            if (isYangOutlinePageActive()) {
-                if (event.getSelection() instanceof IStructuredSelection) {
-                    Iterator<Object> iter = ((IStructuredSelection) event.getSelection()).iterator();
-                    if (iter.hasNext()) {
-                        Object s = iter.next();
-                        if (s instanceof ASTNamedNode) {
-                            selectAndReveal(((ASTNamedNode) s).getNameStartPosition(),
-                                    ((ASTNamedNode) s).getNameLength());
-                        } else if (s instanceof ASTNode) {
-                            selectAndReveal(((ASTNode) s).getStartPosition(), ((ASTNode) s).getLength());
-                        }
+            if (isYangOutlinePageActive() && event.getSelection() instanceof IStructuredSelection) {
+                Object element = ((IStructuredSelection) event.getSelection()).getFirstElement();
+                if (element instanceof ASTNode) {
+                    IRegion selection = getSelectionRegion((ASTNode) element);
+                    if (selection != null) {
+                        selectAndReveal(selection.getOffset(), selection.getLength());
                     }
                 }
             }
         }
     }
 
+    /**
+     * Gets length and offset for selection of the provided {@code node}. 
+     * @param node  an ASTNode that specifies offset and length of selection
+     * @return an IRegion that corresponds to the given {@code node} or null if it was null
+     */
+    public static IRegion getSelectionRegion(ASTNode node) {
+        if (node != null) {
+            if (node instanceof ASTNamedNode) {
+                ASTNamedNode namedNode = (ASTNamedNode) node;
+                return new Region(namedNode.getNameStartPosition(), namedNode.getNameLength());
+            } else {
+                return new Region(node.getStartPosition(), node.getLength());
+            }
+        }
+        return null;
+    }
+    
     public YangEditor() {
         super();
 
