@@ -15,10 +15,14 @@ import org.eclipse.graphiti.features.context.impl.RemoveContext;
 import org.eclipse.graphiti.mm.pictograms.ContainerShape;
 import org.eclipse.graphiti.mm.pictograms.Diagram;
 import org.eclipse.graphiti.mm.pictograms.PictogramElement;
+import org.eclipse.graphiti.services.Graphiti;
 import org.eclipse.graphiti.ui.editor.DiagramBehavior;
 import org.eclipse.graphiti.ui.editor.DiagramEditor;
 import org.eclipse.graphiti.ui.editor.IDiagramEditorInput;
+import org.eclipse.graphiti.ui.platform.GraphitiShapeEditPart;
+import org.eclipse.jface.text.IRegion;
 import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.swt.events.ControlEvent;
 import org.eclipse.swt.events.ControlListener;
@@ -29,6 +33,8 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.ui.IEditorInput;
 
+import com.cisco.yangide.core.dom.ASTNode;
+import com.cisco.yangide.editor.editors.YangEditor;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Module;
 import com.cisco.yangide.ext.model.Node;
@@ -42,6 +48,14 @@ public class YangDiagramEditor extends DiagramEditor {
 
     private Module module;
     private YangDiagramModuleInfoPanel infoPane;
+    private ISourceModelManager sourceModelManager;
+    private final YangEditor sourceEditor;
+    
+    public YangDiagramEditor(YangEditor sourceEditor) {
+        super();
+        this.sourceEditor = sourceEditor;
+    }
+
     private IModelChangeHandler modelChangeHandler = new IModelChangeHandler() {
 
         @Override
@@ -110,6 +124,7 @@ public class YangDiagramEditor extends DiagramEditor {
     private boolean layouted = false;
     private Diagram diagram;
     private Point diagramSize = new Point(1200, 200);
+    private SourceSelectionUpdater sourceSelectionUpdater;
 
     @Override
     public void createPartControl(final Composite parent) {
@@ -163,8 +178,9 @@ public class YangDiagramEditor extends DiagramEditor {
     @Override
     public void initializeGraphicalViewer() {
         super.initializeGraphicalViewer();
-        if (getGraphicalViewer() != null) {
-            getGraphicalViewer().addSelectionChangedListener(new ISelectionChangedListener() {
+        GraphicalViewer graphicalViewer = getGraphicalViewer();
+        if (graphicalViewer != null) {
+            graphicalViewer.addSelectionChangedListener(new ISelectionChangedListener() {
                 @Override
                 public void selectionChanged(SelectionChangedEvent event) {
                     ((YangDiagramBehavior) getDiagramBehavior()).getYangPaletteBehavior().updateSelection(
@@ -172,6 +188,7 @@ public class YangDiagramEditor extends DiagramEditor {
                 }
             });
         }
+        sourceSelectionUpdater = new SourceSelectionUpdater();
     }
 
     @Override
@@ -256,12 +273,50 @@ public class YangDiagramEditor extends DiagramEditor {
         return modelChangeHandler;
     }
 
-    public void setSourceModelManager(ISourceModelManager sourceModelManage) {
+    public void setSourceModelManager(ISourceModelManager sourceModelManager) {
         ((EditorFeatureProvider) getDiagramTypeProvider().getFeatureProvider())
-        .setSourceModelManager(sourceModelManage);
+        .setSourceModelManager(sourceModelManager);
+        this.sourceModelManager = sourceModelManager;
     }
 
     private IFile getFile() {
         return ((YangDiagramEditorInput) getEditorInput()).getFile();
+    }
+
+    /**
+     * Enables selection of source code element that corresponds to the selected diagram shape.
+     */
+    public void startSourceSelectionUpdater() {
+        GraphicalViewer graphicalViewer = getGraphicalViewer();
+        if (graphicalViewer != null) 
+            graphicalViewer.addSelectionChangedListener(sourceSelectionUpdater);
+    }
+
+    /**
+     * Disables selection of source code element that corresponds to the selected diagram shape.
+     */
+    public void stopSourceSelectionUpdater() {
+        GraphicalViewer graphicalViewer = getGraphicalViewer();
+        if (graphicalViewer != null) 
+            graphicalViewer.removeSelectionChangedListener(sourceSelectionUpdater);
+    }
+
+    private class SourceSelectionUpdater implements ISelectionChangedListener {
+        @Override
+        public void selectionChanged(SelectionChangedEvent event) {
+            IStructuredSelection selection = (IStructuredSelection) event.getSelection();
+            Object object = selection.getFirstElement();
+            if (object instanceof GraphitiShapeEditPart) {
+                PictogramElement element = (PictogramElement) ((GraphitiShapeEditPart) object)
+                        .getPictogramElement();
+                EObject node = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(element);
+                ASTNode moduleNode = sourceModelManager.getModuleNode((Node) node);
+                IRegion region = YangEditor.getSelectionRegion(moduleNode);
+                if (region != null) {
+                    sourceEditor.setHighlightRange(region.getOffset(), region.getLength(), true);
+                    // sourceEditor.selectAndReveal(...) doesn't work here since projection is disabled
+                }
+            }
+        }
     }
 }

@@ -70,7 +70,7 @@ public class ModelSynchronizer implements IDocumentUndoListener, IReconcileHandl
         @Override
         public void createSourceElement(Node parent, int position, String content) {
             ASTNode node = mapping.get(parent);
-            diagModelAdapter.add(node, content + System.getProperty("line.separator"), position);
+            diagModelAdapter.add(node, content + System.lineSeparator(), position);
             syncWithSource();
         }
 
@@ -97,6 +97,11 @@ public class ModelSynchronizer implements IDocumentUndoListener, IReconcileHandl
             } catch (InterruptedException | YangModelException e) {
                 // do nothing
             }
+        }
+        
+        @Override
+        public ASTNode getModuleNode(Node node) {
+            return mapping.get(node);
         }
     };
 
