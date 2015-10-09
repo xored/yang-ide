@@ -18,6 +18,7 @@
   
   <artifactId>com.cisco.yangide.core.tests</artifactId>
   <packaging>eclipse-test-plugin</packaging>
+  <version>1.1.1-SNAPSHOT</version>
   
   <build>
     <sourceDirectory>src</sourceDirectory>
