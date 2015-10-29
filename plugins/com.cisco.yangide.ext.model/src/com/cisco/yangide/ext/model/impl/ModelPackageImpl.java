@@ -1,5 +1,11 @@
-/**
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.impl;
 
 import com.cisco.yangide.ext.model.Anyxml;
@@ -541,15 +547,6 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      * <!-- end-user-doc -->
      * @generated
      */
-    public EAttribute getImport_Module() {
-        return (EAttribute)importEClass.getEStructuralFeatures().get(2);
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public EAttribute getImport_Prefix() {
         return (EAttribute)importEClass.getEStructuralFeatures().get(0);
     }
@@ -561,6 +558,15 @@ public class ModelPackageImpl extends EPackageImpl implements ModelPackage {
      */
     public EAttribute getImport_RevisionDate() {
         return (EAttribute)importEClass.getEStructuralFeatures().get(1);
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public EAttribute getImport_Module() {
+        return (EAttribute)importEClass.getEStructuralFeatures().get(2);
     }
 
     /**

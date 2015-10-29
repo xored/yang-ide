@@ -1,6 +1,11 @@
-/*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.refactoring;
 
 import java.io.ByteArrayInputStream;
@@ -86,8 +91,8 @@ public class CreateYangFileChange extends ResourceChange {
 
         IFileInfo jfile = EFS.getStore(file.getLocationURI()).fetchInfo();
         if (jfile.exists()) {
-            result.addFatalError(NLS.bind(Messages.CreateYangFileChange_fileAlreadyExists, file.getFullPath()
-                    .toString()));
+            result.addFatalError(
+                    NLS.bind(Messages.CreateYangFileChange_fileAlreadyExists, file.getFullPath().toString()));
             return result;
         }
         return result;

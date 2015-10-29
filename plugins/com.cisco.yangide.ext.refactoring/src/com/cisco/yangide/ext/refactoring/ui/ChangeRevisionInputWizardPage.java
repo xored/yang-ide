@@ -1,6 +1,11 @@
-/*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.refactoring.ui;
 
 import java.text.ParseException;
@@ -90,7 +95,7 @@ public class ChangeRevisionInputWizardPage extends UserInputWizardPage {
         new Label(content, SWT.NONE).setText(Messages.ChangeRevisionInputWizardPage_descriptionLabel);
         descriptionTxt = new Text(content, SWT.BORDER | SWT.MULTI);
         GridDataFactory.fillDefaults().span(4, 1).align(SWT.FILL, SWT.TOP).grab(true, false).hint(SWT.DEFAULT, 50)
-        .applyTo(descriptionTxt);
+                .applyTo(descriptionTxt);
 
         descriptionTxt.addFocusListener(new FocusAdapter() {
             @Override
@@ -119,7 +124,7 @@ public class ChangeRevisionInputWizardPage extends UserInputWizardPage {
 
         table = new TableViewer(group, SWT.CHECK | SWT.BORDER);
         GridDataFactory.fillDefaults().align(SWT.FILL, SWT.TOP).grab(true, true).hint(SWT.DEFAULT, 200)
-        .applyTo(table.getControl());
+                .applyTo(table.getControl());
         table.setContentProvider(ArrayContentProvider.getInstance());
         table.getTable().setHeaderVisible(true);
         table.getTable().setLinesVisible(true);

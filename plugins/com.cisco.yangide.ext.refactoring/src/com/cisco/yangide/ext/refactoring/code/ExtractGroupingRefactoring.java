@@ -1,6 +1,11 @@
-/*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.refactoring.code;
 
 import org.eclipse.core.filebuffers.FileBuffers;
@@ -55,13 +60,14 @@ public class ExtractGroupingRefactoring extends Refactoring {
     }
 
     @Override
-    public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
-            OperationCanceledException {
+    public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
         return new RefactoringStatus();
     }
 
     @Override
-    public RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreException, OperationCanceledException {
+    public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
         return new RefactoringStatus();
     }
 

@@ -1,6 +1,11 @@
-/*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.refactoring.ui;
 
 import org.eclipse.core.runtime.IProgressMonitor;
@@ -80,8 +85,8 @@ import com.cisco.yangide.ui.internal.YangUIImages;
  */
 public class RenameInformationPopup implements IWidgetTokenKeeper, IWidgetTokenKeeperExtension {
 
-    private class PopupVisibilityManager implements IPartListener2, ControlListener, MouseListener, KeyListener,
-            ITextListener, IViewportListener {
+    private class PopupVisibilityManager
+            implements IPartListener2, ControlListener, MouseListener, KeyListener, ITextListener, IViewportListener {
 
         public void start() {
             editor.getSite().getWorkbenchWindow().getPartService().addPartListener(this);
@@ -476,7 +481,8 @@ public class RenameInformationPopup implements IWidgetTokenKeeper, IWidgetTokenK
             }
             ISourceViewer viewer = editor.getViewer();
             ITextViewerExtension5 viewer5 = (ITextViewerExtension5) viewer;
-            int widgetOffset = viewer5.modelOffset2WidgetOffset(position.offset/* + position.length */);
+            int widgetOffset = viewer5
+                    .modelOffset2WidgetOffset(position.offset/* + position.length */);
 
             StyledText textWidget = viewer.getTextWidget();
             Point pos = textWidget.getLocationAtOffset(widgetOffset);
@@ -522,8 +528,7 @@ public class RenameInformationPopup implements IWidgetTokenKeeper, IWidgetTokenK
                  */
                 final Tracker tracker = new Tracker(textWidget, SWT.NONE);
 
-                final Point[] LOCATIONS = {
-                        textWidget.toControl(computePopupLocation(SNAP_POSITION_UNDER_RIGHT_FIELD)),
+                final Point[] LOCATIONS = { textWidget.toControl(computePopupLocation(SNAP_POSITION_UNDER_RIGHT_FIELD)),
                         textWidget.toControl(computePopupLocation(SNAP_POSITION_OVER_RIGHT_FIELD)),
                         textWidget.toControl(computePopupLocation(SNAP_POSITION_UNDER_LEFT_FIELD)),
                         textWidget.toControl(computePopupLocation(SNAP_POSITION_OVER_LEFT_FIELD)),

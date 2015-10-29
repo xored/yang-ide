@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.patterns.objects;
 
 import org.eclipse.emf.ecore.EClass;
@@ -14,18 +22,19 @@ import com.cisco.yangide.ext.model.editor.util.YangModelUIUtil;
 import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
 
 public class RpcIOPattern extends DomainObjectPattern {
-    
-    private boolean input; 
-    
+
+    private boolean input;
+
     public RpcIOPattern(boolean input) {
-       super();
-       this.input = input;
+        super();
+        this.input = input;
     }
-    
+
     @Override
     public boolean canCreate(ICreateContext context) {
         Object obj = getBusinessObjectForPictogramElement(context.getTargetContainer());
-        return super.canCreate(context) && null != obj && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getRpc(), obj) && check((Rpc) obj);
+        return super.canCreate(context) && null != obj
+                && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getRpc(), obj) && check((Rpc) obj);
     }
 
     @Override
@@ -48,18 +57,21 @@ public class RpcIOPattern extends DomainObjectPattern {
 
     @Override
     public boolean isMainBusinessObjectApplicable(Object mainBusinessObject) {
-        return super.isMainBusinessObjectApplicable(mainBusinessObject) && input == ((RpcIO) mainBusinessObject).isInput();
+        return super.isMainBusinessObjectApplicable(mainBusinessObject)
+                && input == ((RpcIO) mainBusinessObject).isInput();
     }
 
     @Override
     public EClass getObjectEClass() {
         return YangModelUtil.MODEL_PACKAGE.getRpcIO();
-    }   
-    
+    }
+
     @Override
     public boolean canAdd(IAddContext context) {
         Object obj = getBusinessObjectForPictogramElement(context.getTargetContainer());
-        return super.canAdd(context) && null != obj && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getRpc(), obj) && check((Rpc) obj, context.getNewObject());
+        return super.canAdd(context) && null != obj
+                && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getRpc(), obj)
+                && check((Rpc) obj, context.getNewObject());
     }
 
     private boolean check(Rpc rpc, Object obj) {
@@ -74,7 +86,7 @@ public class RpcIOPattern extends DomainObjectPattern {
         }
         return false;
     }
-    
+
     private boolean check(Rpc rpc) {
         for (Node n : YangModelUtil.filter(rpc.getChildren(), YangModelUtil.MODEL_PACKAGE.getRpcIO())) {
             if (input == ((RpcIO) n).isInput()) {
@@ -91,7 +103,7 @@ public class RpcIOPattern extends DomainObjectPattern {
 
     @Override
     public PictogramElement add(IAddContext context) {
-        return YangModelUIUtil.drawPictogramElement(context, getFeatureProvider(), getCreateImageId(),  getCreateName());
+        return YangModelUIUtil.drawPictogramElement(context, getFeatureProvider(), getCreateImageId(), getCreateName());
     }
 
 }

@@ -1,22 +1,32 @@
-/**
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.impl;
 
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.NamedNode;
 import com.cisco.yangide.ext.model.Node;
 import com.cisco.yangide.ext.model.Revision;
-
 import com.cisco.yangide.ext.model.Tag;
+
 import java.util.Collection;
+
 import org.eclipse.emf.common.notify.Notification;
 import org.eclipse.emf.common.notify.NotificationChain;
-import org.eclipse.emf.common.util.EList;
-import org.eclipse.emf.ecore.EClass;
 
+import org.eclipse.emf.common.util.EList;
+
+import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
+
 import org.eclipse.emf.ecore.util.EObjectContainmentEList;
 import org.eclipse.emf.ecore.util.InternalEList;
 
@@ -26,12 +36,12 @@ import org.eclipse.emf.ecore.util.InternalEList;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.RevisionImpl#getTags <em>Tags</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.RevisionImpl#getParent <em>Parent</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.RevisionImpl#getName <em>Name</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -45,6 +55,7 @@ public class RevisionImpl extends MinimalEObjectImpl.Container implements Revisi
      * @ordered
      */
     protected EList<Tag> tags;
+
     /**
      * The cached value of the '{@link #getParent() <em>Parent</em>}' reference.
      * <!-- begin-user-doc -->
@@ -54,6 +65,7 @@ public class RevisionImpl extends MinimalEObjectImpl.Container implements Revisi
      * @ordered
      */
     protected Node parent;
+
     /**
      * The default value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -63,6 +75,7 @@ public class RevisionImpl extends MinimalEObjectImpl.Container implements Revisi
      * @ordered
      */
     protected static final String NAME_EDEFAULT = null;
+
     /**
      * The cached value of the '{@link #getName() <em>Name</em>}' attribute.
      * <!-- begin-user-doc -->
@@ -72,6 +85,7 @@ public class RevisionImpl extends MinimalEObjectImpl.Container implements Revisi
      * @ordered
      */
     protected String name = NAME_EDEFAULT;
+
     /**
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->

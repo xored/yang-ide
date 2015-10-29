@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.util.connection;
 
 import java.util.Arrays;
@@ -6,73 +14,57 @@ import java.util.List;
 import org.eclipse.draw2d.geometry.Point;
 
 /**
- * Draft
- *
- * TODO: Not implemented
+ * Draft TODO: Not implemented
  */
-public class HighwayMatrix
-    extends AbstractHighwayMatrix
-    implements IHighwayMatrix
-{
+public class HighwayMatrix extends AbstractHighwayMatrix implements IHighwayMatrix {
     private Cell[][] matrix;
 
-    public HighwayMatrix(List<Highway> highways)
-    {
+    public HighwayMatrix(List<Highway> highways) {
         super(highways);
     }
 
     @Override
-    public int addHighway(Highway highway)
-    {
+    public int addHighway(Highway highway) {
         matrix = null;
         return super.addHighway(highway);
     }
 
     @Override
-    public Highway removeHighway(int index)
-    {
+    public Highway removeHighway(int index) {
         matrix = null;
         return super.removeHighway(index);
     }
 
     @Override
-    public RoutePath getPath(int indexFrom, Point start, int indexTo, Point end)
-    {
-//        if (indexFrom == indexTo)
-//        {
-//            return new int[] { indexTo };
-//        }
-//
-//        Cell cell = getMatrix()[indexFrom][indexTo];
-//        return cell == null ? null : cell.path;
+    public RoutePath getPath(int indexFrom, Point start, int indexTo, Point end) {
+        // if (indexFrom == indexTo)
+        // {
+        // return new int[] { indexTo };
+        // }
+        //
+        // Cell cell = getMatrix()[indexFrom][indexTo];
+        // return cell == null ? null : cell.path;
         return null;
     }
 
-    protected Cell[][] getMatrix()
-    {
-        if (matrix == null)
-        {
+    protected Cell[][] getMatrix() {
+        if (matrix == null) {
             matrix = build();
         }
         return matrix;
     }
 
-    protected Cell[][] build()
-    {
+    protected Cell[][] build() {
         Cell[][] result = new Cell[getSize()][getSize()];
-        for (int index = 0; index < result.length; index++)
-        {
+        for (int index = 0; index < result.length; index++) {
             addToMatrix(result, index);
         }
         return result;
     }
 
-    protected void addToMatrix(Cell[][] result, int newIndex)
-    {
-        for (int crossIndex = 0; crossIndex < newIndex; crossIndex++)
-        {
-            if (newIndex != crossIndex && hasPath(result, newIndex, crossIndex))
-            {
+    protected void addToMatrix(Cell[][] result, int newIndex) {
+        for (int crossIndex = 0; crossIndex < newIndex; crossIndex++) {
+            if (newIndex != crossIndex && hasPath(result, newIndex, crossIndex)) {
                 result[newIndex][crossIndex] = new Cell(crossIndex);
                 result[crossIndex][newIndex] = new Cell(newIndex);
                 updateMatrix(result, newIndex, crossIndex);
@@ -81,19 +73,15 @@ public class HighwayMatrix
         }
     }
 
-    private boolean hasPath(Cell[][] result, int id1, int id2)
-    {
+    private boolean hasPath(Cell[][] result, int id1, int id2) {
         Highway highway1 = getHighway(id1);
         Highway highway2 = getHighway(id2);
         return result[id1][id2] != null || highway1.isIntersect(highway2);
     }
 
-    protected void updateMatrix(Cell[][] result, int dest, int src)
-    {
-        for (int index = 0; index < result.length; index++)
-        {
-            if (index == dest)
-            {
+    protected void updateMatrix(Cell[][] result, int dest, int src) {
+        for (int index = 0; index < result.length; index++) {
+            if (index == dest) {
                 continue;
             }
 
@@ -105,8 +93,7 @@ public class HighwayMatrix
 
             assert size == backSize;
 
-            if (cell != null /* && backCell != null */)
-            {
+            if (cell != null /* && backCell != null */) {
                 int[] path = new int[cell.path.length + 1];
                 path[0] = src;
                 cell.copyPath(path, 1);
@@ -120,34 +107,29 @@ public class HighwayMatrix
         }
     }
 
-    public static class Cell
-    {
+    public static class Cell {
         public final int[] path;
 
-        public Cell(int path)
-        {
+        public Cell(int path) {
             this(new int[] { path });
         }
 
-        public Cell(int[] path)
-        {
+        public Cell(int[] path) {
             this.path = path;
         }
 
         /**
          * Copies {@code path} of this cell to the specified destination array.
-         *  
+         * 
          * @param dest - the destination array.
          * @param offset - starting position in the destination data.
          */
-        public void copyPath(int[] dest, int offset)
-        {
+        public void copyPath(int[] dest, int offset) {
             System.arraycopy(path, 0, dest, offset, path.length);
         }
 
         @Override
-        public String toString()
-        {
+        public String toString() {
             return Arrays.toString(path);
         }
     }

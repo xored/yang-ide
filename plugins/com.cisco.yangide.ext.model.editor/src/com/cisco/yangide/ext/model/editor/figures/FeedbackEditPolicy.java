@@ -1,6 +1,11 @@
-/*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.figures;
 
 import org.eclipse.gef.EditPart;
@@ -49,7 +54,8 @@ public class FeedbackEditPolicy extends GraphicalEditPolicy {
 
     @Override
     public void showTargetFeedback(Request request) {
-        if (request.getType().equals(RequestConstants.REQ_CREATE) || request.getType().equals(RequestConstants.REQ_ADD) || request.getType().equals(RequestConstants.REQ_MOVE_CHILDREN)
+        if (request.getType().equals(RequestConstants.REQ_CREATE) || request.getType().equals(RequestConstants.REQ_ADD)
+                || request.getType().equals(RequestConstants.REQ_MOVE_CHILDREN)
                 || request.getType().equals(RequestConstants.REQ_MOVE)) {
             if (request.getType().equals(RequestConstants.REQ_MOVE)) {
                 request.setType(RequestConstants.REQ_MOVE_CHILDREN);
@@ -59,12 +65,12 @@ public class FeedbackEditPolicy extends GraphicalEditPolicy {
                 int position = 0;
                 IContext context = getCommandContext(command);
                 EditPart container = getHost();
-                if (context instanceof ITargetContext) {                    
+                if (context instanceof ITargetContext) {
                     while (!container.getModel().equals(((ITargetContext) context).getTargetContainer())) {
                         container = container.getParent();
                     }
                 }
-                
+
                 if (null != context && null != context.getProperty("parent_position")) {
                     position = (int) context.getProperty("parent_position");
                 }
@@ -73,40 +79,41 @@ public class FeedbackEditPolicy extends GraphicalEditPolicy {
                     ((FeedbackEditPolicy) policy).showFeedback(request, position);
                 }
             } else {
-                hideFeedback();              
+                hideFeedback();
             }
         }
-        
+
     }
-    
+
     public void showFeedback(Request request, int position) {
         feedbackFigure.setPosition(position);
         feedbackFigure.setVisible(true);
         feedbackFigure.repaint();
         editPolicy.showTargetFeedback(request);
     }
-    
+
     public void hideFeedback() {
         feedbackFigure.setVisible(false);
         feedbackFigure.repaint();
     }
+
     protected IContext getCommandContext(Command command) {
         if (command instanceof CreateModelObjectCommand) {
             return ((CreateModelObjectCommand) command).getContext();
         }
         if (command instanceof GefCommandWrapper) {
             return getCommandContext(((GefCommandWrapper) command).getCommand());
-        }   
+        }
         return null;
     }
-    
+
     protected IContext getCommandContext(ICommand command) {
         if (command instanceof MoveShapeFeatureCommandWithContext) {
-            return ((MoveShapeFeatureCommandWithContext) command).getContext();                        
+            return ((MoveShapeFeatureCommandWithContext) command).getContext();
         }
         if (command instanceof CommandContainer) {
             for (ICommand c : ((CommandContainer) command).getCommands()) {
-                IContext  result = getCommandContext(c);
+                IContext result = getCommandContext(c);
                 if (null != result) {
                     return result;
                 }

@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.diagram;
 
 import java.io.IOException;
@@ -164,13 +172,13 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
                             TEMPLATES.put(name, getTemplateContent(name));
                         }
                         EObject parent = (EObject) getBusinessObjectForPictogramElement(context.getTargetContainer());
-                        int position = YangModelUIUtil.getPositionInParent(context.getTargetContainer(),
-                                context.getY(), EditorFeatureProvider.this);
+                        int position = YangModelUIUtil.getPositionInParent(context.getTargetContainer(), context.getY(),
+                                EditorFeatureProvider.this);
                         if (parent instanceof ContainingNode) {
                             ContainingNode node = (ContainingNode) parent;
                             String template = TEMPLATES.get(name);
-                            template = template.replaceAll("@name@", name.replaceAll("\\W", "-")
-                                    + node.getChildren().size());
+                            template = template.replaceAll("@name@",
+                                    name.replaceAll("\\W", "-") + node.getChildren().size());
                             sourceModelManager.createSourceElement(node, position, template);
                         }
 
@@ -187,7 +195,7 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
 
         return retList.toArray(ret);
     }
-    
+
     @Override
     public IRemoveFeature getRemoveFeature(IRemoveContext context) {
         if (context.getPictogramElement() instanceof Connection) {
@@ -213,8 +221,8 @@ public class EditorFeatureProvider extends DefaultFeatureProviderWithPatterns {
         char[] buff = new char[1024];
         int len = 0;
         Path templatePath = new Path("templates/nodes/" + name + ".txt");
-        try (InputStreamReader in = new InputStreamReader(FileLocator.openStream(Activator.getDefault().getBundle(),
-                templatePath, false), "UTF-8")) {
+        try (InputStreamReader in = new InputStreamReader(
+                FileLocator.openStream(Activator.getDefault().getBundle(), templatePath, false), "UTF-8")) {
             while ((len = in.read(buff)) > 0) {
                 sb.append(buff, 0, len);
             }

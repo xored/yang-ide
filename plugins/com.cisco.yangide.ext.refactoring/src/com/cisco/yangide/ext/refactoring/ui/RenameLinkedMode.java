@@ -1,6 +1,11 @@
-/*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.refactoring.ui;
 
 import java.lang.reflect.InvocationTargetException;
@@ -114,15 +119,15 @@ public class RenameLinkedMode {
             fShowPreview = (event.stateMask & SWT.CTRL) != 0
                     && (event.character == SWT.CR || event.character == SWT.LF);
             if (length == 0 && (event.character == SWT.BS || event.character == SWT.DEL)) {
-                LinkedPosition position = model.findPosition(new LinkedPosition(document, offset, 0,
-                        LinkedPositionGroup.NO_STOP));
+                LinkedPosition position = model
+                        .findPosition(new LinkedPosition(document, offset, 0, LinkedPositionGroup.NO_STOP));
                 if (position != null) {
                     if (event.character == SWT.BS) {
                         if (offset - 1 < position.getOffset()) {
                             // skip backspace at beginning of linked position
                             event.doit = false;
                         }
-                    } else /* event.character == SWT.DEL */{
+                    } else /* event.character == SWT.DEL */ {
                         if (offset + 1 > position.getOffset() + position.getLength()) {
                             // skip delete at end of linked position
                             event.doit = false;
@@ -157,7 +162,8 @@ public class RenameLinkedMode {
 
     private IFile originalFile;
 
-    public RenameLinkedMode(ASTNamedNode originalNode, IFile originalFile, ASTNamedNode selectedNode, YangEditor editor) {
+    public RenameLinkedMode(ASTNamedNode originalNode, IFile originalFile, ASTNamedNode selectedNode,
+            YangEditor editor) {
         this.editor = editor;
         this.originalFile = originalFile;
         this.originalNode = originalNode;
@@ -399,9 +405,8 @@ public class RenameLinkedMode {
                                 IUndoContext undoContext = undoManagerExtension.getUndoContext();
                                 IOperationHistory operationHistory = OperationHistoryFactory.getOperationHistory();
                                 while (undoManager.undoable()) {
-                                    if (fStartingUndoOperation != null
-                                            && fStartingUndoOperation.equals(operationHistory
-                                                    .getUndoOperation(undoContext))) {
+                                    if (fStartingUndoOperation != null && fStartingUndoOperation
+                                            .equals(operationHistory.getUndoOperation(undoContext))) {
                                         return;
                                     }
                                     undoManager.undo();

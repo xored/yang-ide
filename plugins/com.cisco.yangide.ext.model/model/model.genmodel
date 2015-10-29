@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
-    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/com.cisco.yangide.ext.model/src" modelPluginID="com.cisco.yangide.ext.model"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" copyrightText="Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.&#xA;&#xA;This program and the accompanying materials are made available under the&#xA;terms of the Eclipse Public License v1.0 which accompanies this distribution,&#xA;and is available at http://www.eclipse.org/legal/epl-v10.html"
+    modelDirectory="/com.cisco.yangide.ext.model/src" modelPluginID="com.cisco.yangide.ext.model"
     modelName="Model" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
     importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0" copyrightFields="false"
-    operationReflection="true" importOrganizing="true">
+    runtimeVersion="2.10" operationReflection="true" importOrganizing="true">
   <foreignModel>model.ecore</foreignModel>
   <genPackages prefix="Model" basePackage="com.cisco.yangide.ext" disposableProviderFactory="true"
       ecorePackage="model.ecore#/">
@@ -32,7 +33,9 @@
     <genClasses ecoreClass="model.ecore#//LeafList"/>
     <genClasses ecoreClass="model.ecore#//Anyxml"/>
     <genClasses ecoreClass="model.ecore#//Import">
-      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference model.ecore#//Import/module"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//Import/prefix"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//Import/revisionDate"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EAttribute model.ecore#//Import/module"/>
     </genClasses>
     <genClasses ecoreClass="model.ecore#//Include">
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference model.ecore#//Include/submodule"/>
@@ -50,7 +53,6 @@
       <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference model.ecore#//TaggedNode/tags"/>
     </genClasses>
     <genClasses ecoreClass="model.ecore#//Uses">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference model.ecore#//Uses/grouping"/>
       <genFeatures createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//Uses/qName"/>
     </genClasses>
     <genClasses ecoreClass="model.ecore#//Rpc"/>
@@ -62,8 +64,15 @@
     <genClasses ecoreClass="model.ecore#//Extension"/>
     <genClasses ecoreClass="model.ecore#//Feature"/>
     <genClasses ecoreClass="model.ecore#//Deviation"/>
-    <genClasses ecoreClass="model.ecore#//Identity">
-      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference model.ecore#//Identity/base"/>
+    <genClasses ecoreClass="model.ecore#//Identity"/>
+    <genClasses image="false" ecoreClass="model.ecore#//TypedNode">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference model.ecore#//TypedNode/type"/>
+    </genClasses>
+    <genClasses ecoreClass="model.ecore#//ChoiceCase"/>
+    <genClasses ecoreClass="model.ecore#//ListKey"/>
+    <genClasses ecoreClass="model.ecore#//Typeref"/>
+    <genClasses image="false" ecoreClass="model.ecore#//ReferenceNode">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//ReferenceNode/reference"/>
     </genClasses>
   </genPackages>
 </genmodel:GenModel>

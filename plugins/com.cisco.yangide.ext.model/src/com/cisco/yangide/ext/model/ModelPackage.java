@@ -1,5 +1,11 @@
-/**
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model;
 
 import org.eclipse.emf.ecore.EAttribute;
@@ -963,46 +969,6 @@ public interface ModelPackage extends EPackage {
     int INCLUDE_OPERATION_COUNT = NODE_OPERATION_COUNT + 0;
 
     /**
-     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.RevisionImpl <em>Revision</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see com.cisco.yangide.ext.model.impl.RevisionImpl
-     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getRevision()
-     * @generated
-     */
-    int REVISION = 15;
-
-    /**
-     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.BelongsToImpl <em>Belongs To</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see com.cisco.yangide.ext.model.impl.BelongsToImpl
-     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getBelongsTo()
-     * @generated
-     */
-    int BELONGS_TO = 16;
-
-    /**
-     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.ListImpl <em>List</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see com.cisco.yangide.ext.model.impl.ListImpl
-     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getList()
-     * @generated
-     */
-    int LIST = 17;
-
-    /**
-     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.TagImpl <em>Tag</em>}' class.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @see com.cisco.yangide.ext.model.impl.TagImpl
-     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getTag()
-     * @generated
-     */
-    int TAG = 18;
-
-    /**
      * The meta object id for the '{@link com.cisco.yangide.ext.model.TaggedNode <em>Tagged Node</em>}' class.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1038,6 +1004,16 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int TAGGED_NODE_OPERATION_COUNT = 0;
+
+    /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.RevisionImpl <em>Revision</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.impl.RevisionImpl
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getRevision()
+     * @generated
+     */
+    int REVISION = 15;
 
     /**
      * The feature id for the '<em><b>Tags</b></em>' containment reference list.
@@ -1085,6 +1061,16 @@ public interface ModelPackage extends EPackage {
     int REVISION_OPERATION_COUNT = TAGGED_NODE_OPERATION_COUNT + 0;
 
     /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.BelongsToImpl <em>Belongs To</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.impl.BelongsToImpl
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getBelongsTo()
+     * @generated
+     */
+    int BELONGS_TO = 16;
+
+    /**
      * The feature id for the '<em><b>Owner Module</b></em>' reference.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -1110,6 +1096,16 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int BELONGS_TO_OPERATION_COUNT = 0;
+
+    /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.ListImpl <em>List</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.impl.ListImpl
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getList()
+     * @generated
+     */
+    int LIST = 17;
 
     /**
      * The feature id for the '<em><b>Parent</b></em>' reference.
@@ -1164,6 +1160,16 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int LIST_OPERATION_COUNT = NAMED_CONTAINING_NODE_OPERATION_COUNT + 0;
+
+    /**
+     * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.TagImpl <em>Tag</em>}' class.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @see com.cisco.yangide.ext.model.impl.TagImpl
+     * @see com.cisco.yangide.ext.model.impl.ModelPackageImpl#getTag()
+     * @generated
+     */
+    int TAG = 18;
 
     /**
      * The feature id for the '<em><b>Name</b></em>' attribute.
@@ -1669,7 +1675,6 @@ public interface ModelPackage extends EPackage {
      */
     int IDENTITY_OPERATION_COUNT = NAMED_NODE_OPERATION_COUNT + 0;
 
-
     /**
      * The meta object id for the '{@link com.cisco.yangide.ext.model.TypedNode <em>Typed Node</em>}' class.
      * <!-- begin-user-doc -->
@@ -1706,7 +1711,6 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int TYPED_NODE_OPERATION_COUNT = 0;
-
 
     /**
      * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.ChoiceCaseImpl <em>Choice Case</em>}' class.
@@ -1771,7 +1775,6 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int CHOICE_CASE_OPERATION_COUNT = NAMED_CONTAINING_NODE_OPERATION_COUNT + 0;
-
 
     /**
      * The meta object id for the '{@link com.cisco.yangide.ext.model.impl.ListKeyImpl <em>List Key</em>}' class.
@@ -1864,7 +1867,6 @@ public interface ModelPackage extends EPackage {
      * @ordered
      */
     int TYPEREF_OPERATION_COUNT = NAMED_NODE_OPERATION_COUNT + 0;
-
 
     /**
      * The meta object id for the '{@link com.cisco.yangide.ext.model.ReferenceNode <em>Reference Node</em>}' class.
@@ -2111,17 +2113,6 @@ public interface ModelPackage extends EPackage {
     EClass getImport();
 
     /**
-     * Returns the meta object for the attribute '{@link com.cisco.yangide.ext.model.Import#getModule <em>Module</em>}'.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @return the meta object for the attribute '<em>Module</em>'.
-     * @see com.cisco.yangide.ext.model.Import#getModule()
-     * @see #getImport()
-     * @generated
-     */
-    EAttribute getImport_Module();
-
-    /**
      * Returns the meta object for the attribute '{@link com.cisco.yangide.ext.model.Import#getPrefix <em>Prefix</em>}'.
      * <!-- begin-user-doc -->
      * <!-- end-user-doc -->
@@ -2142,6 +2133,17 @@ public interface ModelPackage extends EPackage {
      * @generated
      */
     EAttribute getImport_RevisionDate();
+
+    /**
+     * Returns the meta object for the attribute '{@link com.cisco.yangide.ext.model.Import#getModule <em>Module</em>}'.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @return the meta object for the attribute '<em>Module</em>'.
+     * @see com.cisco.yangide.ext.model.Import#getModule()
+     * @see #getImport()
+     * @generated
+     */
+    EAttribute getImport_Module();
 
     /**
      * Returns the meta object for class '{@link com.cisco.yangide.ext.model.Include <em>Include</em>}'.
@@ -2654,14 +2656,6 @@ public interface ModelPackage extends EPackage {
         EClass IMPORT = eINSTANCE.getImport();
 
         /**
-         * The meta object literal for the '<em><b>Module</b></em>' attribute feature.
-         * <!-- begin-user-doc -->
-         * <!-- end-user-doc -->
-         * @generated
-         */
-        EAttribute IMPORT__MODULE = eINSTANCE.getImport_Module();
-
-        /**
          * The meta object literal for the '<em><b>Prefix</b></em>' attribute feature.
          * <!-- begin-user-doc -->
          * <!-- end-user-doc -->
@@ -2676,6 +2670,14 @@ public interface ModelPackage extends EPackage {
          * @generated
          */
         EAttribute IMPORT__REVISION_DATE = eINSTANCE.getImport_RevisionDate();
+
+        /**
+         * The meta object literal for the '<em><b>Module</b></em>' attribute feature.
+         * <!-- begin-user-doc -->
+         * <!-- end-user-doc -->
+         * @generated
+         */
+        EAttribute IMPORT__MODULE = eINSTANCE.getImport_Module();
 
         /**
          * The meta object literal for the '{@link com.cisco.yangide.ext.model.impl.IncludeImpl <em>Include</em>}' class.

@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.dialog;
 
 import java.util.ArrayList;
@@ -50,44 +58,47 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
             if (o1 instanceof ElementIndexInfo && o2 instanceof ElementIndexInfo) {
                 if (((ElementIndexInfo) o1).getModule().equals(((ElementIndexInfo) o2).getModule())) {
                     return ((ElementIndexInfo) o1).getName().compareTo(((ElementIndexInfo) o2).getName());
-                }
-                else {
+                } else {
                     return ((ElementIndexInfo) o1).getModule().compareTo(((ElementIndexInfo) o2).getModule());
                 }
             }
             return o1.toString().compareTo(o2.toString());
         }
-        
+
     }
-    
+
     private Module module;
     private HashMap<String, String> imports = new HashMap<String, String>();
     private String value;
-    
+
     public interface Transformer {
         public String transform(ElementIndexInfo info);
     }
-    protected List<Object> list; 
-    
-    public YangElementListSelectionDialog(Shell parent, ElementIndexType indexType, IFile file, String imageId, Module module, Transformer transformer, String initialValue) {
+
+    protected List<Object> list;
+
+    public YangElementListSelectionDialog(Shell parent, ElementIndexType indexType, IFile file, String imageId,
+            Module module, Transformer transformer, String initialValue) {
         super(parent, new ElementLabelProvider(transformer));
         reset(indexType, file, imageId, module, initialValue);
     }
-    
-    public YangElementListSelectionDialog(Shell parent, ElementIndexType indexType, IFile file, String imageId, Module module, String initialValue) {
+
+    public YangElementListSelectionDialog(Shell parent, ElementIndexType indexType, IFile file, String imageId,
+            Module module, String initialValue) {
         super(parent, new ElementLabelProvider(module));
-        reset(indexType, file, imageId, module, initialValue);      
+        reset(indexType, file, imageId, module, initialValue);
     }
-    
+
     public void reset(ElementIndexType indexType, IFile file, String imageId, Module m, String initialValue) {
         setTitle("Select element");
         setAllowDuplicates(false);
         setModule(m);
         setList(indexType, file, m);
-        setImage(GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, imageId));
-        setInitialSelections(new Object[] {getElementByValue(initialValue)});
+        setImage(
+                GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, imageId));
+        setInitialSelections(new Object[] { getElementByValue(initialValue) });
     }
-    
+
     private Object getElementByValue(String initialValue) {
         if (list.contains(initialValue)) {
             return initialValue;
@@ -95,8 +106,10 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
             String test = initialValue.replaceAll(" ", "");
             for (Object el : list) {
                 if (el instanceof ElementIndexInfo) {
-                    if (test.equals(((ElementIndexInfo) el).getName()) || (imports.containsKey(((ElementIndexInfo) el).getModule())
-                            && test.equals(imports.get(((ElementIndexInfo) el).getModule()) + ":" + ((ElementIndexInfo) el).getName()))) {
+                    if (test.equals(((ElementIndexInfo) el).getName())
+                            || (imports.containsKey(((ElementIndexInfo) el).getModule())
+                                    && test.equals(imports.get(((ElementIndexInfo) el).getModule()) + ":"
+                                            + ((ElementIndexInfo) el).getName()))) {
                         return el;
                     }
                 }
@@ -110,23 +123,25 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
         if (ElementIndexType.TYPE.equals(indexType)) {
             result.addAll(Arrays.asList(YangScanner.getTypes()));
         }
-        result.addAll(Arrays.asList(YangModelManager.search(null, null, null, indexType, null == file ? null : file.getProject(), null)));
+        result.addAll(Arrays.asList(
+                YangModelManager.search(null, null, null, indexType, null == file ? null : file.getProject(), null)));
         list = filterElements(result);
         setElements(list.toArray());
-        
+
     }
+
     @Override
     protected void okPressed() {
         computeResult();
         if (null == getFirstResult()) {
-            
+
             MessageDialog.openWarning(getShell(), "Warning", "No element was choosen");
         } else {
             setResultObject();
             super.okPressed();
         }
     }
-    
+
     protected List<Object> filterElements(List<Object> elements) {
         List<Object> result = new ArrayList<Object>();
         for (Object element : elements) {
@@ -136,10 +151,11 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
         }
         return result;
     }
-    
+
     protected boolean hasImport(Object element) {
         if (element instanceof ElementIndexInfo) {
-            return imports.containsKey(((ElementIndexInfo) element).getModule()) || ((ElementIndexInfo) element).getModule().equals(module.getName());
+            return imports.containsKey(((ElementIndexInfo) element).getModule())
+                    || ((ElementIndexInfo) element).getModule().equals(module.getName());
         }
         return false;
     }
@@ -151,31 +167,32 @@ public class YangElementListSelectionDialog extends ElementListSelectionDialog {
             if (null == getModule() || choosen.getModule().equals(getModule().getName())) {
                 value = choosen.getName();
             } else {
-                value = (imports.containsKey(choosen.getModule()) ? imports.get(choosen.getModule()) + ":" : "") + choosen.getName();
+                value = (imports.containsKey(choosen.getModule()) ? imports.get(choosen.getModule()) + ":" : "")
+                        + choosen.getName();
             }
         } else {
             value = Strings.getAsString(result);
         }
     }
-    
+
     public String getValue() {
         return value;
     }
-    
+
     protected void setModule(Module module) {
         this.module = module;
         for (EObject i : YangModelUtil.filter(module.getChildren(), YangModelUtil.MODEL_PACKAGE.getImport())) {
             imports.put(((Import) i).getModule(), ((Import) i).getPrefix());
         }
     }
-    
+
     protected Module getModule() {
         return module;
     }
-    
+
     protected void setSelection(String initialValue) {
         if (null != initialValue) {
-            setSelection(new Object[] {initialValue});
+            setSelection(new Object[] { initialValue });
         }
     }
 

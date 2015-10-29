@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.util;
 
 import java.util.ArrayList;
@@ -87,13 +95,16 @@ public class YangModelUIUtil {
                 return -1;
             }
             if (PropertyUtil.isBusinessObjectShape(o1) && PropertyUtil.isBusinessObjectShape(o2)) {
-                return o1.getGraphicsAlgorithm().getY() > o2.getGraphicsAlgorithm().getY() ? 1 : o1
-                        .getGraphicsAlgorithm().getY() == o2.getGraphicsAlgorithm().getY() ? 0 : -1;
+                return o1.getGraphicsAlgorithm().getY() > o2.getGraphicsAlgorithm().getY() ? 1
+                        : o1.getGraphicsAlgorithm().getY() == o2.getGraphicsAlgorithm().getY() ? 0 : -1;
             }
-            return o1.getGraphicsAlgorithm().getY() + o1.getGraphicsAlgorithm().getHeight() > o2.getGraphicsAlgorithm()
-                    .getY() + o2.getGraphicsAlgorithm().getHeight() ? 1 : o1.getGraphicsAlgorithm().getY()
-                    + o1.getGraphicsAlgorithm().getHeight() == o2.getGraphicsAlgorithm().getY()
-                    + o2.getGraphicsAlgorithm().getHeight() ? 0 : -1;
+            return o1.getGraphicsAlgorithm().getY()
+                    + o1.getGraphicsAlgorithm().getHeight() > o2.getGraphicsAlgorithm().getY()
+                            + o2.getGraphicsAlgorithm().getHeight()
+                                    ? 1
+                                    : o1.getGraphicsAlgorithm().getY()
+                                            + o1.getGraphicsAlgorithm().getHeight() == o2.getGraphicsAlgorithm().getY()
+                                                    + o2.getGraphicsAlgorithm().getHeight() ? 0 : -1;
         }
 
     }
@@ -117,8 +128,8 @@ public class YangModelUIUtil {
             if (null != fp.getBusinessObjectForPictogramElement(shape)
                     && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(),
                             fp.getBusinessObjectForPictogramElement(parent))
-                    && ((ContainingNode) fp.getBusinessObjectForPictogramElement(parent)).getChildren().contains(
-                            fp.getBusinessObjectForPictogramElement(shape))) {
+                    && ((ContainingNode) fp.getBusinessObjectForPictogramElement(parent)).getChildren()
+                            .contains(fp.getBusinessObjectForPictogramElement(shape))) {
                 pos++;
             }
         }
@@ -133,8 +144,8 @@ public class YangModelUIUtil {
             if (null != fp.getBusinessObjectForPictogramElement(shape)
                     && YangModelUtil.checkType(YangModelUtil.MODEL_PACKAGE.getContainingNode(),
                             fp.getBusinessObjectForPictogramElement(parent))
-                    && ((ContainingNode) fp.getBusinessObjectForPictogramElement(parent)).getChildren().contains(
-                            fp.getBusinessObjectForPictogramElement(shape))) {
+                    && ((ContainingNode) fp.getBusinessObjectForPictogramElement(parent)).getChildren()
+                            .contains(fp.getBusinessObjectForPictogramElement(shape))) {
                 if (y < shape.getGraphicsAlgorithm().getY()) {
                     return pos;
                 }
@@ -232,9 +243,9 @@ public class YangModelUIUtil {
         return null;
 
     }
-    
+
     public static void deletePictogramElement(IFeatureProvider fp, PictogramElement pe) {
-        
+
         RemoveContext removeContext = new RemoveContext(pe);
         IRemoveFeature f = fp.getRemoveFeature(removeContext);
         f.remove(removeContext);
@@ -257,8 +268,8 @@ public class YangModelUIUtil {
             if (null == ref) {
                 if (null != con) {
                     deletePictogramElement(fp, con);
-                    //RemoveContext removeContext = new RemoveContext(con);
-                    //fp.getRemoveFeature(removeContext).remove(removeContext);
+                    // RemoveContext removeContext = new RemoveContext(con);
+                    // fp.getRemoveFeature(removeContext).remove(removeContext);
                     return true;
                 }
             } else {
@@ -280,11 +291,12 @@ public class YangModelUIUtil {
         }
         return false;
     }
-    
+
     public static boolean updateConnections(EClass type, IFeatureProvider fp) {
         Object module = fp.getBusinessObjectForPictogramElement(fp.getDiagramTypeProvider().getDiagram());
         if (null != module && module instanceof EObject) {
-            List<EObject> objects = YangModelUtil.filter(YangModelUtil.getAllBusinessObjects((EObject) module, null), type);
+            List<EObject> objects = YangModelUtil.filter(YangModelUtil.getAllBusinessObjects((EObject) module, null),
+                    type);
             for (EObject obj : objects) {
                 updateConnections(obj, fp);
             }
@@ -402,7 +414,8 @@ public class YangModelUIUtil {
                 ((NamedNode) context.getNewObject()).setName("name");
             }
             text = Graphiti.getGaService().createPlainText(textShape, ((NamedNode) context.getNewObject()).getName());
-            fp.link(textShape, new Object[] { context.getNewObject(), YangModelUtil.MODEL_PACKAGE.getNamedNode_Name() });
+            fp.link(textShape,
+                    new Object[] { context.getNewObject(), YangModelUtil.MODEL_PACKAGE.getNamedNode_Name() });
             PropertyUtil.setObjectShapeProp(textShape, PropertyUtil.EDITABLE_SHAPE, true);
         } else {
             String qName = YangModelUtil.getQNamePresentation((EObject) context.getNewObject());
@@ -438,10 +451,11 @@ public class YangModelUIUtil {
             final Shape textShape = Graphiti.getPeCreateService().createShape(shape, false);
             Text text = Graphiti.getGaService().createPlainText(textShape, pos.toString());
             text.setStyle(StyleUtil.getStyleForDomainObjectNumberText(fp.getDiagramTypeProvider().getDiagram()));
-            IDimension dim = GraphitiUi.getUiLayoutService().calculateTextSize(text.getValue(), text.getStyle().getFont());
+            IDimension dim = GraphitiUi.getUiLayoutService().calculateTextSize(text.getValue(),
+                    text.getStyle().getFont());
             Graphiti.getGaService().setLocationAndSize(text,
-                    shape.getGraphicsAlgorithm().getWidth() - DEFAULT_OBJECT_NUMBER_IND, DEFAULT_OBJECT_NUMBER_IND, dim.getWidth(),
-                    dim.getHeight());
+                    shape.getGraphicsAlgorithm().getWidth() - DEFAULT_OBJECT_NUMBER_IND, DEFAULT_OBJECT_NUMBER_IND,
+                    dim.getWidth(), dim.getHeight());
             PropertyUtil.setObjectShapeProp(textShape, PropertyUtil.OBJECT_NUMBER_SHAPE_KEY, true);
         }
     }
@@ -467,7 +481,7 @@ public class YangModelUIUtil {
         if (context.getTargetContainer() instanceof Diagram) {
             drawPictogramElementPositionInParent(result, fp);
         }
-        
+
         // add feedback element
         final Shape feedbackShape = Graphiti.getPeCreateService().createShape(result, false);
         Graphiti.getGaService().createPlatformGraphicsAlgorithm(feedbackShape, "feedback");
@@ -480,8 +494,8 @@ public class YangModelUIUtil {
         return result;
     }
 
-    public static ContainerShape drawCompositePictogramElement(IAddContext context, IFeatureProvider fp,
-            String imageId, String title) {
+    public static ContainerShape drawCompositePictogramElement(IAddContext context, IFeatureProvider fp, String imageId,
+            String title) {
 
         ContainerShape targetShape = context.getTargetContainer();
         IPeCreateService peCreateService = Graphiti.getPeCreateService();
@@ -500,8 +514,8 @@ public class YangModelUIUtil {
         final Shape shape = peCreateService.createShape(containerShape, false);
 
         // create and set graphics algorithm
-        final Polyline polyline = gaService.createPlainPolyline(shape, new int[] { 0, DEFAULT_TEXT_HEIGHT, width,
-                DEFAULT_TEXT_HEIGHT });
+        final Polyline polyline = gaService.createPlainPolyline(shape,
+                new int[] { 0, DEFAULT_TEXT_HEIGHT, width, DEFAULT_TEXT_HEIGHT });
         polyline.setStyle(StyleUtil.getStyleForDomainObject(fp.getDiagramTypeProvider().getDiagram()));
 
         drawPictogramElementHeader(containerShape, context, fp, imageId, title, width, DEFAULT_TEXT_HEIGHT);
@@ -509,8 +523,8 @@ public class YangModelUIUtil {
 
     }
 
-    public static ContainerShape drawAttributePictogramElement(IAddContext context, IFeatureProvider fp,
-            String imageId, String title) {
+    public static ContainerShape drawAttributePictogramElement(IAddContext context, IFeatureProvider fp, String imageId,
+            String title) {
         ContainerShape targetShape = context.getTargetContainer();
         IPeCreateService peCreateService = Graphiti.getPeCreateService();
         IGaService gaService = Graphiti.getGaService();

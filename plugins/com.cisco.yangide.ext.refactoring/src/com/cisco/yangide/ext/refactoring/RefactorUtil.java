@@ -1,6 +1,11 @@
-/*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.refactoring;
 
 import java.io.IOException;
@@ -128,8 +133,8 @@ public final class RefactorUtil {
         if (node != null) {
             if (info.getEntry() != null && !info.getEntry().isEmpty()) {
                 try (JarFile jarFile = new JarFile(new Path(info.getPath()).toFile())) {
-                    try (InputStreamReader reader = new InputStreamReader(jarFile.getInputStream(jarFile.getEntry(info
-                            .getEntry())), "UTF-8")) { //$NON-NLS-1$
+                    try (InputStreamReader reader = new InputStreamReader(
+                            jarFile.getInputStream(jarFile.getEntry(info.getEntry())), "UTF-8")) { //$NON-NLS-1$
                         char[] cbuf = new char[node.getBodyLength()];
                         reader.skip(node.getBodyStartPosition());
                         reader.read(cbuf, 0, node.getBodyLength());

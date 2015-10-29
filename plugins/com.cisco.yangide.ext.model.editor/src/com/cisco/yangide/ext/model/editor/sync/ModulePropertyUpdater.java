@@ -1,6 +1,11 @@
-/*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.sync;
 
 import org.eclipse.text.edits.InsertEdit;
@@ -44,16 +49,16 @@ public class ModulePropertyUpdater extends SourceNodePropertyUpdater<Module> {
         if (handle) {
             if (prop == null) { // insert new property
                 int pos = node.getBodyStartPosition() + 1;
-                adapter.performEdit(new InsertEdit(pos, System.lineSeparator()
-                        + formatTag(node, name, (String) newValue)));
+                adapter.performEdit(
+                        new InsertEdit(pos, System.lineSeparator() + formatTag(node, name, (String) newValue)));
             } else { // update property
-                adapter.performEdit(new ReplaceEdit(prop.getStartPosition(), prop.getLength() + 1, formatTag(node,
-                        name, (String) newValue).trim()));
+                adapter.performEdit(new ReplaceEdit(prop.getStartPosition(), prop.getLength() + 1,
+                        formatTag(node, name, (String) newValue).trim()));
             }
         }
         ASTNode beforeRevisionNode = getAboveChildNode(module, module.getRevisionNode());
-        int beforeRevision = beforeRevisionNode != null ? beforeRevisionNode.getEndPosition() + 1 : node
-                .getBodyStartPosition() + 1;
+        int beforeRevision = beforeRevisionNode != null ? beforeRevisionNode.getEndPosition() + 1
+                : node.getBodyStartPosition() + 1;
 
         super.updateDefaultProperty(node, name, newValue, beforeRevision);
     }

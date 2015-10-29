@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.property;
 
 import org.eclipse.core.databinding.Binding;
@@ -46,9 +54,8 @@ public class TypeTabSection extends YangPropertySection implements ITabbedProper
                 Shell shell = PlatformUI.getWorkbench().getActiveWorkbenchWindow().getShell();
                 Module module = (Module) getDiagramTypeProvider().getFeatureProvider()
                         .getBusinessObjectForPictogramElement(getDiagram());
-                YangElementListSelectionDialog dialog = new YangElementListSelectionDialog(shell,
-                        ElementIndexType.TYPE, null, YangDiagramImageProvider.IMG_CUSTOM_TYPE_PROPOSAL, module,
-                        type.getText());
+                YangElementListSelectionDialog dialog = new YangElementListSelectionDialog(shell, ElementIndexType.TYPE,
+                        null, YangDiagramImageProvider.IMG_CUSTOM_TYPE_PROPOSAL, module, type.getText());
                 if (IStatus.OK == dialog.open()) {
                     setType(dialog.getValue());
                 }
@@ -64,10 +71,9 @@ public class TypeTabSection extends YangPropertySection implements ITabbedProper
 
     @Override
     protected Binding createBinding(DataBindingContext bindingContext, EObject obj) {
-        return bindingContext.bindValue(
-                WidgetProperties.text(SWT.Modify).observeDelayed(150, type.getTextControl()),
-                EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getNamedNode_Name()).observe(
-                        ((TypedNode) obj).getType()));
+        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(150, type.getTextControl()),
+                EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getNamedNode_Name())
+                        .observe(((TypedNode) obj).getType()));
     }
 
     @Override

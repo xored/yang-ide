@@ -1,5 +1,11 @@
-/**
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model;
 
 import org.eclipse.emf.common.util.EList;
@@ -13,10 +19,10 @@ import org.eclipse.emf.ecore.EObject;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.TaggedNode#getTags <em>Tags</em>}</li>
  * </ul>
- * </p>
  *
  * @see com.cisco.yangide.ext.model.ModelPackage#getTaggedNode()
  * @model interface="true" abstract="true"

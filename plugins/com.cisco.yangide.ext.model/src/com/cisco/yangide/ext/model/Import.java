@@ -1,5 +1,11 @@
-/**
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model;
 
 
@@ -10,44 +16,18 @@ package com.cisco.yangide.ext.model;
  *
  * <p>
  * The following features are supported:
+ * </p>
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.Import#getPrefix <em>Prefix</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.Import#getRevisionDate <em>Revision Date</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.Import#getModule <em>Module</em>}</li>
  * </ul>
- * </p>
  *
  * @see com.cisco.yangide.ext.model.ModelPackage#getImport()
  * @model
  * @generated
  */
 public interface Import extends Node {
-    /**
-     * Returns the value of the '<em><b>Module</b></em>' attribute.
-     * <!-- begin-user-doc -->
-     * <p>
-     * If the meaning of the '<em>Module</em>' containment reference isn't clear,
-     * there really should be more of a description here...
-     * </p>
-     * <!-- end-user-doc -->
-     * @return the value of the '<em>Module</em>' attribute.
-     * @see #setModule(String)
-     * @see com.cisco.yangide.ext.model.ModelPackage#getImport_Module()
-     * @model dataType="org.eclipse.emf.ecore.xml.type.String"
-     * @generated
-     */
-    String getModule();
-
-    /**
-     * Sets the value of the '{@link com.cisco.yangide.ext.model.Import#getModule <em>Module</em>}' attribute.
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @param value the new value of the '<em>Module</em>' attribute.
-     * @see #getModule()
-     * @generated
-     */
-    void setModule(String value);
-
     /**
      * Returns the value of the '<em><b>Prefix</b></em>' attribute.
      * <!-- begin-user-doc -->
@@ -99,5 +79,31 @@ public interface Import extends Node {
      * @generated
      */
     void setRevisionDate(String value);
+
+    /**
+     * Returns the value of the '<em><b>Module</b></em>' attribute.
+     * <!-- begin-user-doc -->
+     * <p>
+     * If the meaning of the '<em>Module</em>' attribute isn't clear,
+     * there really should be more of a description here...
+     * </p>
+     * <!-- end-user-doc -->
+     * @return the value of the '<em>Module</em>' attribute.
+     * @see #setModule(String)
+     * @see com.cisco.yangide.ext.model.ModelPackage#getImport_Module()
+     * @model dataType="org.eclipse.emf.ecore.xml.type.String"
+     * @generated
+     */
+    String getModule();
+
+    /**
+     * Sets the value of the '{@link com.cisco.yangide.ext.model.Import#getModule <em>Module</em>}' attribute.
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @param value the new value of the '<em>Module</em>' attribute.
+     * @see #getModule()
+     * @generated
+     */
+    void setModule(String value);
 
 } // Import

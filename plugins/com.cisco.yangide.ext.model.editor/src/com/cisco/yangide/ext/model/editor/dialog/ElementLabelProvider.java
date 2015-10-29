@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.dialog;
 
 import org.eclipse.graphiti.ui.services.GraphitiUi;
@@ -12,7 +20,7 @@ import com.cisco.yangide.ext.model.editor.util.Strings;
 import com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider;
 
 public class ElementLabelProvider extends LabelProvider {
-        
+
     protected Transformer transformer;
     protected Module module;
 
@@ -33,7 +41,6 @@ public class ElementLabelProvider extends LabelProvider {
                 }
             }
 
-
         };
     }
 
@@ -42,16 +49,20 @@ public class ElementLabelProvider extends LabelProvider {
         if (element instanceof ElementIndexInfo) {
             ElementIndexInfo info = (ElementIndexInfo) element;
             if (ElementIndexType.GROUPING.equals(info.getType())) {
-                return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_GROUPING_PROPOSAL);
+                return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID,
+                        YangDiagramImageProvider.IMG_GROUPING_PROPOSAL);
             }
             if (ElementIndexType.TYPE.equals(info.getType())) {
-                return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_CUSTOM_TYPE_PROPOSAL);
+                return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID,
+                        YangDiagramImageProvider.IMG_CUSTOM_TYPE_PROPOSAL);
             }
             if (ElementIndexType.IDENTITY.equals(info.getType())) {
-                return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_IDENTITY_PROPOSAL);
+                return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID,
+                        YangDiagramImageProvider.IMG_IDENTITY_PROPOSAL);
             }
         } else {
-            return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID, YangDiagramImageProvider.IMG_TYPE_PROPOSAL);
+            return GraphitiUi.getImageService().getImageForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID,
+                    YangDiagramImageProvider.IMG_TYPE_PROPOSAL);
         }
         return super.getImage(element);
     }
@@ -63,10 +74,11 @@ public class ElementLabelProvider extends LabelProvider {
         }
         return Strings.getAsString(element);
     }
-    
+
     private Module getModule() {
         return module;
     }
+
     public void setModule(Module module) {
         this.module = module;
     }

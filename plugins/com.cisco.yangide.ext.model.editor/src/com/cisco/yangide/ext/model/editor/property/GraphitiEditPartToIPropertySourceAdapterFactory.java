@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.property;
 
 import org.eclipse.core.runtime.IAdapterFactory;
@@ -15,7 +23,7 @@ public class GraphitiEditPartToIPropertySourceAdapterFactory implements IAdapter
         super();
     }
 
-    public Object getAdapter(Object adaptableObject,  Class adapterType) {
+    public Object getAdapter(Object adaptableObject, Class adapterType) {
         if (IPropertySource.class.equals(adapterType)) {
             if (adaptableObject instanceof GraphitiShapeEditPart) {
                 GraphitiShapeEditPart editPart = (GraphitiShapeEditPart) adaptableObject;
@@ -30,7 +38,7 @@ public class GraphitiEditPartToIPropertySourceAdapterFactory implements IAdapter
     }
 
     public Class[] getAdapterList() {
-        return new Class[] {IPropertySource.class};
+        return new Class[] { IPropertySource.class };
     }
 
 }

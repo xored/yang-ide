@@ -1,13 +1,22 @@
-/**
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.impl;
 
 import com.cisco.yangide.ext.model.Import;
 import com.cisco.yangide.ext.model.ModelPackage;
 import com.cisco.yangide.ext.model.Node;
+
 import org.eclipse.emf.common.notify.Notification;
+
 import org.eclipse.emf.ecore.EClass;
 import org.eclipse.emf.ecore.InternalEObject;
+
 import org.eclipse.emf.ecore.impl.ENotificationImpl;
 import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
 
@@ -17,13 +26,13 @@ import org.eclipse.emf.ecore.impl.MinimalEObjectImpl;
  * <!-- end-user-doc -->
  * <p>
  * The following features are implemented:
+ * </p>
  * <ul>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getParent <em>Parent</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getPrefix <em>Prefix</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getRevisionDate <em>Revision Date</em>}</li>
  *   <li>{@link com.cisco.yangide.ext.model.impl.ImportImpl#getModule <em>Module</em>}</li>
  * </ul>
- * </p>
  *
  * @generated
  */
@@ -160,27 +169,6 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
      * <!-- end-user-doc -->
      * @generated
      */
-    public String getModule() {
-        return module;
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
-    public void setModule(String newModule) {
-        String oldModule = module;
-        module = newModule;
-        if (eNotificationRequired())
-            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.IMPORT__MODULE, oldModule, module));
-    }
-
-    /**
-     * <!-- begin-user-doc -->
-     * <!-- end-user-doc -->
-     * @generated
-     */
     public String getPrefix() {
         return prefix;
     }
@@ -216,6 +204,27 @@ public class ImportImpl extends MinimalEObjectImpl.Container implements Import {
         revisionDate = newRevisionDate;
         if (eNotificationRequired())
             eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.IMPORT__REVISION_DATE, oldRevisionDate, revisionDate));
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public String getModule() {
+        return module;
+    }
+
+    /**
+     * <!-- begin-user-doc -->
+     * <!-- end-user-doc -->
+     * @generated
+     */
+    public void setModule(String newModule) {
+        String oldModule = module;
+        module = newModule;
+        if (eNotificationRequired())
+            eNotify(new ENotificationImpl(this, Notification.SET, ModelPackage.IMPORT__MODULE, oldModule, module));
     }
 
     /**

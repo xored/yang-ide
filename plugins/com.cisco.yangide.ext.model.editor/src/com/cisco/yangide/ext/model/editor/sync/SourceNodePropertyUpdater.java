@@ -1,6 +1,11 @@
-/*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.sync;
 
 import org.eclipse.text.edits.DeleteEdit;
@@ -30,11 +35,11 @@ public class SourceNodePropertyUpdater<T extends ASTNode> {
             SimpleNode<Object> prop = getProperty(node, name);
             if (prop == null) { // insert new property
                 int pos = node.getBodyStartPosition() + 1;
-                adapter.performEdit(new InsertEdit(pos, System.lineSeparator()
-                        + formatTag(node, name, (String) newValue)));
+                adapter.performEdit(
+                        new InsertEdit(pos, System.lineSeparator() + formatTag(node, name, (String) newValue)));
             } else { // update property
-                adapter.performEdit(new ReplaceEdit(prop.getStartPosition(), prop.getLength() + 1, formatTag(node,
-                        name, (String) newValue).trim()));
+                adapter.performEdit(new ReplaceEdit(prop.getStartPosition(), prop.getLength() + 1,
+                        formatTag(node, name, (String) newValue).trim()));
             }
         } else {
             updateDefaultProperty(node, name, newValue, startPosition);
@@ -87,8 +92,8 @@ public class SourceNodePropertyUpdater<T extends ASTNode> {
             }
         } else { // update property
             if (prop != null) {
-                adapter.performEdit(new ReplaceEdit(prop.getStartPosition(), prop.getLength() + 1, formatTag(node,
-                        name, (String) newValue).trim()));
+                adapter.performEdit(new ReplaceEdit(prop.getStartPosition(), prop.getLength() + 1,
+                        formatTag(node, name, (String) newValue).trim()));
             }
         }
     }
@@ -105,8 +110,8 @@ public class SourceNodePropertyUpdater<T extends ASTNode> {
     }
 
     protected String formatTag(ASTNode node, String name, String value) {
-        return trimTrailingSpaces(RefactorUtil.formatCodeSnipped(name + " \"" + value + "\";",
-                adapter.getIndentLevel(node)));
+        return trimTrailingSpaces(
+                RefactorUtil.formatCodeSnipped(name + " \"" + value + "\";", adapter.getIndentLevel(node)));
     }
 
     protected String trimTrailingSpaces(String str) {

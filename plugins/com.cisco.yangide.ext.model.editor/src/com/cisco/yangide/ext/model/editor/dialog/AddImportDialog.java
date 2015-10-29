@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.dialog;
 
 import java.util.ArrayList;
@@ -49,13 +57,13 @@ import com.cisco.yangide.ext.model.editor.util.YangModelUtil;
  * This class is a dialog in which user can choose a module to import and its prefix. <br>
  * The existing modules are shown in a list, while the prefix is given by a text box. The first
  * module in the list is chosen by default. When user changes selection in the list, the dialog
- * automatically sets the prefix field to the value defined in the selected module. Value of
- * prefix is examined against the empty value and prefixes already present in the edited module. <br>
- * The resulting {@link Import} object may be obtained from {@link #getResultImport()} if dialog
- * was closed with OK button.
+ * automatically sets the prefix field to the value defined in the selected module. Value of prefix
+ * is examined against the empty value and prefixes already present in the edited module. <br>
+ * The resulting {@link Import} object may be obtained from {@link #getResultImport()} if dialog was
+ * closed with OK button.
  * 
  * @author Kirill Karmakulov
- * @date   09 Oct 2014
+ * @date 09 Oct 2014
  */
 public class AddImportDialog extends ElementListSelectionDialog {
 
@@ -135,10 +143,11 @@ public class AddImportDialog extends ElementListSelectionDialog {
         String value = prefix.getText();
         IStatus status;
         if (value.isEmpty()) {
-            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Empty prefix is not allowed", value));
+            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                    String.format("Empty prefix is not allowed", value));
         } else if (importPrefixes.contains(value)) {
-            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID, String.format("Prefix \"%s\" is already used",
-                    value), null);
+            status = new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+                    String.format("Prefix \"%s\" is already used", value), null);
         } else
             status = fLastStatus;
         return status;
@@ -247,15 +256,13 @@ public class AddImportDialog extends ElementListSelectionDialog {
     }
 
     /**
-     * Builds a list of modules that the current module can import.
-     * <br>
+     * Builds a list of modules that the current module can import. <br>
      * Retrieves yang modules that exist in the current project. Then filters out the {@code module}
-     * itself and the modules that are already imported. 
-     * <br>
+     * itself and the modules that are already imported. <br>
      * Current project is determined from to the given {@code file}
      * 
-     * @param file   a file from the current project
-     * @param imports  a collection of imports of the module
+     * @param file a file from the current project
+     * @param imports a collection of imports of the module
      * @return List of modules that
      */
     private static ElementIndexInfo[] getModuleList(Module module, IFile file, List<Import> imports) {

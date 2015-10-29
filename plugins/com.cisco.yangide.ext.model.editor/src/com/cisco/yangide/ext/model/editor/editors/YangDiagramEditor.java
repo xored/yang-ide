@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.editors;
 
 import org.eclipse.core.resources.IFile;
@@ -50,7 +58,7 @@ public class YangDiagramEditor extends DiagramEditor {
     private YangDiagramModuleInfoPanel infoPane;
     private ISourceModelManager sourceModelManager;
     private final YangEditor sourceEditor;
-    
+
     public YangDiagramEditor(YangEditor sourceEditor) {
         super();
         this.sourceEditor = sourceEditor;
@@ -75,8 +83,8 @@ public class YangDiagramEditor extends DiagramEditor {
         public void nodeChanged(Node node, EObject object, Object newValue) {
             System.out.println("Changed " + node);
             if (object instanceof EAttribute) {
-                PictogramElement pe = YangModelUIUtil.getBusinessObjectPropShape(getDiagramTypeProvider()
-                        .getFeatureProvider(), node, (EAttribute)object);
+                PictogramElement pe = YangModelUIUtil.getBusinessObjectPropShape(
+                        getDiagramTypeProvider().getFeatureProvider(), node, (EAttribute) object);
                 if (null != pe) {
                     YangModelUIUtil.updatePictogramElement(getDiagramTypeProvider().getFeatureProvider(), pe);
                 }
@@ -92,11 +100,11 @@ public class YangDiagramEditor extends DiagramEditor {
                 if (parent instanceof Module) {
                     p = ((YangDiagramBehavior) getDiagramBehavior()).getCreatePosition();
                 }
-                PictogramElement pe = YangModelUIUtil.getBusinessObjectShape(getDiagramTypeProvider()
-                        .getFeatureProvider(), parent);
+                PictogramElement pe = YangModelUIUtil
+                        .getBusinessObjectShape(getDiagramTypeProvider().getFeatureProvider(), parent);
                 if (null != pe && pe instanceof ContainerShape) {
-                    YangModelUIUtil.drawObject(child, (ContainerShape) pe, getDiagramTypeProvider()
-                            .getFeatureProvider(), null == p ? 0 : p.x, null == p ? 0 : p.y);
+                    YangModelUIUtil.drawObject(child, (ContainerShape) pe,
+                            getDiagramTypeProvider().getFeatureProvider(), null == p ? 0 : p.x, null == p ? 0 : p.y);
                     if (pe instanceof Diagram && null == p) {
                         getEditingDomain().getCommandStack().execute(new RecordingCommand(getEditingDomain()) {
 
@@ -158,8 +166,8 @@ public class YangDiagramEditor extends DiagramEditor {
 
                 diagramSize = viewer.getControl().getSize();
 
-                ((EditorFeatureProvider) getDiagramTypeProvider().getFeatureProvider()).updateDiagramSize(
-                        diagramSize.x, diagramSize.y);
+                ((EditorFeatureProvider) getDiagramTypeProvider().getFeatureProvider()).updateDiagramSize(diagramSize.x,
+                        diagramSize.y);
                 if (!layouted && diagramSize.x != 0 && diagramSize.y != 0) {
                     layouted = true;
                     YangModelUIUtil.layoutPictogramElement(diagram, getDiagramTypeProvider().getFeatureProvider());
@@ -183,8 +191,8 @@ public class YangDiagramEditor extends DiagramEditor {
             graphicalViewer.addSelectionChangedListener(new ISelectionChangedListener() {
                 @Override
                 public void selectionChanged(SelectionChangedEvent event) {
-                    ((YangDiagramBehavior) getDiagramBehavior()).getYangPaletteBehavior().updateSelection(
-                            event.getSelection());
+                    ((YangDiagramBehavior) getDiagramBehavior()).getYangPaletteBehavior()
+                            .updateSelection(event.getSelection());
                 }
             });
         }
@@ -209,16 +217,16 @@ public class YangDiagramEditor extends DiagramEditor {
                                 && !notification.getNewValue().equals(notification.getOldValue())) {
                             modelChangeHandler.nodeChanged((Node) notification.getNotifier(),
                                     (EObject) notification.getFeature(), notification.getNewValue());
-                            final EClass type = YangModelUtil.getConnectionReferenceSubjectClass(notification
-                                    .getNotifier());
+                            final EClass type = YangModelUtil
+                                    .getConnectionReferenceSubjectClass(notification.getNotifier());
                             if (null != type) {
                                 getDiagramBehavior().getEditingDomain().getCommandStack()
-                                .execute(new RecordingCommand(getDiagramBehavior().getEditingDomain()) {
+                                        .execute(new RecordingCommand(getDiagramBehavior().getEditingDomain()) {
 
                                     @Override
                                     protected void doExecute() {
-                                        YangModelUIUtil.updateConnections(type, getDiagramTypeProvider()
-                                                .getFeatureProvider());
+                                        YangModelUIUtil.updateConnections(type,
+                                                getDiagramTypeProvider().getFeatureProvider());
                                     }
                                 });
                             }
@@ -275,7 +283,7 @@ public class YangDiagramEditor extends DiagramEditor {
 
     public void setSourceModelManager(ISourceModelManager sourceModelManager) {
         ((EditorFeatureProvider) getDiagramTypeProvider().getFeatureProvider())
-        .setSourceModelManager(sourceModelManager);
+                .setSourceModelManager(sourceModelManager);
         this.sourceModelManager = sourceModelManager;
     }
 
@@ -288,7 +296,7 @@ public class YangDiagramEditor extends DiagramEditor {
      */
     public void startSourceSelectionUpdater() {
         GraphicalViewer graphicalViewer = getGraphicalViewer();
-        if (graphicalViewer != null) 
+        if (graphicalViewer != null)
             graphicalViewer.addSelectionChangedListener(sourceSelectionUpdater);
     }
 
@@ -297,7 +305,7 @@ public class YangDiagramEditor extends DiagramEditor {
      */
     public void stopSourceSelectionUpdater() {
         GraphicalViewer graphicalViewer = getGraphicalViewer();
-        if (graphicalViewer != null) 
+        if (graphicalViewer != null)
             graphicalViewer.removeSelectionChangedListener(sourceSelectionUpdater);
     }
 
@@ -307,14 +315,14 @@ public class YangDiagramEditor extends DiagramEditor {
             IStructuredSelection selection = (IStructuredSelection) event.getSelection();
             Object object = selection.getFirstElement();
             if (object instanceof GraphitiShapeEditPart) {
-                PictogramElement element = (PictogramElement) ((GraphitiShapeEditPart) object)
-                        .getPictogramElement();
+                PictogramElement element = (PictogramElement) ((GraphitiShapeEditPart) object).getPictogramElement();
                 EObject node = Graphiti.getLinkService().getBusinessObjectForLinkedPictogramElement(element);
                 ASTNode moduleNode = sourceModelManager.getModuleNode((Node) node);
                 IRegion region = YangEditor.getSelectionRegion(moduleNode);
                 if (region != null) {
                     sourceEditor.setHighlightRange(region.getOffset(), region.getLength(), true);
-                    // sourceEditor.selectAndReveal(...) doesn't work here since projection is disabled
+                    // sourceEditor.selectAndReveal(...) doesn't work here since projection is
+                    // disabled
                 }
             }
         }

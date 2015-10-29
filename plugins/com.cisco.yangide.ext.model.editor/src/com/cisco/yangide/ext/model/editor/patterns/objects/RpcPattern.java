@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.patterns.objects;
 
 import org.eclipse.emf.ecore.EClass;
@@ -35,7 +43,7 @@ public class RpcPattern extends DomainObjectPattern {
         Rpc rpc = (Rpc) context.getNewObject();
         boolean input = false;
         boolean output = false;
-        for(Node n : YangModelUtil.filter(rpc.getChildren(), YangModelUtil.MODEL_PACKAGE.getRpcIO())) {
+        for (Node n : YangModelUtil.filter(rpc.getChildren(), YangModelUtil.MODEL_PACKAGE.getRpcIO())) {
             if (((RpcIO) n).isInput()) {
                 input = true;
             } else {
@@ -51,10 +59,10 @@ public class RpcPattern extends DomainObjectPattern {
         layoutPictogramElement(cs);
         return cs;
     }
-    
+
     private void addIO(boolean isInput, Rpc rpc, ContainerShape cs) {
         RpcIO o = ModelFactoryImpl.eINSTANCE.createRpcIO();
         o.setInput(isInput);
-        YangModelUtil.add(rpc, o, rpc.getChildren().size());                
+        YangModelUtil.add(rpc, o, rpc.getChildren().size());
     }
 }

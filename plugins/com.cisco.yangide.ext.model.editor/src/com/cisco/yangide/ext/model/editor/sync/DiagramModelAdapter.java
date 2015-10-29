@@ -1,6 +1,11 @@
-/*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.sync;
 
 import java.util.HashMap;
@@ -126,8 +131,9 @@ final class DiagramModelAdapter extends EContentAdapter {
                                         notification.getNewValue());
                             } else if (notification.getFeature() == ModelPackage.Literals.REFERENCE_NODE__REFERENCE) {
                                 updateIdentityReference((Node) notification.getNotifier(), notification.getNewValue());
-                            } else if (notification.getFeature() == ModelPackage.Literals.SUBMODULE__BELONGS_TO){
-                                updateBelongsTo((Node) notification.getNotifier(), notification.getOldValue(), notification.getNewValue());
+                            } else if (notification.getFeature() == ModelPackage.Literals.SUBMODULE__BELONGS_TO) {
+                                updateBelongsTo((Node) notification.getNotifier(), notification.getOldValue(),
+                                        notification.getNewValue());
                             }
 
                             if (notification.getNotifier() instanceof Tag) {
@@ -211,7 +217,9 @@ final class DiagramModelAdapter extends EContentAdapter {
         if (0 != position && parent.getChildren().size() > 0) {
             int size = parent.getChildren().size();
             insertPosition = position < 0 || position >= size ? parent.getChildren().get(size - 1).getEndPosition() + 2
-                    : parent.getChildren().get(parent.getChildren().contains(child) && position < oldPosition ? position - 1 : position).getEndPosition() + 2;
+                    : parent.getChildren().get(
+                            parent.getChildren().contains(child) && position < oldPosition ? position - 1 : position)
+                            .getEndPosition() + 2;
         }
 
         try {
@@ -291,20 +299,21 @@ final class DiagramModelAdapter extends EContentAdapter {
             }
         }
     }
-    
-    private void updateBelongsTo(Node node, Object oldValue, Object newValue){
+
+    private void updateBelongsTo(Node node, Object oldValue, Object newValue) {
         ASTNode astNode = mapping.get(node);
         if (astNode == null) {
             throw new RuntimeException("Cannot find references source block from diagram editor");
         }
-        
+
         com.cisco.yangide.core.dom.SubModule subModule = (com.cisco.yangide.core.dom.SubModule) astNode;
-        SimpleNode<String> btNode = subModule.getParentModule(); 
-        if (btNode != null){
-            performEdit(new ReplaceEdit(btNode.getStartPosition(), btNode.getLength() + 1, formatBelongsTo((BelongsTo) newValue)));
-        }
-        else {
-            performEdit(new InsertEdit(subModule.getBodyStartPosition() + 1, System.lineSeparator() + formatBelongsTo((BelongsTo) newValue)));
+        SimpleNode<String> btNode = subModule.getParentModule();
+        if (btNode != null) {
+            performEdit(new ReplaceEdit(btNode.getStartPosition(), btNode.getLength() + 1,
+                    formatBelongsTo((BelongsTo) newValue)));
+        } else {
+            performEdit(new InsertEdit(subModule.getBodyStartPosition() + 1,
+                    System.lineSeparator() + formatBelongsTo((BelongsTo) newValue)));
         }
     }
 
@@ -344,8 +353,8 @@ final class DiagramModelAdapter extends EContentAdapter {
     }
 
     private String formatBase(ASTNode node, String value) {
-        return trimTrailingSpaces(RefactorUtil.formatCodeSnipped("\nbase " + empty2Quote(value) + ";",
-                getIndentLevel(node)));
+        return trimTrailingSpaces(
+                RefactorUtil.formatCodeSnipped("\nbase " + empty2Quote(value) + ";", getIndentLevel(node)));
     }
 
     private String formatImport(Import newValue) {
@@ -356,7 +365,7 @@ final class DiagramModelAdapter extends EContentAdapter {
         sb.append("}");
         return trimTrailingSpaces(RefactorUtil.formatCodeSnipped(sb.toString(), 1));
     }
-    
+
     private String formatBelongsTo(BelongsTo belongsTo) {
         com.cisco.yangide.ext.model.Module parentModule = belongsTo.getOwnerModule();
         String prefix = (String) YangModelUtil.getValue(YangTag.PREFIX, parentModule);

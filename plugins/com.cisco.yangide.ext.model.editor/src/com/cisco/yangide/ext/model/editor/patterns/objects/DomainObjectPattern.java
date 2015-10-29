@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.patterns.objects;
 
 import org.eclipse.emf.ecore.EClass;
@@ -60,7 +68,7 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
         }
         return canCreate;
     }
-    
+
     public boolean canCreateInitial(ICreateContext context) {
         return canContain(context, context.getTargetContainer());
     }
@@ -87,9 +95,8 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
         ContainerShape con = context.getTargetContainer();
         addGraphicalRepresentation(context, newDomainObject);
         getDiagram().eResource().getContents().add(newDomainObject);
-        YangModelUtil
-        .add(getBusinessObjectForPictogramElement(con), newDomainObject, YangModelUIUtil.getPositionInParent(
-                context.getTargetContainer(), context.getY(), getFeatureProvider()));
+        YangModelUtil.add(getBusinessObjectForPictogramElement(con), newDomainObject, YangModelUIUtil
+                .getPositionInParent(context.getTargetContainer(), context.getY(), getFeatureProvider()));
         return new Object[] { newDomainObject };
     }
 
@@ -117,20 +124,21 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
     public boolean canMoveShape(IMoveShapeContext context) {
         boolean canMove = canMoveInitial(context);
         while (!canMove && !(context.getTargetContainer().getContainer() instanceof Diagram)) {
-            ((MoveShapeContext) context).setY(context.getY() + context.getTargetContainer().getGraphicsAlgorithm().getY());
+            ((MoveShapeContext) context)
+                    .setY(context.getY() + context.getTargetContainer().getGraphicsAlgorithm().getY());
             ((MoveShapeContext) context).setTargetContainer(context.getTargetContainer().getContainer());
             canMove = canMoveInitial(context);
         }
         return canMove;
     }
-    
+
     public boolean canMoveInitial(IMoveShapeContext context) {
         if (context.getTargetContainer() == context.getSourceContainer()) {
             setFeedBackPosition(context, context.getTargetContainer());
             return true;
         }
         return canContain(context, context.getTargetContainer(),
-                        getBusinessObjectForPictogramElement(context.getPictogramElement()));
+                getBusinessObjectForPictogramElement(context.getPictogramElement()));
     }
 
     @Override
@@ -174,12 +182,12 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
         boolean canAdd = canAddInitial(context);
         while (!canAdd && !(context.getTargetContainer().getContainer() instanceof Diagram)) {
             ((AddContext) context).setY(context.getY() + context.getTargetContainer().getGraphicsAlgorithm().getY());
-            ((AddContext) context).setTargetContainer(context.getTargetContainer().getContainer());            
+            ((AddContext) context).setTargetContainer(context.getTargetContainer().getContainer());
             canAdd = canAddInitial(context);
         }
         return canAdd;
     }
-    
+
     public boolean canAddInitial(IAddContext context) {
         Object parent = getBusinessObjectForPictogramElement(context.getTargetContainer());
         return canContain(context, context.getTargetContainer(), context.getNewObject())
@@ -204,7 +212,7 @@ public abstract class DomainObjectPattern extends AbstractPattern implements IPa
     public String getCreateDescription() {
         return "Creates new " + getCreateName() + " object";
     }
-    
+
     protected void setFeedBackPosition(ILocationContext context, ContainerShape parent) {
         context.putProperty("parent", parent);
         context.putProperty("parent_position",

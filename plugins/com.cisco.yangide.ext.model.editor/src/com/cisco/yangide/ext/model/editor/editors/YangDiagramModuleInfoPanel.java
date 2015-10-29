@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.editors;
 
 import java.util.ArrayList;
@@ -91,7 +99,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     private Composite leftPane;
 
     private SashForm mainSashPanel;
-    
+
     private DataBindingContext bindingContext = new DataBindingContext();
 
     protected class PropertyEdit extends SashForm {
@@ -200,8 +208,8 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
                 removeBindings(dataBindigs);
                 dataBindigs.clear();
                 dataBindigs.add(addTextFieldListener(this, prefix, YangModelUtil.MODEL_PACKAGE.getImport_Prefix()));
-                dataBindigs.add(addTextFieldListener(this, revision,
-                        YangModelUtil.MODEL_PACKAGE.getImport_RevisionDate()));
+                dataBindigs.add(
+                        addTextFieldListener(this, revision, YangModelUtil.MODEL_PACKAGE.getImport_RevisionDate()));
             }
 
             public void updateData() {
@@ -377,9 +385,9 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             }
         };
 
-        closeButton.setImageDescriptor(GraphitiUi.getImageService().getImageDescriptorForId(
-                YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID,
-                YangDiagramImageProvider.IMG_COLLAPSE_ALL_TOOL_PROPOSAL));
+        closeButton.setImageDescriptor(
+                GraphitiUi.getImageService().getImageDescriptorForId(YangDiagramImageProvider.DIAGRAM_TYPE_PROVIDER_ID,
+                        YangDiagramImageProvider.IMG_COLLAPSE_ALL_TOOL_PROPOSAL));
         closeButton.setEnabled(true);
         toolBarManager.add(closeButton);
         toolBarManager.update(true);
@@ -475,15 +483,15 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(yangVersionText);
 
         if (!(module instanceof Submodule)) {
-        toolkit.createLabel(header, "Namespace: ");
-        namespaceText = toolkit.createText(header, "");
-        namespaceText.setEditable(true);
-        GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(namespaceText);
+            toolkit.createLabel(header, "Namespace: ");
+            namespaceText = toolkit.createText(header, "");
+            namespaceText.setEditable(true);
+            GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(namespaceText);
 
-        toolkit.createLabel(header, "Prefix: ");
-        prefixText = toolkit.createText(header, "");
-        prefixText.setEditable(true);
-        GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(prefixText);
+            toolkit.createLabel(header, "Prefix: ");
+            prefixText = toolkit.createText(header, "");
+            prefixText.setEditable(true);
+            GridDataFactory.fillDefaults().hint(100, -1).grab(true, false).applyTo(prefixText);
         }
 
         updateGeneralSection();
@@ -505,10 +513,10 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             nameText.setText(module.getName());
             yangVersionText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.YANG_VERSION, module)));
             if (!(module instanceof Submodule)) {
-            namespaceText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.NAMESPACE, module)));
-            prefixText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.PREFIX, module)));
+                namespaceText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.NAMESPACE, module)));
+                prefixText.setText(Strings.getAsString(YangModelUtil.getValue(YangTag.PREFIX, module)));
+            }
         }
-    }
     }
 
     protected void addMetaInfoSectionListeners() {
@@ -522,9 +530,9 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         addTextFieldListener(this, nameText, YangModelUtil.MODEL_PACKAGE.getNamedNode_Name());
         addTextFieldListener(this, yangVersionText, YangTag.YANG_VERSION);
         if (!(module instanceof Submodule)) {
-        addTextFieldListener(this, namespaceText, YangTag.NAMESPACE);
-        addTextFieldListener(this, prefixText, YangTag.PREFIX);
-    }
+            addTextFieldListener(this, namespaceText, YangTag.NAMESPACE);
+            addTextFieldListener(this, prefixText, YangTag.PREFIX);
+        }
     }
 
     protected void removeBindings(List<Binding> bindings) {
@@ -536,16 +544,15 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
 
     protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends TaggedNode> node, Control text,
             final YangTag tag) {
-        return bindingContext.bindValue(
-                WidgetProperties.text(SWT.Modify).observeDelayed(200, text),
-                EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value()).observe(
-                        YangModelUtil.getTag(tag, node.getBusinessObject())));
+        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, text),
+                EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value())
+                        .observe(YangModelUtil.getTag(tag, node.getBusinessObject())));
     }
 
     protected Binding addTextFieldListener(final BusinessObjectWrapper<? extends EObject> node, final Text text,
             final EStructuralFeature esf) {
-        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, text), EMFProperties
-                .value(esf).observe(node.getBusinessObject()));
+        return bindingContext.bindValue(WidgetProperties.text(SWT.Modify).observeDelayed(200, text),
+                EMFProperties.value(esf).observe(node.getBusinessObject()));
     }
 
     protected void createBelongsToSection(final Composite parent) {
@@ -554,22 +561,23 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
 
         GridDataFactory.fillDefaults().grab(true, false).applyTo(belongsTo);
         GridLayoutFactory.fillDefaults().numColumns(2).applyTo(belongsTo);
-        
+
         toolkit.createLabel(belongsTo, "Module: ");
         parentModuleText = new DialogText(belongsTo, toolkit) {
-            
+
             @Override
             protected Object openDialogBox(Text text) {
-                ChooseParentModuleDialog dialog = new ChooseParentModuleDialog(parent.getShell(), (Submodule)module, file);
+                ChooseParentModuleDialog dialog = new ChooseParentModuleDialog(parent.getShell(), (Submodule) module,
+                        file);
                 if (IStatus.OK == dialog.open()) {
                     updateBelongsTo();
                 }
-                
+
                 return null;
             }
         };
         GridDataFactory.fillDefaults().grab(true, true).applyTo(parentModuleText.getControl());
-        
+
         updateBelongsTo();
         section.setClient(belongsTo);
     }
@@ -577,7 +585,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
     protected void updateBelongsTo() {
         if (null != module && module instanceof Submodule) {
             Submodule submodule = ((Submodule) module);
-            
+
             String text = Strings.EMPTY_STRING;
             BelongsTo belongsTo = submodule.getBelongsTo();
             if (belongsTo != null) {
@@ -591,7 +599,7 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             parentModuleText.setText(text);
         }
     }
-    
+
     protected void createRevisionSection(Composite parent) {
         Section section = createSection(parent, "Revision");
         Composite revisions = toolkit.createComposite(section);
@@ -644,13 +652,13 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
             binding.updateModelToTarget();
             binding = bindingContext.bindValue(
                     WidgetProperties.text(SWT.Modify).observeDelayed(200, description.getTextControl()),
-                    EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value()).observe(
-                            YangModelUtil.getTag(YangTag.DESCRIPTION, revision)));
+                    EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value())
+                            .observe(YangModelUtil.getTag(YangTag.DESCRIPTION, revision)));
             binding.updateModelToTarget();
             binding = bindingContext.bindValue(
                     WidgetProperties.text(SWT.Modify).observeDelayed(200, reference.getTextControl()),
-                    EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value()).observe(
-                            YangModelUtil.getTag(YangTag.REFERENCE, revision)));
+                    EMFProperties.value(YangModelUtil.MODEL_PACKAGE.getTag_Value())
+                            .observe(YangModelUtil.getTag(YangTag.REFERENCE, revision)));
             binding.updateModelToTarget();
         }
 
@@ -784,11 +792,11 @@ public class YangDiagramModuleInfoPanel implements BusinessObjectWrapper<Module>
         section.setTextClient(toolbar);
     }
 
-    public void update(){
+    public void update() {
         updateImportTable();
         updateBelongsTo();
     }
-    
+
     protected void updateImportTable() {
         if (null != module) {
             importTable.setInput(YangModelUtil.filter(module.getChildren(), YangModelUtil.MODEL_PACKAGE.getImport()));

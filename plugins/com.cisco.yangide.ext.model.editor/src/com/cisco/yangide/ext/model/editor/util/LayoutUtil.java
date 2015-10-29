@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.util;
 
 import java.util.ArrayList;
@@ -182,8 +190,8 @@ public class LayoutUtil {
             if (null == o1 && null != o2) {
                 return -1;
             }
-            return o1.getPositionInParent() > o2.getPositionInParent() ? 1 : o1.getPositionInParent() == o2
-                    .getPositionInParent() ? 0 : -1;
+            return o1.getPositionInParent() > o2.getPositionInParent() ? 1
+                    : o1.getPositionInParent() == o2.getPositionInParent() ? 0 : -1;
         }
 
     }
@@ -228,8 +236,8 @@ public class LayoutUtil {
             return new int[] { cols, rows };
         }
 
-        public void applyLayout(List<YangDiagramNode> entitiesToLayout, double boundX, double boundY,
-                double boundWidth, double boundHeight) {
+        public void applyLayout(List<YangDiagramNode> entitiesToLayout, double boundX, double boundY, double boundWidth,
+                double boundHeight) {
             Collections.sort(entitiesToLayout, COMPARATOR);
             calculateNumberOfRowsAndCols(entitiesToLayout.size(), boundX, boundY, boundWidth, boundHeight);
             int index = 0;
@@ -249,8 +257,8 @@ public class LayoutUtil {
                         y += sn.getHeight() + OFFSET;
                         leftH -= sn.getHeight();
                     }
-                } while ((j == cols - 1 || (leftH / (cols - j - 1) > averageH && cols - j - 1 < entitiesToLayout.size()
-                        - index))
+                } while ((j == cols - 1
+                        || (leftH / (cols - j - 1) > averageH && cols - j - 1 < entitiesToLayout.size() - index))
                         && index < entitiesToLayout.size());
 
             }
@@ -285,8 +293,8 @@ public class LayoutUtil {
         RectilinearAvoidObstaclesPathFinder finder = new RectilinearAvoidObstaclesPathFinder();
         Map<GraphicsAlgorithm, Rectangle> map = new HashMap<GraphicsAlgorithm, Rectangle>();
         for (Shape shape : fp.getDiagramTypeProvider().getDiagram().getChildren()) {
-            Rectangle r = new Rectangle(shape.getGraphicsAlgorithm().getX(), shape.getGraphicsAlgorithm().getY(), shape
-                    .getGraphicsAlgorithm().getWidth(), shape.getGraphicsAlgorithm().getHeight());
+            Rectangle r = new Rectangle(shape.getGraphicsAlgorithm().getX(), shape.getGraphicsAlgorithm().getY(),
+                    shape.getGraphicsAlgorithm().getWidth(), shape.getGraphicsAlgorithm().getHeight());
             finder.addObstacle(r);
             setShapes(shape, r, map);
         }
@@ -298,8 +306,8 @@ public class LayoutUtil {
             Rectangle target = map.get(connection.getEnd().getReferencedGraphicsAlgorithm());
 
             // start always with right side because of box relative anchor
-            start = new org.eclipse.draw2d.geometry.Point(source.x + source.width, Graphiti.getLayoutService()
-                    .getLocationRelativeToDiagram(connection.getStart()).getY() - 3);
+            start = new org.eclipse.draw2d.geometry.Point(source.x + source.width,
+                    Graphiti.getLayoutService().getLocationRelativeToDiagram(connection.getStart()).getY() - 3);
             if (source.x < target.x) {
                 end = new org.eclipse.draw2d.geometry.Point(target.x, target.y + target.height / 2);
             } else {
@@ -347,8 +355,8 @@ public class LayoutUtil {
         if (null != number) {
             IDimension dim = GraphitiUi.getUiLayoutService().calculateTextSize(((Text) number).getValue(),
                     number.getStyle().getFont());
-            number.setX(Math.max(0, cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND
-                    - dim.getWidth()));
+            number.setX(Math.max(0,
+                    cs.getGraphicsAlgorithm().getWidth() - YangModelUIUtil.DEFAULT_OBJECT_NUMBER_IND - dim.getWidth()));
             textWidth = Math.max(0, textWidth - number.getWidth());
         }
         int typeWidth = 0;
@@ -388,8 +396,8 @@ public class LayoutUtil {
 
     protected static YangCompositeSimpleNode createCompositeSimpleNode(ContainerShape cs, IFeatureProvider fp) {
         Object bo = fp.getBusinessObjectForPictogramElement(cs);
-        YangCompositeSimpleNode result = new YangCompositeSimpleNode(cs, YangModelUtil.getPositionInParent(
-                fp.getBusinessObjectForPictogramElement(cs.getContainer()), bo));
+        YangCompositeSimpleNode result = new YangCompositeSimpleNode(cs,
+                YangModelUtil.getPositionInParent(fp.getBusinessObjectForPictogramElement(cs.getContainer()), bo));
         for (Shape shape : YangModelUIUtil.filterBusinessObjectShapes(cs.getChildren())) {
             if (shape instanceof ContainerShape) {
                 result.addChild(createCompositeSimpleNode((ContainerShape) shape, fp));

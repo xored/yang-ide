@@ -1,3 +1,11 @@
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.model.editor.util;
 
 import java.util.ArrayList;
@@ -76,61 +84,64 @@ public class YangModelUtil {
     public static final ModelPackage MODEL_PACKAGE = ModelPackage.eINSTANCE;
 
     static {
-        compositeNodeMap.put(MODEL_PACKAGE.getAugment(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
-                MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getLeaf(),
-                MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getUses()));
-        compositeNodeMap.put(MODEL_PACKAGE.getChoice(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
-                MODEL_PACKAGE.getChoiceCase(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getLeaf(),
-                MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList()));
-        compositeNodeMap.put(MODEL_PACKAGE.getChoiceCase(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
-                MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getLeaf(),
-                MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getUses()));
-        compositeNodeMap.put(MODEL_PACKAGE.getContainer(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
-                MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(),
-                MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
-                MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
-        compositeNodeMap.put(MODEL_PACKAGE.getGrouping(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
-                MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(),
-                MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
-                MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
-        compositeNodeMap.put(MODEL_PACKAGE.getList(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
-                MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(),
-                MODEL_PACKAGE.getListKey(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(),
-                MODEL_PACKAGE.getList(), MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
-        compositeNodeMap.put(MODEL_PACKAGE.getModule(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
-                MODEL_PACKAGE.getAugment(), MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(),
-                MODEL_PACKAGE.getDeviation(), MODEL_PACKAGE.getExtension(), MODEL_PACKAGE.getFeature(),
-                MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getIdentity(), MODEL_PACKAGE.getImport(),
-                MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
-                MODEL_PACKAGE.getNotification(), MODEL_PACKAGE.getRpc(), MODEL_PACKAGE.getTypedef(),
-                MODEL_PACKAGE.getUses()));
-        compositeNodeMap.put(MODEL_PACKAGE.getSubmodule(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
-                MODEL_PACKAGE.getAugment(), MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(),
-                MODEL_PACKAGE.getDeviation(), MODEL_PACKAGE.getExtension(), MODEL_PACKAGE.getFeature(),
-                MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getIdentity(), MODEL_PACKAGE.getImport(),
-                MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
-                MODEL_PACKAGE.getNotification(), MODEL_PACKAGE.getRpc(), MODEL_PACKAGE.getTypedef(),
-                MODEL_PACKAGE.getUses()));
-        compositeNodeMap.put(MODEL_PACKAGE.getNotification(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
-                MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(),
-                MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
-                MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
+        compositeNodeMap.put(MODEL_PACKAGE.getAugment(),
+                Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(),
+                        MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
+                        MODEL_PACKAGE.getUses()));
+        compositeNodeMap.put(MODEL_PACKAGE.getChoice(),
+                Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoiceCase(), MODEL_PACKAGE.getContainer(),
+                        MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList()));
+        compositeNodeMap.put(MODEL_PACKAGE.getChoiceCase(),
+                Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(),
+                        MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
+                        MODEL_PACKAGE.getUses()));
+        compositeNodeMap.put(MODEL_PACKAGE.getContainer(),
+                Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(),
+                        MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(),
+                        MODEL_PACKAGE.getList(), MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
+        compositeNodeMap.put(MODEL_PACKAGE.getGrouping(),
+                Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(),
+                        MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(),
+                        MODEL_PACKAGE.getList(), MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
+        compositeNodeMap.put(MODEL_PACKAGE.getList(),
+                Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(),
+                        MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getListKey(), MODEL_PACKAGE.getLeaf(),
+                        MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getTypedef(),
+                        MODEL_PACKAGE.getUses()));
+        compositeNodeMap.put(MODEL_PACKAGE.getModule(),
+                Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getAugment(), MODEL_PACKAGE.getChoice(),
+                        MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getDeviation(), MODEL_PACKAGE.getExtension(),
+                        MODEL_PACKAGE.getFeature(), MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getIdentity(),
+                        MODEL_PACKAGE.getImport(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(),
+                        MODEL_PACKAGE.getList(), MODEL_PACKAGE.getNotification(), MODEL_PACKAGE.getRpc(),
+                        MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
+        compositeNodeMap.put(MODEL_PACKAGE.getSubmodule(),
+                Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getAugment(), MODEL_PACKAGE.getChoice(),
+                        MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getDeviation(), MODEL_PACKAGE.getExtension(),
+                        MODEL_PACKAGE.getFeature(), MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getIdentity(),
+                        MODEL_PACKAGE.getImport(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(),
+                        MODEL_PACKAGE.getList(), MODEL_PACKAGE.getNotification(), MODEL_PACKAGE.getRpc(),
+                        MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
+        compositeNodeMap.put(MODEL_PACKAGE.getNotification(),
+                Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(),
+                        MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeaf(),
+                        MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(), MODEL_PACKAGE.getTypedef(),
+                        MODEL_PACKAGE.getUses()));
         compositeNodeMap.put(MODEL_PACKAGE.getRpc(),
                 Arrays.asList(MODEL_PACKAGE.getRpcIO(), MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getTypedef()));
-        compositeNodeMap.put(MODEL_PACKAGE.getRpcIO(), Arrays.asList(MODEL_PACKAGE.getAnyxml(),
-                MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(), MODEL_PACKAGE.getGrouping(),
-                MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(), MODEL_PACKAGE.getList(),
-                MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
+        compositeNodeMap.put(MODEL_PACKAGE.getRpcIO(),
+                Arrays.asList(MODEL_PACKAGE.getAnyxml(), MODEL_PACKAGE.getChoice(), MODEL_PACKAGE.getContainer(),
+                        MODEL_PACKAGE.getGrouping(), MODEL_PACKAGE.getLeaf(), MODEL_PACKAGE.getLeafList(),
+                        MODEL_PACKAGE.getList(), MODEL_PACKAGE.getTypedef(), MODEL_PACKAGE.getUses()));
 
         taggedNodeMap.put(MODEL_PACKAGE.getAnyxml(), Arrays.asList(YangTag.CONFIG, YangTag.DESCRIPTION,
                 YangTag.MANDATORY, YangTag.REFERENCE, YangTag.STATUS));
-        taggedNodeMap.put(MODEL_PACKAGE.getChoice(), Arrays.asList(YangTag.CONFIG, YangTag.DEFAULT,
-                YangTag.DESCRIPTION, YangTag.MANDATORY, YangTag.REFERENCE, YangTag.STATUS));
+        taggedNodeMap.put(MODEL_PACKAGE.getChoice(), Arrays.asList(YangTag.CONFIG, YangTag.DEFAULT, YangTag.DESCRIPTION,
+                YangTag.MANDATORY, YangTag.REFERENCE, YangTag.STATUS));
         taggedNodeMap.put(MODEL_PACKAGE.getChoiceCase(),
                 Arrays.asList(YangTag.DESCRIPTION, YangTag.REFERENCE, YangTag.STATUS));
-        taggedNodeMap
-                .put(MODEL_PACKAGE.getContainer(), Arrays.asList(YangTag.CONFIG, YangTag.DESCRIPTION, YangTag.PRESENCE,
-                        YangTag.REFERENCE, YangTag.STATUS));
+        taggedNodeMap.put(MODEL_PACKAGE.getContainer(), Arrays.asList(YangTag.CONFIG, YangTag.DESCRIPTION,
+                YangTag.PRESENCE, YangTag.REFERENCE, YangTag.STATUS));
         taggedNodeMap.put(MODEL_PACKAGE.getGrouping(),
                 Arrays.asList(YangTag.DESCRIPTION, YangTag.REFERENCE, YangTag.STATUS));
         taggedNodeMap.put(MODEL_PACKAGE.getLeaf(), Arrays.asList(YangTag.CONFIG, YangTag.DEFAULT, YangTag.DESCRIPTION,
@@ -140,14 +151,14 @@ public class YangModelUtil {
         taggedNodeMap.put(MODEL_PACKAGE.getSubmodule(), Arrays.asList(YangTag.CONTACT, YangTag.DESCRIPTION,
                 YangTag.ORGANIZATION, YangTag.REFERENCE, YangTag.YANG_VERSION));
         taggedNodeMap.put(MODEL_PACKAGE.getRevision(), Arrays.asList(YangTag.DESCRIPTION, YangTag.REFERENCE));
-        taggedNodeMap.put(MODEL_PACKAGE.getLeafList(), Arrays.asList(YangTag.CONFIG, YangTag.DESCRIPTION,
-                YangTag.MAX_ELEMENTS, YangTag.MIN_ELEMENTS, YangTag.ORDERED_BY, YangTag.REFERENCE, YangTag.STATUS,
-                YangTag.UNITS));
-        taggedNodeMap.put(MODEL_PACKAGE.getList(), Arrays.asList(YangTag.CONFIG, YangTag.DESCRIPTION,
-                YangTag.MAX_ELEMENTS, YangTag.MIN_ELEMENTS, YangTag.ORDERED_BY, YangTag.REFERENCE, YangTag.STATUS,
-                YangTag.UNITS));
-        taggedNodeMap
-                .put(MODEL_PACKAGE.getRpc(), Arrays.asList(YangTag.DESCRIPTION, YangTag.REFERENCE, YangTag.STATUS));
+        taggedNodeMap.put(MODEL_PACKAGE.getLeafList(),
+                Arrays.asList(YangTag.CONFIG, YangTag.DESCRIPTION, YangTag.MAX_ELEMENTS, YangTag.MIN_ELEMENTS,
+                        YangTag.ORDERED_BY, YangTag.REFERENCE, YangTag.STATUS, YangTag.UNITS));
+        taggedNodeMap.put(MODEL_PACKAGE.getList(),
+                Arrays.asList(YangTag.CONFIG, YangTag.DESCRIPTION, YangTag.MAX_ELEMENTS, YangTag.MIN_ELEMENTS,
+                        YangTag.ORDERED_BY, YangTag.REFERENCE, YangTag.STATUS, YangTag.UNITS));
+        taggedNodeMap.put(MODEL_PACKAGE.getRpc(),
+                Arrays.asList(YangTag.DESCRIPTION, YangTag.REFERENCE, YangTag.STATUS));
         taggedNodeMap.put(MODEL_PACKAGE.getTypedef(),
                 Arrays.asList(YangTag.DEFAULT, YangTag.DESCRIPTION, YangTag.REFERENCE, YangTag.STATUS, YangTag.UNITS));
 
@@ -473,18 +484,18 @@ public class YangModelUtil {
             }
         }
         if (checkType(MODEL_PACKAGE.getSubmodule(), o)) {
-            if (n instanceof SubModule){
+            if (n instanceof SubModule) {
                 SubModule subModule = (SubModule) n;
                 SimpleNode<String> pmNode = subModule.getParentModule();
                 if (pmNode != null) {
                     BelongsTo belongsTo = ModelFactory.eINSTANCE.createBelongsTo();
                     Module parentModule = ModelFactory.eINSTANCE.createModule();
-                    
+
                     parentModule.setName(pmNode.getValue());
-                    
+
                     belongsTo.setOwnerModule(parentModule);
                     setValue(YangTag.PREFIX, parentModule, subModule.getParentPrefix());
-                    
+
                     ((Submodule) o).setBelongsTo(belongsTo);
                 }
             }

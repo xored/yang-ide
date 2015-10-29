@@ -1,6 +1,11 @@
-/*
- * Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.
- */
+/*******************************************************************************
+ * Copyright (c) 2014, 2015 Cisco Systems, Inc. and others.  All rights reserved.
+ *  
+ *  This program and the accompanying materials are made available under the
+ *  terms of the Eclipse Public License v1.0 which accompanies this distribution,
+ *  and is available at http://www.eclipse.org/legal/epl-v10.html
+ *  
+ *******************************************************************************/
 package com.cisco.yangide.ext.refactoring.code;
 
 import java.util.ArrayList;
@@ -66,13 +71,14 @@ public class ChangeRevisionRefactoring extends Refactoring {
     }
 
     @Override
-    public RefactoringStatus checkInitialConditions(IProgressMonitor pm) throws CoreException,
-            OperationCanceledException {
+    public RefactoringStatus checkInitialConditions(IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
         return new RefactoringStatus();
     }
 
     @Override
-    public RefactoringStatus checkFinalConditions(IProgressMonitor pm) throws CoreException, OperationCanceledException {
+    public RefactoringStatus checkFinalConditions(IProgressMonitor pm)
+            throws CoreException, OperationCanceledException {
         return new RefactoringStatus();
     }
 
@@ -96,9 +102,10 @@ public class ChangeRevisionRefactoring extends Refactoring {
             ASTNamedNode revisionNode = module.getRevisionNode();
             composite.addTextEdit(file.getFullPath().toString(), editName, editName,
                     revisionNode.getNameStartPosition(), revisionNode.getNameLength(), "\"" + revision + "\""); //$NON-NLS-1$//$NON-NLS-2$
-            composite.addTextEdit(file.getFullPath().toString(), editName, editName, revisionNode.getDescriptionNode()
-                    .getStartPosition(), revisionNode.getDescriptionNode().getLength() + 1, "description \"" //$NON-NLS-1$
-                    + description + "\";"); //$NON-NLS-1$
+            composite.addTextEdit(file.getFullPath().toString(), editName, editName,
+                    revisionNode.getDescriptionNode().getStartPosition(),
+                    revisionNode.getDescriptionNode().getLength() + 1, "description \"" //$NON-NLS-1$
+                            + description + "\";"); //$NON-NLS-1$
         }
 
         YangCompositeChange refComposite = new YangCompositeChange(
@@ -110,8 +117,8 @@ public class ChangeRevisionRefactoring extends Refactoring {
                 ElementIndexReferenceType.IMPORT, file.getProject());
         for (ElementIndexReferenceInfo info : infos) {
             if (references.contains(new Path(info.getPath()))) {
-                YangFile yangFile = YangCorePlugin.createYangFile(ResourcesPlugin.getWorkspace().getRoot()
-                        .getFile(new Path(info.getPath())));
+                YangFile yangFile = YangCorePlugin
+                        .createYangFile(ResourcesPlugin.getWorkspace().getRoot().getFile(new Path(info.getPath())));
                 Module refModule = yangFile.getModule();
                 ModuleImport refImport = refModule.getImportByName(module.getName());
 
