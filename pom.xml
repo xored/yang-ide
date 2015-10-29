@@ -26,6 +26,10 @@
     <module>plugins/com.cisco.yangide.ui</module>
     <module>plugins/com.cisco.yangide.editor</module>
     <module>plugins/com.cisco.yangide.m2e.yang</module>
+    <!-- ext plugins -->
+    <module>plugins/com.cisco.yangide.ext.refactoring</module>
+    <module>plugins/com.cisco.yangide.ext.model</module>
+    <module>plugins/com.cisco.yangide.ext.model.editor</module>
     <!-- features -->
     <module>features/com.cisco.yangide.m2e.yang.feature</module>
     <module>features/com.cisco.yangide.feature</module>
@@ -47,6 +51,49 @@
       <url>http://maven.xored.com/nexus/content/repositories/snapshots/</url>
     </pluginRepository>
   </pluginRepositories>
+
+   <repositories>
+    <repository>
+      <layout>p2</layout>
+      <id>mars</id>
+      <url>http://download.eclipse.org/releases/mars/</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>m2e</id>
+      <url>http://download.eclipse.org/technology/m2e/releases</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>orbit</id>
+      <url>http://download.eclipse.org/tools/orbit/downloads/drops/R20140525021250/repository/</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>emf</id>
+      <url>http://download.eclipse.org/modeling/emf/updates/releases/</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>sonatype</id>
+      <url>https://repository.sonatype.org/content/repositories/forge-sites/m2e-extras/0.15.0/N/0.15.0.201206251206/</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>emf-compare</id>
+      <url>http://download.eclipse.org/modeling/emf/compare/updates/releases/</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>graphiti</id>
+      <url>http://download.eclipse.org/graphiti/updates/0.12.1</url>
+    </repository>
+    <repository>
+      <layout>p2</layout>
+      <id>gef</id>
+      <url>http://download.eclipse.org/tools/gef/updates/releases</url>
+    </repository>
+  </repositories>
 
   <build>
     <plugins>
@@ -102,13 +149,13 @@
         <artifactId>target-platform-configuration</artifactId>
         <version>${tycho-version}</version>
         <configuration>
-          <target>
+          <!-- <target>
             <artifact>
               <groupId>com.cisco.yangide</groupId>
               <artifactId>com.cisco.yangide.target-platform</artifactId>
               <version>1.1.1-SNAPSHOT</version>
             </artifact>
-          </target>
+          </target> -->
           <environments>
             <environment>
               <os>linux</os>

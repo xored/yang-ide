@@ -21,6 +21,12 @@
       %copyright
    </copyright>
 
+   <requires>
+      <import feature="org.eclipse.graphiti.feature" version="0.11.0.v20140528-0646" match="greaterOrEqual"/>
+      <import feature="org.eclipse.emf.compare" version="3.0.0.201406111328" match="greaterOrEqual"/>
+      <import feature="org.eclipse.emf" version="2.10.0.v20140519-0339"/>
+   </requires>
+
    <license url="%licenseURL">
       %license
    </license>
@@ -45,5 +51,26 @@
          install-size="0"
          version="0.0.0"
          unpack="false"/>
+   <plugin
+         id="com.cisco.yangide.ext.refactoring"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.cisco.yangide.ext.model"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.cisco.yangide.ext.model.editor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
 
 </feature>

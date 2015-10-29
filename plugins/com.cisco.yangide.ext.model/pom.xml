@@ -6,13 +6,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
-    <groupId>com.cisco.yangide.ext</groupId>
-    <artifactId>com.cisco.yangide.ext.parent</artifactId>
+    <groupId>com.cisco.yangide</groupId>
+    <artifactId>com.cisco.yangide.parent</artifactId>
     <version>1.1.1-SNAPSHOT</version>
     <relativePath>../..</relativePath>
   </parent>
-  
-  <artifactId>com.cisco.yangide.ext.feature</artifactId>
-  <packaging>eclipse-feature</packaging>
 
+  <artifactId>com.cisco.yangide.ext.model</artifactId>
+  <packaging>eclipse-plugin</packaging>
 </project>
