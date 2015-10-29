@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<genmodel:GenModel xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:ecore="http://www.eclipse.org/emf/2002/Ecore"
+    xmlns:genmodel="http://www.eclipse.org/emf/2002/GenModel" modelDirectory="/com.cisco.yangide.ext.model/src" modelPluginID="com.cisco.yangide.ext.model"
+    modelName="Model" rootExtendsClass="org.eclipse.emf.ecore.impl.MinimalEObjectImpl$Container"
+    importerID="org.eclipse.emf.importer.ecore" complianceLevel="7.0" copyrightFields="false"
+    operationReflection="true" importOrganizing="true">
+  <foreignModel>model.ecore</foreignModel>
+  <genPackages prefix="Model" basePackage="com.cisco.yangide.ext" disposableProviderFactory="true"
+      ecorePackage="model.ecore#/">
+    <genClasses ecoreClass="model.ecore#//Module">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//Module/namespace"/>
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference model.ecore#//Module/revisions"/>
+    </genClasses>
+    <genClasses ecoreClass="model.ecore#//Grouping"/>
+    <genClasses ecoreClass="model.ecore#//Leaf"/>
+    <genClasses ecoreClass="model.ecore#//Container"/>
+    <genClasses image="false" ecoreClass="model.ecore#//Node">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference model.ecore#//Node/parent"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="model.ecore#//NamedNode">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//NamedNode/name"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="model.ecore#//ContainingNode">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference model.ecore#//ContainingNode/children"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="model.ecore#//NamedContainingNode"/>
+    <genClasses ecoreClass="model.ecore#//Submodule">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference model.ecore#//Submodule/belongsTo"/>
+    </genClasses>
+    <genClasses ecoreClass="model.ecore#//Typedef"/>
+    <genClasses ecoreClass="model.ecore#//Choice"/>
+    <genClasses ecoreClass="model.ecore#//LeafList"/>
+    <genClasses ecoreClass="model.ecore#//Anyxml"/>
+    <genClasses ecoreClass="model.ecore#//Import">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference model.ecore#//Import/module"/>
+    </genClasses>
+    <genClasses ecoreClass="model.ecore#//Include">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference model.ecore#//Include/submodule"/>
+    </genClasses>
+    <genClasses ecoreClass="model.ecore#//Revision"/>
+    <genClasses ecoreClass="model.ecore#//BelongsTo">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference model.ecore#//BelongsTo/ownerModule"/>
+    </genClasses>
+    <genClasses ecoreClass="model.ecore#//List"/>
+    <genClasses ecoreClass="model.ecore#//Tag">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//Tag/name"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//Tag/value"/>
+    </genClasses>
+    <genClasses image="false" ecoreClass="model.ecore#//TaggedNode">
+      <genFeatures property="None" children="true" createChild="true" ecoreFeature="ecore:EReference model.ecore#//TaggedNode/tags"/>
+    </genClasses>
+    <genClasses ecoreClass="model.ecore#//Uses">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference model.ecore#//Uses/grouping"/>
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//Uses/qName"/>
+    </genClasses>
+    <genClasses ecoreClass="model.ecore#//Rpc"/>
+    <genClasses ecoreClass="model.ecore#//RpcIO">
+      <genFeatures createChild="false" ecoreFeature="ecore:EAttribute model.ecore#//RpcIO/input"/>
+    </genClasses>
+    <genClasses ecoreClass="model.ecore#//Notification"/>
+    <genClasses ecoreClass="model.ecore#//Augment"/>
+    <genClasses ecoreClass="model.ecore#//Extension"/>
+    <genClasses ecoreClass="model.ecore#//Feature"/>
+    <genClasses ecoreClass="model.ecore#//Deviation"/>
+    <genClasses ecoreClass="model.ecore#//Identity">
+      <genFeatures notify="false" createChild="false" propertySortChoices="true" ecoreFeature="ecore:EReference model.ecore#//Identity/base"/>
+    </genClasses>
+  </genPackages>
+</genmodel:GenModel>

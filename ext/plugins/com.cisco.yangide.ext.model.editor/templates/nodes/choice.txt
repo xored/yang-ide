@@ -1,0 +1,4 @@
+choice @name@ {
+    case case0 {
+    }
+}

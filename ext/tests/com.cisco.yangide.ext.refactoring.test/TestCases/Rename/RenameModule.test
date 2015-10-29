@@ -1,0 +1,230 @@
+--- RCPTT testcase ---
+Format-Version: 1.0
+Element-Name: RenameModule
+Element-Type: testcase
+Element-Version: 3.0
+External-Reference: 
+Id: _IWCmsDKMEeSzJ-2otsp1aw
+Runtime-Version: 1.5.0.201406151150
+Save-Time: 9/2/14 5:38 PM
+Testcase-Type: ecl
+
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac
+Content-Type: text/ecl
+Entry-Name: .content
+
+with [get-editor "module1.yang" | get-text-viewer] {
+    set-caret-pos 6 15
+    get-menu "Refactor/Rename..." | click
+}
+with [get-editor "module1.yang" | get-text-viewer] {
+    get-menu "Refactor/Rename..." | click
+}
+with [get-window Refactoring] {
+    get-editbox -after [get-label "New name:"] | get-property text | equals module2 | verify-true
+    get-button "Preview >" | get-property enablement | equals false | verify-true
+}
+with [get-window Refactoring] {
+    get-editbox -after [get-label "New name:"] | set-text "new-module"
+    get-button "Preview >" | click
+}
+with [get-window Refactoring] {
+    with [get-tree] {
+        get-property itemCount | equals 3 | verify-true
+        get-item "module2.yang - module2\\/src\\/main\\/yang" | get-property caption 
+            | equals "module2.yang - module2/src/main/yang" | verify-true
+        get-item "module1.yang - module1\\/src\\/main\\/yang" | get-property caption 
+            | equals "module1.yang - module1/src/main/yang" | verify-true
+        get-item "module1a.yang - module1\\/src\\/main\\/yang" | get-property caption 
+            | equals "module1a.yang - module1/src/main/yang" | verify-true
+    }
+    get-text-viewer | get-property text | equals "module module2 {\n"
+        + "    namespace \"http://acme.example.com/system\";\n"
+        + "    prefix \"m2\";\n"
+        + "    \n"
+        + "    organization \"ACME Inc.\";\n"
+        + "    contact \"joe@acme.example.com\";\n"
+        + "    \n"
+        + "    description\n"
+        + "        \"The module for entities implementing the ACME system.\";\n"
+        + "    \n"
+        + "    revision 2007-06-09 {\n"
+        + "        description \"Initial revision.\";\n"
+        + "    }\n"
+        + "    \n"
+        + "    typedef typem2 {\n"
+        + "    \ttype string;\n"
+        + "    }\n"
+        + "}" | verify-true
+    get-text-viewer -after [get-label "Refactored Source"] -index 1 | get-property text | equals "module new-module {\n"
+        + "    namespace \"http://acme.example.com/system\";\n"
+        + "    prefix \"m2\";\n"
+        + "    \n"
+        + "    organization \"ACME Inc.\";\n"
+        + "    contact \"joe@acme.example.com\";\n"
+        + "    \n"
+        + "    description\n"
+        + "        \"The module for entities implementing the ACME system.\";\n"
+        + "    \n"
+        + "    revision 2007-06-09 {\n"
+        + "        description \"Initial revision.\";\n"
+        + "    }\n"
+        + "    \n"
+        + "    typedef typem2 {\n"
+        + "    \ttype string;\n"
+        + "    }\n"
+        + "}" | verify-true
+}
+get-window Refactoring | get-tree | select "module1.yang - module1\\/src\\/main\\/yang"
+with [get-window Refactoring] {
+    get-text-viewer | get-property text | equals "// Contents of \"acme-system.yang\"\n"
+        + "module module1 {\n"
+        + "    namespace \"http://acme.example.com/system\";\n"
+        + "    prefix \"m1\";\n"
+        + "    \n"
+        + "    import module2 { prefix m2; }\n"
+        + "    import module3 { prefix m3; }\n"
+        + "    import module1a { prefix m1a; }\n"
+        + "    \n"
+        + "    organization \"ACME Inc.\";\n"
+        + "    contact \"joe@acme.example.com\";\n"
+        + "    \n"
+        + "    description\n"
+        + "        \"The module for entities implementing the ACME system.\";\n"
+        + "    \n"
+        + "    revision 2007-06-09 {\n"
+        + "        description \"Initial revision.\";\n"
+        + "    }\n"
+        + "    \n"
+        + "    container system {\n"
+        + "        leaf host-name {\n"
+        + "            type m2:typem2;\n"
+        + "            description \"Hostname for this system\";\n"
+        + "        }\n"
+        + "    \n"
+        + "        leaf-list domain-search {\n"
+        + "            type m3:typem3;\n"
+        + "            description \"List of domain names to search\";\n"
+        + "        }\n"
+        + "    \n"
+        + "        container login {\n"
+        + "            leaf message {\n"
+        + "                type string;\n"
+        + "                description\n"
+        + "                    \"Message given at start of login session\";\n"
+        + "            }\n"
+        + "    \n"
+        + "            list user {\n"
+        + "                key \"name\";\n"
+        + "                leaf name {\n"
+        + "                    type string;\n"
+        + "                }\n"
+        + "    \n"
+        + "                leaf full-name {\n"
+        + "                    type string;\n"
+        + "                }\n"
+        + "                \n"
+        + "                leaf class {\n"
+        + "                    type string;\n"
+        + "                }\n"
+        + "            }\n"
+        + "        }\n"
+        + "    }\n"
+        + "}" | verify-true
+    get-text-viewer -after [get-label "Refactored Source"] -index 1 | get-property text 
+        | equals "// Contents of \"acme-system.yang\"\n"
+        + "module module1 {\n"
+        + "    namespace \"http://acme.example.com/system\";\n"
+        + "    prefix \"m1\";\n"
+        + "    \n"
+        + "    import new-module { prefix m2; }\n"
+        + "    import module3 { prefix m3; }\n"
+        + "    import module1a { prefix m1a; }\n"
+        + "    \n"
+        + "    organization \"ACME Inc.\";\n"
+        + "    contact \"joe@acme.example.com\";\n"
+        + "    \n"
+        + "    description\n"
+        + "        \"The module for entities implementing the ACME system.\";\n"
+        + "    \n"
+        + "    revision 2007-06-09 {\n"
+        + "        description \"Initial revision.\";\n"
+        + "    }\n"
+        + "    \n"
+        + "    container system {\n"
+        + "        leaf host-name {\n"
+        + "            type m2:typem2;\n"
+        + "            description \"Hostname for this system\";\n"
+        + "        }\n"
+        + "    \n"
+        + "        leaf-list domain-search {\n"
+        + "            type m3:typem3;\n"
+        + "            description \"List of domain names to search\";\n"
+        + "        }\n"
+        + "    \n"
+        + "        container login {\n"
+        + "            leaf message {\n"
+        + "                type string;\n"
+        + "                description\n"
+        + "                    \"Message given at start of login session\";\n"
+        + "            }\n"
+        + "    \n"
+        + "            list user {\n"
+        + "                key \"name\";\n"
+        + "                leaf name {\n"
+        + "                    type string;\n"
+        + "                }\n"
+        + "    \n"
+        + "                leaf full-name {\n"
+        + "                    type string;\n"
+        + "                }\n"
+        + "                \n"
+        + "                leaf class {\n"
+        + "                    type string;\n"
+        + "                }\n"
+        + "            }\n"
+        + "        }\n"
+        + "    }\n"
+        + "}" | verify-true
+}
+get-window Refactoring | get-tree | select "module1a.yang - module1\\/src\\/main\\/yang"
+with [get-window Refactoring] {
+    get-text-viewer | get-property text | equals "module module1a {\n"
+        + "    namespace \"http://acme.example.com/system\";\n"
+        + "    prefix \"m1a\";\n\n"
+        + "    import module2 { prefix module2; }\n"
+        + "    organization \"ACME Inc.\";\n"
+        + "    contact \"joe@acme.example.com\";\n\n"
+        + "    description\n"
+        + "        \"The module for entities implementing the ACME system.\";\n\n"
+        + "    revision 2007-06-09 {\n"
+        + "        description \"Initial revision.\";\n"
+        + "    }\n\n"
+        + "    container system {\n"
+        + "        leaf host-name {\n"
+        + "            type module2:typem2;\n"
+        + "            description \"Hostname for this system\";\n"
+        + "        }\n"
+        + "    }\n"
+        + "}" | verify-true
+    get-text-viewer -after [get-label "Refactored Source"] -index 1 | get-property text | equals "module module1a {\n"
+        + "    namespace \"http://acme.example.com/system\";\n"
+        + "    prefix \"m1a\";\n\n"
+        + "    import new-module { prefix module2; }\n"
+        + "    organization \"ACME Inc.\";\n"
+        + "    contact \"joe@acme.example.com\";\n\n"
+        + "    description\n"
+        + "        \"The module for entities implementing the ACME system.\";\n\n"
+        + "    revision 2007-06-09 {\n"
+        + "        description \"Initial revision.\";\n"
+        + "    }\n\n"
+        + "    container system {\n"
+        + "        leaf host-name {\n"
+        + "            type module2:typem2;\n"
+        + "            description \"Hostname for this system\";\n"
+        + "        }\n"
+        + "    }\n"
+        + "}" | verify-true
+}
+get-window Refactoring | get-button Cancel | click
+------=_.content-0a7243a0-75d3-3d5f-9791-539de0e5b7ac--

@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<!-- ============================================================================== -->
+<!-- Copyright (c) 2014 Cisco Systems, Inc. and others.  All rights reserved.       -->
+<!-- ============================================================================== -->
+<plugin>
+    <extension point="com.cisco.yangide.editor.actionGroup">
+       <actionGroup class="com.cisco.yangide.ext.refactoring.RefactorActionGroup" groupName="group.edit"/>
+    </extension>
+    
+    <extension point="org.eclipse.ui.actionSets">
+       <actionSet 
+            id="com.cisco.yangide.ext.actionSet"
+            label="Yang IDE Extensions Actions"
+            visible="false">
+            <menu
+               label="%Refactor"
+               id="com.cisco.yangide.ext.refactoring.menu"
+               path="edit">
+               <separator name="reorgGroup"/>
+            </menu>
+         
+            <action id="com.cisco.yangide.ui.actions.Rename"
+               definitionId="com.cisco.yangide.ext.rename.element"
+               label="Rename..."
+               retarget="true"
+               menubarPath="com.cisco.yangide.ext.refactoring.menu/reorgGroup">
+            </action>
+            <action id="com.cisco.yangide.ui.actions.Inline"
+               definitionId="com.cisco.yangide.ext.group.inline.element"
+               label="Inline Grouping..."
+               retarget="true"
+               menubarPath="com.cisco.yangide.ext.refactoring.menu/reorgGroup">
+            </action>
+            <action id="com.cisco.yangide.ui.actions.Revision"
+               definitionId="com.cisco.yangide.ext.change.revision"
+               label="Change Revision..."
+               retarget="true"
+               menubarPath="com.cisco.yangide.ext.refactoring.menu/reorgGroup">
+            </action>
+            <action id="com.cisco.yangide.ui.actions.ExtractGrouping"
+               definitionId="com.cisco.yangide.ext.extract.grouping"
+               label="Extract Grouping..."
+               retarget="true"
+               menubarPath="com.cisco.yangide.ext.refactoring.menu/reorgGroup">
+            </action>
+       </actionSet>
+    </extension>
+
+    <extension point="org.eclipse.ui.commands">
+        <category id="com.cisco.yangide.ext.refactoring" name="Refactoring"/>
+
+        <command
+            name="Rename - Refactoring"
+            description="Rename the selected element"
+            categoryId="com.cisco.yangide.ext.refactoring"
+            id="com.cisco.yangide.ext.rename.element">
+        </command>
+        <command
+            name="Inline Grouping - Refactoring"
+            description="Inline grouping element in place of reference"
+            categoryId="com.cisco.yangide.ext.refactoring"
+            id="com.cisco.yangide.ext.group.inline.element">
+        </command>
+        <command
+            name="Change Revision - Refactoring"
+            description="Change module revision number and update referenced modules"
+            categoryId="com.cisco.yangide.ext.refactoring"
+            id="com.cisco.yangide.ext.change.revision">
+        </command>
+        <command
+            name="Extract Grouping - Refactoring"
+            description="Extract the selected block of elelemts into reusable grouping elements"
+            categoryId="com.cisco.yangide.ext.refactoring"
+            id="com.cisco.yangide.ext.extract.grouping">
+        </command>
+
+    </extension>
+      
+    <extension point="org.eclipse.ui.bindings">
+        <!-- Rename keys -->    
+        <key
+            sequence="M2+M3+R"
+            commandId="com.cisco.yangide.ext.rename.element"
+            contextId="com.cisco.yangide.ui.Context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <key
+            platform="carbon"
+            sequence="M2+M3+R"
+            contextId="com.cisco.yangide.ui.Context"
+            commandId=""
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <key
+            platform="carbon"
+            sequence="COMMAND+ALT+R"
+            contextId="com.cisco.yangide.ui.Context"
+            commandId="com.cisco.yangide.ext.rename.element"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+
+        <!-- inline grouping -->
+        <key
+            sequence="M2+M3+I"
+            commandId="com.cisco.yangide.ext.group.inline.element"
+            contextId="com.cisco.yangide.ui.Context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <key
+            platform="carbon"
+            sequence="M2+M3+I"
+            contextId="com.cisco.yangide.ui.Context"
+            commandId=""
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <key
+            platform="carbon"
+            sequence="COMMAND+ALT+I"
+            contextId="com.cisco.yangide.ui.Context"
+            commandId="com.cisco.yangide.ext.group.inline.element"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+            
+        <!-- extract grouping -->
+        <key
+            sequence="M2+M3+E"
+            commandId="com.cisco.yangide.ext.extract.grouping"
+            contextId="com.cisco.yangide.ui.Context"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <key
+            platform="carbon"
+            sequence="M2+M3+E"
+            contextId="com.cisco.yangide.ui.Context"
+            commandId=""
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+        <key
+            platform="carbon"
+            sequence="COMMAND+ALT+E"
+            contextId="com.cisco.yangide.ui.Context"
+            commandId="com.cisco.yangide.ext.extract.grouping"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/>
+
+    </extension>
+    
+    <extension point="org.eclipse.ui.actionSetPartAssociations">
+      <actionSetPartAssociation targetID="com.cisco.yangide.ext.actionSet">
+         <part id="com.cisco.yangide.editor.editors.YANGEditor"/>
+      </actionSetPartAssociation>
+   </extension>
+   
+    <extension point="org.eclipse.ltk.core.refactoring.refactoringContributions">
+        <contribution id="com.cisco.yangide.ext.refactoring.rename.grouping" class="com.cisco.yangide.ext.refactoring.scripting.RenameGroupingRefactoringContribution"/>
+    </extension>
+   
+</plugin>

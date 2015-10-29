@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- ============================================================================== -->
+<feature
+      id="com.cisco.yangide.ext.feature"
+      label="%featureName"
+      version="1.1.1.qualifier"
+      provider-name="%providerName">
+
+   <description>
+      %description
+   </description>
+
+   <copyright>
+      %copyright
+   </copyright>
+
+   <license url="%licenseURL">
+      %license
+   </license>
+
+   <requires>
+      <import feature="com.cisco.yangide.feature" version="1.1.1" match="greaterOrEqual"/>
+      <import feature="org.eclipse.graphiti.feature" version="0.11.0.v20140528-0646" match="greaterOrEqual"/>
+      <import feature="org.eclipse.emf.compare" version="3.0.0.201406111328" match="greaterOrEqual"/>
+      <import feature="org.eclipse.emf" version="2.10.0.v20140519-0339"/>
+   </requires>
+
+   <plugin
+         id="com.cisco.yangide.ext.refactoring"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.cisco.yangide.ext.model"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+   <plugin
+         id="com.cisco.yangide.ext.model.editor"
+         download-size="0"
+         install-size="0"
+         version="0.0.0"
+         unpack="false"/>
+
+</feature>

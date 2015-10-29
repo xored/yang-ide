@@ -1,0 +1,3 @@
+com.cisco.yangide.ext.model.editor/debug=false
+com.cisco.yangide.ext.model.editor/editor/perf=false
+com.cisco.yangide.ext.model.editor/diagram/perf=false

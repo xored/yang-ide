@@ -1,0 +1,3 @@
+augment @name@ {
+    ext:augment-identifier "@name@";
+}

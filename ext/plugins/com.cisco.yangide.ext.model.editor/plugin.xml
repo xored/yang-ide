@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.graphiti.ui.diagramTypes">
+      <diagramType
+            name="Editor Diagram Type"
+            type="yang"
+            id="com.cisco.yangide.ext.model.editor.EditorDiagramType">
+      </diagramType>
+   </extension>
+   <extension
+         point="org.eclipse.graphiti.ui.diagramTypeProviders">
+      <diagramTypeProvider
+            name="Editor Diagram Type Provider"
+            class="com.cisco.yangide.ext.model.editor.diagram.EditorDiagramTypeProvider"
+            id="com.cisco.yangide.ext.model.editor.editorDiagramTypeProvider">
+         <diagramType
+               id="com.cisco.yangide.ext.model.editor.EditorDiagramType">
+         </diagramType>
+         <imageProvider
+            id="com.cisco.yangide.ext.model.editor.ImageProvider">
+      	 </imageProvider>
+      </diagramTypeProvider>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="com.cisco.yangide.ext.model.editor.YangMultiPageEditorPart"
+            default="true"
+            contributorClass="com.cisco.yangide.ext.model.editor.YangMutiPageEditorActionContributor"
+            icon="icons/yang_file.png"
+            extensions="yang"
+            id="com.cisco.yangide.ext.model.editor.YangMultiPageEditor"
+            name="YANG Model Editor">
+            <contentTypeBinding contentTypeId="com.cisco.yangide.core.yangFile"/>
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.graphiti.ui.imageProviders">
+      <imageProvider
+            class="com.cisco.yangide.ext.model.editor.util.YangDiagramImageProvider"
+            id="com.cisco.yangide.ext.model.editor.ImageProvider">
+      </imageProvider>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyContributor">
+      <propertyContributor
+            contributorId="yang.PropertyContributor">
+         <propertyCategory
+               category="Graphiti"></propertyCategory>
+      </propertyContributor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertyTabs">
+      <propertyTabs
+            contributorId="yang.PropertyContributor">
+         <propertyTab
+               category="Graphiti"
+               id="com.cisco.yangide.ext.model.editor.TypeTab"
+               label="Type">
+         </propertyTab>
+         <propertyTab
+               category="Graphiti"
+               id="com.cisco.yangide.ext.model.editor.AttributesTab"
+               label="Attributes">
+         </propertyTab>
+         <propertyTab
+               category="Graphiti"
+               id="com.cisco.yangide.ext.model.editor.GeneralTab"
+               label="General">
+         </propertyTab>
+      </propertyTabs>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views.properties.tabbed.propertySections">
+      <propertySections
+            contributorId="yang.PropertyContributor">
+         <propertySection
+               class="com.cisco.yangide.ext.model.editor.property.GeneralTabReferenceSection"
+               filter="com.cisco.yangide.ext.model.editor.property.GeneralTabReferenceFilter"
+               id="com.cisco.yangide.ext.model.editor.GeneralTabReference"
+               tab="com.cisco.yangide.ext.model.editor.GeneralTab">
+         </propertySection>
+         <propertySection
+               class="com.cisco.yangide.ext.model.editor.property.GeneralTabNameSection"
+               filter="com.cisco.yangide.ext.model.editor.property.GeneralTabNameFilter"
+               id="com.cisco.yangide.ext.model.editor.GeneralTabName"
+               tab="com.cisco.yangide.ext.model.editor.GeneralTab">
+         </propertySection>
+         <propertySection
+               class="com.cisco.yangide.ext.model.editor.property.GeneralTabTypeSection"
+               filter="com.cisco.yangide.ext.model.editor.property.GeneralTabTypeFilter"
+               id="com.cisco.yangide.ext.model.editor.GeneralTabType"
+               tab="com.cisco.yangide.ext.model.editor.GeneralTab">
+         </propertySection>
+         <propertySection
+               class="org.eclipse.ui.views.properties.tabbed.AdvancedPropertySection"
+               filter="com.cisco.yangide.ext.model.editor.property.AttributesTabContentFilter"
+               id="com.cisco.yangide.ext.model.editor.AttributesTabSection"
+               tab="com.cisco.yangide.ext.model.editor.AttributesTab">
+         </propertySection>
+         <propertySection
+               class="com.cisco.yangide.ext.model.editor.property.TypeTabSection"
+               filter="com.cisco.yangide.ext.model.editor.property.TypeTabFilter"
+               id="com.cisco.yangide.ext.model.editor.TypeTabSection"
+               afterSection="com.cisco.yangide.ext.model.editor.GeneralTabName"
+               tab="com.cisco.yangide.ext.model.editor.GeneralTab">
+         </propertySection>
+         <propertySection
+               class="com.cisco.yangide.ext.model.editor.property.GeneralTabDescriptionSection"
+               filter="com.cisco.yangide.ext.model.editor.property.GeneralTabDescriptionFilter"
+               id="com.cisco.yangide.ext.model.editor.GeneralTabDescriptionSection"
+               afterSection="com.cisco.yangide.ext.model.editor.TypeTabSection"
+               tab="com.cisco.yangide.ext.model.editor.GeneralTab">
+         </propertySection>
+      </propertySections>
+   </extension>
+   
+   <extension point="org.eclipse.ui.preferencePages">
+      <page
+            category="com.cisco.yangide.ui.preferences.YANGBasePreferencePage"
+            class="com.cisco.yangide.ext.model.editor.preferences.ModelEditorPreferencePage"
+            id="com.cisco.yangide.ext.model.editor.preferences.ModelEditorPreferencePage"
+            name="Model Editor">
+      </page>
+   </extension>
+   
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.graphiti.ui.platform.GraphitiShapeEditPart"
+            class="com.cisco.yangide.ext.model.editor.property.GraphitiEditPartToIPropertySourceAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.views.properties.IPropertySource">
+         </adapter>
+      </factory>
+   </extension>
+
+    <extension point="org.eclipse.ui.bindings">
+        <key
+            sequence="DEL"
+            commandId="org.eclipse.ui.edit.delete"
+            contextId="org.eclipse.graphiti.ui.diagramEditor"
+            schemeId="org.eclipse.ui.defaultAcceleratorConfiguration"/> 
+    </extension>
+    
+     <extension point="org.eclipse.ui.actionSetPartAssociations">
+       <actionSetPartAssociation targetID="com.cisco.yangide.editor.CodingActionSet">
+          <part id="com.cisco.yangide.ext.model.editor.YangMultiPageEditor"/>
+       </actionSetPartAssociation>
+    </extension>
+</plugin>
