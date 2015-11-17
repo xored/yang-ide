@@ -2,24 +2,25 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <parent>
-    <groupId>com.cisco.yangide.ext.test</groupId>
-    <artifactId>com.cisco.yangide.ext.test.parent</artifactId>
+    <parent>
+    <groupId>com.cisco.yangide.test</groupId>
+    <artifactId>com.cisco.yangide.test.parent</artifactId>
     <version>1.1.0-SNAPSHOT</version>
     <relativePath>..</relativePath>
   </parent> 
 
+
   <groupId>com.cisco.yangide.ext.test</groupId>
   <artifactId>com.cisco.yangide.ext.refactoring.test</artifactId>
   
-  <packaging>q7test</packaging>
+  <packaging>rcpttTest</packaging>
 
   <build>
     <plugins>
       <plugin>
-        <groupId>com.xored.q7</groupId>
-        <artifactId>q7-maven-plugin</artifactId>
-        <version>1.5.0</version>
+        <groupId>org.eclipse.rcptt</groupId>
+        <artifactId>rcptt-maven-plugin</artifactId>
+        <version>2.0.0</version>
         <extensions>true</extensions>
         <configuration>
           <suites>
@@ -67,7 +68,7 @@
               </injection>
 
               <injection>
-                <site>http://download.eclipse.org/technology/m2e/releases-for-indigo/1.4/</site>
+                <site>http://download.eclipse.org/technology/m2e/releases/1.4/1.4.1.20140328-1905</site>
                 <features>
                   <feature>org.eclipse.m2e.feature.feature.group</feature>
                   <feature>org.eclipse.m2e.logback.feature.feature.group</feature>
@@ -91,9 +92,9 @@
               </injection>
             </injections>
           </aut>
-          <q7>
-            <version>${q7-version}</version>
-          </q7>
+          <rcptt>
+            <version>${rcptt-version}</version>
+          </rcptt>
         </configuration>
       </plugin>
     </plugins>

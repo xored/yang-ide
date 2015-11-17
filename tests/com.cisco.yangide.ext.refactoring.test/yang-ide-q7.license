@@ -1,8 +1,0 @@
-#
-#Thu Jul 17 16:43:38 NOVT 2014
-Signature=63215f1c304f12bfadd82d0631af97f26966bb92ce547938f833015c63c879d149bd02d7258d1eace9b7894ceb27d27ed98036bf3f8904d54b804ab599e3d8d84a7d590cc536c4801f93536993d3efe7b9aa7d87b7601d7f2b6c707915b0572450b480244cd7bf694815b26b6a18baf0b1510d6aef64df41f1cf5f60711b343f
-Type=Opensource
-Allowed-Bundles=*.source,ch.qos.logback*,com.google.guava,com.google.inject,com.ibm.icu*,com.jcraft.jsch,com.sun.*,javaewah,javax.*,lpg.runtime.java,org.apache.*,org.eclipse.*,org.h2,org.hamcrest*,org.jdom,org.jsoup,org.junit*,org.mortbay.jetty*,org.objectweb.asm,org.sat4j*,org.slf4j*,org.w3c,org.w3c.*,com.xored.*,com.google.gson,org.aspectj.*,org.fantom*,net.sourceforge.*,java_cup.*,com.jcraft.jzlib,org.xmlpull,org.custommonkey.xmlunit*,org.restlet*,org.json,com.vaadin,com.thoughtworks.xstream,com.thoughtworks.selenium,org.uddi4j,org.mozilla*,org.antlr*,ch.ethz.iks.slp,org.easymock,com.thoughtworks.qdox,edu.emory.mathcs*,org.xbill.dns,org.codehaus.jackson*,org.opensaml*,org.aopalliance*,commonj.sdo*,org.dojotoolkit*,com.lowagie.text*,org.kohsuke.args4j,com.google.gwt*,com.google.gerrit*,com.google.protobuf*,net.miginfocom.layout*,org.prefuse*,org.objenesis*,org.mockito*,org.cyberneko*,org.openid4java*,org.quartz*,me.prettyprint*,osgi.enterprise*,org.cliffc.high_scale_lib*,org.jmock,com.novell.ldap,org.swtchart,org.ccil.cowan.tagsoup,org.ow2*,cdi.api,javassist,scannotation,org.glassfish*,bcprov,bcpg,ca.odell.glazedlists,org.pushingpixels.trident,org.tukaani.xz,com.ning.async-http-client,org.jboss.netty,org.sonatype.m2e.buildhelper,com.cisco.yangide*,org.opendaylight*
-Version=1.0
-Email=andrey.sobolev@xored.com
-Opensource-Project=Cisco Yang IDE
