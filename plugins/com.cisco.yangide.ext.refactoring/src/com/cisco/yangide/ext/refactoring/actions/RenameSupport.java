@@ -30,6 +30,7 @@ import com.cisco.yangide.core.dom.GroupingDefinition;
 import com.cisco.yangide.core.dom.IdentitySchemaNode;
 import com.cisco.yangide.core.dom.Module;
 import com.cisco.yangide.core.dom.ModuleImport;
+import com.cisco.yangide.core.dom.SimpleNode;
 import com.cisco.yangide.core.dom.SubModule;
 import com.cisco.yangide.core.dom.SubModuleInclude;
 import com.cisco.yangide.core.dom.TypeDefinition;
@@ -180,7 +181,8 @@ public class RenameSupport {
      */
     public static ASTNamedNode[] findLocalReferences(Module module, final ASTNamedNode node) {
         final List<ASTNamedNode> nodes = new ArrayList<>();
-        final String name = node.getName();
+        final String				name			= node.getName();
+        final SimpleNode<String>	modulePrefix	= module.getPrefix();
         module.accept(new ASTVisitor() {
             @Override
             public void preVisit(ASTNode n) {
@@ -193,7 +195,12 @@ public class RenameSupport {
                     } else if (nn instanceof TypeReference && ((TypeReference) nn).getType().getName().equals(name)) {
                         nodes.add(nn);
                     } else if (nn instanceof UsesNode && ((UsesNode) nn).getGrouping().getName().equals(name)) {
-                        nodes.add(nn);
+                        // We add the node if the prefix on the UsesNode matches the module prefix, either
+                        // implicitly or explicitly.
+                    	if (((UsesNode) nn).getGrouping().getPrefix() != null && modulePrefix != null &&
+                            ((UsesNode) nn).getGrouping().getPrefix().equals(modulePrefix.getValue())) {
+                    		nodes.add(nn);
+                    	}
                     } else if (nn instanceof BaseReference && ((BaseReference) nn).getType().getName().equals(name)) {
                         nodes.add(nn);
                     } else if (nn instanceof ModuleImport && ((ModuleImport) nn).getName().equals(name)) {
