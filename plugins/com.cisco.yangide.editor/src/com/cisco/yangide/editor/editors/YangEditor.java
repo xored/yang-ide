@@ -150,7 +150,9 @@ public class YangEditor extends TextEditor implements IProjectionListener, IYang
             if (event.getSelection() instanceof ITextSelection) {
                 ITextSelection textSelection = (ITextSelection) event.getSelection();
                 try {
-                    if (null != outlinePage) {
+                    // Checking for getModule() != null is to deal with the unusual case of removing the "module"
+                    // statement (or emptying the entire buffer) after setting a selection.
+                    if ((null != outlinePage) && (null != getModule())) {
                         outlinePage.selectNode(getModule().getNodeAtPosition(textSelection.getOffset()));
                     }
                 } catch (YangModelException e) {
